@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aquador Plugins & Subscriptions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --gold: #D4AF37;
+            --dark-gold: #B8941F;
+            --light-gold: #F0D878;
+            --black: #1a1a1a;
+            --dark-gray: #333;
+            --gray: #666;
+            --light-gray: #f5f5f5;
+            --white: #ffffff;
+            --red: #dc3545;
+            --green: #28a745;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--white);
+            color: var(--black);
+            line-height: 1.6;
+        }
+
+        .container {
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--black);
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            height: 60px;
+            margin-right: 15px;
+            border-radius: 8px;
+            border: 2px solid var(--gold);
+        }
+
+        .company-name {
+            color: var(--white);
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .company-name span {
+            color: var(--gold);
+        }
+
+        /* Navigation Styles */
+        .main-navigation {
+            background-color: var(--dark-gray);
+            padding: 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-link {
+            display: block;
+            color: var(--white);
+            padding: 15px 20px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background-color: rgba(212, 175, 55, 0.1);
+            border-bottom: 3px solid var(--gold);
+            color: var(--gold);
+        }
+
+        .dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: var(--black);
+            min-width: 220px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+
+        .nav-item:hover .dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            position: relative;
+        }
+
+        .dropdown-link {
+            display: block;
+            color: var(--light-gray);
+            padding: 12px 20px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            font-size: 15px;
+        }
+
+        .dropdown-link:hover {
+            background-color: rgba(212, 175, 55, 0.1);
+            color: var(--gold);
+            padding-left: 25px;
+        }
+
+        .dropdown-link i {
+            margin-right: 8px;
+            width: 15px;
+            text-align: center;
+        }
+
+        .mega-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background-color: var(--black);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            padding: 20px 0;
+        }
+
+        .nav-item:hover .mega-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .mega-menu {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .mega-column {
+            flex: 1;
+            padding: 0 20px;
+        }
+
+        .mega-column h4 {
+            color: var(--gold);
+            font-size: 16px;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .mega-list {
+            list-style: none;
+        }
+
+        .mega-list li {
+            margin-bottom: 8px;
+        }
+
+        .mega-list a {
+            color: var(--light-gray);
+            text-decoration: none;
+            font-size: 14px;
+            display: block;
+            padding: 5px 0;
+            transition: all 0.2s ease;
+        }
+
+        .mega-list a:hover {
+            color: var(--gold);
+            padding-left: 5px;
+        }
+
+        .add-page {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px dashed rgba(212, 175, 55, 0.3);
+        }
+
+        .add-page a {
+            color: var(--gold);
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .add-page a i {
+            margin-right: 5px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--black) 0%, var(--dark-gray) 100%);
+            padding: 60px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="none" stroke="rgba(212, 175, 55, 0.1)" stroke-width="0.5"/></svg>');
+            background-size: 100px 100px;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            color: var(--white);
+            font-size: 42px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .hero h1 span {
+            color: var(--gold);
+        }
+
+        .hero p {
+            color: var(--light-gray);
+            font-size: 18px;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+
+        .info-badge {
+            display: inline-block;
+            background-color: rgba(212, 175, 55, 0.2);
+            color: var(--gold);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 16px;
+            border: 1px solid var(--gold);
+        }
+
+        /* Products Section */
+        .products {
+            padding: 80px 0;
+            background-color: var(--light-gray);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-title h2 {
+            font-size: 36px;
+            color: var(--black);
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(to right, var(--gold), var(--dark-gold));
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .product-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-header {
+            background: linear-gradient(to right, var(--black), var(--dark-gray));
+            padding: 15px 20px;
+            position: relative;
+        }
+
+        .product-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(to right, var(--gold), var(--dark-gold));
+        }
+
+        .product-name {
+            color: var(--white);
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .product-content {
+            padding: 25px;
+        }
+
+        .product-description {
+            color: var(--gray);
+            margin-bottom: 20px;
+            font-size: 15px;
+        }
+
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .product-price {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--black);
+        }
+
+        .product-price span {
+            color: var(--gold);
+        }
+
+        .expired-badge {
+            display: flex;
+            align-items: center;
+            background-color: rgba(220, 53, 69, 0.1);
+            color: var(--red);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border: 1px solid rgba(220, 53, 69, 0.3);
+        }
+
+        .expired-badge i {
+            margin-right: 5px;
+        }
+
+        .active-badge {
+            display: flex;
+            align-items: center;
+            background-color: rgba(40, 167, 69, 0.1);
+            color: var(--green);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border: 1px solid rgba(40, 167, 69, 0.3);
+        }
+
+        .active-badge i {
+            margin-right: 5px;
+        }
+
+        /* Subscription Section */
+        .subscription {
+            padding: 80px 0;
+            background-color: var(--white);
+        }
+
+        .subscription-card {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, var(--black) 0%, var(--dark-gray) 100%);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .subscription-header {
+            padding: 30px;
+            text-align: center;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .subscription-header h3 {
+            color: var(--white);
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .subscription-header p {
+            color: var(--light-gray);
+            font-size: 16px;
+        }
+
+        .subscription-content {
+            padding: 30px;
+        }
+
+        .subscription-details {
+            margin-bottom: 30px;
+        }
+
+        .subscription-details h4 {
+            color: var(--gold);
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+
+        .subscription-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .feature-category {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .feature-category h5 {
+            color: var(--gold);
+            font-size: 18px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .feature-list {
+            list-style: none;
+        }
+
+        .feature-list li {
+            color: var(--light-gray);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .feature-list li i {
+            color: var(--gold);
+            margin-right: 10px;
+            font-size: 14px;
+        }
+
+        .feature-value {
+            margin-left: auto;
+            font-weight: 600;
+            color: var(--white);
+        }
+
+        .subscription-price {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 20px;
+        }
+
+        .subscription-price span {
+            color: var(--gold);
+        }
+
+        .subscription-status {
+            display: inline-flex;
+            align-items: center;
+            background-color: rgba(212, 175, 55, 0.2);
+            color: var(--gold);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 16px;
+            border: 1px solid var(--gold);
+        }
+
+        .subscription-status i {
+            margin-right: 8px;
+        }
+
+        /* Pages Section */
+        .pages {
+            padding: 80px 0;
+            background-color: var(--light-gray);
+        }
+
+        .pages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .page-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .page-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .page-icon {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(212, 175, 55, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+        }
+
+        .page-icon i {
+            color: var(--gold);
+            font-size: 24px;
+        }
+
+        .page-details h3 {
+            font-size: 20px;
+            margin-bottom: 5px;
+            color: var(--black);
+        }
+
+        .page-status {
+            display: inline-flex;
+            align-items: center;
+            background-color: rgba(40, 167, 69, 0.1);
+            color: var(--green);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .page-status i {
+            margin-right: 5px;
+            font-size: 12px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .mega-menu {
+                flex-direction: column;
+            }
+            
+            .mega-column {
+                margin-bottom: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .subscription-features {
+                grid-template-columns: 1fr;
+            }
+
+            .pages-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-menu {
+                flex-direction: column;
+            }
+            
+            .nav-item {
+                width: 100%;
+            }
+            
+            .dropdown, .mega-dropdown {
+                position: static;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+                box-shadow: none;
+                display: none;
+            }
+            
+            .nav-item:hover .dropdown, 
+            .nav-item:hover .mega-dropdown {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-container">
+                    <img src="https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/5be3f466-0ebe-4ecf-99e7-0a32acff41e0/Untitled+design+%2825%29.png?format=1500w" alt="Aquador Logo" class="logo">
+                    <div class="company-name">Aqua<span>dor</span></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav class="main-navigation">
+        <div class="nav-container">
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#" class="nav-link">Dubai Shop</a>
+                    <div class="mega-dropdown">
+                        <div class="mega-menu">
+                            <div class="mega-column">
+                                <h4>Lattafa</h4>
+                                <ul class="mega-list">
+                                    <li><a href="#">Lattafa Khamrah</a></li>
+                                    <li><a href="#">Lattafa Raghba</a></li>
+                                    <li><a href="#">Lattafa Asad</a></li>
+                                    <li><a href="#">Lattafa Yara</a></li>
+                                    <li><a href="#">Lattafa Opulent</a></li>
+                                    <li><a href="#">Lattafa Ana Abiyedh</a></li>
+                                </ul>
+                            </div>
+                            <div class="mega-column">
+                                <h4>Men</h4>
+                                <ul class="mega-list">
+                                    <li><a href="#">Al Haramain Perfumes</a></li>
+                                    <li><a href="#">Amouage</a></li>
+                                    <li><a href="#">Arabian Oud</a></li>
+                                    <li><a href="#">Atelier Des Ors</a></li>
+                                    <li><a href="#">Dior</a></li>
+                                    <li><a href="#">Escentric-Molecules</a></li>
+                                    <li><a href="#">Giorgio Armani</a></li>
+                                    <li><a href="#">Gissah</a></li>
+                                    <li><a href="#">Jean Paul Gaultier</a></li>
+                                    <li><a href="#">Khadlaj Perfumes</a></li>
+                                    <li><a href="#">Jo Malone London</a></li>
+                                    <li><a href="#">Kilian</a></li>
+                                    <li><a href="#">Lattafa Perfumes</a></li>
+                                    <li><a href="#">Lalique</a></li>
+                                    <li><a href="#">Lancôme</a></li>
+                                    <li><a href="#">Le Labo</a></li>
+                                    <li><a href="#">Marc Antoine Barrois</a></li>
+                                    <li><a href="#">Maison Francis</a></li>
+                                    <li><a href="#">Mancera</a></li>
+                                    <li><a href="#">Memo Paris</a></li>
+                                    <li><a href="#">Montale</a></li>
+                                    <li><a href="#">Nasomatto</a></li>
+                                    <li><a href="#">Prada</a></li>
+                                    <li><a href="#">Nishane</a></li>
+                                    <li><a href="#">Parfums De Marly</a></li>
+                                    <li><a href="#">Penhaligons</a></li>
+                                    <li><a href="#">Rasasi</a></li>
+                                    <li><a href="#">Sospiro</a></li>
+                                    <li><a href="#">Tiziana Terenzi</a></li>
+                                    <li><a href="#">Tom Ford</a></li>
+                                    <li><a href="#">Vilhelm Parfumerie</a></li>
+                                    <li><a href="#">Viktor Rolf</a></li>
+                                    <li><a href="#">Xerjoff</a></li>
+                                </ul>
+                                <div class="add-page">
+                                    <a href="#"><i class="fas fa-plus-circle"></i> Add Page</a>
+                                </div>
+                            </div>
+                            <div class="mega-column">
+                                <h4>Women</h4>
+                                <ul class="mega-list">
+                                    <li><a href="#">Al Haramain Perfumes</a></li>
+                                    <li><a href="#">Al-Jazeera Perfumes</a></li>
+                                    <li><a href="#">Aquolina</a></li>
+                                    <li><a href="#">Arabian Oud</a></li>
+                                    <li><a href="#">Boadicea The Victorious</a></li>
+                                    <li><a href="#">Carolina Herrera</a></li>
+                                    <li><a href="#">Chloé</a></li>
+                                    <li><a href="#">Escentric Molecules</a></li>
+                                    <li><a href="#">Ex Nihilo</a></li>
+                                    <li><a href="#">Giorgio Armani</a></li>
+                                    <li><a href="#">Givenchy</a></li>
+                                    <li><a href="#">Jean Paul Gaultier</a></li>
+                                    <li><a href="#">Jo Malone London</a></li>
+                                    <li><a href="#">Kilian</a></li>
+                                    <li><a href="#">Lalique</a></li>
+                                    <li><a href="#">Lattafa Perfumes</a></li>
+                                    <li><a href="#">Lancôme</a></li>
+                                    <li><a href="#">Le Labo</a></li>
+                                    <li><a href="#">Mancera</a></li>
+                                    <li><a href="#">Marc-Antoine Barrois</a></li>
+                                    <li><a href="#">Memo Paris</a></li>
+                                    <li><a href="#">Nasomatto</a></li>
+                                    <li><a href="#">Nina Ricci</a></li>
+                                    <li><a href="#">Nishane</a></li>
+                                    <li><a href="#">Parfums de Marly</a></li>
+                                    <li><a href="#">Penhaligon's</a></li>
+                                    <li><a href="#">Tom Ford</a></li>
+                                    <li><a href="#">Tiziana Terenzi</a></li>
+                                    <li><a href="#">Trussardi</a></li>
+                                    <li><a href="#">Rasasi</a></li>
+                                    <li><a href="#">Roberto Cavalli</a></li>
+                                    <li><a href="#">Versace</a></li>
+                                    <li><a href="#">Victor Rolf</a></li>
+                                    <li><a href="#">Xerjoff</a></li>
+                                </ul>
+                                <div class="add-page">
+                                    <a href="#"><i class="fas fa-plus-circle"></i> Add Page</a>
+                                </div>
+                            </div>
+                            <div class="mega-column">
+                                <h4>Niche</h4>
+                                <ul class="mega-list">
+                                    <li><a href="#">Create Your Own Perfume</a></li>
+                                    <li><a href="#">Contact</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">Not Linked</a>
+                    <div class="dropdown">
+                        <div class="dropdown-item">
+                            <a href="#" class="dropdown-link"><i class="fas fa-home"></i> Home</a>
+                        </div>
+                        <div class="dropdown-item">
+                            <a href="#" class="dropdown-link"><i class="fas fa-info-circle"></i> About Us</a>
+                        </div>
+                        <div class="dropdown-item">
+                            <a href="#" class="dropdown-link"><i class="fas fa-file-contract"></i> Terms of Service</a>
+                        </div>
+                        <div class="dropdown-item">
+                            <a href="#" class="dropdown-link"><i class="fas fa-shipping-fast"></i> Shipping & Returns</a>
+                        </div>
+                        <div class="dropdown-item">
+                            <a href="#" class="dropdown-link"><i class="fas fa-user-shield"></i> Privacy Policy</a>
+                        </div>
+                        <div class="dropdown-item">
+                            <a href="#" class="dropdown-link"><i class="fas fa-sign-in-alt"></i> Login Panel</a>
+                        </div>
+                        <div class="dropdown-item">
+                            <a href="#" class="dropdown-link"><i class="fas fa-user-cog"></i> Admin</a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Your <span>Squarespace</span> Plugins & Subscriptions</h1>
+                <p>Information about your purchased plugins and active subscriptions. Check the status of each product below.</p>
+                <div class="info-badge">
+                    <i class="fas fa-info-circle"></i> Subscription Status Dashboard
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="products" class="products">
+        <div class="container">
+            <div class="section-title">
+                <h2>Your Plugins</h2>
+            </div>
+            <div class="products-grid">
+                <div class="product-card">
+                    <div class="product-header">
+                        <h3 class="product-name">Squarespace Custom Cart Slide Out</h3>
+                    </div>
+                    <div class="product-content">
+                        <p class="product-description">Enhance your e-commerce experience with a sleek slide-out cart that improves user interaction and checkout flow.</p>
+                        <div class="product-footer">
+                            <div class="product-price">$<span>70</span></div>
+                            <div class="active-badge">
+                                <i class="fas fa-check-circle"></i> Active
+                            </div>
+                        </div>
+                    </div>
+                    <div style="padding: 0 25px 20px;">
+                        <div style="font-size: 13px; color: var(--green); font-weight: 600;">
+                            <i class="fas fa-calendar-check"></i> Active until: October 2026
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-header">
+                        <h3 class="product-name">Squarespace Filter Plugin - Universal Filter</h3>
+                    </div>
+                    <div class="product-content">
+                        <p class="product-description">Powerful filtering solution for your Squarespace collections. Create custom filters to help visitors find exactly what they're looking for.</p>
+                        <div class="product-footer">
+                            <div class="product-price">$<span>74</span></div>
+                            <div class="active-badge">
+                                <i class="fas fa-check-circle"></i> Active
+                            </div>
+                        </div>
+                    </div>
+                    <div style="padding: 0 25px 20px;">
+                        <div style="font-size: 13px; color: var(--green); font-weight: 600;">
+                            <i class="fas fa-calendar-check"></i> Active until: August 2026
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-header">
+                        <h3 class="product-name">Sync Collections JSON</h3>
+                    </div>
+                    <div class="product-content">
+                        <p class="product-description">Seamlessly sync your Squarespace collections with external data sources through JSON. Perfect for dynamic content management.</p>
+                        <div class="product-footer">
+                            <div class="product-price">$<span>45</span></div>
+                            <div class="active-badge">
+                                <i class="fas fa-check-circle"></i> Active
+                            </div>
+                        </div>
+                    </div>
+                    <div style="padding: 0 25px 20px;">
+                        <div style="font-size: 13px; color: var(--green); font-weight: 600;">
+                            <i class="fas fa-calendar-check"></i> Active until: August 2026
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-header">
+                        <h3 class="product-name">Select License - One Site / Unlimited Sites</h3>
+                    </div>
+                    <div class="product-content">
+                        <p class="product-description">Flexible licensing options for your needs. Choose between single site license or unlimited sites for maximum value.</p>
+                        <div class="product-footer">
+                            <div class="product-price">$<span>50</span></div>
+                            <div class="active-badge">
+                                <i class="fas fa-check-circle"></i> Active
+                            </div>
+                        </div>
+                    </div>
+                    <div style="padding: 0 25px 20px;">
+                        <div style="font-size: 13px; color: var(--green); font-weight: 600;">
+                            <i class="fas fa-calendar-check"></i> Active until: August 2026
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-header">
+                        <h3 class="product-name">Squarespace Admin UI Tweaks</h3>
+                    </div>
+                    <div class="product-content">
+                        <p class="product-description">Customize your Squarespace admin interface for improved workflow and efficiency. Tailored for power users and developers.</p>
+                        <div class="product-footer">
+                            <div class="product-price">$<span>40</span></div>
+                            <div class="active-badge">
+                                <i class="fas fa-check-circle"></i> Active
+                            </div>
+                        </div>
+                    </div>
+                    <div style="padding: 0 25px 20px;">
+                        <div style="font-size: 13px; color: var(--green); font-weight: 600;">
+                            <i class="fas fa-calendar-check"></i> Active until: August 2026
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="subscription">
+        <div class="container">
+            <div class="section-title">
+                <h2>Annual Hosting Subscription</h2>
+            </div>
+            <div class="subscription-card">
+                <div class="subscription-header">
+                    <h3>Squarespace Annual Hosting</h3>
+                    <p>Professional hosting solution for your Squarespace website</p>
+                </div>
+                <div class="subscription-content">
+                    <div class="subscription-details">
+                        <h4>Included Features</h4>
+                        <div class="subscription-features">
+                            <div class="feature-category">
+                                <h5>Basic Features</h5>
+                                <ul class="feature-list">
+                                    <li><i class="fas fa-check"></i> SEO features for site visibility</li>
+                                    <li><i class="fas fa-check"></i> Unlimited bandwidth <span class="feature-value">Unlimited</span></li>
+                                    <li><i class="fas fa-check"></i> Video hosting <span class="feature-value">Unlimited</span></li>
+                                    <li><i class="fas fa-check"></i> 24/7 customer support <span class="feature-value">Unlimited</span></li>
+                                    <li><i class="fas fa-check"></i> Drag-and-drop editor</li>
+                                    <li><i class="fas fa-check"></i> Contributors <span class="feature-value">2</span></li>
+                                    <li><i class="fas fa-check"></i> Basic website metrics</li>
+                                    <li><i class="fas fa-check"></i> SSL security</li>
+                                    <li><i class="fas fa-check"></i> Squarespace AI</li>
+                                    <li><i class="fas fa-check"></i> Squarespace Extensions</li>
+                                    <li><i class="fas fa-check"></i> Custom merch</li>
+                                    <li><i class="fas fa-check"></i> Professional email from Google</li>
+                                    <li><i class="fas fa-check"></i> Complete customization with CSS and Javascript</li>
+                                </ul>
+                            </div>
+                            <div class="feature-category">
+                                <h5>Marketing</h5>
+                                <ul class="feature-list">
+                                    <li><i class="fas fa-check"></i> Audience management</li>
+                                    <li><i class="fas fa-check"></i> Promotional pop-ups and banners</li>
+                                </ul>
+                            </div>
+                            <div class="feature-category">
+                                <h5>Commerce</h5>
+                                <ul class="feature-list">
+                                    <li><i class="fas fa-check"></i> Send invoices for free</li>
+                                    <li><i class="fas fa-check"></i> Sell content and memberships</li>
+                                    <li><i class="fas fa-check"></i> Customer accounts</li>
+                                    <li><i class="fas fa-check"></i> Fully integrated ecommerce</li>
+                                    <li><i class="fas fa-check"></i> Transaction fees for product sales <span class="feature-value">3%</span></li>
+                                    <li><i class="fas fa-check"></i> Sell unlimited products</li>
+                                    <li><i class="fas fa-check"></i> Checkout on your domain</li>
+                                    <li><i class="fas fa-check"></i> Advanced shipping</li>
+                                    <li><i class="fas fa-check"></i> Point of sale</li>
+                                    <li><i class="fas fa-check"></i> Product reviews</li>
+                                    <li><i class="fas fa-check"></i> Advanced merchandising features</li>
+                                    <li><i class="fas fa-check"></i> Sell on Facebook & Instagram</li>
+                                    <li><i class="fas fa-check"></i> Limited availability labels</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="subscription-price">$<span>299</span>/year</div>
+                    <div class="subscription-status">
+                        <i class="fas fa-check-circle"></i> Already Paid Until July 2026
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>

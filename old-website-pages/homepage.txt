@@ -1,0 +1,610 @@
+<!-- AQUAD'OR HOMEPAGE CODE - START -->
+
+<!-- The viewport tag is ESSENTIAL for mobile responsiveness. Without this line, phones will show a tiny, zoomed-out desktop version of the site. -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<div class="aquador-page-wrapper">
+
+<style>
+/* FONT IMPORTS */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400&family=Poppins:wght@200;300;500&display=swap');
+
+/* GENERAL SETUP & RESET */
+:root {
+    --brand-gold: #DAA520;
+    --brand-gold-light: #FFD700;
+    --dark-bg: #0a0a0a;
+    --light-text: #ccc;
+    --dark-text: #333;
+}
+
+.aquador-page-wrapper {
+    margin: 0;
+    box-sizing: border-box;
+    background: var(--dark-bg);
+    overflow-x: hidden; /* This is the key to preventing horizontal scroll */
+    color: var(--light-text);
+    font-family: 'Poppins', sans-serif;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.aquador-page-wrapper *,
+.aquador-page-wrapper *::before,
+.aquador-page-wrapper *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* HERO SECTION */
+.aquador-hero-container {
+    --parallax-y: 0px; /* JS will update this variable */
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Background Video Styling */
+.aquador-hero-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+    object-fit: cover;
+    opacity: 0.4;
+    filter: brightness(0.6);
+}
+
+/* Video Overlay for better text readability */
+.aquador-video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+.aquador-hero-container::before {
+    content: '';
+    position: absolute;
+    top: -10%; left: 0; width: 100%; height: 120%; /* Slightly larger for parallax */
+    background:
+        radial-gradient(circle at 20% 50%, rgba(218, 165, 32, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 80% 50%, rgba(255, 215, 0, 0.04) 0%, transparent 40%);
+    animation: aquador-float 20s ease-in-out infinite;
+    filter: blur(50px);
+    transform: translateY(var(--parallax-y)); /* Use the CSS variable */
+    will-change: transform;
+    z-index: 2;
+}
+
+.aquador-floating-particles {
+    position: absolute;
+    width: 100%; height: 100%;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.aquador-particle {
+    position: absolute;
+    width: 2px; height: 2px;
+    background: var(--brand-gold-light);
+    border-radius: 50%;
+    opacity: 0;
+    animation: aquador-floatUp 10s linear infinite;
+    filter: blur(0.5px);
+    box-shadow: 0 0 6px var(--brand-gold-light);
+}
+.aquador-particle:nth-child(1) { left: 10%; animation-delay: 0s; }
+.aquador-particle:nth-child(2) { left: 20%; animation-delay: 2s; }
+.aquador-particle:nth-child(3) { left: 30%; animation-delay: 4s; }
+.aquador-particle:nth-child(4) { left: 40%; animation-delay: 6s; }
+.aquador-particle:nth-child(5) { left: 50%; animation-delay: 8s; }
+.aquador-particle:nth-child(6) { left: 60%; animation-delay: 1s; }
+.aquador-particle:nth-child(7) { left: 70%; animation-delay: 3s; }
+.aquador-particle:nth-child(8) { left: 80%; animation-delay: 5s; }
+.aquador-particle:nth-child(9) { left: 90%; animation-delay: 7s; }
+.aquador-particle:nth-child(10) { left: 95%; animation-delay: 9s; }
+
+/* Hero Content */
+.aquador-hero-content {
+    text-align: center;
+    padding: 4rem 1rem 2rem;
+    position: relative;
+    z-index: 10;
+    animation: aquador-fadeInScale 1.5s ease-out;
+}
+
+.aquador-hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3.5rem, 10vw, 8rem);
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    color: transparent;
+    background: linear-gradient(90deg, var(--brand-gold-light), #FFF8DC, var(--brand-gold-light), var(--brand-gold), var(--brand-gold-light));
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: aquador-goldShimmer 3s linear infinite;
+    filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.3));
+    height: 180px;
+}
+
+.aquador-hero-separator {
+    width: 200px; height: 1px;
+    margin: 2rem auto;
+    position: relative;
+    overflow: hidden;
+}
+
+.aquador-hero-separator::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%; width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, var(--brand-gold-light), #FFF8DC, var(--brand-gold-light), transparent);
+    animation: aquador-scanLine 3s ease-in-out infinite;
+}
+
+.aquador-hero-subtitle {
+    font-size: clamp(1rem, 2vw, 1.5rem);
+    font-weight: 200;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    animation: aquador-fadeInUp 1.5s ease-out 0.5s backwards;
+    margin-bottom: 3rem;
+}
+
+/* CATEGORIES GRID */
+.aquador-categories-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 1rem 2rem;
+    position: relative;
+    z-index: 10;
+}
+
+.aquador-category-card {
+    position: relative;
+    height: 500px;
+    overflow: hidden;
+    cursor: pointer;
+    text-decoration: none;
+    background: #111;
+    display: block;
+    color: inherit;
+    transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    transform-style: preserve-3d; /* For 3D hover effect */
+}
+
+.aquador-category-card-inner {
+    position: relative;
+    width: 100%; height: 100%;
+    will-change: transform;
+}
+
+.aquador-category-card img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1), filter 0.6s ease;
+    filter: grayscale(30%) brightness(0.8);
+}
+
+.aquador-category-card:hover img {
+    transform: scale(1.1);
+    filter: grayscale(0%) brightness(1);
+}
+
+.aquador-category-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 30%, transparent 100%);
+    transition: background 0.6s ease;
+}
+
+.aquador-category-content {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 3rem 2rem;
+    z-index: 4;
+    transform: translateY(20px);
+    transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.aquador-category-card:hover .aquador-category-content {
+    transform: translateY(0);
+}
+
+.aquador-category-content h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: #fff;
+}
+
+.aquador-category-content p {
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    margin: 0.5rem 0 2rem;
+    opacity: 0.8;
+    transition: all 0.6s ease 0.1s;
+}
+
+.aquador-category-card:hover .aquador-category-content p {
+    opacity: 1;
+    color: var(--brand-gold-light);
+}
+
+.aquador-category-link {
+    display: inline-flex; align-items: center; gap: 10px;
+    color: #fff;
+    font-size: 0.85rem; letter-spacing: 0.2em; text-transform: uppercase;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: all 0.6s ease 0.2s;
+}
+
+.aquador-category-card:hover .aquador-category-link {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* GENERAL CONTENT SECTIONS */
+.aquador-content-section {
+    padding: 5rem 1rem;
+    position: relative;
+}
+
+.aquador-section-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+.aquador-section-title {
+    text-align: center;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 200;
+    margin-bottom: 3rem;
+}
+
+.aquador-custom-section { background: linear-gradient(135deg, #1a1a1a, var(--dark-bg)); }
+
+.aquador-custom-title {
+    background: linear-gradient(90deg, var(--brand-gold-light), var(--brand-gold));
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* CTA BUTTON */
+.aquador-cta-btn {
+    display: inline-flex; align-items: center; gap: 1rem;
+    padding: 1rem 3rem;
+    background: var(--brand-gold);
+    color: #000;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.aquador-cta-btn:hover {
+    background: var(--brand-gold-light);
+    transform: scale(1.05);
+    box-shadow: 0 5px 20px rgba(218, 165, 32, 0.4);
+}
+
+.aquador-custom-cta { text-align: center; margin-top: 3rem; }
+
+/* FEATURED & STAGES GRID */
+.aquador-featured-grid, .aquador-stages-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: 2rem;
+}
+
+/* Card Styles */
+.aquador-stage-card, .aquador-feat-card {
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+.aquador-stage-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(218, 165, 32, 0.2);
+}
+.aquador-stage-card:hover { transform: translateY(-5px); border-color: rgba(218, 165, 32, 0.4); }
+
+.aquador-feat-card { background: #fff; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); }
+.aquador-feat-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15); }
+
+.aquador-stage-image, .aquador-feat-image { height: 250px; }
+.aquador-stage-image img, .aquador-feat-image img { width: 100%; height: 100%; object-fit: cover; }
+.aquador-stage-info, .aquador-feat-info { padding: 2rem; }
+
+.aquador-stage-info h3 { color: var(--brand-gold); margin-bottom: 1rem; font-size: 1.5rem; }
+.aquador-stage-info p { opacity: 0.7; }
+
+.aquador-feat-info h3 { font-size: 1.8rem; margin-bottom: 1rem; color: var(--dark-text); }
+.aquador-feat-info p { color: #666; margin-bottom: 1.5rem; }
+.aquador-feat-link { color: var(--brand-gold); font-weight: 500; }
+
+.aquador-featured-section { background: #f5f5f5; }
+.aquador-featured-title { color: var(--dark-text); }
+
+/* FINAL CTA FOOTER */
+.aquador-final-cta {
+    background: url('https://i.ibb.co/Mg00Phx/DSC-1932.jpg') center/cover no-repeat;
+    color: #fff;
+    padding: 6rem 1rem;
+}
+
+.aquador-final-cta::before {
+    content: ''; position: absolute; inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.aquador-final-content { text-align: center; }
+.aquador-final-title {
+    background: linear-gradient(90deg, var(--brand-gold-light), var(--brand-gold));
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.aquador-final-subtitle { font-size: 1.2rem; margin-bottom: 3rem; opacity: 0.9; }
+.aquador-features-grid { display: flex; justify-content: center; gap: 3rem; margin-bottom: 3rem; flex-wrap: wrap; }
+.aquador-feature-icon { width: 60px; height: 60px; margin: 0 auto 1rem; border: 1px solid rgba(218, 165, 32, 0.5); border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(218, 165, 32, 0.1); }
+.aquador-feature-icon svg { stroke: var(--brand-gold); }
+
+
+/* ANIMATIONS */
+@keyframes aquador-float { 0%, 100% { transform: rotate(0deg) scale(1.1); } 50% { transform: rotate(180deg) scale(1); } }
+@keyframes aquador-floatUp { 0% { opacity: 0; transform: translateY(100vh); } 10% { opacity: 1; } 100% { opacity: 0; transform: translateY(-10vh); } }
+@keyframes aquador-goldShimmer { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+@keyframes aquador-scanLine { 0% { left: -100%; } 100% { left: 100%; } }
+@keyframes aquador-fadeInScale { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+@keyframes aquador-fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 1024px) { .aquador-category-card { height: 400px; } }
+@media (max-width: 768px) {
+    .aquador-categories-grid { grid-template-columns: 1fr; max-width: 500px; }
+    .aquador-category-card { height: 400px; }
+}
+@media (max-width: 480px) { .aquador-category-card { height: 350px; } }
+
+</style>
+
+
+<!-- =================================
+HTML STRUCTURE STARTS HERE
+================================= -->
+
+<header class="aquador-hero-container">
+    <!-- Background Video -->
+    <video class="aquador-hero-video" autoplay muted loop playsinline>
+        <source src="https://static1.squarespace.com/static/66901f0f8865462c0ac066ba/t/6899a19131e4b55cddf56fb2/1754898858755/download+%2820%29.mp4" type="video/mp4">
+    </video>
+    <div class="aquador-video-overlay"></div>
+    
+    <div class="aquador-floating-particles" aria-hidden="true">
+        <span class="aquador-particle"></span><span class="aquador-particle"></span>
+        <span class="aquador-particle"></span><span class="aquador-particle"></span>
+        <span class="aquador-particle"></span><span class="aquador-particle"></span>
+        <span class="aquador-particle"></span><span class="aquador-particle"></span>
+        <span class="aquador-particle"></span><span class="aquador-particle"></span>
+    </div>
+
+    <div class="aquador-hero-content">
+        <h1 class="aquador-hero-title">AQUAD'OR</h1>
+        <div class="aquador-hero-separator" aria-hidden="true"></div>
+        <p class="aquador-hero-subtitle">Where Luxury Meets Distinction</p>
+    </div>
+</header>
+
+<main>
+    <section class="aquador-categories-grid">
+        <a href="/shop/women" class="aquador-category-card">
+            <div class="aquador-category-card-inner">
+                <img src="https://i.ibb.co/KNGND0M/GK0-0065.webp" alt="Women's Collection">
+                <div class="aquador-category-overlay"></div>
+                <div class="aquador-category-content">
+                    <h2>Women's Collection</h2>
+                    <p>Timeless Elegance in Every Drop</p>
+                    <span class="aquador-category-link">Explore</span>
+                </div>
+            </div>
+        </a>
+        <a href="/shop/men" class="aquador-category-card">
+            <div class="aquador-category-card-inner">
+                <img src="https://i.ibb.co/1rQyrdW/DSC-0666.jpg" alt="Men's Collection">
+                <div class="aquador-category-overlay"></div>
+                <div class="aquador-category-content">
+                    <h2>Men's Collection</h2>
+                    <p>Bold Character, Lasting Impression</p>
+                    <span class="aquador-category-link">Explore</span>
+                </div>
+            </div>
+        </a>
+        <a href="/shop/niche" class="aquador-category-card">
+            <div class="aquador-category-card-inner">
+                <img src="https://i.ibb.co/Mg00Phx/DSC-1932.jpg" alt="Niche Collection">
+                <div class="aquador-category-overlay"></div>
+                <div class="aquador-category-content">
+                    <h2>Niche Collection</h2>
+                    <p>Rare Scents for Connoisseurs</p>
+                    <span class="aquador-category-link">Explore</span>
+                </div>
+            </div>
+        </a>
+    </section>
+
+    <section class="aquador-content-section aquador-custom-section">
+        <div class="aquador-section-inner">
+            <h2 class="aquador-section-title aquador-custom-title">Create Your Signature Fragrance</h2>
+            <div class="aquador-stages-grid">
+                <div class="aquador-stage-card">
+                    <div class="aquador-stage-image"><img src="https://i.ibb.co/HfY2jbSH/1.jpg" alt="Vibrant citrus fruits representing top notes."></div>
+                    <div class="aquador-stage-info">
+                        <h3>Begin with Top Notes</h3>
+                        <p>Choose citrus, fruity, or spicy opening notes.</p>
+                    </div>
+                </div>
+                <div class="aquador-stage-card">
+                    <div class="aquador-stage-image"><img src="https://i.ibb.co/xSqkdDL6/image-Cap-Cut-Commerce-Pro-202502202047.jpg" alt="A blooming rose garden representing heart notes."></div>
+                    <div class="aquador-stage-info">
+                        <h3>Add Heart Notes</h3>
+                        <p>Layer with floral, green, or woody middle notes.</p>
+                    </div>
+                </div>
+                <div class="aquador-stage-card">
+                    <div class="aquador-stage-image"><img src="https://i.ibb.co/M5PhxzZm/image-Cap-Cut-Commerce-Pro-202502202047-1.jpg" alt="Rich amber and vanilla beans representing base notes."></div>
+                    <div class="aquador-stage-info">
+                        <h3>Finish with Base Notes</h3>
+                        <p>Complete with warm, rich foundation notes.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="aquador-custom-cta">
+                <a href="/createyourown" class="aquador-cta-btn">Start Creating</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="aquador-content-section aquador-featured-section">
+        <div class="aquador-section-inner">
+            <h2 class="aquador-section-title aquador-featured-title">Featured Collections</h2>
+            <div class="aquador-featured-grid">
+                <a href="/shop" class="aquador-feat-card">
+                    <div class="aquador-feat-image"><img src="https://i.ibb.co/F4kGX42p/Untitled-design-2025-02-21-T045634-975.png" alt="An opulent bottle from the luxury collection."></div>
+                    <div class="aquador-feat-info">
+                        <h3>Luxury Collection</h3>
+                        <p>Indulge in our premium selection of exquisite fragrances.</p>
+                        <span class="aquador-feat-link">Explore Collection</span>
+                    </div>
+                </a>
+                <a href="/shop" class="aquador-feat-card">
+                    <div class="aquador-feat-image"><img src="https://i.ibb.co/pvY6SsR0/Untitled-design-2025-02-21-T050257-025.png" alt="A creatively designed limited edition perfume bottle."></div>
+                    <div class="aquador-feat-info">
+                        <h3>Limited Edition</h3>
+                        <p>Discover our exclusive seasonal fragrances.</p>
+                        <span class="aquador-feat-link">Explore Collection</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="aquador-content-section aquador-final-cta">
+    <div class="aquador-section-inner aquador-final-content">
+        <h2 class="aquador-section-title aquador-final-title">Experience Aquad'or</h2>
+        <p class="aquador-final-subtitle">Book a personal consultation with our fragrance experts.</p>
+        <div class="aquador-features-grid">
+            <div class="aquador-feature-item">
+                <div class="aquador-feature-icon" aria-hidden="true">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
+                <span>Personalized Service</span>
+            </div>
+            <div class="aquador-feature-item">
+                <div class="aquador-feature-icon" aria-hidden="true">
+                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <span>Expert Guidance</span>
+            </div>
+            <div class="aquador-feature-item">
+                <div class="aquador-feature-icon" aria-hidden="true">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M20 7h-7L10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2z"/></svg>
+                </div>
+                <span>Exclusive Collection</span>
+            </div>
+        </div>
+        <a href="/contact" class="aquador-cta-btn">Book Your Experience</a>
+    </div>
+</footer>
+
+
+<!-- =================================
+JAVASCRIPT STARTS HERE
+================================= -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    // --- 1. PARALLAX SCROLL FOR HERO BACKGROUND ---
+    const hero = document.querySelector('.aquador-page-wrapper .aquador-hero-container');
+    if (hero) {
+        window.addEventListener('scroll', () => {
+            window.requestAnimationFrame(() => {
+                const scrollY = window.pageYOffset;
+                hero.style.setProperty('--parallax-y', `${scrollY * 0.3}px`);
+            });
+        }, { passive: true });
+    }
+
+    // --- 2. INTERACTIVE 3D TILT ON CATEGORY CARDS ---
+    const cards = document.querySelectorAll('.aquador-page-wrapper .aquador-category-card');
+    cards.forEach(card => {
+        const cardInner = card.querySelector('.aquador-category-card-inner');
+        if (!cardInner) return;
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = (y - centerY) / 20; // Control intensity
+            const rotateY = (centerX - x) / 20; // Control intensity
+
+            cardInner.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+
+        card.addEventListener('mouseleave', () => {
+            cardInner.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+        });
+    });
+
+    // --- 3. FADE-IN ANIMATION FOR SECTIONS ON SCROLL ---
+    const animatedElements = document.querySelectorAll('.aquador-page-wrapper .aquador-section-title, .aquador-page-wrapper .aquador-stage-card, .aquador-page-wrapper .aquador-feat-card, .aquador-page-wrapper .aquador-feature-item');
+
+    if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+
+        animatedElements.forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+            observer.observe(el);
+        });
+    }
+});
+</script>
+
+</div>
+<!-- AQUAD'OR HOMEPAGE CODE - END -->
