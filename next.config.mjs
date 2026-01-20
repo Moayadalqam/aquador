@@ -10,6 +10,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'static1.squarespace.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'images.squarespace-cdn.com',
+      },
     ],
   },
 };
