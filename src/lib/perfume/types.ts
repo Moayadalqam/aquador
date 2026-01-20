@@ -28,3 +28,20 @@ export interface CustomPerfume {
   specialRequests?: string
   price: number
 }
+
+export interface PerfumeFormData {
+  name: string
+  composition: PerfumeComposition
+  volume: PerfumeVolume | null
+  specialRequests: string
+}
+
+export interface FormValidationResult {
+  isValid: boolean
+  errors: {
+    name?: string[]
+    composition?: string[]
+    volume?: string[]
+    specialRequests?: string[]
+  }
+}

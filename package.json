@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
+    "@stripe/stripe-js": "^8.6.3",
     "clsx": "^2.1.1",
     "framer-motion": "^12.27.1",
     "lucide-react": "^0.562.0",
@@ -20,6 +21,7 @@
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.71.1",
+    "stripe": "^20.2.0",
     "zod": "^4.3.5"
   },
   "devDependencies": {
