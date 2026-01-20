@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Instagram, Facebook, Mail, Phone, MapPin } from 'lucide-react';
 
@@ -38,9 +39,13 @@ export default function Footer() {
             className="space-y-6"
           >
             <Link href="/" className="inline-block">
-              <span className="text-3xl font-playfair font-semibold text-gradient-gold">
-                AQUAD&apos;OR
-              </span>
+              <Image
+                src="/logo.png"
+                alt="Aquad'or"
+                width={160}
+                height={60}
+                className="h-14 w-auto object-contain"
+              />
             </Link>
             <p className="text-gray-400 text-sm leading-relaxed">
               Where Luxury Meets Distinction. Crafting exceptional fragrances that tell your unique story.

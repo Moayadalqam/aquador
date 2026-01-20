@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ShoppingBag, ChevronDown } from 'lucide-react';
 
@@ -45,12 +46,19 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center">
-            <motion.span
-              className="text-2xl md:text-3xl font-playfair font-semibold tracking-wider"
+            <motion.div
               whileHover={{ scale: 1.02 }}
+              className="relative"
             >
-              <span className="text-gradient-gold">AQUAD&apos;OR</span>
-            </motion.span>
+              <Image
+                src="/logo.png"
+                alt="Aquad'or"
+                width={140}
+                height={50}
+                className="h-12 w-auto object-contain"
+                priority
+              />
+            </motion.div>
           </Link>
 
           {/* Desktop Navigation */}

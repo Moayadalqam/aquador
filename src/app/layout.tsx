@@ -8,17 +8,30 @@ export const metadata: Metadata = {
   description: "Where Luxury Meets Distinction. Discover our curated collection of high-end and niche perfumes, or create your own signature fragrance at Aquad'or Cyprus.",
   keywords: ["perfume", "luxury fragrance", "Cyprus", "Nicosia", "custom perfume", "niche perfume", "Aquador"],
   authors: [{ name: "Aquad'or" }],
+  icons: {
+    icon: "/favicon.png",
+    apple: "/apple-icon.png",
+  },
   openGraph: {
     title: "Aquad'or | Luxury Perfumes Cyprus",
     description: "Where Luxury Meets Distinction. Discover our curated collection of high-end and niche perfumes.",
     type: "website",
     locale: "en_US",
     siteName: "Aquad'or",
+    images: [
+      {
+        url: "/logo.png",
+        width: 800,
+        height: 600,
+        alt: "Aquad'or Logo",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Aquad'or | Luxury Perfumes Cyprus",
     description: "Where Luxury Meets Distinction. Discover our curated collection of high-end and niche perfumes.",
+    images: ["/logo.png"],
   },
 };
 
