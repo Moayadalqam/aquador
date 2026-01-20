@@ -39,43 +39,45 @@ export default function Navbar() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        isScrolled ? 'bg-dark/95 backdrop-blur-xl shadow-lg shadow-black/20' : 'bg-transparent'
+        isScrolled ? 'bg-black/95 backdrop-blur-xl shadow-lg shadow-black/30' : 'bg-gradient-to-b from-black/80 to-transparent'
       }`}
     >
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          {/* Logo */}
+      <nav className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+        <div className="flex items-center justify-between h-24">
+          {/* Logo - Larger and more prominent */}
           <Link href="/" className="flex items-center">
             <motion.div
-              whileHover={{ scale: 1.02 }}
-              className="relative"
+              whileHover={{ scale: 1.03 }}
+              className="relative group"
             >
               <Image
                 src="/logo.png"
                 alt="Aquad'or"
-                width={140}
-                height={50}
-                className="h-12 w-auto object-contain"
+                width={180}
+                height={64}
+                className="h-16 w-auto object-contain transition-all duration-300 group-hover:drop-shadow-[0_0_15px_rgba(212,175,55,0.4)]"
                 priority
               />
             </motion.div>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-8">
+          <div className="hidden lg:flex items-center space-x-10">
             {navLinks.map((link) => (
               <div
                 key={link.label}
-                className="relative"
+                className="relative group"
                 onMouseEnter={() => link.children && setActiveDropdown(link.label)}
                 onMouseLeave={() => setActiveDropdown(null)}
               >
                 <Link
                   href={link.href}
-                  className="flex items-center gap-1 text-sm uppercase tracking-widest text-gray-300 hover:text-gold transition-colors duration-300"
+                  className="relative flex items-center gap-1 text-sm uppercase tracking-[0.2em] text-gray-200 hover:text-gold transition-colors duration-300 py-2"
                 >
                   {link.label}
                   {link.children && <ChevronDown className="w-4 h-4" />}
+                  {/* Gold underline animation */}
+                  <span className="absolute bottom-0 left-0 w-full h-[2px] bg-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
                 </Link>
 
                 {/* Dropdown */}
@@ -86,13 +88,13 @@ export default function Navbar() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10 }}
                       transition={{ duration: 0.2 }}
-                      className="absolute top-full left-0 mt-2 w-56 bg-dark-light/95 backdrop-blur-xl border border-gold/20 rounded-lg shadow-xl overflow-hidden"
+                      className="absolute top-full left-0 mt-4 w-56 bg-black/95 backdrop-blur-xl border border-gold/20 rounded-sm shadow-xl overflow-hidden"
                     >
                       {link.children.map((child) => (
                         <Link
                           key={child.label}
                           href={child.href}
-                          className="block px-4 py-3 text-sm text-gray-300 hover:text-gold hover:bg-gold/10 transition-all duration-300"
+                          className="block px-5 py-4 text-sm text-gray-300 hover:text-gold hover:bg-gold/5 transition-all duration-300 border-b border-gold/10 last:border-b-0"
                         >
                           {child.label}
                         </Link>
@@ -105,14 +107,14 @@ export default function Navbar() {
           </div>
 
           {/* Right side actions */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
-              className="relative p-2 text-gray-300 hover:text-gold transition-colors"
+              className="relative p-2 text-gray-200 hover:text-gold transition-colors duration-300"
             >
               <ShoppingBag className="w-6 h-6" />
-              <span className="absolute -top-1 -right-1 w-5 h-5 bg-gold text-black text-xs rounded-full flex items-center justify-center font-medium">
+              <span className="absolute -top-1 -right-1 w-5 h-5 bg-gold text-black text-xs rounded-full flex items-center justify-center font-semibold">
                 0
               </span>
             </motion.button>
@@ -120,7 +122,7 @@ export default function Navbar() {
             {/* Mobile menu button */}
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="lg:hidden p-2 text-gray-300 hover:text-gold transition-colors"
+              className="lg:hidden p-2 text-gray-200 hover:text-gold transition-colors"
             >
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -135,9 +137,9 @@ export default function Navbar() {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              className="lg:hidden overflow-hidden border-t border-gold/20"
+              className="lg:hidden overflow-hidden border-t border-gold/20 bg-black/95"
             >
-              <div className="py-4 space-y-2">
+              <div className="py-6 space-y-1">
                 {navLinks.map((link, index) => (
                   <motion.div
                     key={link.label}
@@ -148,18 +150,18 @@ export default function Navbar() {
                     <Link
                       href={link.href}
                       onClick={() => setIsOpen(false)}
-                      className="block py-3 text-lg text-gray-300 hover:text-gold transition-colors"
+                      className="block py-4 text-lg uppercase tracking-[0.15em] text-gray-200 hover:text-gold transition-colors border-b border-gold/10"
                     >
                       {link.label}
                     </Link>
                     {link.children && (
-                      <div className="pl-4 space-y-2">
+                      <div className="pl-6 bg-black/50">
                         {link.children.map((child) => (
                           <Link
                             key={child.label}
                             href={child.href}
                             onClick={() => setIsOpen(false)}
-                            className="block py-2 text-sm text-gray-400 hover:text-gold transition-colors"
+                            className="block py-3 text-sm text-gray-400 hover:text-gold transition-colors"
                           >
                             {child.label}
                           </Link>
@@ -174,13 +176,8 @@ export default function Navbar() {
         </AnimatePresence>
       </nav>
 
-      {/* Gold accent line */}
-      <motion.div
-        className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/50 to-transparent"
-        initial={{ scaleX: 0 }}
-        animate={{ scaleX: isScrolled ? 1 : 0 }}
-        transition={{ duration: 0.5 }}
-      />
+      {/* Gold accent line - always visible but more subtle */}
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
     </motion.header>
   );
 }

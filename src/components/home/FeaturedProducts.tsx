@@ -5,31 +5,33 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getFeaturedProducts } from '@/lib/products';
 import { formatPrice } from '@/lib/utils';
+import { ArrowRight } from 'lucide-react';
 
 export default function FeaturedProducts() {
   const products = getFeaturedProducts();
 
   return (
-    <section className="py-24 bg-gradient-to-b from-dark-light to-dark">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-28 bg-black">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
         {/* Section header */}
         <motion.div
-          className="text-center mb-16"
+          className="text-center mb-20"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <h2 className="text-4xl md:text-5xl font-playfair font-light text-white mb-4">
+          <h2 className="text-4xl md:text-5xl font-playfair font-light text-white mb-5 tracking-wide">
             Featured Collections
           </h2>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-            Discover our most beloved fragrances, crafted with the finest ingredients from around the world.
+          <div className="w-16 h-px bg-gold mx-auto mb-6" />
+          <p className="text-gray-400 text-base max-w-xl mx-auto tracking-wide">
+            Discover our most beloved fragrances, crafted with the finest ingredients.
           </p>
         </motion.div>
 
         {/* Products grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
           {products.map((product, index) => (
             <motion.div
               key={product.id}
@@ -39,52 +41,45 @@ export default function FeaturedProducts() {
               transition={{ duration: 0.6, delay: index * 0.1 }}
             >
               <Link href={`/shop/${product.category}/${product.id}`} className="group block">
-                <div className="relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
-                  {/* Image */}
-                  <div className="relative h-72 overflow-hidden">
+                <div className="relative bg-white overflow-hidden transition-all duration-500 hover:-translate-y-1">
+                  {/* Image - 1:1 aspect ratio */}
+                  <div className="relative aspect-square overflow-hidden">
                     <Image
                       src={product.image}
                       alt={product.name}
                       fill
-                      className="object-cover transition-transform duration-700 group-hover:scale-110"
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-white/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   </div>
 
                   {/* Content */}
-                  <div className="p-6">
-                    <div className="flex items-start justify-between mb-2">
-                      <h3 className="text-xl font-playfair text-gray-900 group-hover:text-gold-dark transition-colors">
-                        {product.name}
-                      </h3>
-                      {product.brand && (
-                        <span className="text-xs text-gray-500 uppercase tracking-wider">
-                          {product.brand}
+                  <div className="p-6 bg-white">
+                    {product.brand && (
+                      <p className="text-[10px] text-gray-500 uppercase tracking-[0.2em] mb-2">
+                        {product.brand}
+                      </p>
+                    )}
+                    <h3 className="text-lg font-playfair text-gray-900 group-hover:text-gold-dark transition-colors mb-3 line-clamp-1">
+                      {product.name}
+                    </h3>
+
+                    {/* Price section with serif font */}
+                    <div className="pt-4 border-t border-gray-100">
+                      <p className="text-[10px] text-gray-400 uppercase tracking-[0.2em] mb-1">Price</p>
+                      <div className="flex items-end justify-between">
+                        <span className="text-2xl font-playfair text-gray-900 font-light">
+                          {formatPrice(product.price)}
                         </span>
-                      )}
-                    </div>
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                      {product.description}
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-lg font-semibold text-gold-dark">
-                        {formatPrice(product.price)}
-                      </span>
-                      <span className="text-sm text-gray-500">
-                        {product.size}
-                      </span>
+                        <span className="text-xs text-gray-500 uppercase tracking-wider">
+                          {product.size}
+                        </span>
+                      </div>
                     </div>
                   </div>
 
-                  {/* Hover CTA */}
-                  <motion.div
-                    className="absolute bottom-6 left-6 right-6 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500"
-                  >
-                    <span className="text-gold-dark text-sm font-medium">
-                      View Details →
-                    </span>
-                  </motion.div>
+                  {/* Gold border animation on hover */}
+                  <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
                 </div>
               </Link>
             </motion.div>
@@ -93,7 +88,7 @@ export default function FeaturedProducts() {
 
         {/* View all link */}
         <motion.div
-          className="text-center mt-12"
+          className="text-center mt-16"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
@@ -101,10 +96,10 @@ export default function FeaturedProducts() {
         >
           <Link
             href="/shop"
-            className="inline-flex items-center gap-2 text-gold hover:text-gold-light transition-colors text-lg"
+            className="inline-flex items-center gap-3 text-gold hover:text-gold-light transition-colors text-sm uppercase tracking-[0.2em] group"
           >
             View All Products
-            <span className="text-xl">→</span>
+            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
           </Link>
         </motion.div>
       </div>
