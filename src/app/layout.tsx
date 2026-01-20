@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     siteName: "Aquad'or",
     images: [
       {
-        url: "/logo.png",
+        url: "/aquador.webp",
         width: 800,
         height: 600,
         alt: "Aquad'or Logo",
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Aquad'or | Luxury Perfumes Cyprus",
     description: "Where Luxury Meets Distinction. Discover our curated collection of high-end and niche perfumes.",
-    images: ["/logo.png"],
+    images: ["/aquador.webp"],
   },
 };
 

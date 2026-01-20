@@ -111,7 +111,7 @@ export default function Hero() {
               className="mb-6"
             >
               <Image
-                src="/logo.png"
+                src="/aquador.webp"
                 alt="Aquad'or"
                 width={200}
                 height={80}

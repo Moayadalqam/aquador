@@ -40,7 +40,7 @@ export default function Footer() {
           >
             <Link href="/" className="inline-block group">
               <Image
-                src="/logo.png"
+                src="/aquador.webp"
                 alt="Aquad'or"
                 width={180}
                 height={70}
