@@ -1,9 +1,25 @@
 import type { Metadata } from "next";
+import { Playfair_Display, Poppins } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-playfair",
+  display: "swap",
+  weight: ["400", "500", "600", "700"],
+});
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  variable: "--font-poppins",
+  display: "swap",
+  weight: ["200", "300", "400", "500", "600", "700"],
+});
+
 export const metadata: Metadata = {
+  metadataBase: new URL('https://aquadorcy.com'),
   title: "Aquad'or | Luxury Perfumes Cyprus",
   description: "Where Luxury Meets Distinction. Discover our curated collection of high-end and niche perfumes, or create your own signature fragrance at Aquad'or Cyprus.",
   keywords: ["perfume", "luxury fragrance", "Cyprus", "Nicosia", "custom perfume", "niche perfume", "Aquador"],
@@ -42,7 +58,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased">
+      <body className={`${poppins.variable} ${playfair.variable} antialiased`}>
         <Navbar />
         <main className="min-h-screen">
           {children}

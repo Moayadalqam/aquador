@@ -5,8 +5,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Button from '@/components/ui/Button';
 import { Truck } from 'lucide-react';
+import { useState } from 'react';
 
 export default function Hero() {
+  const [videoError, setVideoError] = useState(false);
   return (
     <section className="relative min-h-screen flex flex-col overflow-hidden">
       {/* Announcement Banner */}
@@ -28,19 +30,24 @@ export default function Hero() {
       <div className="relative flex-1 flex items-center justify-center">
         {/* Video Background */}
         <div className="absolute inset-0 z-0">
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="absolute w-full h-full object-cover opacity-40"
-            style={{ filter: 'brightness(0.5)' }}
-          >
-            <source
-              src="https://static1.squarespace.com/static/66901f0f8865462c0ac066ba/t/6899a19131e4b55cddf56fb2/1754898858755/download+%2820%29.mp4"
-              type="video/mp4"
-            />
-          </video>
+          {!videoError ? (
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="absolute w-full h-full object-cover opacity-40"
+              style={{ filter: 'brightness(0.5)' }}
+              onError={() => setVideoError(true)}
+            >
+              <source
+                src="https://static1.squarespace.com/static/66901f0f8865462c0ac066ba/t/6899a19131e4b55cddf56fb2/1754898858755/download+%2820%29.mp4"
+                type="video/mp4"
+              />
+            </video>
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black" />
+          )}
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black" />
         </div>
 

@@ -23,8 +23,8 @@ const config: Config = {
         },
       },
       fontFamily: {
-        playfair: ["Playfair Display", "serif"],
-        poppins: ["Poppins", "sans-serif"],
+        playfair: ["var(--font-playfair)", "serif"],
+        poppins: ["var(--font-poppins)", "sans-serif"],
       },
       animation: {
         "shimmer": "shimmer 3s linear infinite",
