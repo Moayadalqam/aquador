@@ -9,17 +9,17 @@ const stages = [
   {
     title: 'Begin with Top Notes',
     description: 'Choose citrus, fruity, or spicy opening notes.',
-    image: 'https://images.unsplash.com/photo-1615634260167-c8cdede054de?w=600&q=80',
+    image: 'https://i.ibb.co/HfY2jbSH/1.jpg',
   },
   {
     title: 'Add Heart Notes',
     description: 'Layer with floral, green, or woody middle notes.',
-    image: 'https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=600&q=80',
+    image: 'https://i.ibb.co/xSqkdDL6/image-Cap-Cut-Commerce-Pro-202502202047.jpg',
   },
   {
     title: 'Finish with Base Notes',
     description: 'Complete with warm, rich foundation notes.',
-    image: 'https://images.unsplash.com/photo-1599751449128-eb7249c3d6b1?w=600&q=80',
+    image: 'https://i.ibb.co/M5PhxzZm/image-Cap-Cut-Commerce-Pro-202502202047-1.jpg',
   },
 ];
 

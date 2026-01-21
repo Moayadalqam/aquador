@@ -2,7 +2,6 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import Image from 'next/image';
 import Button from '@/components/ui/Button';
 import { Truck } from 'lucide-react';
 import { useState } from 'react';
@@ -104,32 +103,15 @@ export default function Hero() {
         </div>
 
         {/* Content */}
-        <div className="relative z-10 text-center px-4 max-w-5xl mx-auto py-20">
+        <div className="relative z-10 text-center px-4 max-w-5xl mx-auto py-12">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, ease: 'easeOut' }}
           >
-            {/* Logo above brand name */}
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="mb-6"
-            >
-              <Image
-                src="/aquador.webp"
-                alt="Aquad'or"
-                width={200}
-                height={80}
-                className="h-20 w-auto mx-auto object-contain drop-shadow-[0_0_20px_rgba(212,175,55,0.3)]"
-                priority
-              />
-            </motion.div>
-
             {/* Brand name */}
             <motion.h1
-              className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-playfair font-normal tracking-[0.2em] mb-6"
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-playfair font-normal tracking-[0.2em] mb-6"
               style={{
                 background: 'linear-gradient(90deg, #FFD700, #FFF8DC, #FFD700, #D4AF37, #FFD700)',
                 backgroundSize: '200% auto',

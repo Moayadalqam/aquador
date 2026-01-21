@@ -6,21 +6,21 @@ export const categories: Category[] = [
     name: "Women's Collection",
     slug: 'women',
     description: 'Timeless Elegance in Every Drop',
-    image: 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=800&q=80',
+    image: 'https://i.ibb.co/KNGND0M/GK0-0065.webp',
   },
   {
     id: 'men',
     name: "Men's Collection",
     slug: 'men',
     description: 'Bold Character, Lasting Impression',
-    image: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?w=800&q=80',
+    image: 'https://i.ibb.co/1rQyrdW/DSC-0666.jpg',
   },
   {
     id: 'niche',
     name: 'Niche Collection',
     slug: 'niche',
     description: 'Rare Scents for Connoisseurs',
-    image: 'https://images.unsplash.com/photo-1595425970377-c9703cf48b6d?w=800&q=80',
+    image: 'https://i.ibb.co/Mg00Phx/DSC-1932.jpg',
   },
 ];
 

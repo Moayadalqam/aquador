@@ -14,6 +14,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'images.squarespace-cdn.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'i.ibb.co',
+      },
     ],
   },
   async headers() {
