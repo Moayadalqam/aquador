@@ -26,6 +26,18 @@ export const categories: Category[] = [
 
 export const products: Product[] = [
   {
+    id: "moayad-test",
+    name: "Moayad",
+    description: "Test product.",
+    price: 0,
+    category: "men",
+    productType: "perfume",
+    size: "50ml",
+    image: "https://i.ibb.co/KNGND0M/GK0-0065.webp",
+    inStock: true,
+    brand: "Test",
+  },
+  {
     id: "24-carat-pure-gold-by-lattafa-perfumes",
     name: "24 Carat Pure Gold by Lattafa Perfumes",
     description: "Top Notes: Agarwood (Oud), Saffron and Cinnamon. Middle Notes: Rose and Sandalwood. Base Notes: Incense, Leather, Amber, Musk and Vanilla.",
