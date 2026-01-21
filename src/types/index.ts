@@ -1,4 +1,21 @@
-export interface Product {
+// Re-export cart and order types
+export * from './cart';
+export * from './order';
+
+// Re-export product types with renamed exports to avoid conflicts
+export {
+  type ProductType,
+  type ProductSize,
+  type ProductCategory,
+  type ProductVariant,
+  type Product as CatalogProduct,
+  type Category as CatalogCategory,
+  getDefaultVariant,
+  getVariantLabel,
+} from './product';
+
+// Legacy types - used by shop pages and lib/products.ts
+export interface LegacyProduct {
   id: string;
   name: string;
   description: string;
@@ -16,14 +33,6 @@ export interface Product {
     heart?: string[];
     base?: string[];
   };
-}
-
-export interface Category {
-  id: string;
-  name: string;
-  slug: string;
-  description: string;
-  image: string;
 }
 
 export interface FragranceNote {
@@ -55,3 +64,15 @@ export interface ContactFormData {
   subject: string;
   message: string;
 }
+
+// Category interface for shop categories
+export interface Category {
+  id: 'men' | 'women' | 'niche';
+  name: string;
+  slug: string;
+  description: string;
+  image: string;
+}
+
+// Export LegacyProduct as Product for backward compatibility with lib/products.ts
+export type Product = LegacyProduct;

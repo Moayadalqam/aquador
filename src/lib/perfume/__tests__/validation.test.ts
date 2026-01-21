@@ -1,5 +1,5 @@
 import { validatePerfumeForm, PerfumeFormData } from '../validation'
-import { PerfumeComposition, FragranceNote } from '../types'
+import { PerfumeComposition, FragranceNote, PerfumeVolume } from '../types'
 
 describe('Perfume Form Validation', () => {
   const mockTopNote: FragranceNote = {
@@ -107,7 +107,7 @@ describe('Perfume Form Validation', () => {
       const formData: PerfumeFormData = {
         name: 'Test Perfume',
         composition: validComposition,
-        volume: null as unknown,
+        volume: null as unknown as PerfumeVolume | null,
         specialRequests: ''
       }
 
@@ -121,7 +121,7 @@ describe('Perfume Form Validation', () => {
       const formData: PerfumeFormData = {
         name: 'Test Perfume',
         composition: validComposition,
-        volume: '75ml' as unknown,
+        volume: '75ml' as unknown as PerfumeVolume | null,
         specialRequests: ''
       }
 
@@ -240,7 +240,7 @@ describe('Perfume Form Validation', () => {
       const formData: PerfumeFormData = {
         name: '',
         composition: { top: null, heart: null, base: null },
-        volume: null as unknown,
+        volume: null as unknown as PerfumeVolume | null,
         specialRequests: ''
       }
 

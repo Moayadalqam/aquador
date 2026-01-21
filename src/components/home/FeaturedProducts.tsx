@@ -40,7 +40,7 @@ export default function FeaturedProducts() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
             >
-              <Link href={`/shop/${product.category}/${product.id}`} className="group block">
+              <Link href={`/products/${product.id}`} className="group block">
                 <div className="relative bg-white overflow-hidden transition-all duration-500 hover:-translate-y-1">
                   {/* Image - 1:1 aspect ratio */}
                   <div className="relative aspect-square overflow-hidden">

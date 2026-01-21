@@ -70,7 +70,7 @@ export default function CategoryPage() {
               transition={{ delay: index * 0.05 }}
             >
               <Link
-                href={`/shop/${product.category}/${product.id}`}
+                href={`/products/${product.id}`}
                 className="group block bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2"
               >
                 {/* Image */}

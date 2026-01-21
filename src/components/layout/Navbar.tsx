@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ShoppingBag, ChevronDown } from 'lucide-react';
+import { Menu, X, ChevronDown } from 'lucide-react';
+import { CartIcon } from '@/components/cart';
 
 const navLinks = [
   {
@@ -108,16 +109,7 @@ export default function Navbar() {
 
           {/* Right side actions */}
           <div className="flex items-center gap-6">
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              className="relative p-2 text-gray-200 hover:text-gold transition-colors duration-300"
-            >
-              <ShoppingBag className="w-6 h-6" />
-              <span className="absolute -top-1 -right-1 w-5 h-5 bg-gold text-black text-xs rounded-full flex items-center justify-center font-semibold">
-                0
-              </span>
-            </motion.button>
+            <CartIcon />
 
             {/* Mobile menu button */}
             <button
