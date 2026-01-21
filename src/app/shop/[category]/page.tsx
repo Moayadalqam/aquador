@@ -6,12 +6,39 @@ import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { getProductsByCategory, categories } from '@/lib/products';
 import { formatPrice } from '@/lib/utils';
+import { useState, useCallback, useMemo } from 'react';
+import { SearchBar } from '@/components/search';
 
 export default function CategoryPage() {
   const params = useParams();
   const categorySlug = params.category as string;
   const category = categories.find((c) => c.slug === categorySlug);
-  const products = getProductsByCategory(categorySlug);
+  const allProducts = getProductsByCategory(categorySlug);
+
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearch = useCallback((query: string) => {
+    setSearchQuery(query);
+  }, []);
+
+  const clearSearch = useCallback(() => {
+    setSearchQuery('');
+  }, []);
+
+  // Filter products based on search query
+  const filteredProducts = useMemo(() => {
+    if (searchQuery.trim().length < 2) {
+      return allProducts;
+    }
+
+    const lowercaseQuery = searchQuery.toLowerCase();
+    return allProducts.filter(
+      (product) =>
+        product.name.toLowerCase().includes(lowercaseQuery) ||
+        product.description.toLowerCase().includes(lowercaseQuery) ||
+        product.brand?.toLowerCase().includes(lowercaseQuery)
+    );
+  }, [allProducts, searchQuery]);
 
   if (!category) {
     return (
@@ -59,15 +86,50 @@ export default function CategoryPage() {
         </div>
       </section>
 
+      {/* Search Bar */}
+      <section className="w-full px-4 sm:px-8 lg:px-16 xl:px-24 py-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="max-w-xl mx-auto"
+        >
+          <SearchBar
+            variant="shop"
+            placeholder={`Search in ${category.name}...`}
+            onSearch={handleSearch}
+          />
+        </motion.div>
+
+        {/* Search results summary */}
+        {searchQuery.length >= 2 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex items-center justify-center gap-4 mt-4"
+          >
+            <p className="text-sm text-gray-400">
+              Showing {filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''} for &quot;{searchQuery}&quot;
+            </p>
+            <button
+              onClick={clearSearch}
+              className="text-sm text-gold hover:text-gold/80 transition-colors"
+            >
+              Clear search
+            </button>
+          </motion.div>
+        )}
+      </section>
+
       {/* Products Grid */}
       <section className="w-full px-4 sm:px-8 lg:px-16 xl:px-24 py-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {products.map((product, index) => (
+          {filteredProducts.map((product, index) => (
             <motion.div
               key={product.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
+              transition={{ delay: Math.min(index * 0.05, 0.3) }}
             >
               <Link
                 href={`/products/${product.id}`}
@@ -109,12 +171,25 @@ export default function CategoryPage() {
           ))}
         </div>
 
-        {products.length === 0 && (
+        {filteredProducts.length === 0 && (
           <div className="text-center py-20">
-            <p className="text-gray-400 text-lg">No products found in this category.</p>
-            <Link href="/shop" className="text-gold mt-4 inline-block">
-              Browse all products
-            </Link>
+            <p className="text-gray-400 text-lg mb-4">
+              {searchQuery.length >= 2
+                ? `No products found for "${searchQuery}" in this category.`
+                : 'No products found in this category.'}
+            </p>
+            {searchQuery.length >= 2 ? (
+              <button
+                onClick={clearSearch}
+                className="text-gold hover:text-gold/80 transition-colors"
+              >
+                Clear search
+              </button>
+            ) : (
+              <Link href="/shop" className="text-gold">
+                Browse all products
+              </Link>
+            )}
           </div>
         )}
       </section>

@@ -111,7 +111,7 @@ export default function Hero() {
           >
             {/* Brand name */}
             <motion.h1
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-playfair font-normal tracking-[0.2em] mb-6"
+              className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-playfair font-normal tracking-[0.2em] mb-6 py-2"
               style={{
                 background: 'linear-gradient(90deg, #FFD700, #FFF8DC, #FFD700, #D4AF37, #FFD700)',
                 backgroundSize: '200% auto',

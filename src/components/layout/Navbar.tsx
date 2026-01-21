@@ -4,20 +4,15 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ChevronDown } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { CartIcon } from '@/components/cart';
 import { SearchBar } from '@/components/search';
 
 const navLinks = [
-  {
-    label: 'Shop',
-    href: '/shop',
-    children: [
-      { label: "Women's Collection", href: '/shop/women' },
-      { label: "Men's Collection", href: '/shop/men' },
-      { label: 'Niche Collection', href: '/shop/niche' },
-    ],
-  },
+  { label: 'Dubai Shop', href: '/shop' },
+  { label: 'Women', href: '/shop/women' },
+  { label: 'Men', href: '/shop/men' },
+  { label: 'Niche', href: '/shop/niche' },
   { label: 'Create Your Own', href: '/create' },
   { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
@@ -26,7 +21,6 @@ const navLinks = [
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -64,47 +58,16 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-10">
+          <div className="hidden lg:flex items-center space-x-8">
             {navLinks.map((link) => (
-              <div
+              <Link
                 key={link.label}
-                className="relative group"
-                onMouseEnter={() => link.children && setActiveDropdown(link.label)}
-                onMouseLeave={() => setActiveDropdown(null)}
+                href={link.href}
+                className="relative text-sm uppercase tracking-[0.2em] text-gray-200 hover:text-gold transition-colors duration-300 py-2 group"
               >
-                <Link
-                  href={link.href}
-                  className="relative flex items-center gap-1 text-sm uppercase tracking-[0.2em] text-gray-200 hover:text-gold transition-colors duration-300 py-2"
-                >
-                  {link.label}
-                  {link.children && <ChevronDown className="w-4 h-4" />}
-                  {/* Gold underline animation */}
-                  <span className="absolute bottom-0 left-0 w-full h-[2px] bg-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
-                </Link>
-
-                {/* Dropdown */}
-                <AnimatePresence>
-                  {link.children && activeDropdown === link.label && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      transition={{ duration: 0.2 }}
-                      className="absolute top-full left-0 mt-4 w-56 bg-black/95 backdrop-blur-xl border border-gold/20 rounded-sm shadow-xl overflow-hidden"
-                    >
-                      {link.children.map((child) => (
-                        <Link
-                          key={child.label}
-                          href={child.href}
-                          className="block px-5 py-4 text-sm text-gray-300 hover:text-gold hover:bg-gold/5 transition-all duration-300 border-b border-gold/10 last:border-b-0"
-                        >
-                          {child.label}
-                        </Link>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
+                {link.label}
+                <span className="absolute bottom-0 left-0 w-full h-[2px] bg-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+              </Link>
             ))}
           </div>
 
@@ -138,6 +101,11 @@ export default function Navbar() {
               className="lg:hidden overflow-hidden border-t border-gold/20 bg-black/95"
             >
               <div className="py-6 space-y-1">
+                {/* Mobile Search Bar */}
+                <div className="px-4 pb-4">
+                  <SearchBar variant="shop" placeholder="Search fragrances..." />
+                </div>
+
                 {navLinks.map((link, index) => (
                   <motion.div
                     key={link.label}
@@ -152,20 +120,6 @@ export default function Navbar() {
                     >
                       {link.label}
                     </Link>
-                    {link.children && (
-                      <div className="pl-6 bg-black/50">
-                        {link.children.map((child) => (
-                          <Link
-                            key={child.label}
-                            href={child.href}
-                            onClick={() => setIsOpen(false)}
-                            className="block py-3 text-sm text-gray-400 hover:text-gold transition-colors"
-                          >
-                            {child.label}
-                          </Link>
-                        ))}
-                      </div>
-                    )}
                   </motion.div>
                 ))}
               </div>

@@ -3,19 +3,54 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
 import { products, categories } from '@/lib/products';
+import { searchProducts } from '@/lib/product-service';
 import { formatPrice } from '@/lib/utils';
-import { useState } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
+import { SearchBar } from '@/components/search';
 
-export default function ShopPage() {
+function ShopContent() {
+  const searchParams = useSearchParams();
+  const urlSearchQuery = searchParams.get('search') || '';
+
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedType, setSelectedType] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState(urlSearchQuery);
 
-  const filteredProducts = products.filter((product) => {
-    if (selectedCategory && product.category !== selectedCategory) return false;
-    if (selectedType && product.productType !== selectedType) return false;
-    return true;
-  });
+  // Sync with URL search param
+  useEffect(() => {
+    setSearchQuery(urlSearchQuery);
+  }, [urlSearchQuery]);
+
+  const handleSearch = useCallback((query: string) => {
+    setSearchQuery(query);
+  }, []);
+
+  const clearFilters = useCallback(() => {
+    setSelectedCategory(null);
+    setSelectedType(null);
+    setSearchQuery('');
+  }, []);
+
+  // Filter products based on search query, category, and type
+  const filteredProducts = (() => {
+    let result = products;
+
+    // Apply search filter first
+    if (searchQuery.trim().length >= 2) {
+      result = searchProducts(searchQuery);
+    }
+
+    // Then apply category and type filters
+    return result.filter((product) => {
+      if (selectedCategory && product.category !== selectedCategory) return false;
+      if (selectedType && product.productType !== selectedType) return false;
+      return true;
+    });
+  })();
+
+  const hasActiveFilters = selectedCategory || selectedType || searchQuery.length >= 2;
 
   return (
     <div className="pt-28 pb-20 bg-black min-h-screen">
@@ -46,8 +81,23 @@ export default function ShopPage() {
         </div>
       </section>
 
-      {/* Filters */}
+      {/* Search and Filters */}
       <section className="w-full px-4 sm:px-8 lg:px-16 xl:px-24 mb-16">
+        {/* Search Bar */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+          className="max-w-xl mx-auto mb-8"
+        >
+          <SearchBar
+            variant="shop"
+            placeholder="Search by name, brand, or description..."
+            onSearch={handleSearch}
+          />
+        </motion.div>
+
+        {/* Filters */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -108,6 +158,28 @@ export default function ShopPage() {
             ))}
           </div>
         </motion.div>
+
+        {/* Active filters summary */}
+        {hasActiveFilters && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex items-center justify-center gap-4 mt-6"
+          >
+            <p className="text-sm text-gray-400">
+              Showing {filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''}
+              {searchQuery.length >= 2 && (
+                <span> for &quot;{searchQuery}&quot;</span>
+              )}
+            </p>
+            <button
+              onClick={clearFilters}
+              className="text-sm text-gold hover:text-gold/80 transition-colors"
+            >
+              Clear all filters
+            </button>
+          </motion.div>
+        )}
       </section>
 
       {/* Products Grid */}
@@ -181,10 +253,26 @@ export default function ShopPage() {
 
         {filteredProducts.length === 0 && (
           <div className="text-center py-24">
-            <p className="text-gray-400 text-base tracking-wide">No products found matching your criteria.</p>
+            <p className="text-gray-400 text-base tracking-wide mb-4">
+              No products found matching your criteria.
+            </p>
+            <button
+              onClick={clearFilters}
+              className="text-gold hover:text-gold/80 transition-colors"
+            >
+              Clear all filters
+            </button>
           </div>
         )}
       </section>
     </div>
+  );
+}
+
+export default function ShopPage() {
+  return (
+    <Suspense fallback={<div className="pt-28 pb-20 bg-black min-h-screen" />}>
+      <ShopContent />
+    </Suspense>
   );
 }
