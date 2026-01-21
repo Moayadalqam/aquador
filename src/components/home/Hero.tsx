@@ -17,7 +17,7 @@ export default function Hero() {
         transition={{ duration: 0.6, delay: 0.5 }}
         className="relative z-20 bg-black border-b border-gold/20 py-3 mt-24"
       >
-        <div className="max-w-7xl mx-auto px-4 flex items-center justify-center gap-3">
+        <div className="w-full px-4 sm:px-8 lg:px-16 xl:px-24 flex items-center justify-center gap-3">
           <Truck className="w-5 h-5 text-gold" />
           <p className="text-sm text-gray-200 tracking-wider uppercase">
             <span className="text-gold font-medium">Free Delivery</span> on orders over €100

@@ -12,7 +12,7 @@ export default function FeaturedProducts() {
 
   return (
     <section className="py-28 bg-black">
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+      <div className="w-full px-4 sm:px-8 lg:px-16 xl:px-24">
         {/* Section header */}
         <motion.div
           className="text-center mb-20"

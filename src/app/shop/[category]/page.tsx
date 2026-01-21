@@ -38,7 +38,7 @@ export default function CategoryPage() {
           />
           <div className="absolute inset-0 bg-gradient-to-b from-dark/80 via-dark/90 to-dark" />
         </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+        <div className="w-full px-4 sm:px-8 lg:px-16 xl:px-24 text-center relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -60,7 +60,7 @@ export default function CategoryPage() {
       </section>
 
       {/* Products Grid */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <section className="w-full px-4 sm:px-8 lg:px-16 xl:px-24 py-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {products.map((product, index) => (
             <motion.div

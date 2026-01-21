@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { CartIcon } from '@/components/cart';
+import { SearchBar } from '@/components/search';
 
 const navLinks = [
   {
@@ -54,9 +55,9 @@ export default function Navbar() {
               <Image
                 src="/aquador.webp"
                 alt="Aquad'or"
-                width={180}
-                height={64}
-                className="h-16 w-auto object-contain transition-all duration-300 group-hover:drop-shadow-[0_0_15px_rgba(212,175,55,0.4)]"
+                width={360}
+                height={128}
+                className="h-32 w-auto object-contain transition-all duration-300 group-hover:drop-shadow-[0_0_15px_rgba(212,175,55,0.4)]"
                 priority
               />
             </motion.div>
@@ -109,6 +110,11 @@ export default function Navbar() {
 
           {/* Right side actions */}
           <div className="flex items-center gap-6">
+            {/* Search Bar - Desktop */}
+            <div className="hidden lg:block">
+              <SearchBar variant="navbar" />
+            </div>
+
             <CartIcon />
 
             {/* Mobile menu button */}

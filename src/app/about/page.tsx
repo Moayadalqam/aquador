@@ -62,7 +62,7 @@ export default function AboutPage() {
 
       {/* Story Section */}
       <section className="py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full px-4 sm:px-8 lg:px-16 xl:px-24">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <motion.div
               initial={{ opacity: 0, x: -30 }}
@@ -108,7 +108,7 @@ export default function AboutPage() {
 
       {/* Values */}
       <section className="py-20 bg-dark-light">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full px-4 sm:px-8 lg:px-16 xl:px-24">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}

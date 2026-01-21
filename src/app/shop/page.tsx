@@ -21,7 +21,7 @@ export default function ShopPage() {
     <div className="pt-28 pb-20 bg-black min-h-screen">
       {/* Hero */}
       <section className="relative py-16 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 text-center relative z-10">
+        <div className="w-full px-4 sm:px-8 lg:px-16 xl:px-24 text-center relative z-10">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -47,7 +47,7 @@ export default function ShopPage() {
       </section>
 
       {/* Filters */}
-      <section className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 mb-16">
+      <section className="w-full px-4 sm:px-8 lg:px-16 xl:px-24 mb-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -111,7 +111,7 @@ export default function ShopPage() {
       </section>
 
       {/* Products Grid */}
-      <section className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+      <section className="w-full px-4 sm:px-8 lg:px-16 xl:px-24">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {filteredProducts.map((product, index) => (
             <motion.div

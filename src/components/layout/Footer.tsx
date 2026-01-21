@@ -29,7 +29,7 @@ export default function Footer() {
       {/* Decorative top border */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
 
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-20">
+      <div className="w-full px-4 sm:px-8 lg:px-16 xl:px-24 py-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16">
           {/* Brand */}
           <motion.div

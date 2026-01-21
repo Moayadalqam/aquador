@@ -9,7 +9,7 @@ import { categories } from '@/lib/products';
 export default function Categories() {
   return (
     <section className="py-4 bg-dark">
-      <div className="max-w-7xl mx-auto">
+      <div className="w-full px-4 sm:px-8 lg:px-16 xl:px-24">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-1">
           {categories.map((category, index) => (
             <motion.div
