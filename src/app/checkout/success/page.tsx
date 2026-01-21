@@ -15,7 +15,7 @@ export default function CheckoutSuccessPage() {
   }, [clearCart]);
 
   return (
-    <div className="min-h-screen bg-dark pt-32 pb-16">
+    <div className="min-h-screen bg-gold-ambient pt-32 pb-16">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <motion.div
           initial={{ scale: 0 }}

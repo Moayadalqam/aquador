@@ -25,7 +25,7 @@ const stages = [
 
 export default function CreateSection() {
   return (
-    <section className="py-24 bg-gradient-to-b from-dark via-dark-light to-dark relative overflow-hidden">
+    <section className="py-24 bg-gold-ambient-dark relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-0 left-0 w-full h-full" style={{

@@ -53,7 +53,7 @@ function ShopContent() {
   const hasActiveFilters = selectedCategory || selectedType || searchQuery.length >= 2;
 
   return (
-    <div className="pt-28 pb-20 bg-black min-h-screen">
+    <div className="pt-28 pb-20 bg-gold-ambient min-h-screen">
       {/* Hero */}
       <section className="relative py-16 overflow-hidden">
         <div className="w-full px-4 sm:px-8 lg:px-16 xl:px-24 text-center relative z-10">

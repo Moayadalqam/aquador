@@ -25,7 +25,7 @@ const footerLinks = {
 
 export default function Footer() {
   return (
-    <footer className="relative bg-black border-t border-gold/10">
+    <footer className="relative bg-gold-ambient-subtle border-t border-gold/10">
       {/* Decorative top border */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
 

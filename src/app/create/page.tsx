@@ -74,7 +74,7 @@ export default function CreatePage() {
   };
 
   return (
-    <div className="min-h-screen bg-dark pt-20">
+    <div className="min-h-screen bg-gold-ambient pt-20">
       {/* Header */}
       <motion.section
         initial={{ opacity: 0 }}

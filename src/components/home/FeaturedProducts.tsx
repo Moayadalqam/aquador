@@ -11,7 +11,7 @@ export default function FeaturedProducts() {
   const products = getFeaturedProducts();
 
   return (
-    <section className="py-28 bg-black">
+    <section className="py-28 bg-gold-ambient">
       <div className="w-full px-4 sm:px-8 lg:px-16 xl:px-24">
         {/* Section header */}
         <motion.div

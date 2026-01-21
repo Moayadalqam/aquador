@@ -31,7 +31,7 @@ const values = [
 
 export default function AboutPage() {
   return (
-    <div className="pt-24 pb-16 bg-dark">
+    <div className="pt-24 pb-16 bg-gold-ambient">
       {/* Hero */}
       <section className="relative py-24 overflow-hidden">
         <div className="absolute inset-0">
@@ -107,7 +107,7 @@ export default function AboutPage() {
       </section>
 
       {/* Values */}
-      <section className="py-20 bg-dark-light">
+      <section className="py-20 bg-gold-ambient-dark">
         <div className="w-full px-4 sm:px-8 lg:px-16 xl:px-24">
           <motion.div
             initial={{ opacity: 0, y: 30 }}

@@ -5,7 +5,7 @@ import { Truck, RotateCcw, Clock, Package } from 'lucide-react';
 
 export default function ShippingPage() {
   return (
-    <div className="pt-24 pb-16 bg-dark min-h-screen">
+    <div className="pt-24 pb-16 bg-gold-ambient min-h-screen">
       {/* Hero */}
       <section className="relative py-16 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-gold/5 to-transparent" />

@@ -52,7 +52,7 @@ export default function CategoryPage() {
   }
 
   return (
-    <div className="pt-24 pb-16 bg-dark min-h-screen">
+    <div className="pt-24 pb-16 bg-gold-ambient min-h-screen">
       {/* Hero */}
       <section className="relative py-24 overflow-hidden">
         <div className="absolute inset-0">
