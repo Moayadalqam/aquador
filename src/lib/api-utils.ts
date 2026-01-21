@@ -1,9 +1,34 @@
+import { NextRequest } from 'next/server';
+
 /**
  * API utilities for error handling and timeouts
  */
 
 // Timeout duration in milliseconds
 export const API_TIMEOUT = 10000; // 10 seconds
+
+/**
+ * Get request ID from headers (set by middleware)
+ */
+export function getRequestId(request: NextRequest): string {
+  return request.headers.get('x-request-id') || 'unknown';
+}
+
+/**
+ * Create a structured log entry
+ */
+export function createLogEntry(
+  request: NextRequest,
+  event: string,
+  data?: Record<string, unknown>
+) {
+  return JSON.stringify({
+    requestId: getRequestId(request),
+    event,
+    timestamp: new Date().toISOString(),
+    ...data,
+  });
+}
 
 /**
  * Fetch with timeout using AbortController
