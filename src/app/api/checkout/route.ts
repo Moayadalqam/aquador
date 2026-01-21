@@ -1,13 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
+import * as Sentry from '@sentry/nextjs';
 import type { CartItem } from '@/types/cart';
 import { CURRENCY_CODE, toCents } from '@/lib/currency';
+import { API_TIMEOUT, formatApiError } from '@/lib/api-utils';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 function getStripe() {
   if (!process.env.STRIPE_SECRET_KEY) {
     throw new Error('STRIPE_SECRET_KEY is not set');
   }
-  return new Stripe(process.env.STRIPE_SECRET_KEY);
+  return new Stripe(process.env.STRIPE_SECRET_KEY, {
+    timeout: API_TIMEOUT,
+  });
 }
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
@@ -19,6 +24,10 @@ const productTypeLabels: Record<string, string> = {
 };
 
 export async function POST(request: NextRequest) {
+  // Check rate limit
+  const rateLimitResponse = await checkRateLimit(request, 'checkout');
+  if (rateLimitResponse) return rateLimitResponse;
+
   try {
     const stripe = getStripe();
     const body = await request.json();
@@ -93,19 +102,10 @@ export async function POST(request: NextRequest) {
       url: session.url,
     });
   } catch (error) {
-    console.error('Checkout session creation error:', error);
+    Sentry.captureException(error);
 
-    // Return detailed error in development/for debugging
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    const errorDetails = error instanceof Error && 'type' in error ? (error as { type?: string }).type : undefined;
+    const errorResponse = formatApiError(error, 'Failed to create checkout session');
 
-    return NextResponse.json(
-      {
-        error: 'Failed to create checkout session',
-        message: errorMessage,
-        type: errorDetails,
-      },
-      { status: 500 }
-    );
+    return NextResponse.json(errorResponse, { status: 500 });
   }
 }

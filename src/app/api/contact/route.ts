@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
+import * as Sentry from '@sentry/nextjs';
+import { fetchWithTimeout, formatApiError } from '@/lib/api-utils';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 const contactSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -10,7 +13,21 @@ const contactSchema = z.object({
   honeypot: z.string().max(0).optional(), // Spam protection - must be empty
 });
 
+// HTML-escape function to prevent XSS in email templates
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 export async function POST(request: NextRequest) {
+  // Check rate limit
+  const rateLimitResponse = await checkRateLimit(request, 'contact');
+  if (rateLimitResponse) return rateLimitResponse;
+
   try {
     const body = await request.json();
 
@@ -29,7 +46,6 @@ export async function POST(request: NextRequest) {
     // Check honeypot (spam bot detection)
     // If honeypot field is filled, it's likely a bot - return fake success
     if (honeypot && honeypot.length > 0) {
-      console.log('Honeypot triggered - likely spam bot');
       return NextResponse.json({ success: true });
     }
 
@@ -40,11 +56,9 @@ export async function POST(request: NextRequest) {
     if (!resendApiKey) {
       // If no Resend key, log the message and return success
       console.log('Contact form submission (no email service configured):', {
-        name,
-        email,
-        phone,
-        subject,
-        message,
+        name: escapeHtml(name),
+        email: escapeHtml(email),
+        subject: escapeHtml(subject),
         timestamp: new Date().toISOString(),
       });
 
@@ -54,8 +68,8 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Send email via Resend
-    const emailResponse = await fetch('https://api.resend.com/emails', {
+    // Send email via Resend with timeout
+    const emailResponse = await fetchWithTimeout('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -64,7 +78,7 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({
         from: 'Aquad\'or Website <noreply@aquadorcy.com>',
         to: [contactEmailTo],
-        subject: `[Contact Form] ${subject}`,
+        subject: `[Contact Form] ${escapeHtml(subject)}`,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
             <h2 style="color: #D4AF37; border-bottom: 2px solid #D4AF37; padding-bottom: 10px;">
@@ -72,15 +86,15 @@ export async function POST(request: NextRequest) {
             </h2>
 
             <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
-              <p><strong>Name:</strong> ${name}</p>
-              <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
-              ${phone ? `<p><strong>Phone:</strong> ${phone}</p>` : ''}
-              <p><strong>Subject:</strong> ${subject}</p>
+              <p><strong>Name:</strong> ${escapeHtml(name)}</p>
+              <p><strong>Email:</strong> <a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a></p>
+              ${phone ? `<p><strong>Phone:</strong> ${escapeHtml(phone)}</p>` : ''}
+              <p><strong>Subject:</strong> ${escapeHtml(subject)}</p>
             </div>
 
             <div style="background: #fff; padding: 20px; border: 1px solid #eee; border-radius: 8px;">
               <h3 style="color: #333; margin-top: 0;">Message:</h3>
-              <p style="color: #555; line-height: 1.6; white-space: pre-wrap;">${message}</p>
+              <p style="color: #555; line-height: 1.6; white-space: pre-wrap;">${escapeHtml(message)}</p>
             </div>
 
             <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
@@ -92,6 +106,7 @@ export async function POST(request: NextRequest) {
         `,
         reply_to: email,
       }),
+      timeout: 10000, // 10 second timeout
     });
 
     if (!emailResponse.ok) {
@@ -105,10 +120,10 @@ export async function POST(request: NextRequest) {
       message: 'Message sent successfully',
     });
   } catch (error) {
-    console.error('Contact form error:', error);
-    return NextResponse.json(
-      { error: 'Failed to process your message. Please try again later.' },
-      { status: 500 }
-    );
+    Sentry.captureException(error);
+
+    const errorResponse = formatApiError(error, 'Failed to process your message. Please try again later.');
+
+    return NextResponse.json({ error: errorResponse.error }, { status: 500 });
   }
 }

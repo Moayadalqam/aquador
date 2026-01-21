@@ -193,7 +193,7 @@ function ShopContent() {
               transition={{ delay: Math.min(index * 0.03, 0.3) }}
             >
               <Link
-                href={`/shop/${product.category}/${product.id}`}
+                href={`/products/${product.id}`}
                 className="group block bg-white overflow-hidden transition-all duration-500 hover:-translate-y-1"
               >
                 {/* Image - 1:1 aspect ratio */}

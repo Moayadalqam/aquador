@@ -42,9 +42,9 @@ export default function Footer() {
               <Image
                 src="/aquador.webp"
                 alt="Aquad'or"
-                width={180}
-                height={70}
-                className="h-16 w-auto object-contain transition-all duration-300 group-hover:drop-shadow-[0_0_10px_rgba(212,175,55,0.3)]"
+                width={360}
+                height={140}
+                className="h-32 w-auto object-contain transition-all duration-300 group-hover:drop-shadow-[0_0_10px_rgba(212,175,55,0.3)]"
               />
             </Link>
             <p className="text-gray-400 text-sm leading-relaxed tracking-wide">
@@ -173,7 +173,15 @@ export default function Footer() {
             © {new Date().getFullYear()} Aquad&apos;or Cyprus. All rights reserved.
           </p>
           <p className="text-gray-600 text-xs tracking-wide">
-            Crafted with passion in Nicosia
+            Developed and designed by:{' '}
+            <a
+              href="https://qualiasolutions.net"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gold hover:text-gold-light transition-colors duration-300"
+            >
+              Qualia Solutions
+            </a>
           </p>
         </motion.div>
       </div>
