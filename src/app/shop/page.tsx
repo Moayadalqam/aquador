@@ -9,6 +9,7 @@ import { searchProducts } from '@/lib/product-service';
 import { formatPrice } from '@/lib/utils';
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import { SearchBar } from '@/components/search';
+import AnimatedShaderBackground from '@/components/ui/animated-shader-background';
 
 function ShopContent() {
   const searchParams = useSearchParams();
@@ -56,6 +57,8 @@ function ShopContent() {
     <div className="pt-28 pb-20 bg-gold-ambient min-h-screen">
       {/* Hero */}
       <section className="relative py-16 overflow-hidden">
+        <AnimatedShaderBackground />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/80" />
         <div className="w-full px-4 sm:px-8 lg:px-16 xl:px-24 text-center relative z-10">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}

@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { useState, useCallback, useMemo } from 'react';
 import { SearchBar } from '@/components/search';
 import { formatPrice } from '@/lib/utils';
+import AnimatedShaderBackground from '@/components/ui/animated-shader-background';
 import type { Product } from '@/types';
 
 interface LattafaContentProps {
@@ -40,8 +41,9 @@ export default function LattafaContent({ products }: LattafaContentProps) {
     <div className="pt-24 pb-16 bg-gold-ambient min-h-screen">
       {/* Hero */}
       <section className="relative py-24 overflow-hidden">
+        <AnimatedShaderBackground />
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-b from-dark/80 via-dark/90 to-dark" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-dark/70 to-dark" />
         </div>
         <div className="w-full px-4 sm:px-8 lg:px-16 xl:px-24 text-center relative z-10">
           <motion.div

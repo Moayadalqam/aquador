@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { useState, useCallback, useMemo } from 'react';
 import { SearchBar } from '@/components/search';
 import { formatPrice } from '@/lib/utils';
+import AnimatedShaderBackground from '@/components/ui/animated-shader-background';
 import type { Product, Category } from '@/types';
 
 interface CategoryContentProps {
@@ -43,16 +44,17 @@ export default function CategoryContent({ category, products }: CategoryContentP
     <div className="pt-24 pb-16 bg-gold-ambient min-h-screen">
       {/* Hero */}
       <section className="relative py-24 overflow-hidden">
+        <AnimatedShaderBackground />
         <div className="absolute inset-0">
           <Image
             src={category.image}
             alt={category.name}
             fill
-            className="object-cover opacity-30"
+            className="object-cover opacity-20"
             sizes="100vw"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-dark/80 via-dark/90 to-dark" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-dark/70 to-dark" />
         </div>
         <div className="w-full px-4 sm:px-8 lg:px-16 xl:px-24 text-center relative z-10">
           <motion.div
