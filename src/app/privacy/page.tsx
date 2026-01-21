@@ -86,7 +86,20 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-playfair text-gold mb-4">7. Changes to this Policy</h2>
+            <h2 className="text-xl font-playfair text-gold mb-4">7. Data Retention</h2>
+            <div className="space-y-4 text-gray-400">
+              <p>We retain your data for the following periods:</p>
+              <ul className="list-disc pl-6 space-y-2">
+                <li><strong className="text-white">Contact form submissions:</strong> Retained for 90 days, then automatically deleted.</li>
+                <li><strong className="text-white">Payment records:</strong> Processed and retained by Stripe in accordance with their retention policy (up to 7 years for legal and regulatory compliance).</li>
+                <li><strong className="text-white">Shopping cart data:</strong> Stored in your browser&apos;s localStorage until you clear your browser data or remove items.</li>
+                <li><strong className="text-white">Cookie consent preferences:</strong> Stored in your browser&apos;s localStorage until you clear your browser data.</li>
+              </ul>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-playfair text-gold mb-4">8. Changes to this Policy</h2>
             <p className="text-gray-400">
               We may update this Privacy Policy from time to time. Any changes will be posted on this page with an updated revision date.
             </p>

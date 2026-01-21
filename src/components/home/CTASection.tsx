@@ -1,9 +1,10 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import Link from 'next/link';
 import { Sparkles, Shield, Headphones } from 'lucide-react';
 import Button from '@/components/ui/Button';
+import { useRef } from 'react';
 
 const features = [
   {
@@ -24,8 +25,11 @@ const features = [
 ];
 
 export default function CTASection() {
+  const sectionRef = useRef(null);
+  const isInView = useInView(sectionRef, { amount: 0.1 });
+
   return (
-    <section className="relative py-32 overflow-hidden">
+    <section ref={sectionRef} className="relative py-32 overflow-hidden">
       {/* Background image */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-fixed"
@@ -89,18 +93,18 @@ export default function CTASection() {
       {/* Decorative elements */}
       <motion.div
         className="absolute top-20 left-10 w-2 h-2 bg-gold rounded-full"
-        animate={{
+        animate={isInView ? {
           y: [0, 20, 0],
           opacity: [0.5, 1, 0.5],
-        }}
+        } : {}}
         transition={{ duration: 3, repeat: Infinity }}
       />
       <motion.div
         className="absolute bottom-20 right-10 w-3 h-3 bg-gold-light rounded-full"
-        animate={{
+        animate={isInView ? {
           y: [0, -20, 0],
           opacity: [0.3, 0.8, 0.3],
-        }}
+        } : {}}
         transition={{ duration: 4, repeat: Infinity }}
       />
     </section>

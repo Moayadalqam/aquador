@@ -1,13 +1,16 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import Link from 'next/link';
 import Button from '@/components/ui/Button';
 import { Truck } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 export default function Hero() {
   const [videoError, setVideoError] = useState(false);
+  const sectionRef = useRef(null);
+  const isInView = useInView(sectionRef, { amount: 0.1 });
+
   return (
     <section className="relative min-h-screen flex flex-col overflow-hidden">
       {/* Announcement Banner */}
@@ -26,7 +29,7 @@ export default function Hero() {
       </motion.div>
 
       {/* Main Hero Content */}
-      <div className="relative flex-1 flex items-center justify-center">
+      <div ref={sectionRef} className="relative flex-1 flex items-center justify-center">
         {/* Video Background */}
         <div className="absolute inset-0 z-0">
           {!videoError ? (
@@ -54,10 +57,10 @@ export default function Hero() {
         <div className="absolute inset-0 z-0">
           <motion.div
             className="absolute top-1/4 left-1/4 w-96 h-96 bg-gold/5 rounded-full blur-3xl"
-            animate={{
+            animate={isInView ? {
               scale: [1, 1.2, 1],
               opacity: [0.3, 0.5, 0.3],
-            }}
+            } : {}}
             transition={{
               duration: 8,
               repeat: Infinity,
@@ -66,10 +69,10 @@ export default function Hero() {
           />
           <motion.div
             className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gold/3 rounded-full blur-3xl"
-            animate={{
+            animate={isInView ? {
               scale: [1.2, 1, 1.2],
               opacity: [0.2, 0.4, 0.2],
-            }}
+            } : {}}
             transition={{
               duration: 10,
               repeat: Infinity,
@@ -88,10 +91,10 @@ export default function Hero() {
                 left: `${15 + i * 14}%`,
                 boxShadow: '0 0 6px rgba(255, 215, 0, 0.6)',
               }}
-              animate={{
+              animate={isInView ? {
                 y: ['100vh', '-10vh'],
                 opacity: [0, 0.8, 0],
-              }}
+              } : {}}
               transition={{
                 duration: 12 + Math.random() * 5,
                 repeat: Infinity,
@@ -119,9 +122,9 @@ export default function Hero() {
                 WebkitTextFillColor: 'transparent',
                 filter: 'drop-shadow(0 0 30px rgba(255, 215, 0, 0.25))',
               }}
-              animate={{
+              animate={isInView ? {
                 backgroundPosition: ['0% 50%', '200% 50%'],
-              }}
+              } : {}}
               transition={{
                 duration: 4,
                 repeat: Infinity,
@@ -140,7 +143,7 @@ export default function Hero() {
             >
               <motion.div
                 className="absolute inset-0 bg-gradient-to-r from-transparent via-gold to-transparent"
-                animate={{ x: ['-100%', '100%'] }}
+                animate={isInView ? { x: ['-100%', '100%'] } : {}}
                 transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
               />
             </motion.div>
@@ -185,12 +188,12 @@ export default function Hero() {
         >
           <motion.div
             className="w-6 h-10 border border-gold/40 rounded-full flex justify-center p-2"
-            animate={{ y: [0, 5, 0] }}
+            animate={isInView ? { y: [0, 5, 0] } : {}}
             transition={{ duration: 1.5, repeat: Infinity }}
           >
             <motion.div
               className="w-1 h-1 bg-gold rounded-full"
-              animate={{ y: [0, 12, 0], opacity: [1, 0.3, 1] }}
+              animate={isInView ? { y: [0, 12, 0], opacity: [1, 0.3, 1] } : {}}
               transition={{ duration: 1.5, repeat: Infinity }}
             />
           </motion.div>
