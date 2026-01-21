@@ -13,6 +13,7 @@ const navLinks = [
   { label: 'Women', href: '/shop/women' },
   { label: 'Men', href: '/shop/men' },
   { label: 'Niche', href: '/shop/niche' },
+  { label: 'Lattafa', href: '/shop/lattafa' },
   { label: 'Create Your Own', href: '/create' },
   { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },

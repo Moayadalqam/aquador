@@ -10,6 +10,7 @@ const footerLinks = {
     { label: "Women's Collection", href: '/shop/women' },
     { label: "Men's Collection", href: '/shop/men' },
     { label: 'Niche Collection', href: '/shop/niche' },
+    { label: 'Lattafa Collection', href: '/shop/lattafa' },
     { label: 'Create Your Own', href: '/create' },
   ],
   company: [

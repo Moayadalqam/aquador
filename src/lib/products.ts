@@ -3519,3 +3519,8 @@ export function searchProducts(query: string): Product[] {
     (p.brand && p.brand.toLowerCase().includes(q))
   );
 }
+
+export function getProductsByBrand(brand: string): Product[] {
+  const b = brand.toLowerCase();
+  return products.filter(p => p.brand?.toLowerCase().includes(b));
+}
