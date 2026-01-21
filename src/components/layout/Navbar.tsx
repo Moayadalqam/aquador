@@ -43,7 +43,7 @@ export default function Navbar() {
         isScrolled ? 'bg-black/95 backdrop-blur-xl shadow-lg shadow-black/30' : 'bg-gradient-to-b from-black/80 to-transparent'
       }`}
     >
-      <nav className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+      <nav className="w-full px-4 sm:px-8 lg:px-16 xl:px-24">
         <div className="flex items-center justify-between h-24">
           {/* Logo - Larger and more prominent */}
           <Link href="/" className="flex items-center">
