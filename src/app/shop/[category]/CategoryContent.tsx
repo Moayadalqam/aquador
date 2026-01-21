@@ -124,8 +124,8 @@ export default function CategoryContent({ category, products }: CategoryContentP
                 href={`/products/${product.id}`}
                 className="group block bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2"
               >
-                {/* Image */}
-                <div className="relative h-64 overflow-hidden">
+                {/* Image - 4:5 aspect ratio for better viewport fit */}
+                <div className="relative aspect-[4/5] overflow-hidden">
                   <Image
                     src={product.image}
                     alt={product.name}

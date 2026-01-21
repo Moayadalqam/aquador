@@ -196,8 +196,8 @@ function ShopContent() {
                 href={`/products/${product.id}`}
                 className="group block bg-white overflow-hidden transition-all duration-500 hover:-translate-y-1"
               >
-                {/* Image - 1:1 aspect ratio */}
-                <div className="relative aspect-square overflow-hidden">
+                {/* Image - 4:5 aspect ratio for better viewport fit */}
+                <div className="relative aspect-[4/5] overflow-hidden">
                   <Image
                     src={product.image}
                     alt={product.name}
