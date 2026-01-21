@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { track } from '@vercel/analytics';
 import { MapPin, Phone, Mail, Clock, Send, CheckCircle } from 'lucide-react';
 import Button from '@/components/ui/Button';
 
@@ -74,6 +75,11 @@ export default function ContactPage() {
       if (!response.ok) {
         throw new Error(result.error || 'Failed to send message');
       }
+
+      // Track contact form submission
+      track('contact_submitted', {
+        subject: data.subject,
+      });
 
       setIsSubmitted(true);
       reset();

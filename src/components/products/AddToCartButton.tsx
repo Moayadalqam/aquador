@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ShoppingBag, Check, Minus, Plus } from 'lucide-react';
+import { track } from '@vercel/analytics';
 import { useCart } from '@/components/cart';
 import type { LegacyProduct } from '@/types';
 import type { CartItem } from '@/types/cart';
@@ -32,6 +33,15 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
     addItem(cartItem);
     setIsAdded(true);
     setQuantity(1);
+
+    // Track add to cart event
+    track('add_to_cart', {
+      product_id: product.id,
+      product_name: product.name,
+      category: product.category,
+      price: product.price,
+      quantity,
+    });
 
     // Reset added state after 2 seconds
     setTimeout(() => setIsAdded(false), 2000);

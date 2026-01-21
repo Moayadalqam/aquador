@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Lock, Loader2 } from 'lucide-react';
+import { track } from '@vercel/analytics';
 import { useCart } from './CartProvider';
 
 export default function CheckoutButton() {
@@ -13,6 +14,13 @@ export default function CheckoutButton() {
   const handleCheckout = async () => {
     setIsLoading(true);
     setError(null);
+
+    // Track checkout started
+    const totalValue = cart.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    track('checkout_started', {
+      item_count: cart.items.length,
+      total_value: totalValue,
+    });
 
     try {
       const response = await fetch('/api/checkout', {

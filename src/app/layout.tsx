@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   authors: [{ name: "Aquad'or" }],
   icons: {
     icon: "/favicon.png",
-    apple: "/apple-icon.png",
+    apple: "/favicon.png",
   },
   openGraph: {
     title: "Aquad'or | Luxury Perfumes Cyprus",
