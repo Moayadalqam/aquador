@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { CartProvider, CartDrawer } from "@/components/cart";
+import CookieConsent from "@/components/ui/CookieConsent";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -67,6 +68,7 @@ export default function RootLayout({
           </main>
           <Footer />
           <CartDrawer />
+          <CookieConsent />
         </CartProvider>
       </body>
     </html>

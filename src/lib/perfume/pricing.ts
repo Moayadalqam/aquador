@@ -2,8 +2,8 @@ export type PerfumeVolume = '50ml' | '100ml'
 
 /**
  * Calculate price based on perfume volume
- * 50ml = $29.99
- * 100ml = $199.00
+ * 50ml = €29.99
+ * 100ml = €199.00
  */
 export function calculatePrice(volume: PerfumeVolume): number {
   if (!volume) {

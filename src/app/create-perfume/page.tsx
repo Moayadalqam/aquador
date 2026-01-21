@@ -279,7 +279,7 @@ export default function CreatePerfumePage() {
                       }`}
                     >
                       <div className="text-2xl font-light">{vol}</div>
-                      <div className="mt-1 text-sm">${calculatePrice(vol).toFixed(2)}</div>
+                      <div className="mt-1 text-sm">€{calculatePrice(vol).toFixed(2)}</div>
                     </button>
                   ))}
                 </div>
@@ -306,7 +306,7 @@ export default function CreatePerfumePage() {
               <div className="flex items-center justify-between border-t border-white/10 pt-6">
                 <div>
                   <div className="text-sm text-gray-400">TOTAL</div>
-                  <div className="text-2xl text-amber-400">${price.toFixed(2)}</div>
+                  <div className="text-2xl text-amber-400">€{price.toFixed(2)}</div>
                 </div>
                 <button
                   type="submit"

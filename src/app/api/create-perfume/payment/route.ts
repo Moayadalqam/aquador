@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     // Create Stripe PaymentIntent
     const paymentIntent = await stripe.paymentIntents.create({
       amount,
-      currency: 'usd',
+      currency: 'eur',
       metadata: {
         perfumeName,
         topNote: composition.top,
