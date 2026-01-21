@@ -10,7 +10,9 @@ function getStripe() {
   if (!process.env.STRIPE_SECRET_KEY) {
     throw new Error('STRIPE_SECRET_KEY is not set');
   }
-  return new Stripe(process.env.STRIPE_SECRET_KEY, {
+  // Sanitize the key to remove any invisible characters (newlines, carriage returns, etc.)
+  const sanitizedKey = process.env.STRIPE_SECRET_KEY.replace(/[\r\n\s]/g, '');
+  return new Stripe(sanitizedKey, {
     timeout: API_TIMEOUT,
   });
 }
@@ -103,6 +105,7 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     Sentry.captureException(error);
+    console.error('Checkout error:', error);
 
     const errorResponse = formatApiError(error, 'Failed to create checkout session');
 
