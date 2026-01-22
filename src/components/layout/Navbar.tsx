@@ -9,14 +9,14 @@ import { CartIcon } from '@/components/cart';
 import { SearchBar } from '@/components/search';
 
 const navLinks = [
-  { label: 'Dubai Shop', href: '/shop' },
+  { label: 'Shop', href: '/shop' },
   { label: 'Women', href: '/shop/women' },
   { label: 'Men', href: '/shop/men' },
   { label: 'Niche', href: '/shop/niche' },
-  { label: 'Essence Oils', href: '/shop/essence-oil' },
-  { label: 'Body Lotions', href: '/shop/body-lotion' },
+  { label: 'Essence Oil', href: '/shop/essence-oil' },
+  { label: 'Body Lotion', href: '/shop/body-lotion' },
   { label: 'Lattafa', href: '/shop/lattafa' },
-  { label: 'Create Your Own', href: '/create' },
+  { label: 'Create', href: '/create' },
   { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
 ];
@@ -68,15 +68,15 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-8">
+          <div className="hidden lg:flex items-center gap-6 xl:gap-8">
             {navLinks.map((link) => (
               <Link
                 key={link.label}
                 href={link.href}
-                className="relative text-sm uppercase tracking-[0.2em] text-gray-200 hover:text-gold transition-colors duration-300 py-2 group"
+                className="relative text-[13px] font-medium uppercase tracking-[0.08em] text-gray-200 hover:text-gold transition-colors duration-300 py-2 group whitespace-nowrap"
               >
                 {link.label}
-                <span className="absolute bottom-0 left-0 w-full h-[2px] bg-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+                <span className="absolute bottom-0 left-0 w-full h-[1.5px] bg-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
               </Link>
             ))}
           </div>

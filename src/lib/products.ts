@@ -24,14 +24,14 @@ export const categories: Category[] = [
   },
   {
     id: 'essence-oil',
-    name: 'Essence Oils',
+    name: 'Essence Oil',
     slug: 'essence-oil',
-    description: 'Pure Concentrated Fragrance Oils',
+    description: 'Pure Concentrated Fragrance Oil',
     image: 'https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/07410597-5789-4319-9f3a-edfc0be8a5d3/image_Pippit_202506301816+%2873%29.jfif',
   },
   {
     id: 'body-lotion',
-    name: 'Body Lotions',
+    name: 'Body Lotion',
     slug: 'body-lotion',
     description: 'Luxurious Scented Body Care',
     image: 'https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/7a9e1322-8d20-42d3-97c1-e32b1938dab3/image_Pippit_202506301816+%2875%29.jfif',
