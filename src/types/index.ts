@@ -14,6 +14,9 @@ export {
   getVariantLabel,
 } from './product';
 
+// Gender type for Lattafa products
+export type ProductGender = 'men' | 'women' | 'unisex';
+
 // Legacy types - used by shop pages and lib/products.ts
 export interface LegacyProduct {
   id: string;
@@ -28,6 +31,7 @@ export interface LegacyProduct {
   inStock: boolean;
   tags?: string[];
   brand?: string;
+  gender?: ProductGender;
   notes?: {
     top?: string[];
     heart?: string[];

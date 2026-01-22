@@ -36,6 +36,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/5466a214-db1a-4860-ab90-7f6da0708f7d/image_Pippit_202507021156+-+2025-07-06T153205.581.jpeg",
     inStock: true,
     brand: "Lattafa Perfumes",
+    gender: "men",
   },
   {
     id: "acqua-di-gi-parfum-by-giorgio-armani",
@@ -97,6 +98,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/19b22f51-58a6-4181-848d-4e5046fa4332/image_Pippit_202508311301+%284%29.jpeg",
     inStock: true,
     brand: "Lattafa Perfumes",
+    gender: "men",
   },
   {
     id: "asad-by-lattafa-perfumes",
@@ -109,6 +111,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/0dc10dc3-5989-44b9-a9e4-67caac482d20/image_Pippit_202506301816+%2856%29.jfif",
     inStock: true,
     brand: "Lattafa Perfumes",
+    gender: "men",
   },
   {
     id: "aventus-cologne-by-creed",
@@ -242,6 +245,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/ad3cede8-ed98-4fde-8e15-55b85e76aa9f/image_Pippit_202508311301+%2818%29.jpeg",
     inStock: false,
     brand: "Lattafa Perfumes",
+    gender: "men",
   },
   {
     id: "gentleman-eau-de-parfum-by-givenchy",
@@ -399,6 +403,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/63aa4cd0-d8f2-44e5-9490-9380ae9995ac/image_Pippit_202509261551+%289%29.jpeg",
     inStock: false,
     brand: "Lattafa Perfumes",
+    gender: "men",
   },
   {
     id: "narciso-rodriguez-for-him-bleu-noir-by-narciso-rodriguez",
@@ -424,6 +429,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/908d7578-5514-4300-9ec5-448e2032b144/image_Pippit_202508301210+%2822%29.jpeg",
     inStock: false,
     brand: "Lattafa Perfumes",
+    gender: "men",
   },
   {
     id: "ocean-leather-by-memo-paris",
@@ -473,6 +479,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/23f39b79-14b4-4337-9ad9-cc3586fc1933/image_Pippit_202509011438+%282%29.jpeg",
     inStock: true,
     brand: "Lattafa Perfumes",
+    gender: "men",
   },
   {
     id: "oud-for-greatness-by-initio-parfums-priv-s",
@@ -654,6 +661,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/b1e6a590-28b7-4ff3-a2eb-4134a6134503/image_Pippit_202509261551.jpeg",
     inStock: false,
     brand: "Lattafa Perfumes",
+    gender: "men",
   },
   {
     id: "the-library-collection-silver-oud-by-amouage",
@@ -859,6 +867,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/b72d9606-b5d9-43da-a1c2-c6dc543006b3/image_Pippit_202509121406+%285%29.jpeg",
     inStock: false,
     brand: "Lattafa Perfumes",
+    gender: "unisex",
   },
   {
     id: "african-leather-by-memo-paris",
@@ -884,6 +893,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/a1fc00fc-d127-4b91-86fc-6c34dac3e74b/image_Pippit_202509011438+%2811%29.jpeg",
     inStock: true,
     brand: "Lattafa Perfumes",
+    gender: "unisex",
   },
   {
     id: "ajwad-by-lattafa-perfumes",
@@ -897,6 +907,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/b8009e94-0560-450d-bbc5-589dd120965d/image_Pippit_202509011438+%289%29.jpeg",
     inStock: true,
     brand: "Lattafa Perfumes",
+    gender: "unisex",
   },
   {
     id: "al-jawhara-by-lattafa-perfumes",
@@ -910,6 +921,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/3c62b582-a2af-43aa-a950-30ae54b1124a/image_Pippit_202508311301+%288%29.jpeg",
     inStock: true,
     brand: "Lattafa Perfumes",
+    gender: "unisex",
   },
   {
     id: "al-noble-safeer-by-lattafa-perfumes",
@@ -923,6 +935,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/321e28db-6fcb-41ae-8646-57aeca13c840/image_Pippit_202508301210+%2816%29.jpeg",
     inStock: false,
     brand: "Lattafa Perfumes",
+    gender: "men",
   },
   {
     id: "al-noble-wazeer-by-lattafa-perfumes",
@@ -936,6 +949,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/72a8d5e5-a587-4091-8179-d234a0e65b96/image_Pippit_202508301210+%2812%29.jpeg",
     inStock: false,
     brand: "Lattafa Perfumes",
+    gender: "unisex",
   },
   {
     id: "alexandria-ii-by-xerjoff",
@@ -984,6 +998,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/64e26778-22c3-4ef9-98f7-b2668b7935c7/image_Pippit_202507021156+-+2025-07-05T161444.235.jpeg",
     inStock: true,
     brand: "Lattafa Perfumes",
+    gender: "unisex",
   },
   {
     id: "ana-abiyedh-leather-by-lattafa-perfumes",
@@ -997,6 +1012,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/4654e191-a652-4215-ba2e-20ee42d69de0/image_Pippit_202508311301+%2812%29.jpeg",
     inStock: true,
     brand: "Lattafa Perfumes",
+    gender: "unisex",
   },
   {
     id: "ana-abiyedh-rouge-by-lattafa-perfumes",
@@ -1010,6 +1026,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/ec0d1a89-677b-4b09-a9e0-e26763cec8e3/image_Pippit_202508311301+%2816%29.jpeg",
     inStock: false,
     brand: "Lattafa Perfumes",
+    gender: "unisex",
   },
   {
     id: "ana-abiyedh-by-lattafa-perfumes",
@@ -1023,6 +1040,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/6838f019-b719-4282-b2bc-25f7e90ceb7d/image_Pippit_202509121406+%281%29.jpeg",
     inStock: false,
     brand: "Lattafa Perfumes",
+    gender: "unisex",
   },
   {
     id: "angels-share-by-kilian",
@@ -1072,6 +1090,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/c5f3c1a1-bc50-4754-9e5d-57d3548cdc70/image_Pippit_202508311301+%2814%29.jpeg",
     inStock: true,
     brand: "Lattafa Perfumes",
+    gender: "unisex",
   },
   {
     id: "arabians-tonka-by-montale",
@@ -1145,6 +1164,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/1dd2d648-f61b-4ae8-af16-c58cc22719b9/image_Pippit_202509011438+%2817%29.jpeg",
     inStock: true,
     brand: "Lattafa Perfumes",
+    gender: "unisex",
   },
   {
     id: "bade-e-al-oud-honor-glory-by-lattafa-perfumes",
@@ -1158,6 +1178,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/58e4baaf-6bfc-4b1c-8105-7e5a00a781c0/image_Pippit_202509091647.jpeg",
     inStock: true,
     brand: "Lattafa Perfumes",
+    gender: "unisex",
   },
   {
     id: "bade-e-al-oud-oud-for-glory-by-lattafa-perfumes",
@@ -1171,6 +1192,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/2d9f8aa2-96cb-4473-ad99-f5f59018a1ba/image_Pippit_202509011438+%2815%29.jpeg",
     inStock: true,
     brand: "Lattafa Perfumes",
+    gender: "unisex",
   },
   {
     id: "bal-d-afrique-by-byredo",
@@ -1268,6 +1290,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/14639bdd-0fbd-40be-b872-3792f45aba4f/image_Pippit_202509011438+%286%29.jpeg",
     inStock: true,
     brand: "Lattafa Perfumes",
+    gender: "unisex",
   },
   {
     id: "calabria-by-gissah",
@@ -1617,6 +1640,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/6212b759-63f7-466f-8b8a-021ccb99e3da/image_Pippit_202508301210+%2810%29.jpeg",
     inStock: true,
     brand: "Lattafa Perfumes",
+    gender: "men",
   },
   {
     id: "infini-oud-by-maison-alhambra-lattafa-perfumes",
@@ -1630,6 +1654,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/6365d8a5-a72c-4cfe-a6a2-dde6f5b13e89/image_Pippit_202508301210.jpeg",
     inStock: true,
     brand: "Lattafa Perfumes",
+    gender: "men",
   },
   {
     id: "intense-cafe-by-montale",
@@ -1691,6 +1716,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/72b0ff59-2cbf-466f-99c3-46f97be9cf16/image_Pippit_202509011438.jpeg",
     inStock: false,
     brand: "Lattafa Perfumes",
+    gender: "unisex",
   },
   {
     id: "khamrah-qahwa-by-lattafa-perfumes",
@@ -1704,6 +1730,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/39636dc6-a6c4-4b4d-968d-46a0f5bea78c/image_Pippit_202509201633.jpeg",
     inStock: false,
     brand: "Lattafa Perfumes",
+    gender: "unisex",
   },
   {
     id: "khanjar-by-lattafa-perfumes",
@@ -1717,6 +1744,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/9f386560-d798-444b-9da0-9d1bb56ba51c/image_Pippit_202508301210+%2827%29.jpeg",
     inStock: true,
     brand: "Lattafa Perfumes",
+    gender: "men",
   },
   {
     id: "kirk-by-tiziana-terenzi",
@@ -1802,6 +1830,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/d51cf4e2-9ef7-4073-b989-9fad1ce7d4b0/image_Pippit_202509261551+%288%29.jpeg",
     inStock: false,
     brand: "Lattafa Perfumes",
+    gender: "unisex",
   },
   {
     id: "madawi-by-arabian-oud",
@@ -1935,6 +1964,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/8d1b07a2-26d8-465f-b905-0ffc87e1ff16/image_Pippit_202508311301+%282%29.jpeg",
     inStock: false,
     brand: "Lattafa Perfumes",
+    gender: "men",
   },
   {
     id: "nardo-red-by-rave-lattafa-perfumes",
@@ -1948,6 +1978,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/ecd6b110-071a-495f-9e72-c9a50c407894/image_Pippit_202508301210+%288%29.jpeg",
     inStock: false,
     brand: "Lattafa Perfumes",
+    gender: "men",
   },
   {
     id: "neroli-portofino-by-tom-ford",
@@ -2069,6 +2100,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/6c24c8dd-a1c4-4e77-9336-72834a1a9e5c/image_Pippit_202508311301+%281%29.jpeg",
     inStock: true,
     brand: "Lattafa Perfumes",
+    gender: "unisex",
   },
   {
     id: "oud-musk",
@@ -2189,6 +2221,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/143822fa-1c9b-4e76-8c88-d9b71581a57a/image_Pippit_202507021156+-+2025-07-05T161907.056.jpeg",
     inStock: true,
     brand: "Lattafa Perfumes",
+    gender: "unisex",
   },
   {
     id: "ra-ed-silver-by-lattafa-perfumes",
@@ -2202,6 +2235,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/c1a0af26-7317-4ccb-b55e-52892fdc9fdf/image_Pippit_202508311301+%2810%29.jpeg",
     inStock: false,
     brand: "Lattafa Perfumes",
+    gender: "unisex",
   },
   {
     id: "raghba-by-lattafa-perfumes",
@@ -2214,6 +2248,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/5651d8b9-4129-409f-bf4e-fedb231a2643/image_Pippit_202506301816+%2853%29.jfif",
     inStock: true,
     brand: "Lattafa Perfumes",
+    gender: "unisex",
   },
   {
     id: "ramz-by-lattafa-perfumes",
@@ -2227,6 +2262,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/bff74ec6-3002-4970-9768-d4ed9ddb32d1/image_Pippit_202508301210+%286%29.jpeg",
     inStock: false,
     brand: "Lattafa Perfumes",
+    gender: "unisex",
   },
   {
     id: "raw-human-by-lattafa-perfumes",
@@ -2240,6 +2276,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/32c2689c-5366-41ee-81a9-4b51960e9325/image_Pippit_202509011438+%284%29.jpeg",
     inStock: true,
     brand: "Lattafa Perfumes",
+    gender: "unisex",
   },
   {
     id: "red-tobacco-by-mancera",
@@ -2277,6 +2314,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/6911e301-391a-4d16-b1a1-e75660d6b026/image_Pippit_202508311301+%286%29.jpeg",
     inStock: true,
     brand: "Lattafa Perfumes",
+    gender: "unisex",
   },
   {
     id: "sa-ud-by-asdaaf-lattafa-perfumes",
@@ -2290,6 +2328,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/df2a12cb-bab8-43a9-92f9-a1d7729d725b/image_Pippit_202508291707+%283%29.jpeg",
     inStock: true,
     brand: "Lattafa Perfumes",
+    gender: "unisex",
   },
   {
     id: "sandal-musk",
@@ -2351,6 +2390,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/fa5c1b09-b1d5-4f03-b371-d83bf7fef205/image_Pippit_202509261551+%284%29.jpeg",
     inStock: true,
     brand: "Lattafa Perfumes",
+    gender: "unisex",
   },
   {
     id: "sensual-instinct-by-montale",
@@ -2376,6 +2416,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/8ef701e9-4952-4a76-9441-2bde04ecb9fc/image_Pippit_202508301210+%282%29.jpeg",
     inStock: true,
     brand: "Lattafa Perfumes",
+    gender: "unisex",
   },
   {
     id: "shay-oud",
@@ -2401,6 +2442,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/270f3804-b231-4640-8d55-24c6dbe08187/image_Pippit_202508301210+%284%29.jpeg",
     inStock: false,
     brand: "Lattafa Perfumes",
+    gender: "men",
   },
   {
     id: "silver-dust",
@@ -2534,6 +2576,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/9af6bac6-64dc-44a4-81b0-d3f27fd1f85a/image_Pippit_202509011438+%2813%29.jpeg",
     inStock: true,
     brand: "Lattafa Perfumes",
+    gender: "unisex",
   },
   {
     id: "velvet-orchid-by-tom-ford",
@@ -2571,6 +2614,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/f0ef7cc7-924c-4e9a-b685-32f012f95b80/image_Pippit_202508301210+%2814%29.jpeg",
     inStock: true,
     brand: "Lattafa Perfumes",
+    gender: "unisex",
   },
   {
     id: "water-calligraphy-by-kilian",
@@ -2644,6 +2688,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/1765999609631-5EC33BK73K274ML3TCHR/313C6058-6389-487F-AD1C-113C424CEBA1.png",
     inStock: true,
     brand: "Lattafa Perfumes",
+    gender: "unisex",
   },
   {
     id: "amathyst-by-lalique",
@@ -2706,6 +2751,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/943bd321-6eb4-4926-aca7-706a01749e86/image_Pippit_202509091647+%282%29.jpeg",
     inStock: true,
     brand: "Lattafa Perfumes",
+    gender: "women",
   },
   {
     id: "baraonda-by-nasomatto",
@@ -2767,6 +2813,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/eb11bfab-9059-4741-9845-a3fad4daf7f3/image_Pippit_202508301210+%2820%29.jpeg",
     inStock: true,
     brand: "Lattafa Perfumes",
+    gender: "women",
   },
   {
     id: "coco-vanille-by-mancera",
@@ -2852,6 +2899,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/fe8a156f-bb20-4ea8-aa0e-2bc160d2c859/image_Pippit_202509101514+%281%29.jpeg",
     inStock: false,
     brand: "Lattafa Perfumes",
+    gender: "women",
   },
   {
     id: "emaan-by-lattafa-perfumes",
@@ -2865,6 +2913,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/e36f5ac6-0601-46f2-84ff-1b40faad00c7/image_Pippit_202508301210+%2818%29.jpeg",
     inStock: true,
     brand: "Lattafa Perfumes",
+    gender: "women",
   },
   {
     id: "english-pear-freesia-by-jo-malone-london",
@@ -2902,6 +2951,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/c90eee44-e1ca-4c68-8135-8d475b1cdda2/image_Pippit_202509261551+%282%29.jpeg",
     inStock: false,
     brand: "Lattafa Perfumes",
+    gender: "women",
   },
   {
     id: "flowerbomb-by-viktor-rolf",
@@ -3011,6 +3061,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/5f92fd5b-e39c-408f-b32d-1c4eb3152cb4/image_Pippit_202509101514+%283%29.jpeg",
     inStock: false,
     brand: "Lattafa Perfumes",
+    gender: "women",
   },
   {
     id: "heroine-boadicea-by-boadicea-the-victorious",
@@ -3481,6 +3532,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/1766027634987-0FWX0MYX5K1J5QSJWXJH/9EA27596-2F31-4169-AC19-38794F6C952B.png",
     inStock: false,
     brand: "Lattafa Perfumes",
+    gender: "women",
   },
   {
     id: "yara-by-lattafa-perfumes",
@@ -3493,6 +3545,7 @@ export const products: Product[] = [
     image: "https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/22ecef74-cd5b-4fc7-b86b-dad4bd30e133/image_Pippit_202506301816+%2855%29.jfif",
     inStock: true,
     brand: "Lattafa Perfumes",
+    gender: "women",
   },
 ];
 
