@@ -10,7 +10,7 @@ export default function Categories() {
   return (
     <section className="py-4 bg-gold-ambient-subtle">
       <div className="w-full px-4 sm:px-8 lg:px-16 xl:px-24">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-1">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-1">
           {categories.map((category, index) => (
             <motion.div
               key={category.id}
