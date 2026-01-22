@@ -28,12 +28,18 @@ export default function ProductInfo({ product }: ProductInfoProps) {
 
       {/* Price */}
       <div className="flex items-baseline gap-4">
-        <span className="text-3xl font-playfair text-gold">
-          {formatPrice(product.price)}
-        </span>
-        {product.salePrice && product.salePrice < product.price && (
-          <span className="text-lg text-gray-500 line-through">
-            {formatPrice(product.salePrice)}
+        {product.salePrice && product.salePrice < product.price ? (
+          <>
+            <span className="text-3xl font-playfair text-gold">
+              {formatPrice(product.salePrice)}
+            </span>
+            <span className="text-lg text-gray-500 line-through">
+              {formatPrice(product.price)}
+            </span>
+          </>
+        ) : (
+          <span className="text-3xl font-playfair text-gold">
+            {formatPrice(product.price)}
           </span>
         )}
       </div>

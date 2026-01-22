@@ -151,9 +151,16 @@ export default function CategoryContent({ category, products }: CategoryContentP
                     {product.description}
                   </p>
                   <div className="flex items-center justify-between">
-                    <span className="text-lg font-semibold text-gold-dark">
-                      {formatPrice(product.price)}
-                    </span>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-lg font-semibold text-gold-dark">
+                        {formatPrice(product.salePrice || product.price)}
+                      </span>
+                      {product.salePrice && product.salePrice < product.price && (
+                        <span className="text-sm text-gray-400 line-through">
+                          {formatPrice(product.price)}
+                        </span>
+                      )}
+                    </div>
                     <span className="text-xs text-gray-500">{product.size}</span>
                   </div>
                 </div>

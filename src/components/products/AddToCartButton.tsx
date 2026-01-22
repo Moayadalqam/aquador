@@ -19,13 +19,18 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
   const [isAdded, setIsAdded] = useState(false);
 
   const handleAddToCart = () => {
+    // Use sale price if available, otherwise original price
+    const effectivePrice = product.salePrice && product.salePrice < product.price
+      ? product.salePrice
+      : product.price;
+
     const cartItem: CartItem = {
       productId: product.id,
       variantId: `${product.id}-${product.productType}-${product.size}`,
       quantity,
       name: product.name,
       image: product.image,
-      price: product.price,
+      price: effectivePrice,
       size: product.size as ProductSize,
       productType: product.productType as ProductType,
     };
@@ -39,7 +44,7 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
       product_id: product.id,
       product_name: product.name,
       category: product.category,
-      price: product.price,
+      price: effectivePrice,
       quantity,
     });
 
