@@ -187,9 +187,21 @@ export default function LattafaContent({ products }: LattafaContentProps) {
                     src={product.image}
                     alt={product.name}
                     fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-110"
+                    className={`object-cover transition-transform duration-700 group-hover:scale-110 ${!product.inStock ? 'opacity-60' : ''}`}
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                   />
+                  {/* Sale Badge */}
+                  {product.salePrice && product.salePrice < product.price && product.inStock && (
+                    <span className="absolute top-4 left-4 bg-gold text-black text-[10px] uppercase tracking-wider px-3 py-1.5 font-medium">
+                      Sale
+                    </span>
+                  )}
+                  {/* Sold Out Badge */}
+                  {!product.inStock && (
+                    <span className="absolute top-4 left-4 bg-gray-800 text-white text-[10px] uppercase tracking-wider px-3 py-1.5 font-medium">
+                      Sold Out
+                    </span>
+                  )}
                 </div>
 
                 <div className="p-5">
