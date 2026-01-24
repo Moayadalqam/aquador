@@ -3,25 +3,30 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
-import { getProductBySlug, getAllProductSlugs, getRelatedProducts } from '@/lib/product-service';
+import { getProductBySlug, getRelatedProducts } from '@/lib/supabase/product-service';
 import ProductInfo from '@/components/products/ProductInfo';
 import AddToCartButton from '@/components/products/AddToCartButton';
 import RelatedProducts from '@/components/products/RelatedProducts';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 interface ProductPageProps {
   params: Promise<{ slug: string }>;
 }
 
-// Generate static params for all products
+// Dynamic rendering - skip static generation since we use dynamic data
+// Products are fetched at request time from Supabase
 export async function generateStaticParams() {
-  const slugs = getAllProductSlugs();
-  return slugs.map((slug) => ({ slug }));
+  // Return empty array to disable static generation
+  // All product pages will be rendered on-demand
+  return [];
 }
 
 // Generate metadata for SEO
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
+  const product = await getProductBySlug(slug);
 
   if (!product) {
     return {
@@ -56,30 +61,63 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
+  const product = await getProductBySlug(slug);
 
   if (!product) {
     notFound();
   }
 
-  const relatedProducts = getRelatedProducts(product.id);
+  const relatedProductsData = await getRelatedProducts(product.id);
+
+  // Transform Supabase product to match expected interface
+  const transformedProduct = {
+    id: product.id,
+    name: product.name,
+    description: product.description,
+    price: Number(product.price),
+    salePrice: product.sale_price ? Number(product.sale_price) : undefined,
+    category: product.category,
+    productType: product.product_type,
+    size: product.size,
+    image: product.image,
+    inStock: product.in_stock ?? true,
+    brand: product.brand ?? undefined,
+    gender: product.gender ?? undefined,
+    tags: product.tags ?? undefined,
+  };
+
+  const relatedProducts = relatedProductsData.map(p => ({
+    id: p.id,
+    name: p.name,
+    description: p.description,
+    price: Number(p.price),
+    salePrice: p.sale_price ? Number(p.sale_price) : undefined,
+    category: p.category,
+    productType: p.product_type,
+    size: p.size,
+    image: p.image,
+    inStock: p.in_stock ?? true,
+    brand: p.brand ?? undefined,
+    gender: p.gender ?? undefined,
+    tags: p.tags ?? undefined,
+  }));
 
   // JSON-LD structured data for SEO
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Product',
-    name: product.name,
-    description: product.description,
-    image: product.image,
-    brand: product.brand ? {
+    name: transformedProduct.name,
+    description: transformedProduct.description,
+    image: transformedProduct.image,
+    brand: transformedProduct.brand ? {
       '@type': 'Brand',
-      name: product.brand,
+      name: transformedProduct.brand,
     } : undefined,
     offers: {
       '@type': 'Offer',
       priceCurrency: 'EUR',
-      price: product.price,
-      availability: product.inStock
+      price: transformedProduct.price,
+      availability: transformedProduct.inStock
         ? 'https://schema.org/InStock'
         : 'https://schema.org/OutOfStock',
       seller: {
@@ -115,14 +153,14 @@ export default async function ProductPage({ params }: ProductPageProps) {
             {/* Product Image */}
             <div className="relative aspect-square bg-white rounded-2xl overflow-hidden">
               <Image
-                src={product.image}
-                alt={product.name}
+                src={transformedProduct.image}
+                alt={transformedProduct.name}
                 fill
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 priority
               />
-              {!product.inStock && (
+              {!transformedProduct.inStock && (
                 <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                   <span className="px-6 py-3 bg-black/80 text-white text-lg font-semibold rounded-full">
                     Out of Stock
@@ -133,8 +171,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
             {/* Product Details */}
             <div className="space-y-8">
-              <ProductInfo product={product} />
-              <AddToCartButton product={product} />
+              <ProductInfo product={transformedProduct} />
+              <AddToCartButton product={transformedProduct} />
 
               {/* Additional Info */}
               <div className="pt-6 border-t border-gold/10 space-y-4">
@@ -142,7 +180,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                   <svg className="w-5 h-5 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
                   </svg>
-                  <span>Free shipping on orders over €100</span>
+                  <span>Free shipping on orders over &euro;100</span>
                 </div>
                 <div className="flex items-center gap-3 text-sm text-gray-400">
                   <svg className="w-5 h-5 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor">

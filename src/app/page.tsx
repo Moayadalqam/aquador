@@ -1,4 +1,5 @@
 import dynamic from 'next/dynamic';
+import { getFeaturedProducts } from '@/lib/supabase/product-service';
 
 const Hero = dynamic(() => import('@/components/home/Hero'), {
   ssr: true,
@@ -25,13 +26,34 @@ const CTASection = dynamic(() => import('@/components/home/CTASection'), {
   ssr: true,
 });
 
-export default function Home() {
+export const revalidate = 0;
+
+export default async function Home() {
+  const featuredProductsData = await getFeaturedProducts(6);
+
+  // Transform Supabase products to match expected interface
+  const featuredProducts = featuredProductsData.map(p => ({
+    id: p.id,
+    name: p.name,
+    description: p.description,
+    price: Number(p.price),
+    salePrice: p.sale_price ? Number(p.sale_price) : undefined,
+    category: p.category,
+    productType: p.product_type,
+    size: p.size,
+    image: p.image,
+    inStock: p.in_stock ?? true,
+    brand: p.brand ?? undefined,
+    gender: p.gender ?? undefined,
+    tags: p.tags ?? undefined,
+  }));
+
   return (
     <>
       <Hero />
       <Categories />
       <CreateSection />
-      <FeaturedProducts />
+      <FeaturedProducts products={featuredProducts} />
       <CTASection />
     </>
   );

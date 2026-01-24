@@ -3,13 +3,15 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getFeaturedProducts } from '@/lib/products';
 import { formatPrice } from '@/lib/utils';
 import { ArrowRight } from 'lucide-react';
+import type { LegacyProduct } from '@/types';
 
-export default function FeaturedProducts() {
-  const products = getFeaturedProducts();
+interface FeaturedProductsProps {
+  products: LegacyProduct[];
+}
 
+export default function FeaturedProducts({ products }: FeaturedProductsProps) {
   return (
     <section className="py-28 bg-gold-ambient">
       <div className="w-full px-4 sm:px-8 lg:px-16 xl:px-24">
