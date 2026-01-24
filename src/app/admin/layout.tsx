@@ -15,21 +15,26 @@ export default async function AdminLayout({
 }) {
   const supabase = await createClient();
 
-  // Auth is verified by middleware, fetch user data for display
+  // Try to get user - may not exist for login page
   const { data: { user } } = await supabase.auth.getUser();
+
+  // If no user, render children without admin chrome (for login page)
+  if (!user) {
+    return <>{children}</>;
+  }
 
   // Fetch admin user details
   const { data: adminUser } = await supabase
     .from('admin_users')
     .select('*')
-    .eq('id', user?.id || '')
+    .eq('id', user.id)
     .single();
 
   return (
     <div className="min-h-screen bg-gray-950 text-white">
       <AdminSidebar />
       <div className="lg:pl-64">
-        <AdminHeader user={user!} adminUser={adminUser as AdminUser} />
+        <AdminHeader user={user} adminUser={adminUser as AdminUser} />
         <main className="p-6">
           {children}
         </main>
