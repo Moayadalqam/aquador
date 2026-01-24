@@ -1,17 +1,43 @@
-import { createClient } from '@/lib/supabase/server';
+'use client';
 
-export default async function CategoriesPage() {
-  const supabase = await createClient();
+import { useEffect, useState } from 'react';
+import { createClient } from '@/lib/supabase/client';
+import { AlertCircle } from 'lucide-react';
 
-  // Get category counts
-  const { data: products } = await supabase
-    .from('products')
-    .select('category');
+export default function CategoriesPage() {
+  const [categoryCounts, setCategoryCounts] = useState<Record<string, number>>({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const categoryCounts = (products || []).reduce((acc, p: { category: string }) => {
-    acc[p.category] = (acc[p.category] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const supabase = createClient();
+
+      try {
+        const { data: products, error: queryError } = await supabase
+          .from('products')
+          .select('category');
+
+        if (queryError) {
+          throw queryError;
+        }
+
+        const counts = (products || []).reduce((acc, p: { category: string }) => {
+          acc[p.category] = (acc[p.category] || 0) + 1;
+          return acc;
+        }, {} as Record<string, number>);
+
+        setCategoryCounts(counts);
+      } catch (e) {
+        console.error('Categories fetch error:', e);
+        setError(e instanceof Error ? e.message : 'Failed to load categories');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const categories = [
     { id: 'men', name: "Men's Collection", slug: 'men' },
@@ -28,6 +54,16 @@ export default async function CategoriesPage() {
         <p className="text-gray-400 mt-1">Product categories overview</p>
       </div>
 
+      {error && (
+        <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 flex items-start gap-3">
+          <AlertCircle className="h-5 w-5 text-red-400 flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="text-red-400 font-medium">Error loading categories</p>
+            <p className="text-red-400/70 text-sm mt-1">{error}</p>
+          </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {categories.map((category) => (
           <div
@@ -37,9 +73,13 @@ export default async function CategoriesPage() {
             <h3 className="text-lg font-semibold text-white">{category.name}</h3>
             <p className="text-gray-400 text-sm mt-1">/{category.slug}</p>
             <div className="mt-4 flex items-center justify-between">
-              <span className="text-3xl font-bold text-gold">
-                {categoryCounts[category.id] || 0}
-              </span>
+              {loading ? (
+                <div className="h-9 w-12 bg-gray-800 rounded animate-pulse"></div>
+              ) : (
+                <span className="text-3xl font-bold text-gold">
+                  {categoryCounts[category.id] || 0}
+                </span>
+              )}
               <span className="text-gray-400 text-sm">products</span>
             </div>
             <a

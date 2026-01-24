@@ -52,14 +52,14 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL('/admin/login', request.url));
     }
 
-    // Check if user is an admin
-    const { data: adminUser } = await supabase
+    // Check if user is an admin - use maybeSingle to avoid throwing on no results
+    const { data: adminUser, error: adminError } = await supabase
       .from('admin_users')
       .select('id')
       .eq('id', user.id)
-      .single();
+      .maybeSingle();
 
-    if (!adminUser) {
+    if (adminError || !adminUser) {
       return NextResponse.redirect(new URL('/admin/login?error=unauthorized', request.url));
     }
   }

@@ -1,50 +1,75 @@
-import { createClient } from '@/lib/supabase/server';
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
-import { Plus, Search } from 'lucide-react';
+import { Plus, Search, AlertCircle } from 'lucide-react';
 import ProductsTable from '@/components/admin/ProductsTable';
 import type { ProductCategory, Product } from '@/lib/supabase/types';
 
-interface SearchParams {
-  search?: string;
-  category?: string;
-  page?: string;
-}
+export default function ProductsPage() {
+  const searchParams = useSearchParams();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [count, setCount] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-export default async function ProductsPage({
-  searchParams,
-}: {
-  searchParams: Promise<SearchParams>;
-}) {
-  const params = await searchParams;
-  const supabase = await createClient();
-  const page = parseInt(params.page || '1');
+  const searchQuery = searchParams.get('search') || '';
+  const categoryFilter = searchParams.get('category') || '';
+  const currentPage = parseInt(searchParams.get('page') || '1');
   const perPage = 20;
-  const offset = (page - 1) * perPage;
 
-  let query = supabase
-    .from('products')
-    .select('*', { count: 'exact' })
-    .order('created_at', { ascending: false })
-    .range(offset, offset + perPage - 1);
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true);
+      setError(null);
 
-  if (params.search) {
-    query = query.ilike('name', `%${params.search}%`);
-  }
+      const supabase = createClient();
+      const offset = (currentPage - 1) * perPage;
 
-  if (params.category) {
-    query = query.eq('category', params.category as ProductCategory);
-  }
+      try {
+        let query = supabase
+          .from('products')
+          .select('*', { count: 'exact' })
+          .order('created_at', { ascending: false })
+          .range(offset, offset + perPage - 1);
 
-  const { data: products, count } = await query;
-  const typedProducts = (products || []) as Product[];
-  const totalPages = Math.ceil((count || 0) / perPage);
+        if (searchQuery) {
+          query = query.ilike('name', `%${searchQuery}%`);
+        }
+
+        if (categoryFilter) {
+          query = query.eq('category', categoryFilter as ProductCategory);
+        }
+
+        const { data, count: productCount, error: queryError } = await query;
+
+        if (queryError) {
+          throw queryError;
+        }
+
+        setProducts((data || []) as Product[]);
+        setCount(productCount || 0);
+      } catch (e) {
+        console.error('Products fetch error:', e);
+        setError(e instanceof Error ? e.message : 'Failed to load products');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [searchQuery, categoryFilter, currentPage]);
+
+  const totalPages = Math.ceil(count / perPage);
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-white">Products</h1>
-          <p className="text-gray-400 mt-1">{count || 0} total products</p>
+          <p className="text-gray-400 mt-1">{count} total products</p>
         </div>
         <Link
           href="/admin/products/new"
@@ -55,22 +80,33 @@ export default async function ProductsPage({
         </Link>
       </div>
 
+      {error && (
+        <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 flex items-start gap-3">
+          <AlertCircle className="h-5 w-5 text-red-400 flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="text-red-400 font-medium">Error loading products</p>
+            <p className="text-red-400/70 text-sm mt-1">{error}</p>
+          </div>
+        </div>
+      )}
+
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-4">
-        <form className="flex-1 relative">
+        <form className="flex-1 relative" action="/admin/products">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
           <input
             type="text"
             name="search"
-            defaultValue={params.search}
+            defaultValue={searchQuery}
             placeholder="Search products..."
             className="w-full pl-10 pr-4 py-2.5 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gold transition-colors"
           />
         </form>
-        <form>
+        <form action="/admin/products">
+          <input type="hidden" name="search" value={searchQuery} />
           <select
             name="category"
-            defaultValue={params.category || ''}
+            defaultValue={categoryFilter}
             onChange={(e) => {
               const form = e.target.form;
               if (form) form.submit();
@@ -88,7 +124,14 @@ export default async function ProductsPage({
       </div>
 
       {/* Products Table */}
-      <ProductsTable products={typedProducts} />
+      {loading ? (
+        <div className="bg-gray-900 rounded-xl border border-gray-800 p-12 text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gold mx-auto"></div>
+          <p className="text-gray-400 mt-4">Loading products...</p>
+        </div>
+      ) : (
+        <ProductsTable products={products} />
+      )}
 
       {/* Pagination */}
       {totalPages > 1 && (
@@ -96,9 +139,9 @@ export default async function ProductsPage({
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
             <Link
               key={p}
-              href={`/admin/products?page=${p}${params.search ? `&search=${params.search}` : ''}${params.category ? `&category=${params.category}` : ''}`}
+              href={`/admin/products?page=${p}${searchQuery ? `&search=${searchQuery}` : ''}${categoryFilter ? `&category=${categoryFilter}` : ''}`}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                p === page
+                p === currentPage
                   ? 'bg-gold text-black'
                   : 'bg-gray-800 text-white hover:bg-gray-700'
               }`}
