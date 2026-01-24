@@ -68,21 +68,45 @@ validation.ts - Form validation with Zod
 - **UI Components**: `src/components/ui/Button.tsx`
 - **Animations**: Framer Motion throughout
 
+### Admin Panel (`src/app/admin/`)
+
+Supabase-backed admin dashboard for product management:
+- `/admin` - Dashboard overview
+- `/admin/products` - Product CRUD (list, create, edit)
+- `/admin/categories` - Category management
+- `/admin/settings` - Store settings
+- `/admin/login` - Authentication (currently disabled for development)
+
+**Auth Status**: Authentication is temporarily disabled with mock user data. Re-enable Supabase auth in `src/app/admin/layout.tsx` before production.
+
+### Supabase Integration (`src/lib/supabase/`)
+
+Database-backed product storage (parallel to static catalog):
+- `client.ts` - Browser-side Supabase client
+- `server.ts` - Server-side client with cookies
+- `types.ts` - Generated TypeScript types from Supabase schema
+
+**Database Tables**:
+- `products` - Product catalog with enums for category, type, gender
+- `admin_users` - Admin authentication with role-based access (admin, super_admin)
+
 ### Type System (`src/types/`)
 
 Two product type systems coexist:
 - **Legacy** (`LegacyProduct` in `index.ts`): Used by `src/lib/products.ts` static catalog
 - **Variant-based** (`Product` in `product.ts`): Supports multiple variants per product (size, type)
+- **Supabase** (`src/lib/supabase/types.ts`): Database schema types for admin panel
 - **Cart** (`cart.ts`): Cart items use variant-based pricing
 
 ### Environment Variables
 
 See `.env.example`:
-- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` - Stripe public key
-- `STRIPE_SECRET_KEY` - Stripe secret key
+- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` / `STRIPE_SECRET_KEY` - Stripe payment keys
 - `STRIPE_WEBHOOK_SECRET` - For production webhooks
-- `NEXT_PUBLIC_APP_URL` - App base URL
-- `RESEND_API_KEY` - Email service for contact form
+- `NEXT_PUBLIC_APP_URL` - App base URL for redirects
+- `RESEND_API_KEY` / `CONTACT_EMAIL_TO` - Email service for contact form
+- `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Supabase admin panel
+- `SENTRY_DSN` / `SENTRY_AUTH_TOKEN` - Error tracking
 - `UPSTASH_REDIS_*` - Optional rate limiting
 
 ## Deployment

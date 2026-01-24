@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { createServerClient } from '@supabase/ssr';
 
 export async function middleware(request: NextRequest) {
   // Generate a unique request ID
@@ -9,22 +10,61 @@ export async function middleware(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set('x-request-id', requestId);
 
-  const response = NextResponse.next({
+  let response = NextResponse.next({
     request: {
       headers: requestHeaders,
     },
   });
 
-  // TEMPORARY: Auth disabled for admin routes - allow all access
-  // TODO: Re-enable authentication before production
+  const isAdminRoute = request.nextUrl.pathname.startsWith('/admin');
   const isAdminLoginRoute = request.nextUrl.pathname === '/admin/login';
 
-  // Redirect login page directly to dashboard since auth is disabled
-  if (isAdminLoginRoute) {
-    return NextResponse.redirect(new URL('/admin', request.url));
+  // Handle admin route authentication
+  if (isAdminRoute && !isAdminLoginRoute) {
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() {
+            return request.cookies.getAll();
+          },
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value }) =>
+              request.cookies.set(name, value)
+            );
+            response = NextResponse.next({
+              request: {
+                headers: requestHeaders,
+              },
+            });
+            cookiesToSet.forEach(({ name, value, options }) =>
+              response.cookies.set(name, value, options)
+            );
+          },
+        },
+      }
+    );
+
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.redirect(new URL('/admin/login', request.url));
+    }
+
+    // Check if user is an admin
+    const { data: adminUser } = await supabase
+      .from('admin_users')
+      .select('id')
+      .eq('id', user.id)
+      .single();
+
+    if (!adminUser) {
+      return NextResponse.redirect(new URL('/admin/login?error=unauthorized', request.url));
+    }
   }
 
-  // Also add request ID to response headers for client-side debugging
+  // Add request ID to response headers for debugging
   response.headers.set('x-request-id', requestId);
 
   return response;
