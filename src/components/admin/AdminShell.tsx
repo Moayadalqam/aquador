@@ -28,25 +28,39 @@ export default function AdminShell({ children }: AdminShellProps) {
     }
 
     const checkAuth = async () => {
-      const supabase = createClient();
+      try {
+        const supabase = createClient();
 
-      // Get current user
-      const { data: { user: currentUser } } = await supabase.auth.getUser();
+        // Get current user
+        const { data: { user: currentUser }, error: authError } = await supabase.auth.getUser();
 
-      if (currentUser) {
-        setUser(currentUser);
+        if (authError) {
+          console.error('Auth error:', authError);
+          setLoading(false);
+          return;
+        }
 
-        // Get admin user details
-        const { data: adminData } = await supabase
-          .from('admin_users')
-          .select('*')
-          .eq('id', currentUser.id)
-          .maybeSingle();
+        if (currentUser) {
+          setUser(currentUser);
 
-        setAdminUser(adminData);
+          // Get admin user details
+          const { data: adminData, error: adminError } = await supabase
+            .from('admin_users')
+            .select('*')
+            .eq('id', currentUser.id)
+            .maybeSingle();
+
+          if (adminError) {
+            console.error('Admin user error:', adminError);
+          }
+
+          setAdminUser(adminData);
+        }
+      } catch (error) {
+        console.error('Auth check failed:', error);
+      } finally {
+        setLoading(false);
       }
-
-      setLoading(false);
     };
 
     checkAuth();
@@ -55,17 +69,21 @@ export default function AdminShell({ children }: AdminShellProps) {
     const supabase = createClient();
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        if (session?.user) {
-          setUser(session.user);
-          const { data: adminData } = await supabase
-            .from('admin_users')
-            .select('*')
-            .eq('id', session.user.id)
-            .maybeSingle();
-          setAdminUser(adminData);
-        } else {
-          setUser(null);
-          setAdminUser(null);
+        try {
+          if (session?.user) {
+            setUser(session.user);
+            const { data: adminData } = await supabase
+              .from('admin_users')
+              .select('*')
+              .eq('id', session.user.id)
+              .maybeSingle();
+            setAdminUser(adminData);
+          } else {
+            setUser(null);
+            setAdminUser(null);
+          }
+        } catch (error) {
+          console.error('Auth state change error:', error);
         }
       }
     );
