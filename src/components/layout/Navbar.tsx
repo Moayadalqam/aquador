@@ -10,12 +10,8 @@ import { SearchBar } from '@/components/search';
 
 const navLinks = [
   { label: 'Lattafa', href: '/shop/lattafa' },
-  { label: 'Dubaishop', href: '/shop/dubaishop' },
   { label: 'Shop', href: '/shop' },
-  { label: 'Women', href: '/shop/women' },
-  { label: 'Men', href: '/shop/men' },
-  { label: 'Niche', href: '/shop/niche' },
-  { label: 'Create', href: '/create' },
+  { label: 'Create your own', href: '/create' },
   { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
 ];
