@@ -8,6 +8,7 @@ import Footer from "@/components/layout/Footer";
 import { CartProvider, CartDrawer } from "@/components/cart";
 import CookieConsent from "@/components/ui/CookieConsent";
 import { AbortErrorSuppressor } from "@/components/providers/ErrorBoundary";
+import ChatWidget from "@/components/ai/ChatWidget";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -73,6 +74,7 @@ export default function RootLayout({
           <Footer />
           <CartDrawer />
           <CookieConsent />
+          <ChatWidget />
         </CartProvider>
         <Analytics />
         <SpeedInsights />

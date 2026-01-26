@@ -47,6 +47,16 @@ export const rateLimiters = {
         prefix: 'ratelimit:payment',
       })
     : null,
+
+  // AI Assistant: 10 requests per minute
+  'ai-assistant': isConfigured && redis
+    ? new Ratelimit({
+        redis,
+        limiter: Ratelimit.slidingWindow(10, '1 m'),
+        analytics: true,
+        prefix: 'ratelimit:ai-assistant',
+      })
+    : null,
 };
 
 export type RateLimiterKey = keyof typeof rateLimiters;
