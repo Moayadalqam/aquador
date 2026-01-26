@@ -1,29 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Stripe from 'stripe';
+import type Stripe from 'stripe';
 import * as Sentry from '@sentry/nextjs';
 import type { CartItem } from '@/types/cart';
 import { CURRENCY_CODE, toCents } from '@/lib/currency';
-import { API_TIMEOUT, formatApiError } from '@/lib/api-utils';
+import { formatApiError } from '@/lib/api-utils';
 import { checkRateLimit } from '@/lib/rate-limit';
-
-function getStripe() {
-  if (!process.env.STRIPE_SECRET_KEY) {
-    throw new Error('STRIPE_SECRET_KEY is not set');
-  }
-  // Sanitize the key to remove any invisible characters (newlines, carriage returns, etc.)
-  const sanitizedKey = process.env.STRIPE_SECRET_KEY.replace(/[\r\n\s]/g, '');
-  return new Stripe(sanitizedKey, {
-    timeout: API_TIMEOUT,
-  });
-}
+import { getProductTypeLabel } from '@/lib/constants';
+import { getStripe } from '@/lib/stripe';
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-
-const productTypeLabels: Record<string, string> = {
-  'perfume': 'Perfume',
-  'essence-oil': 'Essence Oil',
-  'body-lotion': 'Body Lotion',
-};
 
 export async function POST(request: NextRequest) {
   // Check rate limit
@@ -48,7 +33,7 @@ export async function POST(request: NextRequest) {
         currency: CURRENCY_CODE,
         product_data: {
           name: item.name,
-          description: `${productTypeLabels[item.productType]} - ${item.size}`,
+          description: `${getProductTypeLabel(item.productType)} - ${item.size}`,
           images: item.image ? [item.image] : undefined,
         },
         unit_amount: toCents(item.price),

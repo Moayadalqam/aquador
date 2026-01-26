@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useReducer, useEffect, useState, useCallback, type ReactNode } from 'react';
+import { createContext, useContext, useReducer, useEffect, useState, useCallback, useRef, type ReactNode } from 'react';
 import type { Cart, CartItem, CartAction, CartContextType } from '@/types/cart';
 import { calculateSubtotal } from '@/lib/currency';
 
@@ -66,10 +66,13 @@ function cartReducer(state: Cart, action: CartAction): Cart {
 
 const CartContext = createContext<CartContextType | null>(null);
 
+const PERSIST_DEBOUNCE_MS = 500;
+
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, dispatch] = useReducer(cartReducer, initialCart);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
+  const persistTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Hydrate cart from localStorage on mount
   useEffect(() => {
@@ -87,15 +90,29 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setIsHydrated(true);
   }, []);
 
-  // Persist cart to localStorage on changes
+  // Persist cart to localStorage on changes (debounced to avoid main thread blocking)
   useEffect(() => {
-    if (isHydrated) {
+    if (!isHydrated) return;
+
+    // Clear any pending persistence
+    if (persistTimeoutRef.current) {
+      clearTimeout(persistTimeoutRef.current);
+    }
+
+    // Debounce localStorage writes
+    persistTimeoutRef.current = setTimeout(() => {
       try {
         localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
       } catch (error) {
         console.error('Failed to persist cart:', error);
       }
-    }
+    }, PERSIST_DEBOUNCE_MS);
+
+    return () => {
+      if (persistTimeoutRef.current) {
+        clearTimeout(persistTimeoutRef.current);
+      }
+    };
   }, [cart, isHydrated]);
 
   const addItem = useCallback((item: CartItem) => {

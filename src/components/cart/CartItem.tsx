@@ -5,17 +5,12 @@ import Image from 'next/image';
 import { Minus, Plus, X } from 'lucide-react';
 import type { CartItem as CartItemType } from '@/types/cart';
 import { formatPrice } from '@/lib/currency';
+import { getProductTypeLabel } from '@/lib/constants';
 import { useCart } from './CartProvider';
 
 interface CartItemProps {
   item: CartItemType;
 }
-
-const productTypeLabels: Record<string, string> = {
-  'perfume': 'Perfume',
-  'essence-oil': 'Essence Oil',
-  'body-lotion': 'Body Lotion',
-};
 
 export default function CartItem({ item }: CartItemProps) {
   const { removeItem, updateQuantity } = useCart();
@@ -57,7 +52,7 @@ export default function CartItem({ item }: CartItemProps) {
           {item.name}
         </h4>
         <p className="text-xs text-gray-400 mt-0.5">
-          {productTypeLabels[item.productType]} - {item.size}
+          {getProductTypeLabel(item.productType)} - {item.size}
         </p>
         <p className="text-sm text-gold font-semibold mt-1">
           {formatPrice(item.price)}

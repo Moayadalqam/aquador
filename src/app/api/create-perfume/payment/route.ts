@@ -1,19 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Stripe from 'stripe';
 import * as Sentry from '@sentry/nextjs';
-import { API_TIMEOUT, formatApiError } from '@/lib/api-utils';
+import { formatApiError } from '@/lib/api-utils';
 import { checkRateLimit } from '@/lib/rate-limit';
-
-function getStripe() {
-  if (!process.env.STRIPE_SECRET_KEY) {
-    throw new Error('STRIPE_SECRET_KEY is not set');
-  }
-  // Sanitize the key to remove any invisible characters (newlines, carriage returns, etc.)
-  const sanitizedKey = process.env.STRIPE_SECRET_KEY.replace(/[\r\n\s]/g, '');
-  return new Stripe(sanitizedKey, {
-    timeout: API_TIMEOUT,
-  });
-}
+import { getStripe } from '@/lib/stripe';
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 

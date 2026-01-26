@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ShoppingBag, Check, Minus, Plus } from 'lucide-react';
 import { track } from '@vercel/analytics';
@@ -17,6 +17,16 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
   const { addItem } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [isAdded, setIsAdded] = useState(false);
+  const addedTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (addedTimeoutRef.current) {
+        clearTimeout(addedTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const handleAddToCart = () => {
     // Use sale price if available, otherwise original price
@@ -48,8 +58,11 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
       quantity,
     });
 
-    // Reset added state after 2 seconds
-    setTimeout(() => setIsAdded(false), 2000);
+    // Reset added state after 2 seconds (with cleanup)
+    if (addedTimeoutRef.current) {
+      clearTimeout(addedTimeoutRef.current);
+    }
+    addedTimeoutRef.current = setTimeout(() => setIsAdded(false), 2000);
   };
 
   const decreaseQuantity = () => {
