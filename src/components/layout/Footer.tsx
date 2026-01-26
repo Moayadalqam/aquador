@@ -11,7 +11,7 @@ const footerLinks = {
     { label: "Men's Collection", href: '/shop/men' },
     { label: 'Niche Collection', href: '/shop/niche' },
     { label: 'Lattafa Collection', href: '/shop/lattafa' },
-    { label: 'Create Your Own', href: '/create' },
+    { label: 'Create Your Own', href: '/create-perfume' },
   ],
   company: [
     { label: 'About Us', href: '/about' },

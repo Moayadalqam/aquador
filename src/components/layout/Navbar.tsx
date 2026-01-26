@@ -11,7 +11,7 @@ import { SearchBar } from '@/components/search';
 const navLinks = [
   { label: 'Lattafa', href: '/shop/lattafa' },
   { label: 'Dubaishop', href: '/shop' },
-  { label: 'Create your own', href: '/create' },
+  { label: 'Create your own', href: '/create-perfume' },
   { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
 ];

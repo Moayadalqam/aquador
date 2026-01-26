@@ -170,7 +170,7 @@ export default function Hero() {
                   Explore Collection
                 </Button>
               </Link>
-              <Link href="/create">
+              <Link href="/create-perfume">
                 <Button variant="outline" size="lg" className="min-w-[220px]">
                   Create Your Own
                 </Button>

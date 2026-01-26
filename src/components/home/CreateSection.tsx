@@ -102,7 +102,7 @@ export default function CreateSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.6 }}
         >
-          <Link href="/create">
+          <Link href="/create-perfume">
             <Button size="lg" className="min-w-[200px]">
               Start Creating
             </Button>
