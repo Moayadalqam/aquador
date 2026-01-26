@@ -4,10 +4,10 @@ import { formatApiError } from '@/lib/api-utils';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { catalogueProducts, searchCatalogue } from '@/lib/ai/catalogue-data';
 
-// Note: Using OpenAI-compatible API (could be OpenAI, Anthropic via translation, etc.)
-const API_KEY = process.env.OPENAI_API_KEY || process.env.ANTHROPIC_API_KEY;
-const API_ENDPOINT = process.env.AI_API_ENDPOINT || 'https://api.openai.com/v1/chat/completions';
-const MODEL = process.env.AI_MODEL || 'gpt-4-turbo-preview';
+// OpenRouter API (supports OpenAI, Anthropic, Google, and many other models)
+const API_KEY = process.env.OPENROUTER_API_KEY || process.env.OPENAI_API_KEY;
+const API_ENDPOINT = process.env.AI_API_ENDPOINT || 'https://openrouter.ai/api/v1/chat/completions';
+const MODEL = process.env.AI_MODEL || 'google/gemini-2.0-flash-001';
 
 interface Message {
   role: 'system' | 'user' | 'assistant';
@@ -98,12 +98,14 @@ export async function POST(request: NextRequest) {
       ...conversationMessages
     ];
 
-    // Call AI API (OpenAI-compatible format)
+    // Call AI API (OpenRouter-compatible format)
     const response = await fetch(API_ENDPOINT, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${API_KEY}`,
+        'HTTP-Referer': process.env.NEXT_PUBLIC_APP_URL || 'https://aquadorcy.com',
+        'X-Title': "Aquad'or Fragrance Assistant",
       },
       body: JSON.stringify({
         model: MODEL,
