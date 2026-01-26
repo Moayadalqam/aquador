@@ -7,9 +7,6 @@ import { PerfumeComposition, FragranceNote, PerfumeVolume, FragranceCategory } f
 import { isCompositionComplete } from '@/lib/perfume/composition'
 import { validatePerfumeForm } from '@/lib/perfume/validation'
 import { calculatePrice } from '@/lib/perfume/pricing'
-import { loadStripe } from '@stripe/stripe-js'
-
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
 type NoteLayer = 'top' | 'heart' | 'base'
 
@@ -129,22 +126,14 @@ export default function CreatePerfumePage() {
         throw new Error(data.error || 'Payment failed')
       }
 
-      const stripe = await stripePromise
-      if (!stripe) throw new Error('Stripe failed to load')
-
-      const { error: stripeError } = await stripe.confirmPayment({
-        clientSecret: data.clientSecret,
-        confirmParams: {
-          return_url: `${window.location.origin}/create-perfume/success`,
-        },
-      })
-
-      if (stripeError) {
-        throw new Error(stripeError.message)
+      // Redirect to Stripe Checkout (same as regular product checkout)
+      if (data.url) {
+        window.location.href = data.url
+      } else {
+        throw new Error('No checkout URL received')
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Payment failed')
-    } finally {
       setIsProcessing(false)
     }
   }
