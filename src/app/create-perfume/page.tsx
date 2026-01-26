@@ -153,24 +153,22 @@ export default function CreatePerfumePage() {
   const theme = categoryThemes[activeCategory]
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-black text-white pt-24">
       {/* Ambient background */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl" />
         <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-amber-400/5 rounded-full blur-3xl" />
       </div>
 
-      {/* Header */}
-      <header className="border-b border-amber-900/30 bg-black/80 backdrop-blur-xl">
-        <div className="container mx-auto px-4 py-6">
-          <h1 className="text-center text-3xl md:text-4xl font-light tracking-[0.3em] text-amber-400">
-            AQUAD&apos;OR ATELIER
-          </h1>
-          <p className="mt-2 text-center text-sm text-gray-400 tracking-[0.2em]">
-            CREATE YOUR SIGNATURE FRAGRANCE
-          </p>
-        </div>
-      </header>
+      {/* Page Title */}
+      <div className="text-center mb-8 px-4">
+        <h1 className="text-3xl md:text-4xl font-light tracking-[0.2em] text-amber-400 mb-2">
+          CREATE YOUR SIGNATURE FRAGRANCE
+        </h1>
+        <p className="text-sm text-gray-400 tracking-wider">
+          Select your top, heart, and base notes to craft your perfect scent
+        </p>
+      </div>
 
       <AnimatePresence mode="wait">
         {!showForm ? (
