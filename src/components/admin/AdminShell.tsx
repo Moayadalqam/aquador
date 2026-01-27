@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import AdminSidebar from './AdminSidebar';
 import AdminHeader from './AdminHeader';
@@ -12,14 +12,9 @@ interface AdminShellProps {
   children: React.ReactNode;
 }
 
-// Helper to check if error is an AbortError (harmless)
-function isAbortError(error: unknown): boolean {
-  return error instanceof Error &&
-    (error.name === 'AbortError' || error.message.includes('aborted'));
-}
-
 export default function AdminShell({ children }: AdminShellProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const isLoginPage = pathname === '/admin/login';
   const mountedRef = useRef(true);
 
@@ -30,93 +25,58 @@ export default function AdminShell({ children }: AdminShellProps) {
   useEffect(() => {
     mountedRef.current = true;
 
-    // Skip auth check on login page
     if (isLoginPage) {
       setLoading(false);
       return;
     }
 
-    const checkAuth = async (retryCount = 0) => {
-      const supabase = createClient();
+    const supabase = createClient();
 
+    const checkAuth = async () => {
       try {
-        // Get current user
         const { data: { user: currentUser }, error: authError } = await supabase.auth.getUser();
 
-        // Don't update state if unmounted
         if (!mountedRef.current) return;
 
-        if (authError) {
-          console.error('Auth error:', authError);
-          setLoading(false);
+        if (authError || !currentUser) {
+          router.replace('/admin/login');
           return;
         }
 
-        if (currentUser) {
-          setUser(currentUser);
+        setUser(currentUser);
 
-          // Get admin user details
-          const { data: adminData, error: adminError } = await supabase
-            .from('admin_users')
-            .select('*')
-            .eq('id', currentUser.id)
-            .maybeSingle();
+        const { data: adminData, error: adminError } = await supabase
+          .from('admin_users')
+          .select('*')
+          .eq('id', currentUser.id)
+          .maybeSingle();
 
-          if (!mountedRef.current) return;
+        if (!mountedRef.current) return;
 
-          if (adminError) {
-            console.error('Admin user error:', adminError);
-          }
-
-          setAdminUser(adminData);
-        }
-
-        if (mountedRef.current) {
-          setLoading(false);
-        }
-      } catch (error) {
-        // Retry on AbortError (up to 2 times) - happens due to React Strict Mode
-        if (isAbortError(error) && retryCount < 2 && mountedRef.current) {
-          setTimeout(() => checkAuth(retryCount + 1), 100);
+        if (adminError || !adminData) {
+          router.replace('/admin/login?error=unauthorized');
           return;
         }
 
-        if (!isAbortError(error)) {
-          console.error('Auth check failed:', error);
-        }
+        setAdminUser(adminData);
+        setLoading(false);
+      } catch {
         if (mountedRef.current) {
-          setLoading(false);
+          router.replace('/admin/login');
         }
       }
     };
 
     checkAuth();
 
-    // Listen for auth changes
-    const supabase = createClient();
+    // Listen for auth changes (sign-out only — avoid re-querying on token refresh)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      (event, session) => {
         if (!mountedRef.current) return;
-
-        try {
-          if (session?.user) {
-            setUser(session.user);
-            const { data: adminData } = await supabase
-              .from('admin_users')
-              .select('*')
-              .eq('id', session.user.id)
-              .maybeSingle();
-            if (mountedRef.current) {
-              setAdminUser(adminData);
-            }
-          } else {
-            setUser(null);
-            setAdminUser(null);
-          }
-        } catch (error) {
-          if (!isAbortError(error)) {
-            console.error('Auth state change error:', error);
-          }
+        if (event === 'SIGNED_OUT' || (!session && event !== 'INITIAL_SESSION')) {
+          setUser(null);
+          setAdminUser(null);
+          router.replace('/admin/login');
         }
       }
     );
@@ -125,15 +85,13 @@ export default function AdminShell({ children }: AdminShellProps) {
       mountedRef.current = false;
       subscription.unsubscribe();
     };
-  }, [isLoginPage]);
+  }, [isLoginPage, router]);
 
-  // Login page - render without admin chrome
   if (isLoginPage) {
     return <>{children}</>;
   }
 
-  // Loading state
-  if (loading) {
+  if (loading || !user) {
     return (
       <div className="min-h-screen bg-gray-950 flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gold"></div>
@@ -141,16 +99,6 @@ export default function AdminShell({ children }: AdminShellProps) {
     );
   }
 
-  // Not authenticated - middleware should redirect, but show loading just in case
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-gray-950 flex items-center justify-center">
-        <div className="text-gray-400">Redirecting to login...</div>
-      </div>
-    );
-  }
-
-  // Authenticated - render admin layout
   return (
     <div className="min-h-screen bg-gray-950 text-white">
       <AdminSidebar />
