@@ -39,6 +39,7 @@ export type Database = {
           gender: Database["public"]["Enums"]["product_gender"] | null
           id: string
           image: string
+          images: string[]
           in_stock: boolean | null
           name: string
           price: number
@@ -56,6 +57,7 @@ export type Database = {
           gender?: Database["public"]["Enums"]["product_gender"] | null
           id?: string
           image: string
+          images?: string[]
           in_stock?: boolean | null
           name: string
           price: number
@@ -73,6 +75,7 @@ export type Database = {
           gender?: Database["public"]["Enums"]["product_gender"] | null
           id?: string
           image?: string
+          images?: string[]
           in_stock?: boolean | null
           name?: string
           price?: number

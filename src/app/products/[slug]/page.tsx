@@ -1,12 +1,12 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { getProductBySlug, getRelatedProducts } from '@/lib/supabase/product-service';
 import ProductInfo from '@/components/products/ProductInfo';
 import AddToCartButton from '@/components/products/AddToCartButton';
 import RelatedProducts from '@/components/products/RelatedProducts';
+import ProductGallery from '@/components/products/ProductGallery';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -47,6 +47,12 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
           height: 800,
           alt: product.name,
         },
+        ...(product.images ?? []).map((img: string) => ({
+          url: img,
+          width: 800,
+          height: 800,
+          alt: product.name,
+        })),
       ],
       type: 'website',
     },
@@ -80,6 +86,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     productType: product.product_type,
     size: product.size,
     image: product.image,
+    images: product.images ?? [],
     inStock: product.in_stock ?? true,
     brand: product.brand ?? undefined,
     gender: product.gender ?? undefined,
@@ -108,7 +115,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     '@type': 'Product',
     name: transformedProduct.name,
     description: transformedProduct.description,
-    image: transformedProduct.image,
+    image: [transformedProduct.image, ...transformedProduct.images],
     brand: transformedProduct.brand ? {
       '@type': 'Brand',
       name: transformedProduct.brand,
@@ -150,24 +157,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
           {/* Product Content */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
-            {/* Product Image */}
-            <div className="relative aspect-square bg-white rounded-2xl overflow-hidden">
-              <Image
-                src={transformedProduct.image}
-                alt={transformedProduct.name}
-                fill
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                priority
-              />
-              {!transformedProduct.inStock && (
-                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                  <span className="px-6 py-3 bg-black/80 text-white text-lg font-semibold rounded-full">
-                    Out of Stock
-                  </span>
-                </div>
-              )}
-            </div>
+            {/* Product Images */}
+            <ProductGallery
+              mainImage={transformedProduct.image}
+              images={transformedProduct.images}
+              name={transformedProduct.name}
+              inStock={transformedProduct.inStock}
+            />
 
             {/* Product Details */}
             <div className="space-y-8">

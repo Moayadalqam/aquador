@@ -28,6 +28,7 @@ export interface LegacyProduct {
   productType: 'perfume' | 'essence-oil' | 'body-lotion';
   size: string;
   image: string;
+  images?: string[];
   inStock: boolean;
   tags?: string[];
   brand?: string;

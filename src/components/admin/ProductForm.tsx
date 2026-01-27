@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { Upload, X, Loader2 } from 'lucide-react';
+import { Upload, X, Loader2, Plus } from 'lucide-react';
 import type { Product, ProductInsert, ProductUpdate, ProductCategory, ProductType, ProductGender } from '@/lib/supabase/types';
 
 interface ProductFormProps {
@@ -37,9 +37,14 @@ const sizes = ['10ml', '50ml', '100ml', '150ml'];
 export default function ProductForm({ product, mode }: ProductFormProps) {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const additionalFileInputRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadingAdditional, setUploadingAdditional] = useState(false);
   const [error, setError] = useState('');
+  const [additionalImages, setAdditionalImages] = useState<string[]>(
+    product?.images ?? []
+  );
 
   const [formData, setFormData] = useState({
     name: product?.name || '',
@@ -97,6 +102,57 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
     setUploading(false);
   };
 
+  const handleAdditionalImageUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      setError('Please upload an image file');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Image size must be less than 5MB');
+      return;
+    }
+    if (additionalImages.length >= 5) {
+      setError('Maximum 5 additional images');
+      return;
+    }
+
+    setUploadingAdditional(true);
+    setError('');
+
+    const supabase = createClient();
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('products')
+      .upload(fileName, file);
+
+    if (uploadError) {
+      setError('Failed to upload image: ' + uploadError.message);
+      setUploadingAdditional(false);
+      return;
+    }
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('products')
+      .getPublicUrl(fileName);
+
+    setAdditionalImages(prev => [...prev, publicUrl]);
+    setUploadingAdditional(false);
+
+    // Reset file input so same file can be re-selected
+    if (additionalFileInputRef.current) {
+      additionalFileInputRef.current.value = '';
+    }
+  }, [additionalImages.length]);
+
+  const removeAdditionalImage = useCallback((index: number) => {
+    setAdditionalImages(prev => prev.filter((_, i) => i !== index));
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -113,6 +169,7 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
       product_type: formData.product_type,
       size: formData.size,
       image: formData.image,
+      images: additionalImages,
       in_stock: formData.in_stock,
       brand: formData.brand || null,
       gender: formData.gender || null,
@@ -311,6 +368,59 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
                 placeholder="https://..."
               />
             </div>
+          </div>
+
+          {/* Additional Images */}
+          <div className="bg-gray-900 rounded-xl border border-gray-800 p-6 space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-white">Additional Images</h2>
+              <span className="text-xs text-gray-500">{additionalImages.length}/5</span>
+            </div>
+
+            {additionalImages.length > 0 && (
+              <div className="grid grid-cols-2 gap-3">
+                {additionalImages.map((img, i) => (
+                  <div key={i} className="relative group">
+                    <img
+                      src={img}
+                      alt={`Additional ${i + 1}`}
+                      className="w-full aspect-square object-cover rounded-lg"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeAdditionalImage(i)}
+                      className="absolute top-1.5 right-1.5 p-1 bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {additionalImages.length < 5 && (
+              <div
+                onClick={() => additionalFileInputRef.current?.click()}
+                className="border-2 border-dashed border-gray-700 rounded-lg p-5 text-center cursor-pointer hover:border-gold/50 transition-colors"
+              >
+                {uploadingAdditional ? (
+                  <Loader2 className="h-6 w-6 text-gold mx-auto animate-spin" />
+                ) : (
+                  <>
+                    <Plus className="h-6 w-6 text-gray-400 mx-auto mb-1" />
+                    <p className="text-gray-400 text-xs">Add image</p>
+                  </>
+                )}
+              </div>
+            )}
+
+            <input
+              ref={additionalFileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleAdditionalImageUpload}
+              className="hidden"
+            />
           </div>
 
           {/* Product Details */}
