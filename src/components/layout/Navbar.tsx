@@ -79,9 +79,7 @@ export default function Navbar() {
               </Link>
             ))}
             {/* Search Bar - after nav links */}
-            <div className="ml-24">
-              <SearchBar variant="navbar" />
-            </div>
+            <SearchBar variant="navbar" />
           </div>
 
           {/* Right side actions */}
