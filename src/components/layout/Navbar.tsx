@@ -66,8 +66,8 @@ export default function Navbar() {
             </motion.div>
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-8 xl:gap-10">
+          {/* Desktop Navigation + Search */}
+          <div className="hidden lg:flex items-center gap-6 xl:gap-8">
             {navLinks.map((link) => (
               <Link
                 key={link.label}
@@ -78,15 +78,12 @@ export default function Navbar() {
                 <span className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-gold to-gold-light scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
               </Link>
             ))}
+            {/* Search Bar - after nav links */}
+            <SearchBar variant="navbar" />
           </div>
 
           {/* Right side actions */}
-          <div className="flex items-center gap-4">
-            {/* Search Bar - Desktop */}
-            <div className="hidden lg:block">
-              <SearchBar variant="navbar" />
-            </div>
-
+          <div className="flex items-center gap-3">
             <CartIcon />
 
             {/* Mobile menu button */}

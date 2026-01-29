@@ -103,8 +103,8 @@ export default function SearchBar({
         className={`
           relative flex items-center transition-all duration-300
           ${isNavbar
-            ? `${isFocused ? 'w-80' : 'w-64'} bg-white/5 border border-gold/20 hover:border-gold/40 focus-within:border-gold/60 rounded-lg`
-            : 'w-full bg-white/5 border border-gold/30 focus-within:border-gold rounded-lg'
+            ? `${isFocused ? 'w-72' : 'w-56'} bg-white/5 border border-gold/20 hover:border-gold/40 focus-within:border-gold/60 rounded-none`
+            : 'w-full bg-white/5 border border-gold/30 focus-within:border-gold rounded-none'
           }
         `}
       >
@@ -145,7 +145,7 @@ export default function SearchBar({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
-              className="absolute top-full left-0 right-0 mt-2 bg-black/95 backdrop-blur-xl border border-gold/20 rounded-lg shadow-xl overflow-hidden z-50"
+              className="absolute top-full left-0 right-0 mt-1 bg-black/95 backdrop-blur-xl border border-gold/20 shadow-xl overflow-hidden z-50"
             >
               <div className="max-h-[400px] overflow-y-auto">
                 {results.map((product) => (
@@ -155,7 +155,7 @@ export default function SearchBar({
                     onClick={handleResultClick}
                     className="flex items-center gap-4 p-4 hover:bg-gold/10 transition-colors border-b border-gold/10 last:border-b-0"
                   >
-                    <div className="relative w-14 h-14 flex-shrink-0 bg-white rounded-lg overflow-hidden">
+                    <div className="relative w-14 h-14 flex-shrink-0 bg-white overflow-hidden">
                       <Image
                         src={product.image}
                         alt={product.name}
@@ -193,7 +193,7 @@ export default function SearchBar({
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="absolute top-full left-0 right-0 mt-2 bg-black/95 backdrop-blur-xl border border-gold/20 rounded-lg shadow-xl p-4 z-50"
+              className="absolute top-full left-0 right-0 mt-1 bg-black/95 backdrop-blur-xl border border-gold/20 shadow-xl p-4 z-50"
             >
               <p className="text-gray-400 text-sm text-center">No products found for &quot;{query}&quot;</p>
             </motion.div>
