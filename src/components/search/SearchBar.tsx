@@ -103,12 +103,12 @@ export default function SearchBar({
         className={`
           relative flex items-center transition-all duration-300
           ${isNavbar
-            ? `${isFocused ? 'w-64' : 'w-48'} bg-white/5 border border-gold/20 hover:border-gold/40 focus-within:border-gold/60 rounded-sm`
-            : 'w-full bg-white/5 border border-gold/30 focus-within:border-gold rounded-sm'
+            ? `${isFocused ? 'w-80' : 'w-64'} bg-white/5 border border-gold/20 hover:border-gold/40 focus-within:border-gold/60 rounded-lg`
+            : 'w-full bg-white/5 border border-gold/30 focus-within:border-gold rounded-lg'
           }
         `}
       >
-        <Search className={`${isNavbar ? 'w-4 h-4 ml-3' : 'w-5 h-5 ml-4'} text-gray-400`} />
+        <Search className={`${isNavbar ? 'w-5 h-5 ml-4' : 'w-5 h-5 ml-4'} text-gray-400`} />
         <input
           ref={inputRef}
           type="text"
@@ -123,15 +123,15 @@ export default function SearchBar({
           placeholder={placeholder}
           className={`
             w-full bg-transparent border-none outline-none text-white placeholder-gray-500
-            ${isNavbar ? 'px-3 py-2 text-sm' : 'px-4 py-3 text-base'}
+            ${isNavbar ? 'px-3 py-3 text-sm' : 'px-4 py-3.5 text-base'}
           `}
         />
         {query && (
           <button
             onClick={handleClear}
-            className={`${isNavbar ? 'mr-2' : 'mr-3'} text-gray-400 hover:text-white transition-colors`}
+            className={`${isNavbar ? 'mr-3' : 'mr-4'} text-gray-400 hover:text-white transition-colors`}
           >
-            <X className={isNavbar ? 'w-4 h-4' : 'w-5 h-5'} />
+            <X className={isNavbar ? 'w-5 h-5' : 'w-5 h-5'} />
           </button>
         )}
       </div>
@@ -145,7 +145,7 @@ export default function SearchBar({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
-              className="absolute top-full left-0 right-0 mt-2 bg-black/95 backdrop-blur-xl border border-gold/20 rounded-sm shadow-xl overflow-hidden z-50"
+              className="absolute top-full left-0 right-0 mt-2 bg-black/95 backdrop-blur-xl border border-gold/20 rounded-lg shadow-xl overflow-hidden z-50"
             >
               <div className="max-h-[400px] overflow-y-auto">
                 {results.map((product) => (
@@ -153,9 +153,9 @@ export default function SearchBar({
                     key={product.id}
                     href={`/products/${product.id}`}
                     onClick={handleResultClick}
-                    className="flex items-center gap-3 p-3 hover:bg-gold/10 transition-colors border-b border-gold/10 last:border-b-0"
+                    className="flex items-center gap-4 p-4 hover:bg-gold/10 transition-colors border-b border-gold/10 last:border-b-0"
                   >
-                    <div className="relative w-12 h-12 flex-shrink-0 bg-white rounded-sm overflow-hidden">
+                    <div className="relative w-14 h-14 flex-shrink-0 bg-white rounded-lg overflow-hidden">
                       <Image
                         src={product.image}
                         alt={product.name}
@@ -193,7 +193,7 @@ export default function SearchBar({
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="absolute top-full left-0 right-0 mt-2 bg-black/95 backdrop-blur-xl border border-gold/20 rounded-sm shadow-xl p-4 z-50"
+              className="absolute top-full left-0 right-0 mt-2 bg-black/95 backdrop-blur-xl border border-gold/20 rounded-lg shadow-xl p-4 z-50"
             >
               <p className="text-gray-400 text-sm text-center">No products found for &quot;{query}&quot;</p>
             </motion.div>

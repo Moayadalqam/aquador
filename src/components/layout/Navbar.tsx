@@ -9,8 +9,9 @@ import { CartIcon } from '@/components/cart';
 import { SearchBar } from '@/components/search';
 
 const navLinks = [
-  { label: 'Shop', href: '/shop' },
-  { label: 'Create', href: '/create-perfume' },
+  { label: 'Lattafa', href: '/shop/lattafa' },
+  { label: 'Dubai Shop', href: '/shop' },
+  { label: 'Create Your Own', href: '/create-perfume' },
   { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
 ];
@@ -60,7 +61,7 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-8">
+          <div className="hidden lg:flex items-center gap-10">
             {navLinks.map((link) => (
               <Link
                 key={link.label}
