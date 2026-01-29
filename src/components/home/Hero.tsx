@@ -3,7 +3,6 @@
 import { motion, useInView } from 'framer-motion';
 import Link from 'next/link';
 import Button from '@/components/ui/Button';
-import { Truck } from 'lucide-react';
 import { useState, useRef } from 'react';
 
 export default function Hero() {
@@ -13,23 +12,8 @@ export default function Hero() {
 
   return (
     <section className="relative min-h-screen flex flex-col overflow-hidden">
-      {/* Announcement Banner */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.5 }}
-        className="relative z-20 bg-black/80 backdrop-blur-sm border-b border-gold/10 py-3 mt-24"
-      >
-        <div className="container-wide flex items-center justify-center gap-3">
-          <Truck className="w-4 h-4 text-gold" />
-          <p className="text-xs sm:text-sm text-gray-300 tracking-wider uppercase">
-            <span className="text-gold font-medium">Free Delivery</span> on orders over €100
-          </p>
-        </div>
-      </motion.div>
-
       {/* Main Hero Content */}
-      <div ref={sectionRef} className="relative flex-1 flex items-center justify-center">
+      <div ref={sectionRef} className="relative flex-1 flex items-center justify-center pt-24">
         {/* Video Background */}
         <div className="absolute inset-0 z-0">
           {!videoError ? (

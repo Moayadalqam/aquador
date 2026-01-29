@@ -42,34 +42,40 @@ export default function Navbar() {
       transition={{ duration: 0.5 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         isScrolled
-          ? 'bg-black/95 backdrop-blur-xl'
-          : 'bg-gradient-to-b from-black/70 to-transparent'
+          ? 'bg-black/98 backdrop-blur-xl border-b border-gold/10'
+          : 'bg-gradient-to-b from-black/80 via-black/50 to-transparent'
       }`}
     >
       <nav className="container-wide">
         <div className="flex items-center justify-between h-20 md:h-24">
           {/* Logo */}
           <Link href="/" className="flex items-center">
-            <Image
-              src="/aquador.webp"
-              alt="Aquad'or"
-              width={280}
-              height={100}
-              className="h-20 md:h-24 w-auto object-contain"
-              priority
-            />
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              transition={{ duration: 0.2 }}
+              className="relative group"
+            >
+              <Image
+                src="/aquador.webp"
+                alt="Aquad'or"
+                width={280}
+                height={100}
+                className="h-20 md:h-24 w-auto object-contain transition-all duration-300 group-hover:drop-shadow-[0_0_20px_rgba(212,175,55,0.25)]"
+                priority
+              />
+            </motion.div>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-10">
+          <div className="hidden lg:flex items-center gap-8 xl:gap-10">
             {navLinks.map((link) => (
               <Link
                 key={link.label}
                 href={link.href}
-                className="relative text-xs font-medium uppercase tracking-[0.12em] text-gray-300 hover:text-white transition-colors duration-300 py-2 group"
+                className="relative text-xs xl:text-sm font-light uppercase tracking-[0.12em] xl:tracking-[0.15em] text-gray-300 hover:text-gold transition-all duration-300 py-2 group"
               >
                 {link.label}
-                <span className="absolute bottom-0 left-0 w-full h-px bg-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+                <span className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-gold to-gold-light scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
               </Link>
             ))}
           </div>
@@ -86,7 +92,7 @@ export default function Navbar() {
             {/* Mobile menu button */}
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="lg:hidden p-2 text-gray-300 hover:text-white transition-colors"
+              className="lg:hidden p-2 text-gray-300 hover:text-gold transition-colors"
               aria-label={isOpen ? 'Close menu' : 'Open menu'}
             >
               {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -132,15 +138,15 @@ export default function Navbar() {
         </AnimatePresence>
       </nav>
 
-      {/* Subtle bottom border when scrolled */}
-      <div
-        className={`absolute bottom-0 left-0 right-0 h-px transition-opacity duration-500 ${
-          isScrolled ? 'opacity-100' : 'opacity-0'
-        }`}
-        style={{
-          background: 'linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent)',
-        }}
-      />
+      {/* Gold accent line */}
+      <motion.div
+        className="absolute bottom-0 left-0 right-0 h-px"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isScrolled ? 0 : 1 }}
+        transition={{ duration: 0.3 }}
+      >
+        <div className="w-full h-full bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
+      </motion.div>
     </motion.header>
   );
 }
