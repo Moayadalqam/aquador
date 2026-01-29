@@ -7,159 +7,123 @@ import { Instagram, Facebook, Mail, Phone, MapPin } from 'lucide-react';
 
 const footerLinks = {
   shop: [
-    { label: "Women's Collection", href: '/shop/women' },
-    { label: "Men's Collection", href: '/shop/men' },
-    { label: 'Niche Collection', href: '/shop/niche' },
-    { label: 'Lattafa Collection', href: '/shop/lattafa' },
+    { label: "Women's", href: '/shop/women' },
+    { label: "Men's", href: '/shop/men' },
+    { label: 'Niche', href: '/shop/niche' },
     { label: 'Create Your Own', href: '/create-perfume' },
   ],
   company: [
-    { label: 'About Us', href: '/about' },
+    { label: 'About', href: '/about' },
     { label: 'Contact', href: '/contact' },
-    { label: 'Shipping & Returns', href: '/shipping' },
-  ],
-  legal: [
-    { label: 'Terms of Service', href: '/terms' },
-    { label: 'Privacy Policy', href: '/privacy' },
+    { label: 'Shipping', href: '/shipping' },
+    { label: 'Terms', href: '/terms' },
+    { label: 'Privacy', href: '/privacy' },
   ],
 };
 
 export default function Footer() {
   return (
-    <footer className="relative bg-gold-ambient-subtle border-t border-gold/10">
-      {/* Decorative top border */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
-
-      <div className="w-full px-4 sm:px-8 lg:px-16 xl:px-24 py-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16">
+    <footer className="relative bg-gold-ambient-subtle border-t border-gold/5">
+      <div className="container-wide section-sm">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-10 md:gap-8">
           {/* Brand */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="space-y-8"
-          >
-            <Link href="/" className="inline-block group">
+          <div className="col-span-2 md:col-span-1 space-y-5">
+            <Link href="/" className="inline-block">
               <Image
                 src="/aquador.webp"
                 alt="Aquad'or"
-                width={360}
-                height={140}
-                className="h-32 w-auto object-contain transition-all duration-300 group-hover:drop-shadow-[0_0_10px_rgba(212,175,55,0.3)]"
+                width={200}
+                height={80}
+                className="h-16 w-auto object-contain"
               />
             </Link>
-            <p className="text-gray-400 text-sm leading-relaxed tracking-wide">
-              Where Luxury Meets Distinction. Crafting exceptional fragrances that tell your unique story.
+            <p className="text-gray-500 text-xs leading-relaxed max-w-[200px]">
+              Where Luxury Meets Distinction.
             </p>
-            <div className="flex gap-5">
-              <motion.a
+            <div className="flex gap-3">
+              <a
                 href="https://instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                whileHover={{ scale: 1.1 }}
-                className="p-2 text-gray-400 hover:text-gold transition-colors duration-300"
+                className="p-2 text-gray-500 hover:text-gold transition-colors"
+                aria-label="Instagram"
               >
-                <Instagram className="w-5 h-5" />
-              </motion.a>
-              <motion.a
+                <Instagram className="w-4 h-4" />
+              </a>
+              <a
                 href="https://facebook.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                whileHover={{ scale: 1.1 }}
-                className="p-2 text-gray-400 hover:text-gold transition-colors duration-300"
+                className="p-2 text-gray-500 hover:text-gold transition-colors"
+                aria-label="Facebook"
               >
-                <Facebook className="w-5 h-5" />
-              </motion.a>
+                <Facebook className="w-4 h-4" />
+              </a>
             </div>
-          </motion.div>
+          </div>
 
           {/* Shop Links */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-          >
-            <h3 className="text-gold text-xs font-medium uppercase tracking-[0.2em] mb-8">Shop</h3>
-            <ul className="space-y-4">
+          <div>
+            <h3 className="label-micro-gold mb-5">Shop</h3>
+            <ul className="space-y-3">
               {footerLinks.shop.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-gray-400 hover:text-gold transition-colors duration-300 text-sm tracking-wide"
+                    className="text-gray-500 hover:text-white transition-colors text-xs"
                   >
                     {link.label}
                   </Link>
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </div>
 
           {/* Company Links */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-          >
-            <h3 className="text-gold text-xs font-medium uppercase tracking-[0.2em] mb-8">Company</h3>
-            <ul className="space-y-4">
+          <div>
+            <h3 className="label-micro-gold mb-5">Company</h3>
+            <ul className="space-y-3">
               {footerLinks.company.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-gray-400 hover:text-gold transition-colors duration-300 text-sm tracking-wide"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-              {footerLinks.legal.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-gray-400 hover:text-gold transition-colors duration-300 text-sm tracking-wide"
+                    className="text-gray-500 hover:text-white transition-colors text-xs"
                   >
                     {link.label}
                   </Link>
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </div>
 
           {/* Contact */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
-          >
-            <h3 className="text-gold text-xs font-medium uppercase tracking-[0.2em] mb-8">Contact</h3>
-            <ul className="space-y-5">
-              <li className="flex items-start gap-4 text-gray-400 text-sm">
-                <MapPin className="w-4 h-4 text-gold flex-shrink-0 mt-0.5" />
-                <span className="tracking-wide">Ledra 145, 1011<br />Nicosia, Cyprus</span>
+          <div>
+            <h3 className="label-micro-gold mb-5">Contact</h3>
+            <ul className="space-y-3">
+              <li className="flex items-start gap-3 text-gray-500 text-xs">
+                <MapPin className="w-3.5 h-3.5 text-gold/70 flex-shrink-0 mt-0.5" />
+                <span>Ledra 145<br />Nicosia, Cyprus</span>
               </li>
               <li>
                 <a
                   href="tel:99980809"
-                  className="flex items-center gap-4 text-gray-400 hover:text-gold transition-colors duration-300 text-sm tracking-wide"
+                  className="flex items-center gap-3 text-gray-500 hover:text-white transition-colors text-xs"
                 >
-                  <Phone className="w-4 h-4 text-gold" />
+                  <Phone className="w-3.5 h-3.5 text-gold/70" />
                   +357 99 980809
                 </a>
               </li>
               <li>
                 <a
                   href="mailto:info@aquadorcy.com"
-                  className="flex items-center gap-4 text-gray-400 hover:text-gold transition-colors duration-300 text-sm tracking-wide"
+                  className="flex items-center gap-3 text-gray-500 hover:text-white transition-colors text-xs"
                 >
-                  <Mail className="w-4 h-4 text-gold" />
+                  <Mail className="w-3.5 h-3.5 text-gold/70" />
                   info@aquadorcy.com
                 </a>
               </li>
             </ul>
-          </motion.div>
+          </div>
         </div>
 
         {/* Bottom bar */}
@@ -167,19 +131,18 @@ export default function Footer() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.4 }}
-          className="mt-20 pt-8 border-t border-gold/10 flex flex-col md:flex-row justify-between items-center gap-4"
+          className="mt-12 pt-6 border-t border-gold/5 flex flex-col sm:flex-row justify-between items-center gap-3"
         >
-          <p className="text-gray-500 text-xs tracking-wide">
-            © {new Date().getFullYear()} Aquad&apos;or Cyprus. All rights reserved.
+          <p className="text-gray-600 text-[10px] tracking-wide">
+            © {new Date().getFullYear()} Aquad&apos;or Cyprus
           </p>
-          <p className="text-gray-600 text-xs tracking-wide">
-            Developed and designed by:{' '}
+          <p className="text-gray-600 text-[10px] tracking-wide">
+            by{' '}
             <a
               href="https://qualiasolutions.net"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gold hover:text-gold-light transition-colors duration-300"
+              className="text-gold/70 hover:text-gold transition-colors"
             >
               Qualia Solutions
             </a>

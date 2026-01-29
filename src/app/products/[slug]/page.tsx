@@ -142,8 +142,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <main className="min-h-screen bg-gold-ambient pt-28 pb-16">
-        <div className="w-full px-4 sm:px-8 lg:px-16 xl:px-24">
+      <main className="min-h-screen bg-gold-ambient pt-28 pb-20">
+        <div className="container-wide">
           {/* Breadcrumb */}
           <nav className="mb-8">
             <Link

@@ -11,11 +11,11 @@ import { calculatePrice } from '@/lib/perfume/pricing'
 type NoteLayer = 'top' | 'heart' | 'base'
 
 const categoryThemes = {
-  floral: { primary: '#FF6B9D', glow: 'rgba(255,107,157,0.3)' },
-  fruity: { primary: '#FFD700', glow: 'rgba(255,215,0,0.3)' },
-  woody: { primary: '#8B7355', glow: 'rgba(139,115,85,0.3)' },
-  oriental: { primary: '#D4AF37', glow: 'rgba(212,175,55,0.3)' },
-  gourmand: { primary: '#AF6E4D', glow: 'rgba(175,110,77,0.3)' },
+  floral: { primary: '#D4AF37', glow: 'rgba(212,175,55,0.2)' },
+  fruity: { primary: '#D4AF37', glow: 'rgba(212,175,55,0.2)' },
+  woody: { primary: '#D4AF37', glow: 'rgba(212,175,55,0.2)' },
+  oriental: { primary: '#D4AF37', glow: 'rgba(212,175,55,0.2)' },
+  gourmand: { primary: '#D4AF37', glow: 'rgba(212,175,55,0.2)' },
 }
 
 const categoryIcons: Record<FragranceCategory, string> = {
@@ -142,19 +142,19 @@ export default function CreatePerfumePage() {
   const theme = categoryThemes[activeCategory]
 
   return (
-    <div className="min-h-screen bg-black text-white pt-24">
+    <div className="min-h-screen bg-gold-ambient text-white pt-28">
       {/* Ambient background */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-amber-400/5 rounded-full blur-3xl" />
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-gold/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-gold/5 rounded-full blur-3xl" />
       </div>
 
       {/* Page Title */}
-      <div className="text-center mb-8 px-4">
-        <h1 className="text-3xl md:text-4xl font-light tracking-[0.2em] text-amber-400 mb-2">
-          CREATE YOUR SIGNATURE FRAGRANCE
+      <div className="text-center mb-10 px-4">
+        <h1 className="text-3xl md:text-4xl font-playfair tracking-wide text-gold mb-3">
+          Create Your Signature
         </h1>
-        <p className="text-sm text-gray-400 tracking-wider">
+        <p className="text-sm text-gray-400 tracking-wider max-w-md mx-auto">
           Select your top, heart, and base notes to craft your perfect scent
         </p>
       </div>
@@ -166,7 +166,7 @@ export default function CreatePerfumePage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="container mx-auto px-4 py-8"
+            className="container-wide pb-20"
           >
             {/* Fragrance Pyramid - Desktop Only */}
             <div className="hidden md:flex flex-col items-center mb-8 max-w-xs mx-auto">
@@ -181,7 +181,7 @@ export default function CreatePerfumePage() {
                       key={layer}
                       className={`
                         h-14 flex items-center justify-center rounded transition-all duration-300
-                        ${isActive ? 'ring-2 ring-amber-400' : ''}
+                        ${isActive ? 'ring-2 ring-gold' : ''}
                       `}
                       style={{
                         width: widths[idx],
@@ -192,7 +192,7 @@ export default function CreatePerfumePage() {
                         border: `1px solid ${note ? note.color + '60' : 'rgba(212,175,55,0.2)'}`,
                       }}
                     >
-                      <span className={`text-xs font-medium tracking-wider ${isActive ? 'text-amber-300' : 'text-gray-400'}`}>
+                      <span className={`text-xs font-medium tracking-wider ${isActive ? 'text-gold' : 'text-gray-400'}`}>
                         {layer.toUpperCase()}
                         {note && <span className="ml-2">{note.icon} {note.name}</span>}
                       </span>
@@ -217,7 +217,7 @@ export default function CreatePerfumePage() {
                       relative px-6 sm:px-8 py-4 text-sm tracking-widest transition-all duration-300
                       rounded-lg overflow-hidden
                       ${isActive
-                        ? 'bg-amber-500/20 text-amber-400 ring-1 ring-amber-400'
+                        ? 'bg-gold/20 text-gold ring-1 ring-gold'
                         : isCompleted
                           ? 'bg-green-900/20 text-green-400'
                           : 'bg-white/5 text-gray-500 hover:bg-white/10'
@@ -229,7 +229,7 @@ export default function CreatePerfumePage() {
                         className={`
                           flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold
                           ${isActive
-                            ? 'bg-amber-400 text-black'
+                            ? 'bg-gold text-black'
                             : isCompleted
                               ? 'bg-green-500 text-black'
                               : 'bg-white/10 text-gray-500'
@@ -309,7 +309,7 @@ export default function CreatePerfumePage() {
                         relative flex flex-col items-center gap-3 rounded-xl p-4
                         transition-colors duration-300 overflow-hidden
                         ${isSelected
-                          ? 'bg-amber-500/20 ring-2 ring-amber-400'
+                          ? 'bg-gold/20 ring-2 ring-gold'
                           : 'bg-white/5 hover:bg-white/10'
                         }
                       `}
@@ -328,7 +328,7 @@ export default function CreatePerfumePage() {
                       {/* Note name */}
                       <span className={`
                         relative text-center text-xs font-medium tracking-wide z-10 transition-colors duration-300
-                        ${isSelected ? 'text-amber-400' : 'text-gray-300'}
+                        ${isSelected ? 'text-gold' : 'text-gray-300'}
                       `}>
                         {note.name}
                       </span>
@@ -347,8 +347,8 @@ export default function CreatePerfumePage() {
             </div>
 
             {/* Composition Summary */}
-            <div className="mx-auto max-w-md rounded-2xl border border-amber-900/30 bg-black/40 p-6 backdrop-blur-lg">
-              <h3 className="mb-6 text-center text-lg text-amber-400 tracking-[0.2em] font-light">
+            <div className="mx-auto max-w-md rounded-2xl border border-gold/20 bg-black/40 p-6 backdrop-blur-lg">
+              <h3 className="mb-6 text-center text-lg text-gold tracking-[0.2em] font-light">
                 YOUR COMPOSITION
               </h3>
 
@@ -386,7 +386,7 @@ export default function CreatePerfumePage() {
                 className={`
                   mt-8 w-full rounded-full py-4 text-sm tracking-[0.15em] transition-all duration-300
                   ${isComplete
-                    ? 'bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-black font-medium hover:shadow-lg hover:shadow-amber-500/30'
+                    ? 'bg-gradient-to-r from-gold via-gold-light to-gold text-black font-medium hover:shadow-lg hover:shadow-gold/30'
                     : 'cursor-not-allowed bg-white/10 text-gray-600'
                   }
                 `}
@@ -431,8 +431,8 @@ export default function CreatePerfumePage() {
             </button>
 
             {/* Form card */}
-            <div className="rounded-2xl border border-amber-900/30 bg-black/50 p-8 backdrop-blur-lg">
-              <h2 className="mb-8 text-center text-2xl text-amber-400 tracking-[0.15em] font-light">
+            <div className="rounded-2xl border border-gold/20 bg-black/50 p-8 backdrop-blur-lg">
+              <h2 className="mb-8 text-center text-2xl text-gold tracking-[0.15em] font-light">
                 FINALIZE YOUR FRAGRANCE
               </h2>
 
@@ -446,14 +446,14 @@ export default function CreatePerfumePage() {
                       <span className="text-sm">{composition.top.name}</span>
                     </span>
                   )}
-                  <span className="text-amber-400/50">•</span>
+                  <span className="text-gold/50">•</span>
                   {composition.heart && (
                     <span className="flex items-center gap-1">
                       <span>{composition.heart.icon}</span>
                       <span className="text-sm">{composition.heart.name}</span>
                     </span>
                   )}
-                  <span className="text-amber-400/50">•</span>
+                  <span className="text-gold/50">•</span>
                   {composition.base && (
                     <span className="flex items-center gap-1">
                       <span>{composition.base.icon}</span>
@@ -475,8 +475,8 @@ export default function CreatePerfumePage() {
                     onChange={(e) => setPerfumeName(e.target.value)}
                     placeholder="Name your creation..."
                     maxLength={30}
-                    className="w-full rounded-lg border border-amber-900/30 bg-white/5 px-4 py-3.5 text-white placeholder-gray-600
-                               focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-400/50"
+                    className="w-full rounded-lg border border-gold/20 bg-white/5 px-4 py-3.5 text-white placeholder-gray-600
+                               focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold/50"
                   />
                   <span className="mt-1 block text-right text-xs text-gray-600">
                     {perfumeName.length}/30
@@ -497,8 +497,8 @@ export default function CreatePerfumePage() {
                         className={`
                           rounded-xl border p-5 transition-all duration-300
                           ${selectedVolume === vol
-                            ? 'border-amber-400 bg-amber-500/20 text-amber-400'
-                            : 'border-amber-900/30 bg-white/5 text-gray-400 hover:border-amber-400/50'
+                            ? 'border-gold bg-gold/20 text-gold'
+                            : 'border-gold/20 bg-white/5 text-gray-400 hover:border-gold/50'
                           }
                         `}
                       >
@@ -520,8 +520,8 @@ export default function CreatePerfumePage() {
                     placeholder="Any special requests for your fragrance..."
                     maxLength={500}
                     rows={4}
-                    className="w-full rounded-lg border border-amber-900/30 bg-white/5 px-4 py-3.5 text-white placeholder-gray-600
-                               focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-400/50 resize-none"
+                    className="w-full rounded-lg border border-gold/20 bg-white/5 px-4 py-3.5 text-white placeholder-gray-600
+                               focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold/50 resize-none"
                   />
                 </div>
 
@@ -536,7 +536,7 @@ export default function CreatePerfumePage() {
                 <div className="flex items-center justify-between border-t border-white/10 pt-6">
                   <div>
                     <div className="text-xs text-gray-400 tracking-wider uppercase">Total</div>
-                    <div className="text-3xl text-amber-400 font-light">
+                    <div className="text-3xl text-gold font-light">
                       €{selectedVolume ? calculatePrice(selectedVolume).toFixed(2) : '0.00'}
                     </div>
                   </div>
@@ -547,7 +547,7 @@ export default function CreatePerfumePage() {
                       rounded-full px-8 py-4 text-sm tracking-[0.1em] transition-all duration-300
                       ${isProcessing || !perfumeName || !selectedVolume
                         ? 'cursor-not-allowed bg-white/10 text-gray-600'
-                        : 'bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-black font-medium hover:shadow-lg hover:shadow-amber-500/30'
+                        : 'bg-gradient-to-r from-gold via-gold-light to-gold text-black font-medium hover:shadow-lg hover:shadow-gold/30'
                       }
                     `}
                   >

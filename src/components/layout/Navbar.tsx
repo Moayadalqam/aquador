@@ -9,9 +9,8 @@ import { CartIcon } from '@/components/cart';
 import { SearchBar } from '@/components/search';
 
 const navLinks = [
-  { label: 'Lattafa', href: '/shop/lattafa' },
-  { label: 'Dubaishop', href: '/shop' },
-  { label: 'Create your own', href: '/create-perfume' },
+  { label: 'Shop', href: '/shop' },
+  { label: 'Create', href: '/create-perfume' },
   { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
 ];
@@ -39,45 +38,43 @@ export default function Navbar() {
     <motion.header
       initial={{ y: -100 }}
       animate={{ y: 0 }}
+      transition={{ duration: 0.5 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        isScrolled ? 'bg-black/95 backdrop-blur-xl shadow-lg shadow-black/30' : 'bg-gradient-to-b from-black/80 to-transparent'
+        isScrolled
+          ? 'bg-black/95 backdrop-blur-xl'
+          : 'bg-gradient-to-b from-black/70 to-transparent'
       }`}
     >
-      <nav className="w-full px-4 sm:px-8 lg:px-16 xl:px-24">
-        <div className="flex items-center justify-between h-24">
-          {/* Logo - Larger and more prominent */}
+      <nav className="container-wide">
+        <div className="flex items-center justify-between h-20 md:h-24">
+          {/* Logo */}
           <Link href="/" className="flex items-center">
-            <motion.div
-              whileHover={{ scale: 1.03 }}
-              className="relative group"
-            >
-              <Image
-                src="/aquador.webp"
-                alt="Aquad'or"
-                width={360}
-                height={128}
-                className="h-32 w-auto object-contain transition-all duration-300 group-hover:drop-shadow-[0_0_15px_rgba(212,175,55,0.4)]"
-                priority
-              />
-            </motion.div>
+            <Image
+              src="/aquador.webp"
+              alt="Aquad'or"
+              width={280}
+              height={100}
+              className="h-20 md:h-24 w-auto object-contain"
+              priority
+            />
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-6 xl:gap-8">
+          <div className="hidden lg:flex items-center gap-8">
             {navLinks.map((link) => (
               <Link
                 key={link.label}
                 href={link.href}
-                className="relative text-[13px] font-medium uppercase tracking-[0.08em] text-gray-200 hover:text-gold transition-colors duration-300 py-2 group whitespace-nowrap"
+                className="relative text-xs font-medium uppercase tracking-[0.12em] text-gray-300 hover:text-white transition-colors duration-300 py-2 group"
               >
                 {link.label}
-                <span className="absolute bottom-0 left-0 w-full h-[1.5px] bg-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+                <span className="absolute bottom-0 left-0 w-full h-px bg-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
               </Link>
             ))}
           </div>
 
           {/* Right side actions */}
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4">
             {/* Search Bar - Desktop */}
             <div className="hidden lg:block">
               <SearchBar variant="navbar" />
@@ -88,9 +85,10 @@ export default function Navbar() {
             {/* Mobile menu button */}
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="lg:hidden p-2 text-gray-200 hover:text-gold transition-colors"
+              className="lg:hidden p-2 text-gray-300 hover:text-white transition-colors"
+              aria-label={isOpen ? 'Close menu' : 'Open menu'}
             >
-              {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
@@ -102,26 +100,26 @@ export default function Navbar() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
-              className="lg:hidden overflow-hidden border-t border-gold/20 bg-black/95"
+              transition={{ duration: 0.25 }}
+              className="lg:hidden overflow-hidden border-t border-gold/10 bg-black/98"
             >
-              <div className="py-6 space-y-1">
+              <div className="py-5 space-y-1">
                 {/* Mobile Search Bar */}
-                <div className="px-4 pb-4">
+                <div className="pb-4">
                   <SearchBar variant="shop" placeholder="Search fragrances..." />
                 </div>
 
                 {navLinks.map((link, index) => (
                   <motion.div
                     key={link.label}
-                    initial={{ opacity: 0, x: -20 }}
+                    initial={{ opacity: 0, x: -15 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
+                    transition={{ delay: index * 0.05 }}
                   >
                     <Link
                       href={link.href}
                       onClick={() => setIsOpen(false)}
-                      className="block py-4 text-lg uppercase tracking-[0.15em] text-gray-200 hover:text-gold transition-colors border-b border-gold/10"
+                      className="block py-3 text-sm uppercase tracking-[0.15em] text-gray-300 hover:text-gold transition-colors border-b border-gold/5"
                     >
                       {link.label}
                     </Link>
@@ -133,8 +131,15 @@ export default function Navbar() {
         </AnimatePresence>
       </nav>
 
-      {/* Gold accent line - always visible but more subtle */}
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
+      {/* Subtle bottom border when scrolled */}
+      <div
+        className={`absolute bottom-0 left-0 right-0 h-px transition-opacity duration-500 ${
+          isScrolled ? 'opacity-100' : 'opacity-0'
+        }`}
+        style={{
+          background: 'linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent)',
+        }}
+      />
     </motion.header>
   );
 }
