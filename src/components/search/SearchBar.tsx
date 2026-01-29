@@ -103,7 +103,7 @@ export default function SearchBar({
         className={`
           relative flex items-center transition-all duration-300
           ${isNavbar
-            ? `${isFocused ? 'w-72' : 'w-56'} bg-white/5 border border-gold/20 hover:border-gold/40 focus-within:border-gold/60 rounded-none`
+            ? `${isFocused ? 'w-80' : 'w-64'} bg-white/5 border border-gold/20 hover:border-gold/40 focus-within:border-gold/60 rounded-none`
             : 'w-full bg-white/5 border border-gold/30 focus-within:border-gold rounded-none'
           }
         `}
