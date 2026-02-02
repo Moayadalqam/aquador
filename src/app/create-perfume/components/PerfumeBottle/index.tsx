@@ -38,7 +38,7 @@ export default function PerfumeBottle({ composition, activeLayer, className = ''
   }
 
   return (
-    <div className={`relative ${className}`}>
+    <div className={`relative pt-6 ${className}`} style={{ overflow: 'visible' }}>
       {/* Ambient glow behind bottle */}
       {hasAnyLiquid && (
         <motion.div
@@ -53,7 +53,7 @@ export default function PerfumeBottle({ composition, activeLayer, className = ''
       )}
 
       {/* Layer indicator labels */}
-      <div className="absolute left-0 top-0 h-full flex flex-col justify-between py-8 -translate-x-full pr-4 hidden lg:flex">
+      <div className="absolute left-0 top-6 h-[calc(100%-1.5rem)] flex flex-col justify-between py-8 -translate-x-full pr-4 hidden lg:flex">
         {(['top', 'heart', 'base'] as NoteLayer[]).map((layer) => {
           const isActive = activeLayer === layer
           const note = composition[layer]
@@ -81,7 +81,7 @@ export default function PerfumeBottle({ composition, activeLayer, className = ''
       <svg
         viewBox="0 -22 100 142"
         className="w-full h-full"
-        style={{ maxWidth: '280px', maxHeight: '420px' }}
+        style={{ maxWidth: '280px', maxHeight: '420px', overflow: 'visible' }}
       >
         <defs>
           {/* Glass gradient */}

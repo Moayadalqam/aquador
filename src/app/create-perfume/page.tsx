@@ -259,7 +259,7 @@ export default function CreatePerfumePage() {
                 </div>
 
                 {/* Center: Bottle */}
-                <div className="flex flex-col items-center sticky top-24">
+                <div className="flex flex-col items-center sticky top-24" style={{ overflow: 'visible' }}>
                   <PerfumeBottle
                     composition={composition}
                     activeLayer={activeLayer}
