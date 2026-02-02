@@ -265,19 +265,6 @@ export default function CreatePerfumePage() {
                     activeLayer={activeLayer}
                     className="w-full max-w-[280px] mx-auto"
                   />
-
-                  {/* Progress indicator */}
-                  <div className="mt-4 text-center">
-                    <div className="flex items-center justify-center gap-2 mb-1">
-                      {[1, 2, 3].map((i) => (
-                        <div
-                          key={i}
-                          className={`w-1.5 h-1.5 rounded-full transition-all duration-500 ${i <= completedLayers ? 'bg-gold' : 'bg-white/20'}`}
-                        />
-                      ))}
-                    </div>
-                    <span className="text-[10px] text-gray-500">{completedLayers}/3 notes selected</span>
-                  </div>
                 </div>
 
                 {/* Right: Notes Grid & Continue */}
