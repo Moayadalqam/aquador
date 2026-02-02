@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Package, DollarSign, ShoppingCart, TrendingUp, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import type { Product } from '@/lib/supabase/types';
 
 interface Stats {
@@ -167,11 +168,15 @@ export default function AdminDashboard() {
           ) : (
             recentProducts.map((product) => (
               <div key={product.id} className="px-6 py-4 flex items-center gap-4">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-12 h-12 rounded-lg object-cover bg-gray-800"
-                />
+                <div className="relative w-12 h-12 flex-shrink-0">
+                  <Image
+                    src={product.image}
+                    alt={product.name}
+                    fill
+                    className="rounded-lg object-cover bg-gray-800"
+                    unoptimized
+                  />
+                </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-white font-medium truncate">{product.name}</p>
                   <p className="text-sm text-gray-400 capitalize">

@@ -12,6 +12,7 @@ const navLinks = [
   { label: 'Lattafa', href: '/shop/lattafa' },
   { label: 'Dubai Shop', href: '/shop' },
   { label: 'Create Your Own', href: '/create-perfume' },
+  { label: 'Re-Order', href: '/reorder' },
   { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
 ];

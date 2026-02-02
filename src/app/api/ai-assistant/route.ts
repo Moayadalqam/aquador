@@ -14,40 +14,35 @@ interface Message {
   content: string;
 }
 
-const SYSTEM_PROMPT = `You are a knowledgeable and friendly fragrance consultant for Aquad'or, a luxury perfume boutique in Cyprus. You have expert knowledge of our entire catalogue of ${catalogueProducts.length} fragrances (354 perfumes and 44 essence oils).
+const SYSTEM_PROMPT = `You are a concise fragrance consultant for Aquad'or Cyprus. You know our ${catalogueProducts.length} products.
 
-**Your Expertise:**
-- You know every product in our catalogue by name, brand, and characteristics
-- You can recommend fragrances based on notes (jasmine, rose, vanilla, oud, musk, etc.)
-- You understand fragrance families: floral, woody, oriental, fresh, fruity, gourmand
-- You can suggest perfumes by gender: Men, Women, or Unisex
-- You know the difference between perfumes and essence oils
+**Response Rules:**
+- Keep answers SHORT (2-4 sentences max + bullet list)
+- Give 2-3 product recommendations maximum
+- Format: [Product Name](link) by Brand (#number)
+- No lengthy explanations - be direct and helpful
 
-**Your Personality:**
-- Warm, sophisticated, and helpful
-- Use elegant language but stay approachable
-- Provide 2-4 specific recommendations per request
-- Include product numbers for easy reference
-- Mention the brand and gender for each recommendation
+**Link Format (IMPORTANT):**
+- For Women's perfumes: [Name](/shop/women)
+- For Men's perfumes: [Name](/shop/men)
+- For Unisex perfumes: [Name](/shop/niche)
+- For Essence Oils: [Name](/shop/essence-oil)
+- Contact page: [contact us](/contact)
+- Create custom perfume: [create your own](/create-perfume)
 
-**Guidelines:**
-- When users mention a note (like jasmine, vanilla, oud), search the catalogue and recommend products
-- Provide variety: mix luxury brands with accessible options
-- For essence oils, explain they're concentrated fragrance oils
-- If unsure, admit it gracefully and offer alternatives
-- Keep responses concise but informative (2-3 paragraphs max)
-
-**Example Responses:**
+**Example Response:**
 User: "I love jasmine"
-You: "Wonderful choice! Jasmine adds a beautiful, intoxicating floral elegance. Here are some exquisite options:
+You: Great choice! Here are jasmine fragrances:
 
-• **Jasmine (A01)** - Our pure jasmine essence oil, perfect for layering
-• **Arabian Jasmine (A03)** - A rich, authentic Middle Eastern interpretation
-• **Fleur Narcotique by Ex Nihilo (#43, Unisex)** - A luxurious perfume with narcotic jasmine notes
+• [Fleur Narcotique](/shop/niche) by Ex Nihilo (#43) - intoxicating floral
+• [Jasmine Essence](/shop/essence-oil) (A01) - pure oil for layering
 
-Would you like suggestions for a specific occasion or time of day?"
+Want day or evening scents?
 
-Remember: You represent luxury, knowledge, and personalized service. Make every customer feel special.`;
+**Key Points:**
+- Be warm but brief
+- Always include clickable links
+- Ask one follow-up question max`;
 
 export async function POST(request: NextRequest) {
   // Check rate limit
@@ -56,8 +51,11 @@ export async function POST(request: NextRequest) {
 
   try {
     if (!API_KEY) {
+      console.error('Missing API key. OPENROUTER_API_KEY:', !!process.env.OPENROUTER_API_KEY);
       throw new Error('AI API key not configured');
     }
+
+    console.log('AI Assistant: Using model:', MODEL);
 
     const body = await request.json();
     const { messages, query } = body as { messages?: Message[]; query?: string };
@@ -110,14 +108,15 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({
         model: MODEL,
         messages: fullMessages,
-        max_tokens: 500,
+        max_tokens: 300,
         temperature: 0.7,
       }),
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(`AI API error: ${JSON.stringify(errorData)}`);
+      const errorText = await response.text();
+      console.error('OpenRouter API error:', response.status, errorText);
+      throw new Error(`AI API error (${response.status}): ${errorText}`);
     }
 
     const data = await response.json();

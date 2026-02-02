@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { createClient } from '@/lib/supabase/client';
 import { Upload, X, Loader2, Plus } from 'lucide-react';
 import type { Product, ProductInsert, ProductUpdate, ProductCategory, ProductType, ProductGender } from '@/lib/supabase/types';
@@ -317,11 +318,13 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
             <h2 className="text-lg font-semibold text-white">Product Image</h2>
 
             {formData.image ? (
-              <div className="relative">
-                <img
+              <div className="relative aspect-square w-full">
+                <Image
                   src={formData.image}
                   alt="Product"
-                  className="w-full aspect-square object-cover rounded-lg"
+                  fill
+                  className="object-cover rounded-lg"
+                  unoptimized
                 />
                 <button
                   type="button"

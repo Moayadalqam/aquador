@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Edit, Trash2, Eye } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import type { Product } from '@/lib/supabase/types';
@@ -69,11 +70,15 @@ export default function ProductsTable({ products }: ProductsTableProps) {
                 <tr key={product.id} className="hover:bg-gray-800/50 transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-4">
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="w-12 h-12 rounded-lg object-cover bg-gray-800"
-                      />
+                      <div className="relative w-12 h-12 flex-shrink-0">
+                        <Image
+                          src={product.image}
+                          alt={product.name}
+                          fill
+                          className="rounded-lg object-cover bg-gray-800"
+                          unoptimized
+                        />
+                      </div>
                       <div className="min-w-0">
                         <p className="text-white font-medium truncate max-w-[200px]">
                           {product.name}

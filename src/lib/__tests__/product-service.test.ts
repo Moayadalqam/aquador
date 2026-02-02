@@ -125,15 +125,17 @@ describe('Product Service', () => {
     it('should return all categories', () => {
       const categories = getAllCategories();
       expect(Array.isArray(categories)).toBe(true);
-      expect(categories.length).toBe(3);
+      expect(categories.length).toBe(5);
     });
 
-    it('should include men, women, and niche categories', () => {
+    it('should include all product categories', () => {
       const categories = getAllCategories();
       const slugs = categories.map(c => c.slug);
       expect(slugs).toContain('men');
       expect(slugs).toContain('women');
       expect(slugs).toContain('niche');
+      expect(slugs).toContain('essence-oil');
+      expect(slugs).toContain('body-lotion');
     });
   });
 

@@ -10,5 +10,5 @@
       }
     ]
   },
-  "ignorePatterns": ["**/__tests__/**", "**/e2e/**"]
+  "ignorePatterns": ["**/__tests__/**", "**/e2e/**", "scripts/**"]
 }

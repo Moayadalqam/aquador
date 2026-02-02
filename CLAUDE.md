@@ -33,7 +33,7 @@ npx playwright test e2e/cart.spec.ts
 
 2. **Custom Perfume Builder** (`src/app/create-perfume/`, `src/lib/perfume/`) - Interactive fragrance creation with three-layer composition (top, heart, base notes). Five fragrance categories: floral, fruity, woody, oriental, gourmand. Integrates with Stripe for payments.
 
-3. **Shop by Category** (`src/app/shop/[category]/`) - Dynamic category pages using slug-based routing.
+3. **Shop by Category** (`src/app/shop/[category]/`) - Dynamic category pages using slug-based routing. Dedicated `/shop/lattafa` page for Lattafa brand products.
 
 ### Shopping Cart & Checkout
 
@@ -98,6 +98,13 @@ Two product type systems coexist:
 - **Supabase** (`src/lib/supabase/types.ts`): Database schema types for admin panel
 - **Cart** (`cart.ts`): Cart items use variant-based pricing
 
+### Product Service Layer (`src/lib/product-service.ts`)
+
+Provides query functions for the static product catalog:
+- `getAllProducts()`, `getProductById()`, `getProductBySlug()`
+- `getProductsByCategory()`, `getFeaturedProducts()`
+- `searchProducts()`, `getRelatedProducts()`
+
 ### Environment Variables
 
 See `.env.example`:
@@ -106,6 +113,7 @@ See `.env.example`:
 - `NEXT_PUBLIC_APP_URL` - App base URL for redirects
 - `RESEND_API_KEY` / `CONTACT_EMAIL_TO` - Email service for contact form
 - `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Supabase admin panel
+- `SUPABASE_SERVICE_ROLE_KEY` - Admin setup only, keep secret
 - `SENTRY_DSN` / `SENTRY_AUTH_TOKEN` - Error tracking
 - `UPSTASH_REDIS_*` - Optional rate limiting
 
