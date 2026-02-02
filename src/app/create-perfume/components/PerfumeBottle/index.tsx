@@ -79,9 +79,9 @@ export default function PerfumeBottle({ composition, activeLayer, className = ''
 
       {/* SVG Bottle */}
       <svg
-        viewBox="0 0 100 120"
+        viewBox="0 -22 100 142"
         className="w-full h-full"
-        style={{ maxWidth: '280px', maxHeight: '380px' }}
+        style={{ maxWidth: '280px', maxHeight: '420px' }}
       >
         <defs>
           {/* Glass gradient */}
