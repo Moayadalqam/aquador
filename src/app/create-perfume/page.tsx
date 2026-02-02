@@ -7,29 +7,15 @@ import { PerfumeComposition, FragranceNote, PerfumeVolume, FragranceCategory } f
 import { isCompositionComplete } from '@/lib/perfume/composition'
 import { validatePerfumeForm } from '@/lib/perfume/validation'
 import { calculatePrice } from '@/lib/perfume/pricing'
+import { PerfumeBottle, CategoryTabs, NoteCarousel } from './components'
+import { categoryThemes } from './motion'
 
 type NoteLayer = 'top' | 'heart' | 'base'
 
-const categoryThemes = {
-  floral: { primary: '#FF6B9D', glow: 'rgba(255,107,157,0.3)' },
-  fruity: { primary: '#FFD700', glow: 'rgba(255,215,0,0.3)' },
-  woody: { primary: '#8B7355', glow: 'rgba(139,115,85,0.3)' },
-  oriental: { primary: '#D4AF37', glow: 'rgba(212,175,55,0.3)' },
-  gourmand: { primary: '#AF6E4D', glow: 'rgba(175,110,77,0.3)' },
-}
-
-const categoryIcons: Record<FragranceCategory, string> = {
-  floral: '🌸',
-  fruity: '🍊',
-  woody: '🌲',
-  oriental: '✨',
-  gourmand: '🍯',
-}
-
-const layerDescriptions: Record<NoteLayer, { title: string; subtitle: string }> = {
-  top: { title: 'Top Notes', subtitle: 'The first impression — light, fresh, evaporates quickly' },
-  heart: { title: 'Heart Notes', subtitle: 'The soul of your fragrance — emerges as top fades' },
-  base: { title: 'Base Notes', subtitle: 'The foundation — rich, deep, long-lasting' },
+const layerDescriptions: Record<NoteLayer, { title: string; subtitle: string; icon: string }> = {
+  top: { title: 'Top Notes', subtitle: 'First impression', icon: '✨' },
+  heart: { title: 'Heart Notes', subtitle: 'The soul', icon: '💫' },
+  base: { title: 'Base Notes', subtitle: 'Foundation', icon: '🌟' },
 }
 
 // Custom hook for reduced motion preference
@@ -57,8 +43,8 @@ export default function CreatePerfumePage() {
     heart: null,
     base: null,
   })
-  const [activeLayer, setActiveLayer] = useState<NoteLayer>('top')
-  const [activeCategory, setActiveCategory] = useState<FragranceCategory>('floral')
+  const [activeLayer, setActiveLayer] = useState<NoteLayer>('base')
+  const [activeCategory, setActiveCategory] = useState<FragranceCategory>('woody')
 
   const [perfumeName, setPerfumeName] = useState('')
   const [selectedVolume, setSelectedVolume] = useState<PerfumeVolume | null>(null)
@@ -72,13 +58,13 @@ export default function CreatePerfumePage() {
   const handleSelectNote = (layer: NoteLayer, note: FragranceNote) => {
     setComposition(prev => ({ ...prev, [layer]: note }))
 
-    // Auto-advance to next layer
-    if (layer === 'top') {
+    // Auto-advance to next layer (base -> heart -> top)
+    if (layer === 'base') {
       setActiveLayer('heart')
       setActiveCategory('floral')
     } else if (layer === 'heart') {
-      setActiveLayer('base')
-      setActiveCategory('woody')
+      setActiveLayer('top')
+      setActiveCategory('fruity')
     }
   }
 
@@ -132,7 +118,7 @@ export default function CreatePerfumePage() {
         throw new Error(data.error || 'Payment failed')
       }
 
-      // Redirect to Stripe Checkout (same as regular product checkout)
+      // Redirect to Stripe Checkout
       if (data.url) {
         window.location.href = data.url
       } else {
@@ -149,15 +135,11 @@ export default function CreatePerfumePage() {
   const completedLayers = (['top', 'heart', 'base'] as NoteLayer[]).filter(l => composition[l] !== null).length
 
   return (
-    <div className="min-h-screen bg-black text-white pt-28 pb-20 overflow-hidden">
+    <div className="min-h-screen bg-black text-white pt-24 pb-20 overflow-hidden">
       {/* Premium Ambient Background */}
       <div className="fixed inset-0 -z-10 pointer-events-none">
-        {/* Main gradient orbs */}
         <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-gradient-radial from-amber-500/8 via-amber-500/3 to-transparent rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-gradient-radial from-gold/5 via-gold/2 to-transparent rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-0 w-[400px] h-[400px] bg-gradient-radial from-amber-400/4 to-transparent rounded-full blur-3xl" />
-
-        {/* Subtle grid pattern */}
         <div
           className="absolute inset-0 opacity-[0.02]"
           style={{
@@ -165,8 +147,6 @@ export default function CreatePerfumePage() {
             backgroundSize: '60px 60px'
           }}
         />
-
-        {/* Top vignette */}
         <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-black via-black/80 to-transparent" />
       </div>
 
@@ -180,341 +160,226 @@ export default function CreatePerfumePage() {
             className="relative"
           >
             {/* Hero Section */}
-            <div className="text-center mb-16 px-4">
+            <div className="text-center mb-8 px-4">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
               >
-                <span className="inline-block text-[10px] tracking-[0.4em] text-gold/60 uppercase mb-4">
+                <span className="inline-block text-[10px] tracking-[0.4em] text-gold/60 uppercase mb-3">
                   Bespoke Fragrance Atelier
                 </span>
-                <h1 className="font-playfair text-4xl md:text-5xl lg:text-6xl font-light text-white mb-6">
+                <h1 className="font-playfair text-3xl md:text-4xl lg:text-5xl font-light text-white mb-4">
                   Create Your{' '}
                   <span className="text-gradient-gold">Signature</span>
                 </h1>
-                <p className="max-w-xl mx-auto text-gray-400 text-sm md:text-base leading-relaxed">
-                  Craft a fragrance as unique as you are. Select your top, heart, and base notes
-                  to compose a scent that tells your story.
-                </p>
               </motion.div>
             </div>
 
-            {/* Progress Indicator */}
-            <div className="max-w-4xl mx-auto px-4 mb-12">
-              <div className="flex items-center justify-center gap-2 md:gap-4">
-                {(['top', 'heart', 'base'] as NoteLayer[]).map((layer, index) => {
-                  const isActive = activeLayer === layer
-                  const isCompleted = composition[layer] !== null
-                  const selectedNote = composition[layer]
+            {/* Main Layout - Desktop: Side by side, Mobile: Stacked */}
+            <div className="max-w-7xl mx-auto px-4">
+              {/* Desktop Layout */}
+              <div className="hidden lg:grid lg:grid-cols-[1fr,320px,1fr] gap-8 items-start">
+                {/* Left: Layer Steps & Note Selection */}
+                <div className="space-y-6">
+                  {/* Layer Progress Steps */}
+                  <div className="bg-white/[0.02] rounded-2xl p-6 border border-white/5">
+                    <span className="text-[10px] tracking-[0.3em] text-gold/60 uppercase mb-4 block">Build Your Scent</span>
+                    <div className="space-y-3">
+                      {(['base', 'heart', 'top'] as NoteLayer[]).map((layer) => {
+                        const isActive = activeLayer === layer
+                        const isCompleted = composition[layer] !== null
+                        const selectedNote = composition[layer]
 
-                  return (
-                    <motion.button
-                      key={layer}
-                      onClick={() => setActiveLayer(layer)}
-                      className="relative group flex-1 max-w-xs"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1, duration: 0.5 }}
-                    >
-                      {/* Connection line */}
-                      {index < 2 && (
-                        <div className="hidden md:block absolute top-6 left-[calc(50%+2rem)] w-[calc(100%-4rem)] h-px">
-                          <div className={`h-full transition-all duration-500 ${isCompleted ? 'bg-gradient-to-r from-gold/50 to-gold/20' : 'bg-white/10'}`} />
-                        </div>
-                      )}
-
-                      <div className={`
-                        relative p-4 md:p-6 rounded-2xl transition-all duration-500 border
-                        ${isActive
-                          ? 'bg-gradient-to-b from-gold/15 to-gold/5 border-gold/40 shadow-lg shadow-gold/10'
-                          : isCompleted
-                            ? 'bg-gradient-to-b from-emerald-500/10 to-emerald-500/5 border-emerald-500/30'
-                            : 'bg-white/[0.02] border-white/10 hover:bg-white/[0.04] hover:border-white/20'
-                        }
-                      `}>
-                        {/* Step number */}
-                        <div className="flex items-center justify-between mb-3">
-                          <span
+                        return (
+                          <motion.button
+                            key={layer}
+                            onClick={() => setActiveLayer(layer)}
                             className={`
-                              flex items-center justify-center w-8 h-8 rounded-full text-xs font-semibold transition-all duration-300
+                              w-full flex items-center gap-4 p-4 rounded-xl transition-all duration-300 text-left
                               ${isActive
-                                ? 'bg-gold text-black'
+                                ? 'bg-gradient-to-r from-gold/15 to-transparent border border-gold/30'
                                 : isCompleted
-                                  ? 'bg-emerald-500 text-black'
-                                  : 'bg-white/10 text-gray-500'
+                                  ? 'bg-emerald-500/10 border border-emerald-500/20'
+                                  : 'bg-white/[0.02] border border-white/5 hover:bg-white/[0.04]'
                               }
                             `}
+                            whileHover={!reducedMotion ? { x: 4 } : undefined}
                           >
-                            {isCompleted && !isActive ? (
-                              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                              </svg>
-                            ) : (
-                              index + 1
+                            <span
+                              className={`
+                                flex items-center justify-center w-10 h-10 rounded-full text-sm font-semibold
+                                ${isActive
+                                  ? 'bg-gold text-black'
+                                  : isCompleted
+                                    ? 'bg-emerald-500 text-black'
+                                    : 'bg-white/10 text-gray-500'
+                                }
+                              `}
+                            >
+                              {isCompleted && !isActive ? (
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                </svg>
+                              ) : (
+                                <span>{layerDescriptions[layer].icon}</span>
+                              )}
+                            </span>
+                            <div className="flex-1">
+                              <span className={`block text-sm font-medium ${isActive ? 'text-gold' : 'text-white'}`}>
+                                {layerDescriptions[layer].title}
+                              </span>
+                              {selectedNote ? (
+                                <span className="flex items-center gap-2 text-xs text-gray-400 mt-0.5">
+                                  <span>{selectedNote.icon}</span>
+                                  <span>{selectedNote.name}</span>
+                                </span>
+                              ) : (
+                                <span className="text-xs text-gray-600">{layerDescriptions[layer].subtitle}</span>
+                              )}
+                            </div>
+                            {isActive && (
+                              <span className="text-gold text-xs uppercase tracking-wider">Selecting</span>
                             )}
-                          </span>
-                          {selectedNote && (
-                            <span className="text-lg">{selectedNote.icon}</span>
-                          )}
-                        </div>
+                          </motion.button>
+                        )
+                      })}
+                    </div>
+                  </div>
 
-                        {/* Layer info */}
-                        <div className="text-left">
-                          <span className={`
-                            block text-xs md:text-sm font-medium tracking-wider uppercase transition-colors duration-300
-                            ${isActive ? 'text-gold' : isCompleted ? 'text-emerald-400' : 'text-gray-400'}
-                          `}>
-                            {layerDescriptions[layer].title}
-                          </span>
-                          {selectedNote ? (
-                            <span className="block text-white text-sm mt-1 font-light">{selectedNote.name}</span>
-                          ) : (
-                            <span className="block text-gray-600 text-xs mt-1 hidden md:block">{layerDescriptions[layer].subtitle}</span>
-                          )}
-                        </div>
+                  {/* Category Selection */}
+                  <div className="bg-white/[0.02] rounded-2xl p-6 border border-white/5">
+                    <span className="text-[10px] tracking-[0.3em] text-gold/60 uppercase mb-4 block">Fragrance Family</span>
+                    <CategoryTabs
+                      activeCategory={activeCategory}
+                      onCategoryChange={setActiveCategory}
+                      reducedMotion={reducedMotion}
+                    />
+                  </div>
+                </div>
 
-                        {/* Active indicator glow */}
-                        {isActive && (
-                          <motion.div
-                            layoutId="activeGlow"
-                            className="absolute inset-0 -z-10 rounded-2xl bg-gold/10 blur-xl"
-                            transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
-                          />
-                        )}
-                      </div>
-                    </motion.button>
-                  )
-                })}
-              </div>
-            </div>
-
-            {/* Category Selection */}
-            <div className="max-w-5xl mx-auto px-4 mb-10">
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.3 }}
-                className="flex flex-wrap justify-center gap-2 md:gap-3"
-              >
-                {fragranceCategories.map((cat, index) => {
-                  const isActive = activeCategory === cat.key
-                  const catTheme = categoryThemes[cat.key]
-
-                  return (
-                    <motion.button
-                      key={cat.key}
-                      onClick={() => setActiveCategory(cat.key)}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.4 + index * 0.05 }}
-                      className={`
-                        relative px-5 md:px-7 py-3 text-xs md:text-sm tracking-wider transition-all duration-300 rounded-full overflow-hidden
-                        ${isActive
-                          ? 'text-white'
-                          : 'text-gray-400 hover:text-white bg-white/[0.03] hover:bg-white/[0.06] border border-white/10'
-                        }
-                      `}
-                      style={isActive ? {
-                        background: `linear-gradient(135deg, ${catTheme.primary}25 0%, ${catTheme.primary}10 100%)`,
-                        border: `1px solid ${catTheme.primary}50`,
-                        boxShadow: `0 0 30px ${catTheme.primary}15`,
-                      } : undefined}
-                    >
-                      <span className="flex items-center gap-2">
-                        <span className="text-base md:text-lg">{categoryIcons[cat.key]}</span>
-                        <span className="uppercase font-medium">{cat.label}</span>
-                      </span>
-                    </motion.button>
-                  )
-                })}
-              </motion.div>
-            </div>
-
-            {/* Notes Grid */}
-            <div className="max-w-6xl mx-auto px-4 mb-16">
-              <div className="relative">
-                {/* Category ambient glow */}
-                <motion.div
-                  key={activeCategory}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.5 }}
-                  className="absolute inset-0 -z-10 pointer-events-none"
-                >
-                  <div
-                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] blur-3xl opacity-30"
-                    style={{
-                      background: `radial-gradient(ellipse 50% 50% at 50% 50%, ${theme.glow} 0%, transparent 70%)`,
-                    }}
+                {/* Center: Bottle */}
+                <div className="flex flex-col items-center sticky top-24">
+                  <PerfumeBottle
+                    composition={composition}
+                    activeLayer={activeLayer}
+                    className="w-full max-w-[280px] mx-auto"
                   />
-                </motion.div>
 
-                <motion.div
-                  className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4"
-                  initial="hidden"
-                  animate="visible"
-                  variants={{
-                    hidden: { opacity: 0 },
-                    visible: { opacity: 1, transition: { staggerChildren: 0.03 } }
-                  }}
-                >
-                  {notes.map((note) => {
-                    const isSelected = composition[activeLayer]?.name === note.name
-                    const isUsedElsewhere = Object.values(composition).some(
-                      (n, idx) => n?.name === note.name && (['top', 'heart', 'base'] as NoteLayer[])[idx] !== activeLayer
-                    )
+                  {/* Progress indicator */}
+                  <div className="mt-6 text-center">
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                      {[1, 2, 3].map((i) => (
+                        <div
+                          key={i}
+                          className={`
+                            w-2 h-2 rounded-full transition-all duration-500
+                            ${i <= completedLayers ? 'bg-gold' : 'bg-white/20'}
+                          `}
+                        />
+                      ))}
+                    </div>
+                    <span className="text-xs text-gray-500">
+                      {completedLayers}/3 notes selected
+                    </span>
+                  </div>
+                </div>
 
-                    return (
-                      <motion.button
-                        key={note.name}
-                        variants={{
-                          hidden: { opacity: 0, y: 20 },
-                          visible: { opacity: 1, y: 0 }
+                {/* Right: Notes Grid & Continue */}
+                <div className="space-y-6">
+                  {/* Notes Selection */}
+                  <div className="bg-white/[0.02] rounded-2xl p-6 border border-white/5">
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-[10px] tracking-[0.3em] text-gold/60 uppercase">
+                        Select {layerDescriptions[activeLayer].title.split(' ')[0]} Note
+                      </span>
+                      <span
+                        className="text-xs px-2 py-1 rounded-full"
+                        style={{
+                          backgroundColor: `${theme.primary}20`,
+                          color: theme.primary,
                         }}
-                        whileHover={reducedMotion ? undefined : { scale: 1.03, y: -4 }}
-                        whileTap={reducedMotion ? undefined : { scale: 0.98 }}
-                        onClick={() => handleSelectNote(activeLayer, note)}
-                        disabled={isUsedElsewhere}
-                        className={`
-                          relative flex flex-col items-center gap-3 rounded-xl p-5 md:p-6
-                          transition-all duration-300 group
-                          ${isSelected
-                            ? 'bg-gradient-to-b from-gold/20 to-gold/5 ring-2 ring-gold shadow-lg shadow-gold/20'
-                            : isUsedElsewhere
-                              ? 'bg-white/[0.02] opacity-40 cursor-not-allowed'
-                              : 'bg-white/[0.03] hover:bg-white/[0.06] border border-white/5 hover:border-white/20'
-                          }
-                        `}
                       >
-                        {/* Glass morphism background */}
-                        <div
-                          className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                          style={{
-                            background: `radial-gradient(circle at center, ${note.color}15 0%, transparent 70%)`,
-                          }}
-                        />
+                        {fragranceCategories.find(c => c.key === activeCategory)?.label}
+                      </span>
+                    </div>
 
-                        {/* Note icon with glow */}
-                        <div className="relative">
-                          <span className="relative text-3xl md:text-4xl z-10 transition-transform duration-300 group-hover:scale-110 block">
-                            {note.icon}
-                          </span>
-                          {isSelected && (
-                            <div
-                              className="absolute inset-0 blur-xl opacity-60"
-                              style={{ backgroundColor: note.color }}
-                            />
-                          )}
-                        </div>
+                    {/* Category glow */}
+                    <motion.div
+                      key={activeCategory}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="relative"
+                    >
+                      <div
+                        className="absolute inset-0 -z-10 blur-3xl opacity-20 pointer-events-none"
+                        style={{
+                          background: `radial-gradient(ellipse 60% 40% at 50% 50%, ${theme.glow} 0%, transparent 70%)`,
+                        }}
+                      />
 
-                        {/* Note name */}
-                        <span className={`
-                          relative text-center text-xs md:text-sm font-medium tracking-wide z-10 transition-colors duration-300
-                          ${isSelected ? 'text-gold' : 'text-gray-300 group-hover:text-white'}
-                        `}>
-                          {note.name}
-                        </span>
+                      {/* Notes Grid */}
+                      <div className="grid grid-cols-2 gap-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                        {notes.map((note) => {
+                          const isSelected = composition[activeLayer]?.name === note.name
+                          const isUsedElsewhere = Object.entries(composition).some(
+                            ([key, n]) => n?.name === note.name && key !== activeLayer
+                          )
 
-                        {/* Selected indicator */}
-                        {isSelected && (
-                          <motion.div
-                            layoutId="selectedIndicator"
-                            className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-10 h-1 rounded-full"
-                            style={{ backgroundColor: note.color }}
-                            transition={{ type: 'spring', bounce: 0.3, duration: 0.4 }}
-                          />
-                        )}
-                      </motion.button>
-                    )
-                  })}
-                </motion.div>
-              </div>
-            </div>
+                          return (
+                            <motion.button
+                              key={note.name}
+                              onClick={() => handleSelectNote(activeLayer, note)}
+                              disabled={isUsedElsewhere}
+                              whileHover={!reducedMotion && !isUsedElsewhere ? { scale: 1.03 } : undefined}
+                              whileTap={!reducedMotion && !isUsedElsewhere ? { scale: 0.97 } : undefined}
+                              className={`
+                                relative flex flex-col items-center gap-2 rounded-xl p-4
+                                transition-all duration-300
+                                ${isSelected
+                                  ? 'bg-gradient-to-b from-gold/20 to-gold/5 ring-2 ring-gold'
+                                  : isUsedElsewhere
+                                    ? 'bg-white/[0.02] opacity-40 cursor-not-allowed'
+                                    : 'bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 hover:border-white/20'
+                                }
+                              `}
+                            >
+                              {/* Glow effect */}
+                              {isSelected && (
+                                <div
+                                  className="absolute inset-0 rounded-xl opacity-40"
+                                  style={{
+                                    boxShadow: `inset 0 0 20px ${note.color}40`,
+                                  }}
+                                />
+                              )}
 
-            {/* Composition Summary Panel */}
-            <div className="max-w-lg mx-auto px-4">
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 0.6 }}
-                className="relative rounded-3xl overflow-hidden"
-              >
-                {/* Premium glass card */}
-                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.08] to-white/[0.02] backdrop-blur-xl" />
-                <div className="absolute inset-0 border border-white/10 rounded-3xl" />
+                              <span className="text-2xl relative z-10">{note.icon}</span>
+                              <span className={`
+                                text-xs font-medium text-center relative z-10
+                                ${isSelected ? 'text-gold' : 'text-gray-300'}
+                              `}>
+                                {note.name}
+                              </span>
 
-                {/* Gold accent line at top */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-px bg-gradient-to-r from-transparent via-gold/60 to-transparent" />
-
-                <div className="relative p-8">
-                  {/* Header */}
-                  <div className="text-center mb-8">
-                    <span className="text-[10px] tracking-[0.3em] text-gold/60 uppercase">Your Composition</span>
-                    <h3 className="font-playfair text-2xl text-white mt-2">
-                      {completedLayers === 3 ? 'Complete' : `${completedLayers} of 3 Notes`}
-                    </h3>
+                              {isUsedElsewhere && (
+                                <span className="absolute top-1 right-1 text-[10px] text-gray-500">Used</span>
+                              )}
+                            </motion.button>
+                          )
+                        })}
+                      </div>
+                    </motion.div>
                   </div>
 
-                  {/* Composition display */}
-                  <div className="space-y-4 mb-8">
-                    {(['top', 'heart', 'base'] as NoteLayer[]).map((layer, index) => {
-                      const note = composition[layer]
-                      const isLast = index === 2
-
-                      return (
-                        <div
-                          key={layer}
-                          className={`flex justify-between items-center py-4 px-2 ${!isLast ? 'border-b border-white/10' : ''}`}
-                        >
-                          <div className="flex items-center gap-3">
-                            <div
-                              className={`w-2 h-2 rounded-full transition-all duration-300 ${note ? '' : 'bg-white/20'}`}
-                              style={note ? { backgroundColor: note.color, boxShadow: `0 0 10px ${note.color}` } : undefined}
-                            />
-                            <span className="text-xs text-gray-400 tracking-[0.15em] uppercase font-medium">
-                              {layerDescriptions[layer].title}
-                            </span>
-                          </div>
-                          {note ? (
-                            <span className="flex items-center gap-2 text-white">
-                              <span className="text-lg">{note.icon}</span>
-                              <span className="font-light">{note.name}</span>
-                            </span>
-                          ) : (
-                            <span className="text-gray-600 text-sm italic">Awaiting selection</span>
-                          )}
-                        </div>
-                      )
-                    })}
-                  </div>
-
-                  {/* Progress dots */}
-                  <div className="flex justify-center gap-3 mb-8">
-                    {(['top', 'heart', 'base'] as NoteLayer[]).map((layer) => {
-                      const note = composition[layer]
-                      return (
-                        <motion.div
-                          key={layer}
-                          className="w-3 h-3 rounded-full transition-all duration-500"
-                          animate={{
-                            backgroundColor: note ? note.color : 'rgba(255,255,255,0.15)',
-                            boxShadow: note ? `0 0 15px ${note.color}50` : 'none',
-                            scale: note ? 1 : 0.8,
-                          }}
-                        />
-                      )
-                    })}
-                  </div>
-
-                  {/* Continue button */}
+                  {/* Continue Button */}
                   <motion.button
                     onClick={handleStartCheckout}
                     disabled={!isComplete}
                     whileHover={isComplete && !reducedMotion ? { scale: 1.02 } : undefined}
                     whileTap={isComplete && !reducedMotion ? { scale: 0.98 } : undefined}
                     className={`
-                      relative w-full rounded-full py-5 text-sm tracking-[0.2em] uppercase font-medium transition-all duration-500 overflow-hidden
+                      relative w-full rounded-2xl py-5 text-sm tracking-[0.2em] uppercase font-medium transition-all duration-500 overflow-hidden
                       ${isComplete
                         ? 'text-black'
                         : 'cursor-not-allowed bg-white/5 text-gray-600 border border-white/10'
@@ -530,11 +395,105 @@ export default function CreatePerfumePage() {
                       />
                     )}
                     <span className="relative z-10">
-                      {isComplete ? 'Continue to Checkout' : 'Complete Your Selection'}
+                      {isComplete ? 'Continue to Checkout' : `Select ${3 - completedLayers} More Note${3 - completedLayers !== 1 ? 's' : ''}`}
                     </span>
                   </motion.button>
                 </div>
-              </motion.div>
+              </div>
+
+              {/* Mobile Layout */}
+              <div className="lg:hidden space-y-6">
+                {/* Layer Steps - Horizontal */}
+                <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4">
+                  {(['base', 'heart', 'top'] as NoteLayer[]).map((layer) => {
+                    const isActive = activeLayer === layer
+                    const isCompleted = composition[layer] !== null
+                    const selectedNote = composition[layer]
+
+                    return (
+                      <button
+                        key={layer}
+                        onClick={() => setActiveLayer(layer)}
+                        className={`
+                          flex-shrink-0 flex items-center gap-2 px-4 py-3 rounded-xl transition-all
+                          ${isActive
+                            ? 'bg-gold/15 border border-gold/30'
+                            : isCompleted
+                              ? 'bg-emerald-500/10 border border-emerald-500/20'
+                              : 'bg-white/[0.03] border border-white/10'
+                          }
+                        `}
+                      >
+                        <span
+                          className={`
+                            w-6 h-6 rounded-full text-xs flex items-center justify-center
+                            ${isActive ? 'bg-gold text-black' : isCompleted ? 'bg-emerald-500 text-black' : 'bg-white/10 text-gray-500'}
+                          `}
+                        >
+                          {isCompleted && !isActive ? '✓' : layerDescriptions[layer].icon}
+                        </span>
+                        <div className="text-left">
+                          <span className={`block text-xs font-medium ${isActive ? 'text-gold' : 'text-white'}`}>
+                            {layer.charAt(0).toUpperCase() + layer.slice(1)}
+                          </span>
+                          {selectedNote && (
+                            <span className="text-[10px] text-gray-400">{selectedNote.name}</span>
+                          )}
+                        </div>
+                      </button>
+                    )
+                  })}
+                </div>
+
+                {/* Bottle - Centered */}
+                <div className="flex justify-center py-4">
+                  <PerfumeBottle
+                    composition={composition}
+                    activeLayer={activeLayer}
+                    className="w-48"
+                  />
+                </div>
+
+                {/* Category Tabs */}
+                <div className="px-2">
+                  <CategoryTabs
+                    activeCategory={activeCategory}
+                    onCategoryChange={setActiveCategory}
+                    reducedMotion={reducedMotion}
+                  />
+                </div>
+
+                {/* Note Carousel for Mobile */}
+                <NoteCarousel
+                  notes={notes}
+                  category={activeCategory}
+                  selectedNoteName={composition[activeLayer]?.name || null}
+                  onSelectNote={(note) => handleSelectNote(activeLayer, note)}
+                />
+
+                {/* Continue Button */}
+                <div className="px-2">
+                  <motion.button
+                    onClick={handleStartCheckout}
+                    disabled={!isComplete}
+                    whileTap={isComplete && !reducedMotion ? { scale: 0.98 } : undefined}
+                    className={`
+                      relative w-full rounded-2xl py-5 text-sm tracking-[0.2em] uppercase font-medium transition-all duration-500 overflow-hidden
+                      ${isComplete
+                        ? 'text-black'
+                        : 'cursor-not-allowed bg-white/5 text-gray-600 border border-white/10'
+                      }
+                    `}
+                  >
+                    {isComplete && (
+                      <div className="absolute inset-0 bg-gradient-to-r from-gold via-amber-300 to-gold" />
+                    )}
+                    <span className="relative z-10">
+                      {isComplete ? 'Continue to Checkout' : `Select ${3 - completedLayers} More Note${3 - completedLayers !== 1 ? 's' : ''}`}
+                    </span>
+                  </motion.button>
+                </div>
+              </div>
             </div>
           </motion.div>
         ) : (
@@ -563,11 +522,8 @@ export default function CreatePerfumePage() {
 
             {/* Form card */}
             <div className="relative rounded-3xl overflow-hidden">
-              {/* Premium glass background */}
               <div className="absolute inset-0 bg-gradient-to-b from-white/[0.08] to-white/[0.02] backdrop-blur-xl" />
               <div className="absolute inset-0 border border-white/10 rounded-3xl" />
-
-              {/* Gold accent */}
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-px bg-gradient-to-r from-transparent via-gold/60 to-transparent" />
 
               <div className="relative p-8 md:p-10">

@@ -519,3 +519,84 @@ body {
     min-width: 44px;
   }
 }
+
+/* ==========================================================================
+   PERFUME BOTTLE ANIMATIONS
+   ========================================================================== */
+
+/* Custom scrollbar for notes grid */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.3);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 175, 55, 0.5);
+}
+
+/* Liquid wave animation */
+@keyframes liquid-wave {
+  0%, 100% {
+    d: path('M15 5 Q35 3 50 5 Q65 7 85 5');
+  }
+  50% {
+    d: path('M15 5 Q35 7 50 5 Q65 3 85 5');
+  }
+}
+
+/* Bubble rise animation */
+@keyframes bubble-rise {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.6;
+  }
+  90% {
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateY(-100px) scale(0.5);
+    opacity: 0;
+  }
+}
+
+/* Liquid glow pulse */
+@keyframes liquid-glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 8px var(--liquid-color, rgba(212, 175, 55, 0.3)));
+  }
+  50% {
+    filter: drop-shadow(0 0 16px var(--liquid-color, rgba(212, 175, 55, 0.5)));
+  }
+}
+
+.animate-liquid-glow {
+  animation: liquid-glow 2s ease-in-out infinite;
+}
+
+/* Layer fill animation */
+@keyframes layer-fill {
+  0% {
+    clip-path: inset(100% 0 0 0);
+    opacity: 0;
+  }
+  100% {
+    clip-path: inset(0% 0 0 0);
+    opacity: 1;
+  }
+}
+
+.animate-layer-fill {
+  animation: layer-fill 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
