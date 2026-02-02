@@ -262,32 +262,34 @@ export default function PerfumeBottle({ composition, activeLayer, className = ''
         />
       </svg>
 
-      {/* Selected notes display below bottle */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mt-4 flex justify-center gap-2"
-      >
-        {(['base', 'heart', 'top'] as NoteLayer[]).map((layer) => {
-          const note = composition[layer]
-          if (!note) return null
-          return (
-            <motion.div
-              key={layer}
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              className="flex items-center gap-1 px-2 py-1 rounded-full text-xs"
-              style={{
-                backgroundColor: `${note.color}20`,
-                border: `1px solid ${note.color}40`,
-              }}
-            >
-              <span>{note.icon}</span>
-              <span className="text-white/80">{note.name}</span>
-            </motion.div>
-          )
-        })}
-      </motion.div>
+      {/* Selected notes display below bottle - only show when notes selected */}
+      {hasAnyLiquid && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-4 flex justify-center gap-2 flex-wrap"
+        >
+          {(['base', 'heart', 'top'] as NoteLayer[]).map((layer) => {
+            const note = composition[layer]
+            if (!note) return null
+            return (
+              <motion.div
+                key={layer}
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="flex items-center gap-1 px-2 py-1 rounded-full text-xs"
+                style={{
+                  backgroundColor: `${note.color}20`,
+                  border: `1px solid ${note.color}40`,
+                }}
+              >
+                <span>{note.icon}</span>
+                <span className="text-white/80">{note.name}</span>
+              </motion.div>
+            )
+          })}
+        </motion.div>
+      )}
     </div>
   )
 }

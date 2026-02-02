@@ -267,21 +267,16 @@ export default function CreatePerfumePage() {
                   />
 
                   {/* Progress indicator */}
-                  <div className="mt-6 text-center">
-                    <div className="flex items-center justify-center gap-2 mb-2">
+                  <div className="mt-4 text-center">
+                    <div className="flex items-center justify-center gap-2 mb-1">
                       {[1, 2, 3].map((i) => (
                         <div
                           key={i}
-                          className={`
-                            w-2 h-2 rounded-full transition-all duration-500
-                            ${i <= completedLayers ? 'bg-gold' : 'bg-white/20'}
-                          `}
+                          className={`w-1.5 h-1.5 rounded-full transition-all duration-500 ${i <= completedLayers ? 'bg-gold' : 'bg-white/20'}`}
                         />
                       ))}
                     </div>
-                    <span className="text-xs text-gray-500">
-                      {completedLayers}/3 notes selected
-                    </span>
+                    <span className="text-[10px] text-gray-500">{completedLayers}/3 notes selected</span>
                   </div>
                 </div>
 
