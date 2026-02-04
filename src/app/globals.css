@@ -649,3 +649,90 @@ body {
 .blog-content strong {
   @apply text-white font-medium;
 }
+
+/* Blog Table of Contents */
+.blog-toc {
+  @apply border-l border-gold/10 pl-4;
+}
+
+/* Blog Featured Blockquote */
+.blog-content .blog-featured-quote {
+  @apply border-l-2 border-gold pl-8 pr-6 py-6 my-10 bg-gold/5 relative;
+}
+
+.blog-content .blog-featured-quote p {
+  @apply text-xl md:text-2xl font-playfair text-gold/90 italic leading-relaxed mb-0;
+}
+
+.blog-content .blog-featured-quote::before {
+  content: '\201C';
+  @apply absolute -top-4 left-3 text-5xl text-gold/30 font-playfair;
+}
+
+/* Blog FAQ Accordion */
+.blog-faq details {
+  @apply border border-gold/10 mb-3;
+}
+
+.blog-faq details[open] {
+  @apply border-gold/20;
+}
+
+.blog-faq summary {
+  @apply px-6 py-4 cursor-pointer text-white font-medium text-base list-none flex items-center justify-between gap-4 hover:text-gold transition-colors select-none;
+}
+
+.blog-faq summary::-webkit-details-marker {
+  display: none;
+}
+
+.blog-faq summary::after {
+  content: '+';
+  @apply text-gold text-xl font-light flex-shrink-0 transition-transform duration-200;
+}
+
+.blog-faq details[open] summary::after {
+  content: '\2212';
+}
+
+.blog-faq details > div {
+  @apply px-6 pb-5 text-gray-300 text-base leading-relaxed;
+}
+
+/* Blog Product Cards */
+.blog-product-grid {
+  @apply grid grid-cols-1 sm:grid-cols-3 gap-5 my-10;
+}
+
+.blog-product-card {
+  @apply border border-gold/10 bg-black/30 text-center overflow-hidden;
+}
+
+.blog-product-card img {
+  @apply w-full aspect-square object-cover transition-transform duration-500 my-0 rounded-none;
+}
+
+.blog-product-card:hover img {
+  @apply scale-105;
+}
+
+.blog-product-card .blog-product-info {
+  @apply p-4;
+}
+
+.blog-product-card .blog-product-name {
+  @apply text-white text-sm font-medium mb-2 line-clamp-2;
+}
+
+.blog-product-card .blog-product-price {
+  @apply text-gold text-base font-playfair mb-3;
+}
+
+.blog-product-card .blog-product-btn {
+  @apply inline-block text-[10px] uppercase tracking-[0.2em] text-gold border border-gold/30 px-5 py-2 hover:bg-gold hover:text-black transition-all duration-300;
+}
+
+/* Blog Section Image */
+.blog-content .blog-section-image {
+  @apply w-full rounded-sm my-8 h-64 md:h-80 object-cover;
+}

@@ -9,6 +9,7 @@ import { formatBlogDate } from '@/lib/blog-types';
 import BlogContent from '@/components/blog/BlogContent';
 import ShareButtons from '@/components/blog/ShareButtons';
 import RelatedPosts from '@/components/blog/RelatedPosts';
+import TableOfContents from '@/components/blog/TableOfContents';
 
 interface BlogPostContentProps {
   post: BlogPost;
@@ -19,6 +20,8 @@ export default function BlogPostContent({ post, relatedPosts }: BlogPostContentP
   const postUrl = typeof window !== 'undefined'
     ? window.location.href
     : `https://aquadorcy.com/blog/${post.slug}`;
+
+  const hasToC = /<h[23]\s+id="/.test(post.content);
 
   return (
     <div className="min-h-screen bg-gold-ambient">
@@ -38,6 +41,15 @@ export default function BlogPostContent({ post, relatedPosts }: BlogPostContentP
 
       {/* Content */}
       <div className="container-wide relative z-10">
+        {/* ToC Sidebar - desktop only */}
+        {hasToC && (
+          <div className="hidden xl:block absolute right-8 top-0 w-52" style={{ marginTop: post.cover_image ? '2rem' : '10rem' }}>
+            <div className="sticky top-28">
+              <TableOfContents content={post.content} />
+            </div>
+          </div>
+        )}
+
         <div className="max-w-3xl mx-auto">
           {/* Breadcrumb */}
           <motion.nav
@@ -141,6 +153,12 @@ export default function BlogPostContent({ post, relatedPosts }: BlogPostContentP
               </div>
             </div>
           )}
+
+          {/* Share buttons at bottom */}
+          <div className="mt-8 pt-6 border-t border-gold/10 flex items-center justify-between">
+            <p className="text-xs text-gray-500">Share this article</p>
+            <ShareButtons url={postUrl} title={post.title} />
+          </div>
 
           {/* Back Link */}
           <div className="mt-12 mb-16">
