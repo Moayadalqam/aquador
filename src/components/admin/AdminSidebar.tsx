@@ -9,12 +9,14 @@ import {
   Tags,
   Settings,
   ExternalLink,
-  Plus
+  Plus,
+  FileText
 } from 'lucide-react';
 
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
   { name: 'Products', href: '/admin/products', icon: Package },
+  { name: 'Blog', href: '/admin/blog', icon: FileText },
   { name: 'Categories', href: '/admin/categories', icon: Tags },
   { name: 'Settings', href: '/admin/settings', icon: Settings },
 ];
