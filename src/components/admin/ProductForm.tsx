@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { createClient } from '@/lib/supabase/client';
@@ -11,14 +11,6 @@ interface ProductFormProps {
   product?: Product;
   mode: 'create' | 'edit';
 }
-
-const categories: { value: ProductCategory; label: string }[] = [
-  { value: 'men', label: "Men's Collection" },
-  { value: 'women', label: "Women's Collection" },
-  { value: 'niche', label: 'Niche Collection' },
-  { value: 'essence-oil', label: 'Essence Oil' },
-  { value: 'body-lotion', label: 'Body Lotion' },
-];
 
 const productTypes: { value: ProductType; label: string }[] = [
   { value: 'perfume', label: 'Perfume' },
@@ -46,6 +38,30 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
   const [additionalImages, setAdditionalImages] = useState<string[]>(
     product?.images ?? []
   );
+  const [categories, setCategories] = useState<{ value: string; label: string }[]>([]);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase
+      .from('product_categories')
+      .select('slug, name')
+      .eq('is_active', true)
+      .order('display_order', { ascending: true })
+      .then(({ data }) => {
+        if (data && data.length > 0) {
+          setCategories(data.map((c) => ({ value: c.slug, label: c.name })));
+        } else {
+          // Fallback if table is empty
+          setCategories([
+            { value: 'men', label: "Men's Collection" },
+            { value: 'women', label: "Women's Collection" },
+            { value: 'niche', label: 'Niche Collection' },
+            { value: 'essence-oil', label: 'Essence Oil' },
+            { value: 'body-lotion', label: 'Body Lotion' },
+          ]);
+        }
+      });
+  }, []);
 
   const [formData, setFormData] = useState({
     name: product?.name || '',

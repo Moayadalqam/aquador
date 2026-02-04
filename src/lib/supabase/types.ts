@@ -30,6 +30,42 @@ export type Database = {
         }
         Relationships: []
       }
+      product_categories: {
+        Row: {
+          id: string
+          name: string
+          slug: string
+          description: string | null
+          display_order: number
+          image_url: string | null
+          is_active: boolean
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          name: string
+          slug: string
+          description?: string | null
+          display_order?: number
+          image_url?: string | null
+          is_active?: boolean
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          name?: string
+          slug?: string
+          description?: string | null
+          display_order?: number
+          image_url?: string | null
+          is_active?: boolean
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       blog_categories: {
         Row: {
           created_at: string | null
@@ -213,3 +249,7 @@ export type AdminUser = Database['public']['Tables']['admin_users']['Row'];
 export type ProductCategory = Database['public']['Enums']['product_category'];
 export type ProductType = Database['public']['Enums']['product_type'];
 export type ProductGender = Database['public']['Enums']['product_gender'];
+
+export type ProductCategoryRow = Database['public']['Tables']['product_categories']['Row'];
+export type ProductCategoryInsert = Database['public']['Tables']['product_categories']['Insert'];
+export type ProductCategoryUpdate = Database['public']['Tables']['product_categories']['Update'];
