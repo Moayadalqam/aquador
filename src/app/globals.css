@@ -462,6 +462,70 @@ body {
 .stagger-5 { animation-delay: 0.5s; }
 
 /* ==========================================================================
+   VALENTINE'S SEASONAL THEME
+   ========================================================================== */
+
+/* Falling hearts animation */
+@keyframes valentine-fall {
+  0% {
+    transform: translateY(-5vh) rotate(0deg) scale(1);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(50vh) rotate(var(--heart-rotation, 20deg)) scale(0.9) translateX(20px);
+  }
+  90% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(105vh) rotate(calc(var(--heart-rotation, 20deg) * -1)) scale(0.7) translateX(-15px);
+    opacity: 0;
+  }
+}
+
+@keyframes valentine-sway {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(15px);
+  }
+  75% {
+    transform: translateX(-15px);
+  }
+}
+
+.valentine-heart {
+  animation:
+    valentine-fall var(--duration, 12s) linear infinite,
+    valentine-sway 4s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+/* Valentine subtle ambient glow */
+.valentine-glow {
+  background:
+    radial-gradient(ellipse 60% 30% at 50% 0%, rgba(200, 130, 130, 0.03) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 20% at 80% 10%, rgba(212, 175, 55, 0.02) 0%, transparent 40%);
+  pointer-events: none;
+}
+
+/* Valentine banner ribbon */
+.valentine-banner {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(200, 130, 130, 0.08) 20%,
+    rgba(212, 175, 55, 0.06) 50%,
+    rgba(200, 130, 130, 0.08) 80%,
+    transparent 100%
+  );
+}
+
+/* ==========================================================================
    ACCESSIBILITY
    ========================================================================== */
 
@@ -470,7 +534,8 @@ body {
   .animate-shimmer,
   .animate-float,
   .animate-pulse-gold,
-  .animate-fadeInUp {
+  .animate-fadeInUp,
+  .valentine-heart {
     animation: none !important;
   }
 

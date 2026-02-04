@@ -9,6 +9,8 @@ import { CartProvider, CartDrawer } from "@/components/cart";
 import CookieConsent from "@/components/ui/CookieConsent";
 import { AbortErrorSuppressor } from "@/components/providers/ErrorBoundary";
 import ChatWidget from "@/components/ai/ChatWidget";
+import ValentineHearts from "@/components/seasonal/ValentineHearts";
+import ValentineBanner from "@/components/seasonal/ValentineBanner";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -72,7 +74,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${poppins.variable} ${playfair.variable} antialiased`}>
         <AbortErrorSuppressor />
+        <ValentineHearts />
         <CartProvider>
+          <ValentineBanner />
           <Navbar />
           <main className="min-h-screen">
             {children}
