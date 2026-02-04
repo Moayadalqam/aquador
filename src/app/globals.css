@@ -465,43 +465,35 @@ body {
    VALENTINE'S SEASONAL THEME
    ========================================================================== */
 
-/* Falling hearts animation */
+/* Falling hearts animation - single keyframe with built-in sway */
 @keyframes valentine-fall {
   0% {
-    transform: translateY(-5vh) rotate(0deg) scale(1);
+    transform: translateY(-20px) translateX(0) rotate(0deg);
     opacity: 0;
   }
-  10% {
-    opacity: 1;
-  }
-  50% {
-    transform: translateY(50vh) rotate(var(--heart-rotation, 20deg)) scale(0.9) translateX(20px);
-  }
-  90% {
-    opacity: 0.5;
-  }
-  100% {
-    transform: translateY(105vh) rotate(calc(var(--heart-rotation, 20deg) * -1)) scale(0.7) translateX(-15px);
-    opacity: 0;
-  }
-}
-
-@keyframes valentine-sway {
-  0%, 100% {
-    transform: translateX(0);
+  5% {
+    opacity: var(--heart-opacity, 0.3);
   }
   25% {
-    transform: translateX(15px);
+    transform: translateY(25vh) translateX(15px) rotate(var(--heart-rotation, 15deg));
+  }
+  50% {
+    transform: translateY(50vh) translateX(-10px) rotate(calc(var(--heart-rotation, 15deg) * -0.5));
   }
   75% {
-    transform: translateX(-15px);
+    transform: translateY(75vh) translateX(12px) rotate(var(--heart-rotation, 15deg));
+  }
+  95% {
+    opacity: var(--heart-opacity, 0.3);
+  }
+  100% {
+    transform: translateY(105vh) translateX(-5px) rotate(calc(var(--heart-rotation, 15deg) * -1));
+    opacity: 0;
   }
 }
 
 .valentine-heart {
-  animation:
-    valentine-fall var(--duration, 12s) linear infinite,
-    valentine-sway 4s ease-in-out infinite;
+  animation: valentine-fall var(--heart-duration, 12s) var(--heart-delay, 0s) linear infinite;
   will-change: transform, opacity;
 }
 

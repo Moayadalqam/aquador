@@ -10,80 +10,74 @@ interface Heart {
   duration: number;
   opacity: number;
   rotation: number;
-  variant: number;
+  color: string;
 }
+
+const HEART_COLORS = [
+  'rgba(212, 175, 55,',   // gold
+  'rgba(200, 120, 120,',  // rose
+  'rgba(190, 150, 110,',  // bronze
+];
 
 export default function ValentineHearts() {
   const [hearts, setHearts] = useState<Heart[]>([]);
 
   useEffect(() => {
-    // Check reduced motion preference
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    const generated: Heart[] = Array.from({ length: 18 }, (_, i) => ({
-      id: i,
-      left: Math.random() * 100,
-      size: 10 + Math.random() * 14,
-      delay: Math.random() * 12,
-      duration: 8 + Math.random() * 10,
-      opacity: 0.08 + Math.random() * 0.15,
-      rotation: -30 + Math.random() * 60,
-      variant: Math.floor(Math.random() * 3),
-    }));
-    setHearts(generated);
+    setHearts(
+      Array.from({ length: 20 }, (_, i) => {
+        const opacity = 0.15 + Math.random() * 0.25;
+        const colorBase = HEART_COLORS[Math.floor(Math.random() * HEART_COLORS.length)];
+        return {
+          id: i,
+          left: Math.random() * 100,
+          size: 14 + Math.random() * 18,
+          delay: Math.random() * 14,
+          duration: 10 + Math.random() * 12,
+          opacity,
+          rotation: -25 + Math.random() * 50,
+          color: `${colorBase} ${opacity})`,
+        };
+      })
+    );
   }, []);
 
   if (hearts.length === 0) return null;
 
-  const colors = [
-    'rgba(212, 175, 55, VAR)',      // gold
-    'rgba(200, 130, 130, VAR)',     // muted rose
-    'rgba(180, 140, 100, VAR)',     // warm bronze
-  ];
-
   return (
     <div
-      className="valentine-hearts"
       aria-hidden="true"
       style={{
         position: 'fixed',
         inset: 0,
         pointerEvents: 'none',
-        zIndex: 50,
+        zIndex: 9999,
         overflow: 'hidden',
       }}
     >
-      {hearts.map((heart) => {
-        const color = colors[heart.variant].replace('VAR', String(heart.opacity));
-        return (
-          <div
-            key={heart.id}
-            className="valentine-heart"
-            style={{
-              position: 'absolute',
-              left: `${heart.left}%`,
-              top: '-5%',
-              width: `${heart.size}px`,
-              height: `${heart.size}px`,
-              animationDelay: `${heart.delay}s`,
-              animationDuration: `${heart.duration}s`,
-              ['--heart-rotation' as string]: `${heart.rotation}deg`,
-              ['--heart-color' as string]: color,
-            }}
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill={color}
-              width={heart.size}
-              height={heart.size}
-              style={{ filter: `drop-shadow(0 0 ${heart.size / 3}px ${color})` }}
-            >
-              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-            </svg>
-          </div>
-        );
-      })}
+      {hearts.map((h) => (
+        <svg
+          key={h.id}
+          className="valentine-heart"
+          viewBox="0 0 24 24"
+          fill={h.color}
+          width={h.size}
+          height={h.size}
+          style={{
+            position: 'absolute',
+            left: `${h.left}%`,
+            top: 0,
+            ['--heart-duration' as string]: `${h.duration}s`,
+            ['--heart-delay' as string]: `${h.delay}s`,
+            ['--heart-rotation' as string]: `${h.rotation}deg`,
+            ['--heart-opacity' as string]: h.opacity,
+            filter: `drop-shadow(0 0 4px ${h.color})`,
+          }}
+        >
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+        </svg>
+      ))}
     </div>
   );
 }
