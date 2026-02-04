@@ -3,6 +3,7 @@ import Stripe from 'stripe';
 import * as Sentry from '@sentry/nextjs';
 import { fetchWithTimeout } from '@/lib/api-utils';
 import { formatPrice } from '@/lib/utils';
+import { createAdminClient } from '@/lib/supabase/admin';
 
 function getStripe() {
   if (!process.env.STRIPE_SECRET_KEY) {
@@ -36,6 +37,92 @@ interface ShippingAddress {
     postal_code?: string;
     country?: string;
   };
+}
+
+async function persistOrder(
+  session: Stripe.Checkout.Session,
+  items: OrderItem[],
+  shippingAddress: ShippingAddress | null
+) {
+  try {
+    const supabase = createAdminClient();
+    const customerEmail = session.customer_details?.email;
+    const customerName = session.customer_details?.name;
+
+    if (!customerEmail) return;
+
+    // Insert order (idempotent via unique stripe_session_id)
+    const { error: orderError } = await supabase.from('orders').upsert(
+      {
+        stripe_session_id: session.id,
+        customer_email: customerEmail,
+        customer_name: customerName || null,
+        items: JSON.parse(JSON.stringify(items)),
+        total: session.amount_total || 0,
+        currency: session.currency || 'eur',
+        status: 'confirmed' as const,
+        shipping_address: shippingAddress ? JSON.parse(JSON.stringify(shippingAddress)) : null,
+      },
+      { onConflict: 'stripe_session_id', ignoreDuplicates: true }
+    );
+
+    if (orderError) {
+      console.error('Failed to persist order:', orderError);
+      Sentry.captureMessage('Order persistence failed', {
+        level: 'error',
+        extra: { orderError, sessionId: session.id },
+      });
+      return;
+    }
+
+    // Upsert customer
+    const now = new Date().toISOString();
+    const { data: existing } = await supabase
+      .from('customers')
+      .select('id, total_orders, total_spent, shipping_addresses')
+      .eq('email', customerEmail)
+      .single();
+
+    if (existing) {
+      const addresses = (existing.shipping_addresses as ShippingAddress[]) || [];
+      if (shippingAddress?.address) {
+        const addrStr = JSON.stringify(shippingAddress);
+        const alreadyStored = addresses.some(a => JSON.stringify(a) === addrStr);
+        if (!alreadyStored) addresses.push(shippingAddress);
+      }
+
+      await supabase
+        .from('customers')
+        .update({
+          name: customerName || undefined,
+          total_orders: existing.total_orders + 1,
+          total_spent: existing.total_spent + (session.amount_total || 0),
+          last_order_at: now,
+          shipping_addresses: JSON.parse(JSON.stringify(addresses)),
+        })
+        .eq('id', existing.id);
+    } else {
+      await supabase.from('customers').insert({
+        email: customerEmail,
+        name: customerName || null,
+        total_orders: 1,
+        total_spent: session.amount_total || 0,
+        first_order_at: now,
+        last_order_at: now,
+        shipping_addresses: shippingAddress
+          ? JSON.parse(JSON.stringify([shippingAddress]))
+          : [],
+      });
+    }
+
+    console.log('Order persisted for:', customerEmail);
+  } catch (error) {
+    Sentry.captureException(error, {
+      tags: { action: 'persist_order' },
+      extra: { sessionId: session.id },
+    });
+    console.error('Error persisting order:', error);
+  }
 }
 
 async function sendOrderConfirmationEmail(
@@ -143,7 +230,7 @@ async function sendOrderConfirmationEmail(
 
             <div style="background: #0a0a0a; padding: 20px; text-align: center;">
               <p style="color: #888; font-size: 12px; margin: 0;">
-                © ${new Date().getFullYear()} Aquad'or Cyprus. All rights reserved.<br>
+                &copy; ${new Date().getFullYear()} Aquad'or Cyprus. All rights reserved.<br>
                 Ledra 145, 1011, Nicosia, Cyprus
               </p>
             </div>
@@ -218,38 +305,49 @@ export async function POST(request: NextRequest) {
         metadata: session.metadata,
       });
 
-      // Send confirmation email
+      // Parse items and shipping
       const customerEmail = session.customer_details?.email;
-      if (customerEmail && session.metadata?.items) {
-        try {
-          const items: OrderItem[] = JSON.parse(session.metadata.items);
-          // Get shipping details from collected_information
-          const shippingDetails = session.collected_information?.shipping_details;
-          const shippingAddress: ShippingAddress | null = shippingDetails ? {
-            name: shippingDetails.name ?? undefined,
-            address: shippingDetails.address ? {
-              line1: shippingDetails.address.line1 ?? undefined,
-              line2: shippingDetails.address.line2 ?? undefined,
-              city: shippingDetails.address.city ?? undefined,
-              postal_code: shippingDetails.address.postal_code ?? undefined,
-              country: shippingDetails.address.country ?? undefined,
-            } : undefined,
-          } : null;
+      let items: OrderItem[] = [];
+      let shippingAddress: ShippingAddress | null = null;
 
-          await sendOrderConfirmationEmail(customerEmail, {
-            sessionId: session.id,
-            items,
-            total: session.amount_total || 0,
-            currency: session.currency || 'eur',
-            shippingAddress,
-          });
+      if (session.metadata?.items) {
+        try {
+          items = JSON.parse(session.metadata.items);
         } catch (parseError) {
           Sentry.captureException(parseError, {
             tags: { action: 'parse_order_items' },
             extra: { sessionId: session.id },
           });
-          console.error('Failed to parse order items for email:', parseError);
+          console.error('Failed to parse order items:', parseError);
         }
+      }
+
+      const shippingDetails = session.collected_information?.shipping_details;
+      if (shippingDetails) {
+        shippingAddress = {
+          name: shippingDetails.name ?? undefined,
+          address: shippingDetails.address ? {
+            line1: shippingDetails.address.line1 ?? undefined,
+            line2: shippingDetails.address.line2 ?? undefined,
+            city: shippingDetails.address.city ?? undefined,
+            postal_code: shippingDetails.address.postal_code ?? undefined,
+            country: shippingDetails.address.country ?? undefined,
+          } : undefined,
+        };
+      }
+
+      // Persist order + customer to Supabase
+      await persistOrder(session, items, shippingAddress);
+
+      // Send confirmation email
+      if (customerEmail && items.length > 0) {
+        await sendOrderConfirmationEmail(customerEmail, {
+          sessionId: session.id,
+          items,
+          total: session.amount_total || 0,
+          currency: session.currency || 'eur',
+          shippingAddress,
+        });
       }
 
       break;

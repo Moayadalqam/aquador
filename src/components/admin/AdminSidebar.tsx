@@ -10,11 +10,15 @@ import {
   Settings,
   ExternalLink,
   Plus,
-  FileText
+  FileText,
+  ShoppingBag,
+  Users,
 } from 'lucide-react';
 
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
+  { name: 'Orders', href: '/admin/orders', icon: ShoppingBag },
+  { name: 'Customers', href: '/admin/customers', icon: Users },
   { name: 'Products', href: '/admin/products', icon: Package },
   { name: 'Blog', href: '/admin/blog', icon: FileText },
   { name: 'Categories', href: '/admin/categories', icon: Tags },

@@ -11,6 +11,7 @@ import { AbortErrorSuppressor } from "@/components/providers/ErrorBoundary";
 import ChatWidget from "@/components/ai/ChatWidget";
 import ValentineHearts from "@/components/seasonal/ValentineHearts";
 import ValentineBanner from "@/components/seasonal/ValentineBanner";
+import VisitorTracker from "@/components/VisitorTracker";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -86,6 +87,7 @@ export default function RootLayout({
           <CookieConsent />
           <ChatWidget />
         </CartProvider>
+        <VisitorTracker />
         <Analytics />
         <SpeedInsights />
       </body>

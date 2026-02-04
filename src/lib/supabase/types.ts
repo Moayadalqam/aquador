@@ -30,42 +30,6 @@ export type Database = {
         }
         Relationships: []
       }
-      product_categories: {
-        Row: {
-          id: string
-          name: string
-          slug: string
-          description: string | null
-          display_order: number
-          image_url: string | null
-          is_active: boolean
-          created_at: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          id?: string
-          name: string
-          slug: string
-          description?: string | null
-          display_order?: number
-          image_url?: string | null
-          is_active?: boolean
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          id?: string
-          name?: string
-          slug?: string
-          description?: string | null
-          display_order?: number
-          image_url?: string | null
-          is_active?: boolean
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
       blog_categories: {
         Row: {
           created_at: string | null
@@ -159,6 +123,123 @@ export type Database = {
         }
         Relationships: []
       }
+      customers: {
+        Row: {
+          created_at: string
+          email: string
+          first_order_at: string | null
+          id: string
+          last_order_at: string | null
+          name: string | null
+          shipping_addresses: Json
+          total_orders: number
+          total_spent: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          first_order_at?: string | null
+          id?: string
+          last_order_at?: string | null
+          name?: string | null
+          shipping_addresses?: Json
+          total_orders?: number
+          total_spent?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          first_order_at?: string | null
+          id?: string
+          last_order_at?: string | null
+          name?: string | null
+          shipping_addresses?: Json
+          total_orders?: number
+          total_spent?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      orders: {
+        Row: {
+          created_at: string
+          currency: string
+          customer_email: string
+          customer_name: string | null
+          id: string
+          items: Json
+          shipping_address: Json | null
+          status: Database["public"]["Enums"]["order_status"]
+          stripe_session_id: string
+          total: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          currency?: string
+          customer_email: string
+          customer_name?: string | null
+          id?: string
+          items?: Json
+          shipping_address?: Json | null
+          status?: Database["public"]["Enums"]["order_status"]
+          stripe_session_id: string
+          total: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          currency?: string
+          customer_email?: string
+          customer_name?: string | null
+          id?: string
+          items?: Json
+          shipping_address?: Json | null
+          status?: Database["public"]["Enums"]["order_status"]
+          stripe_session_id?: string
+          total?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      product_categories: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          display_order: number
+          id: string
+          image_url: string | null
+          is_active: boolean
+          name: string
+          slug: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          display_order?: number
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name: string
+          slug: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          display_order?: number
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name?: string
+          slug?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           brand: string | null
@@ -168,7 +249,7 @@ export type Database = {
           gender: Database["public"]["Enums"]["product_gender"] | null
           id: string
           image: string
-          images: string[]
+          images: string[] | null
           in_stock: boolean | null
           name: string
           price: number
@@ -186,7 +267,7 @@ export type Database = {
           gender?: Database["public"]["Enums"]["product_gender"] | null
           id?: string
           image: string
-          images?: string[]
+          images?: string[] | null
           in_stock?: boolean | null
           name: string
           price: number
@@ -204,7 +285,7 @@ export type Database = {
           gender?: Database["public"]["Enums"]["product_gender"] | null
           id?: string
           image?: string
-          images?: string[]
+          images?: string[] | null
           in_stock?: boolean | null
           name?: string
           price?: number
@@ -213,6 +294,39 @@ export type Database = {
           size?: string
           tags?: string[] | null
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      site_visitors: {
+        Row: {
+          country: string | null
+          created_at: string
+          id: string
+          ip_hash: string | null
+          last_seen: string
+          page: string | null
+          session_id: string
+          user_agent: string | null
+        }
+        Insert: {
+          country?: string | null
+          created_at?: string
+          id?: string
+          ip_hash?: string | null
+          last_seen?: string
+          page?: string | null
+          session_id: string
+          user_agent?: string | null
+        }
+        Update: {
+          country?: string | null
+          created_at?: string
+          id?: string
+          ip_hash?: string | null
+          last_seen?: string
+          page?: string | null
+          session_id?: string
+          user_agent?: string | null
         }
         Relationships: []
       }
@@ -225,6 +339,14 @@ export type Database = {
     }
     Enums: {
       admin_role: "admin" | "super_admin"
+      order_status:
+        | "pending"
+        | "confirmed"
+        | "processing"
+        | "shipped"
+        | "delivered"
+        | "cancelled"
+        | "refunded"
       product_category:
         | "men"
         | "women"
@@ -253,3 +375,12 @@ export type ProductGender = Database['public']['Enums']['product_gender'];
 export type ProductCategoryRow = Database['public']['Tables']['product_categories']['Row'];
 export type ProductCategoryInsert = Database['public']['Tables']['product_categories']['Insert'];
 export type ProductCategoryUpdate = Database['public']['Tables']['product_categories']['Update'];
+
+export type Order = Database['public']['Tables']['orders']['Row'];
+export type OrderInsert = Database['public']['Tables']['orders']['Insert'];
+export type OrderStatus = Database['public']['Enums']['order_status'];
+
+export type Customer = Database['public']['Tables']['customers']['Row'];
+export type CustomerInsert = Database['public']['Tables']['customers']['Insert'];
+
+export type SiteVisitor = Database['public']['Tables']['site_visitors']['Row'];
