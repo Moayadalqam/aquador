@@ -108,6 +108,9 @@ export default function GiftSetContent({ isSoldOut, perfumes, lotions }: GiftSet
             </div>
 
             {/* Description */}
+            <p className="text-white/80 leading-relaxed text-base italic mb-2">
+              {VALENTINE_GIFT_SET.shortDescription}
+            </p>
             <p className="text-gray-400 leading-relaxed text-base">
               {VALENTINE_GIFT_SET.description}
             </p>
@@ -199,7 +202,7 @@ export default function GiftSetContent({ isSoldOut, perfumes, lotions }: GiftSet
 
               {!isSoldOut && (
                 <p className="text-center text-gray-500 text-xs tracking-wide">
-                  Limited stock available
+                  {VALENTINE_GIFT_SET.availability}
                 </p>
               )}
             </div>

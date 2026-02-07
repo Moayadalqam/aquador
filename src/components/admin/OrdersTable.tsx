@@ -44,6 +44,7 @@ export default function OrdersTable({ orders, onStatusChange }: OrdersTableProps
           {orders.map((order) => {
             const items = Array.isArray(order.items) ? (order.items as Array<{ name?: string; quantity?: number; price?: number; productType?: string; metadata?: { giftSetSelections?: { perfumeName: string; lotionName: string } } }>) : [];
             const itemCount = items.reduce((sum, item) => sum + (item.quantity || 1), 0);
+            const tags = (order.tags && typeof order.tags === 'object' && !Array.isArray(order.tags)) ? order.tags as Record<string, string> : {};
 
             return (
               <tr key={order.id} className="hover:bg-gray-800/50 transition-colors">
@@ -67,6 +68,23 @@ export default function OrdersTable({ orders, onStatusChange }: OrdersTableProps
                       <br />Lotion: {item.metadata!.giftSetSelections!.lotionName}
                     </div>
                   ))}
+                  {tags.WRITTEN_IN_SCENT && (
+                    <div className="mt-2 flex flex-wrap gap-1">
+                      <span className="inline-block px-1.5 py-0.5 text-[10px] font-medium bg-gold/10 text-gold border border-gold/20 rounded">
+                        GIFT SET
+                      </span>
+                      {tags.PERFUME_SELECTED && (
+                        <span className="inline-block px-1.5 py-0.5 text-[10px] bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded">
+                          Perfume: {tags.PERFUME_SELECTED}
+                        </span>
+                      )}
+                      {tags.LOTION_SELECTED && (
+                        <span className="inline-block px-1.5 py-0.5 text-[10px] bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 rounded">
+                          Lotion: {tags.LOTION_SELECTED}
+                        </span>
+                      )}
+                    </div>
+                  )}
                 </td>
                 <td className="px-4 py-4 text-right">
                   <span className="text-white font-medium">

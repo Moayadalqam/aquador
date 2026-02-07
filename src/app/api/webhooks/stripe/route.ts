@@ -53,7 +53,8 @@ interface ShippingAddress {
 async function persistOrder(
   session: Stripe.Checkout.Session,
   items: OrderItem[],
-  shippingAddress: ShippingAddress | null
+  shippingAddress: ShippingAddress | null,
+  orderTags: Record<string, string>
 ) {
   try {
     const supabase = createAdminClient();
@@ -73,6 +74,7 @@ async function persistOrder(
         currency: session.currency || 'eur',
         status: 'confirmed' as const,
         shipping_address: shippingAddress ? JSON.parse(JSON.stringify(shippingAddress)) : null,
+        tags: Object.keys(orderTags).length > 0 ? orderTags : {},
       },
       { onConflict: 'stripe_session_id', ignoreDuplicates: true }
     );
@@ -169,6 +171,25 @@ async function sendOrderConfirmationEmail(
     })
     .join('');
 
+  // Gift set details block
+  const giftSetItem = orderDetails.items.find(i => i.productType === 'gift-set' && i.metadata?.giftSetSelections);
+  const giftSetHtml = giftSetItem?.metadata?.giftSetSelections ? `
+    <div style="background: linear-gradient(135deg, #1a0a0a, #0a0a0a); padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid rgba(212,175,55,0.3);">
+      <h3 style="color: #D4AF37; margin-top: 0; font-family: Georgia, serif;">Your Gift Set Selections</h3>
+      <table style="width: 100%; font-size: 14px;">
+        <tr>
+          <td style="color: #888; padding: 6px 0;">Perfume (100 ml):</td>
+          <td style="color: #fff; font-weight: 500; padding: 6px 0;">${escapeHtml(giftSetItem.metadata.giftSetSelections.perfumeName)}</td>
+        </tr>
+        <tr>
+          <td style="color: #888; padding: 6px 0;">Body Lotion (100 ml):</td>
+          <td style="color: #fff; font-weight: 500; padding: 6px 0;">${escapeHtml(giftSetItem.metadata.giftSetSelections.lotionName)}</td>
+        </tr>
+      </table>
+      <p style="color: #888; font-size: 12px; margin: 12px 0 0; font-style: italic;">Each set includes: rose-shaped candle, Lacta chocolate, everlasting decorative rose, and luxury gift packaging.</p>
+    </div>
+  ` : '';
+
   const shippingHtml = orderDetails.shippingAddress?.address ? `
     <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
       <h3 style="color: #333; margin-top: 0;">Shipping Address</h3>
@@ -233,6 +254,8 @@ async function sendOrderConfirmationEmail(
                   </tr>
                 </tfoot>
               </table>
+
+              ${giftSetHtml}
 
               ${shippingHtml}
 
@@ -322,10 +345,22 @@ export async function POST(request: NextRequest) {
         metadata: session.metadata,
       });
 
-      // Parse items and shipping
+      // Parse items, shipping, and order tags
       const customerEmail = session.customer_details?.email;
       let items: OrderItem[] = [];
       let shippingAddress: ShippingAddress | null = null;
+
+      // Extract gift set order tags from Stripe metadata
+      const orderTags: Record<string, string> = {};
+      if (session.metadata?.WRITTEN_IN_SCENT) {
+        orderTags.WRITTEN_IN_SCENT = session.metadata.WRITTEN_IN_SCENT;
+      }
+      if (session.metadata?.PERFUME_SELECTED) {
+        orderTags.PERFUME_SELECTED = session.metadata.PERFUME_SELECTED;
+      }
+      if (session.metadata?.LOTION_SELECTED) {
+        orderTags.LOTION_SELECTED = session.metadata.LOTION_SELECTED;
+      }
 
       if (session.metadata?.items) {
         try {
@@ -354,7 +389,7 @@ export async function POST(request: NextRequest) {
       }
 
       // Persist order + customer to Supabase
-      await persistOrder(session, items, shippingAddress);
+      await persistOrder(session, items, shippingAddress, orderTags);
 
       // Decrement gift set stock
       for (const item of items) {

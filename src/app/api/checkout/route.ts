@@ -106,6 +106,14 @@ export async function POST(request: NextRequest) {
           productType: i.productType,
           metadata: i.metadata,
         }))),
+        // Gift set order tags for admin packing
+        ...(giftSetItems.length > 0 && giftSetItems[0].metadata?.giftSetSelections
+          ? {
+              WRITTEN_IN_SCENT: 'YES',
+              PERFUME_SELECTED: giftSetItems[0].metadata.giftSetSelections.perfumeName,
+              LOTION_SELECTED: giftSetItems[0].metadata.giftSetSelections.lotionName,
+            }
+          : {}),
       },
     });
 

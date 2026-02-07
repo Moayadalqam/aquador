@@ -61,7 +61,10 @@ export default function ValentineGiftSection() {
 
             <div className="w-12 h-px bg-gold/40 mx-auto lg:mx-0 my-5" />
 
-            <p className="text-gray-400 text-base md:text-lg leading-relaxed mb-6 max-w-lg mx-auto lg:mx-0">
+            <p className="text-white/80 text-base md:text-lg leading-relaxed italic mb-2 max-w-lg mx-auto lg:mx-0">
+              {VALENTINE_GIFT_SET.shortDescription}
+            </p>
+            <p className="text-gray-400 text-sm leading-relaxed mb-6 max-w-lg mx-auto lg:mx-0">
               {VALENTINE_GIFT_SET.description}
             </p>
 

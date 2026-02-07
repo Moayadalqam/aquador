@@ -136,6 +136,9 @@ export default function ValentinesContent() {
               <h2 className="text-3xl md:text-4xl font-playfair text-white">
                 {VALENTINE_GIFT_SET.name}
               </h2>
+              <p className="text-white/80 leading-relaxed italic mb-2">
+                {VALENTINE_GIFT_SET.shortDescription}
+              </p>
               <p className="text-gray-400 leading-relaxed">
                 {VALENTINE_GIFT_SET.description}
               </p>

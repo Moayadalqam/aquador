@@ -173,6 +173,7 @@ export type Database = {
           shipping_address: Json | null
           status: Database["public"]["Enums"]["order_status"]
           stripe_session_id: string
+          tags: Json
           total: number
           updated_at: string
         }
@@ -186,6 +187,7 @@ export type Database = {
           shipping_address?: Json | null
           status?: Database["public"]["Enums"]["order_status"]
           stripe_session_id: string
+          tags?: Json
           total: number
           updated_at?: string
         }
@@ -199,6 +201,7 @@ export type Database = {
           shipping_address?: Json | null
           status?: Database["public"]["Enums"]["order_status"]
           stripe_session_id?: string
+          tags?: Json
           total?: number
           updated_at?: string
         }

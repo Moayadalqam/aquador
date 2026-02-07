@@ -52,7 +52,7 @@ export default function CartItem({ item }: CartItemProps) {
           {item.name}
         </h4>
         {item.productType === 'gift-set' ? (
-          <p className="text-xs text-gold/70 mt-0.5">Valentine Gift Set</p>
+          <p className="text-xs text-gold/70 mt-0.5">Limited Edition Gift Set</p>
         ) : (
           <p className="text-xs text-gray-400 mt-0.5">
             {getProductTypeLabel(item.productType)} - {item.size}

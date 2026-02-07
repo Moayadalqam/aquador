@@ -5,14 +5,21 @@ export const VALENTINE_GIFT_SET = {
   id: 'valentine-gift-set-2026',
   name: "Written in Scent",
   slug: 'valentine',
+  sku: 'WS-VAL-24',
   price: 64.99,
+  shortDescription:
+    'A love story, written in fragrance. A limited gift set designed to be felt, worn, and remembered.',
   description:
-    "A curated pairing of two signature Aquad'or creations — one 100 ml perfume and one 100 ml body lotion — chosen by you, wrapped in luxury. Because the most unforgettable gifts are the ones written in scent.",
+    'Written in Scent is a limited-edition gift set created to transform fragrance into a lasting memory. Each set is carefully prepared and presented in our signature black gift packaging.',
   includes: [
-    '1 × 100 ml Perfume (your choice)',
-    '1 × 100 ml Body Lotion (your choice)',
-    'Premium gift packaging',
+    '100 ml Aquad\'or perfume (your choice of scent)',
+    '100 ml Aquad\'or body lotion (your choice of scent)',
+    'Rose-shaped candle',
+    'Lacta chocolate',
+    'Everlasting decorative rose (keepsake)',
+    'Luxury gift packaging with window and rope handles',
   ],
+  availability: 'Limited stock available. While supplies last.',
   badge: 'Limited Edition',
   image: '/images/valentine-gift-set.webp',
 } as const;
