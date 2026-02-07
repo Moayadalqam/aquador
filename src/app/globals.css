@@ -493,7 +493,7 @@ body {
 }
 
 .valentine-heart {
-  animation: valentine-fall var(--heart-duration, 12s) var(--heart-delay, 0s) linear infinite;
+  animation: valentine-fall var(--heart-duration, 12s) var(--heart-delay, 0s) linear infinite backwards;
   will-change: transform, opacity;
 }
 
