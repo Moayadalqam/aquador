@@ -25,7 +25,7 @@ export interface LegacyProduct {
   price: number;
   salePrice?: number;
   category: 'men' | 'women' | 'niche' | 'essence-oil' | 'body-lotion';
-  productType: 'perfume' | 'essence-oil' | 'body-lotion';
+  productType: 'perfume' | 'essence-oil' | 'body-lotion' | 'gift-set';
   size: string;
   image: string;
   images?: string[];

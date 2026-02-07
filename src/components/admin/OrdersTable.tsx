@@ -42,7 +42,7 @@ export default function OrdersTable({ orders, onStatusChange }: OrdersTableProps
         </thead>
         <tbody className="divide-y divide-gray-800">
           {orders.map((order) => {
-            const items = Array.isArray(order.items) ? (order.items as Array<{ name?: string; quantity?: number; price?: number }>) : [];
+            const items = Array.isArray(order.items) ? (order.items as Array<{ name?: string; quantity?: number; price?: number; productType?: string; metadata?: { giftSetSelections?: { perfumeName: string; lotionName: string } } }>) : [];
             const itemCount = items.reduce((sum, item) => sum + (item.quantity || 1), 0);
 
             return (
@@ -60,6 +60,13 @@ export default function OrdersTable({ orders, onStatusChange }: OrdersTableProps
                 </td>
                 <td className="px-4 py-4">
                   <span className="text-gray-300 text-sm">{itemCount} item{itemCount !== 1 ? 's' : ''}</span>
+                  {items.filter(i => i.metadata?.giftSetSelections).map((item, idx) => (
+                    <div key={idx} className="mt-1 text-[11px] text-gold/80 border-l-2 border-gold/30 pl-2">
+                      <span className="font-medium">{item.name}</span>
+                      <br />Perfume: {item.metadata!.giftSetSelections!.perfumeName}
+                      <br />Lotion: {item.metadata!.giftSetSelections!.lotionName}
+                    </div>
+                  ))}
                 </td>
                 <td className="px-4 py-4 text-right">
                   <span className="text-white font-medium">

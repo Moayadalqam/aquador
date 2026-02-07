@@ -11,6 +11,7 @@ export const PRODUCT_TYPE_LABELS: Record<ProductType, string> = {
   'perfume': 'Perfume',
   'essence-oil': 'Essence Oil',
   'body-lotion': 'Body Lotion',
+  'gift-set': 'Gift Set',
 } as const;
 
 /**

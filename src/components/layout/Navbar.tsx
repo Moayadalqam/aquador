@@ -9,6 +9,7 @@ import { CartIcon } from '@/components/cart';
 import { SearchBar } from '@/components/search';
 
 const navLinks = [
+  { label: "Valentine's", href: '/valentines' },
   { label: 'Lattafa', href: '/shop/lattafa' },
   { label: 'Dubai Shop', href: '/shop' },
   { label: 'Create Your Own', href: '/create-perfume' },

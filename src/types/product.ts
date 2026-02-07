@@ -1,4 +1,4 @@
-export type ProductType = 'perfume' | 'essence-oil' | 'body-lotion';
+export type ProductType = 'perfume' | 'essence-oil' | 'body-lotion' | 'gift-set';
 export type ProductSize = '10ml' | '50ml' | '100ml' | '150ml';
 export type ProductCategory = 'men' | 'women' | 'niche';
 
@@ -46,6 +46,7 @@ export function getVariantLabel(variant: ProductVariant): string {
     'perfume': 'Perfume',
     'essence-oil': 'Essence Oil',
     'body-lotion': 'Body Lotion',
+    'gift-set': 'Gift Set',
   };
   return `${typeLabels[variant.productType]} - ${variant.size}`;
 }

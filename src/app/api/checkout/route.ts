@@ -7,6 +7,8 @@ import { formatApiError } from '@/lib/api-utils';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { getProductTypeLabel } from '@/lib/constants';
 import { getStripe } from '@/lib/stripe';
+import { getGiftSetStock } from '@/lib/supabase/inventory-service';
+import { VALENTINE_GIFT_SET } from '@/lib/gift-sets';
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
@@ -27,19 +29,40 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Check gift set stock before proceeding
+    const giftSetItems = items.filter((i) => i.productType === 'gift-set');
+    if (giftSetItems.length > 0) {
+      const stock = await getGiftSetStock(VALENTINE_GIFT_SET.id);
+      const totalGiftSetQty = giftSetItems.reduce((sum, i) => sum + i.quantity, 0);
+      if (stock < totalGiftSetQty) {
+        return NextResponse.json(
+          { error: 'This gift set is no longer available' },
+          { status: 400 }
+        );
+      }
+    }
+
     // Create line items for Stripe
-    const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = items.map((item) => ({
-      price_data: {
-        currency: CURRENCY_CODE,
-        product_data: {
-          name: item.name,
-          description: `${getProductTypeLabel(item.productType)} - ${item.size}`,
-          images: item.image ? [item.image] : undefined,
+    const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = items.map((item) => {
+      let description = `${getProductTypeLabel(item.productType)} - ${item.size}`;
+      if (item.productType === 'gift-set' && item.metadata?.giftSetSelections) {
+        const sel = item.metadata.giftSetSelections;
+        description = `Perfume: ${sel.perfumeName} | Body Lotion: ${sel.lotionName}`;
+      }
+
+      return {
+        price_data: {
+          currency: CURRENCY_CODE,
+          product_data: {
+            name: item.name,
+            description,
+            images: item.image ? [item.image] : undefined,
+          },
+          unit_amount: toCents(item.price),
         },
-        unit_amount: toCents(item.price),
-      },
-      quantity: item.quantity,
-    }));
+        quantity: item.quantity,
+      };
+    });
 
     // Create checkout session
     const session = await stripe.checkout.sessions.create({
@@ -80,6 +103,8 @@ export async function POST(request: NextRequest) {
           name: i.name,
           quantity: i.quantity,
           price: i.price,
+          productType: i.productType,
+          metadata: i.metadata,
         }))),
       },
     });

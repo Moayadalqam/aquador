@@ -5,6 +5,10 @@ const Hero = dynamic(() => import('@/components/home/Hero'), {
   ssr: true,
 });
 
+const ValentineGiftSection = dynamic(() => import('@/components/home/ValentineGiftSection'), {
+  ssr: true,
+});
+
 const Categories = dynamic(() => import('@/components/home/Categories'), {
   ssr: true,
 });
@@ -51,6 +55,7 @@ export default async function Home() {
   return (
     <>
       <Hero />
+      <ValentineGiftSection />
       <Categories />
       <CreateSection />
       <FeaturedProducts products={featuredProducts} />

@@ -297,6 +297,36 @@ export type Database = {
         }
         Relationships: []
       }
+      gift_set_inventory: {
+        Row: {
+          id: string
+          name: string
+          stock_quantity: number
+          price: number
+          active: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id: string
+          name: string
+          stock_quantity?: number
+          price: number
+          active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          stock_quantity?: number
+          price?: number
+          active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       site_visitors: {
         Row: {
           country: string | null
@@ -335,7 +365,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      decrement_gift_set_stock: {
+        Args: {
+          p_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
       admin_role: "admin" | "super_admin"
