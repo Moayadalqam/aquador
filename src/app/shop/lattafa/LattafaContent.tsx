@@ -85,10 +85,10 @@ export default function LattafaContent({ products }: LattafaContentProps) {
               &larr; Back to Collections
             </Link>
             <h1 className="text-5xl md:text-6xl font-playfair text-gradient-gold mb-4">
-              Lattafa Collection
+              Lattafa Original
             </h1>
             <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-              Premium Arabian Fragrances - Authentic scents crafted with the finest ingredients
+              Original Lattafa Perfumes — authentic Arabian fragrances crafted with the finest ingredients
             </p>
           </motion.div>
         </div>
