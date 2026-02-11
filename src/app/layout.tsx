@@ -9,8 +9,9 @@ import { CartProvider, CartDrawer } from "@/components/cart";
 import CookieConsent from "@/components/ui/CookieConsent";
 import { AbortErrorSuppressor } from "@/components/providers/ErrorBoundary";
 import ChatWidget from "@/components/ai/ChatWidget";
-import ValentineHearts from "@/components/seasonal/ValentineHearts";
-import ValentineBanner from "@/components/seasonal/ValentineBanner";
+// Valentine seasonal components (commented out — season ended)
+// import ValentineHearts from "@/components/seasonal/ValentineHearts";
+// import ValentineBanner from "@/components/seasonal/ValentineBanner";
 import VisitorTracker from "@/components/VisitorTracker";
 
 const playfair = Playfair_Display({
@@ -75,9 +76,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${poppins.variable} ${playfair.variable} antialiased`}>
         <AbortErrorSuppressor />
-        <ValentineHearts />
+        {/* <ValentineHearts /> */}
         <CartProvider>
-          <ValentineBanner />
+          {/* <ValentineBanner /> */}
           <Navbar />
           <main className="min-h-screen">
             {children}

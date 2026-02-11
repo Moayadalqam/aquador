@@ -789,3 +789,61 @@ body {
   @apply inline-block text-[10px] uppercase tracking-[0.2em] text-gold border border-gold/30 px-5 py-2 hover:bg-gold hover:text-black transition-all duration-300;
 }
 
+/* ==========================================================================
+   PRODUCT DESCRIPTION STYLES (Rich Text from Admin)
+   ========================================================================== */
+
+.product-description h2 {
+  @apply text-xl font-playfair text-white mt-6 mb-3;
+}
+
+.product-description h3 {
+  @apply text-lg font-playfair text-white mt-5 mb-2;
+}
+
+.product-description p {
+  @apply text-gray-300 leading-relaxed mb-3;
+}
+
+.product-description strong {
+  @apply text-white font-medium;
+}
+
+.product-description em {
+  @apply italic;
+}
+
+.product-description u {
+  @apply underline underline-offset-4;
+}
+
+.product-description ul,
+.product-description ol {
+  @apply mb-3 pl-5 space-y-1;
+}
+
+.product-description ul {
+  list-style: none;
+}
+
+.product-description ul li {
+  @apply text-gray-300 relative pl-4;
+}
+
+.product-description ul li::before {
+  content: '•';
+  @apply absolute left-0 text-gold;
+}
+
+.product-description ol {
+  @apply list-decimal;
+}
+
+.product-description ol li {
+  @apply text-gray-300;
+}
+
+.product-description hr {
+  @apply border-gold/10 my-6;
+}
+

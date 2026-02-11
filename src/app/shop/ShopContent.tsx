@@ -13,6 +13,8 @@ import { VALENTINE_GIFT_SET } from '@/lib/gift-sets';
 import type { Product } from '@/lib/supabase/types';
 import type { Category } from '@/types';
 
+const FALLBACK_IMAGE = '/placeholder-product.svg';
+
 interface ShopContentProps {
   products: Product[];
   categories: Category[];
@@ -213,15 +215,21 @@ export default function ShopContent({ products, categories }: ShopContentProps) 
                 {/* Image */}
                 <div className="relative aspect-[3/4] overflow-hidden">
                   <Image
-                    src={product.image}
+                    src={product.image || FALLBACK_IMAGE}
                     alt={product.name}
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                    onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_IMAGE; }}
                   />
-                  {product.sale_price && (
+                  {product.sale_price && product.in_stock && (
                     <span className="absolute top-3 left-3 bg-gold text-black text-[9px] uppercase tracking-wider px-2 py-1 font-medium">
                       Sale
+                    </span>
+                  )}
+                  {!product.in_stock && (
+                    <span className="absolute top-3 left-3 bg-gray-800 text-white text-[9px] uppercase tracking-wider px-2 py-1 font-medium">
+                      Sold Out
                     </span>
                   )}
                 </div>

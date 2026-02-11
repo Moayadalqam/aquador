@@ -254,6 +254,7 @@ export type Database = {
           image: string
           images: string[] | null
           in_stock: boolean | null
+          is_active: boolean | null
           name: string
           price: number
           product_type: Database["public"]["Enums"]["product_type"]
@@ -272,6 +273,7 @@ export type Database = {
           image: string
           images?: string[] | null
           in_stock?: boolean | null
+          is_active?: boolean | null
           name: string
           price: number
           product_type: Database["public"]["Enums"]["product_type"]
@@ -290,6 +292,7 @@ export type Database = {
           image?: string
           images?: string[] | null
           in_stock?: boolean | null
+          is_active?: boolean | null
           name?: string
           price?: number
           product_type?: Database["public"]["Enums"]["product_type"]
@@ -391,6 +394,7 @@ export type Database = {
         | "niche"
         | "essence-oil"
         | "body-lotion"
+        | "lattafa-original"
       product_gender: "men" | "women" | "unisex"
       product_type: "perfume" | "essence-oil" | "body-lotion"
     }

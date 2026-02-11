@@ -8,6 +8,8 @@ import { ArrowRight } from 'lucide-react';
 import { SectionHeader } from '@/components/ui/Section';
 import type { LegacyProduct } from '@/types';
 
+const FALLBACK_IMAGE = '/placeholder-product.svg';
+
 interface FeaturedProductsProps {
   products: LegacyProduct[];
 }
@@ -35,11 +37,12 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
                 {/* Image */}
                 <div className="relative aspect-square overflow-hidden">
                   <Image
-                    src={product.image}
+                    src={product.image || FALLBACK_IMAGE}
                     alt={product.name}
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_IMAGE; }}
                   />
                 </div>
 

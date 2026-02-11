@@ -5,7 +5,10 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { createClient } from '@/lib/supabase/client';
 import { Upload, X, Loader2, Plus } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import type { Product, ProductInsert, ProductUpdate, ProductCategory, ProductType, ProductGender } from '@/lib/supabase/types';
+
+const RichTextEditor = dynamic(() => import('./RichTextEditor'), { ssr: false });
 
 interface ProductFormProps {
   product?: Product;
@@ -73,6 +76,7 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
     size: product?.size || '50ml',
     image: product?.image || '',
     in_stock: product?.in_stock ?? true,
+    is_active: product?.is_active ?? true,
     brand: product?.brand || '',
     gender: product?.gender || '' as ProductGender | '',
     tags: product?.tags?.join(', ') || '',
@@ -188,6 +192,7 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
       image: formData.image,
       images: additionalImages,
       in_stock: formData.in_stock,
+      is_active: formData.is_active,
       brand: formData.brand || null,
       gender: formData.gender || null,
       tags: formData.tags ? formData.tags.split(',').map(t => t.trim()).filter(Boolean) : null,
@@ -252,13 +257,9 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 Description *
               </label>
-              <textarea
-                value={formData.description}
-                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                required
-                rows={4}
-                className="w-full px-4 py-3 bg-black/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gold transition-colors resize-none"
-                placeholder="Describe the fragrance notes and character..."
+              <RichTextEditor
+                content={formData.description}
+                onChange={(html) => setFormData(prev => ({ ...prev, description: html }))}
               />
             </div>
 
@@ -519,6 +520,19 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
               />
               <label htmlFor="in_stock" className="text-sm font-medium text-gray-300">
                 In Stock
+              </label>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                id="is_active"
+                checked={formData.is_active}
+                onChange={(e) => setFormData(prev => ({ ...prev, is_active: e.target.checked }))}
+                className="w-5 h-5 rounded border-gray-700 bg-black/50 text-gold focus:ring-gold"
+              />
+              <label htmlFor="is_active" className="text-sm font-medium text-gray-300">
+                Visible on site
               </label>
             </div>
           </div>

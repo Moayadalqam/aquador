@@ -24,7 +24,7 @@ export interface LegacyProduct {
   description: string;
   price: number;
   salePrice?: number;
-  category: 'men' | 'women' | 'niche' | 'essence-oil' | 'body-lotion';
+  category: 'men' | 'women' | 'niche' | 'essence-oil' | 'body-lotion' | 'lattafa-original';
   productType: 'perfume' | 'essence-oil' | 'body-lotion' | 'gift-set';
   size: string;
   image: string;
@@ -72,7 +72,7 @@ export interface ContactFormData {
 
 // Category interface for shop categories
 export interface Category {
-  id: 'men' | 'women' | 'niche' | 'essence-oil' | 'body-lotion';
+  id: 'men' | 'women' | 'niche' | 'essence-oil' | 'body-lotion' | 'lattafa-original';
   name: string;
   slug: string;
   description: string;

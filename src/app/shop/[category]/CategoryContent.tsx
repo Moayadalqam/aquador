@@ -9,6 +9,8 @@ import { formatPrice } from '@/lib/utils';
 import AnimatedShaderBackground from '@/components/ui/animated-shader-background';
 import type { Product, Category } from '@/types';
 
+const FALLBACK_IMAGE = '/placeholder-product.svg';
+
 interface CategoryContentProps {
   category: Category;
   products: Product[];
@@ -129,11 +131,12 @@ export default function CategoryContent({ category, products }: CategoryContentP
                 {/* Image - 4:5 aspect ratio for better viewport fit */}
                 <div className="relative aspect-[4/5] overflow-hidden">
                   <Image
-                    src={product.image}
+                    src={product.image || FALLBACK_IMAGE}
                     alt={product.name}
                     fill
                     className={`object-cover transition-transform duration-700 group-hover:scale-110 ${!product.inStock ? 'opacity-60' : ''}`}
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_IMAGE; }}
                   />
                   {/* Sale Badge */}
                   {product.salePrice && product.salePrice < product.price && product.inStock && (

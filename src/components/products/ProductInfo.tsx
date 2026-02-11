@@ -1,4 +1,5 @@
 import { formatPrice } from '@/lib/currency';
+import RichDescription from './RichDescription';
 import type { LegacyProduct } from '@/types';
 
 interface ProductInfoProps {
@@ -67,9 +68,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
         <h3 className="text-sm text-gray-400 uppercase tracking-wider mb-3">
           Description
         </h3>
-        <p className="text-gray-300 leading-relaxed">
-          {product.description}
-        </p>
+        <RichDescription description={product.description} />
       </div>
 
       {/* Tags */}

@@ -4,6 +4,8 @@ import { useState, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 
+const FALLBACK_IMAGE = '/placeholder-product.svg';
+
 interface ProductGalleryProps {
   mainImage: string;
   images: string[];
@@ -75,12 +77,13 @@ export default function ProductGallery({ mainImage, images, name, inStock }: Pro
             className="absolute inset-0"
           >
             <Image
-              src={allImages[selectedIndex]}
+              src={allImages[selectedIndex] || FALLBACK_IMAGE}
               alt={`${name}${hasMultiple ? ` - Image ${selectedIndex + 1}` : ''}`}
               fill
               className="object-cover"
               priority={selectedIndex === 0}
               sizes="(max-width: 768px) 100vw, 50vw"
+              onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_IMAGE; }}
             />
           </motion.div>
         </AnimatePresence>
@@ -132,11 +135,12 @@ export default function ProductGallery({ mainImage, images, name, inStock }: Pro
               aria-label={`View image ${i + 1}`}
             >
               <Image
-                src={img}
+                src={img || FALLBACK_IMAGE}
                 alt={`${name} thumbnail ${i + 1}`}
                 fill
                 className="object-cover"
                 sizes="64px"
+                onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_IMAGE; }}
               />
             </button>
           ))}

@@ -36,6 +36,13 @@ export const categories: Category[] = [
     description: 'Luxurious Scented Body Care',
     image: 'https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/7a9e1322-8d20-42d3-97c1-e32b1938dab3/image_Pippit_202506301816+%2875%29.jfif',
   },
+  {
+    id: 'lattafa-original',
+    name: 'Lattafa Original',
+    slug: 'lattafa-original',
+    description: 'Original Lattafa Perfumes',
+    image: 'https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/5466a214-db1a-4860-ab90-7f6da0708f7d/image_Pippit_202507021156+-+2025-07-06T153205.581.jpeg',
+  },
 ];
 
 export const products: Product[] = [
