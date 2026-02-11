@@ -213,9 +213,6 @@ export default function LattafaContent({ products }: LattafaContentProps) {
                       {product.brand}
                     </p>
                   )}
-                  <p className="text-sm text-gray-600 line-clamp-2 mb-3">
-                    {product.description}
-                  </p>
                   <div className="flex items-center justify-between">
                     <div className="flex items-baseline gap-2">
                       <span className="text-lg font-semibold text-gold-dark">

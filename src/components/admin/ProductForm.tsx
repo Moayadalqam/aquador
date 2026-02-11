@@ -28,7 +28,7 @@ const genders: { value: ProductGender | ''; label: string }[] = [
   { value: 'unisex', label: 'Unisex' },
 ];
 
-const sizes = ['10ml', '50ml', '100ml', '150ml'];
+const sizes = ['10ml', '50ml', '60ml', '100ml', '150ml', '200ml'];
 
 export default function ProductForm({ product, mode }: ProductFormProps) {
   const router = useRouter();
@@ -179,50 +179,54 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
     setLoading(true);
     setError('');
 
-    const supabase = createClient();
+    try {
+      const supabase = createClient();
 
-    const productData: ProductInsert | ProductUpdate = {
-      name: formData.name,
-      description: formData.description,
-      price: parseFloat(formData.price),
-      sale_price: formData.sale_price ? parseFloat(formData.sale_price) : null,
-      category: formData.category,
-      product_type: formData.product_type,
-      size: formData.size,
-      image: formData.image,
-      images: additionalImages,
-      in_stock: formData.in_stock,
-      is_active: formData.is_active,
-      brand: formData.brand || null,
-      gender: formData.gender || null,
-      tags: formData.tags ? formData.tags.split(',').map(t => t.trim()).filter(Boolean) : null,
-    };
+      const productData: ProductInsert | ProductUpdate = {
+        name: formData.name,
+        description: formData.description,
+        price: parseFloat(formData.price),
+        sale_price: formData.sale_price ? parseFloat(formData.sale_price) : null,
+        category: formData.category,
+        product_type: formData.product_type,
+        size: formData.size,
+        image: formData.image,
+        images: additionalImages,
+        in_stock: formData.in_stock,
+        is_active: formData.is_active,
+        brand: formData.brand || null,
+        gender: formData.gender || null,
+        tags: formData.tags ? formData.tags.split(',').map(t => t.trim()).filter(Boolean) : null,
+      };
 
-    if (mode === 'create') {
-      const { error } = await supabase
-        .from('products')
-        .insert(productData as ProductInsert);
+      if (mode === 'create') {
+        const { error } = await supabase
+          .from('products')
+          .insert(productData as ProductInsert);
 
-      if (error) {
-        setError('Failed to create product: ' + error.message);
-        setLoading(false);
-        return;
+        if (error) {
+          setError('Failed to create product: ' + error.message);
+          return;
+        }
+      } else {
+        const { error } = await supabase
+          .from('products')
+          .update(productData)
+          .eq('id', product!.id);
+
+        if (error) {
+          setError('Failed to update product: ' + error.message);
+          return;
+        }
       }
-    } else {
-      const { error } = await supabase
-        .from('products')
-        .update(productData)
-        .eq('id', product!.id);
 
-      if (error) {
-        setError('Failed to update product: ' + error.message);
-        setLoading(false);
-        return;
-      }
+      router.push('/admin/products');
+      router.refresh();
+    } catch (err) {
+      setError('Failed to save product: ' + (err instanceof Error ? err.message : 'Unknown error'));
+    } finally {
+      setLoading(false);
     }
-
-    router.push('/admin/products');
-    router.refresh();
   };
 
   return (
