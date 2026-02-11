@@ -229,7 +229,7 @@ export default function ShopContent({ products, categories }: ShopContentProps) 
                   )}
                   {!product.in_stock && (
                     <span className="absolute top-3 left-3 bg-gray-800 text-white text-[9px] uppercase tracking-wider px-2 py-1 font-medium">
-                      Sold Out
+                      Coming Soon
                     </span>
                   )}
                 </div>

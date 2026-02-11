@@ -144,10 +144,10 @@ export default function CategoryContent({ category, products }: CategoryContentP
                       Sale
                     </span>
                   )}
-                  {/* Sold Out Badge */}
+                  {/* Coming Soon Badge */}
                   {!product.inStock && (
                     <span className="absolute top-4 left-4 bg-gray-800 text-white text-[10px] uppercase tracking-wider px-3 py-1.5 font-medium">
-                      Sold Out
+                      Coming Soon
                     </span>
                   )}
                 </div>

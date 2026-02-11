@@ -123,7 +123,7 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
             Add to Cart
           </>
         ) : (
-          'Out of Stock'
+          'Coming Soon'
         )}
       </motion.button>
     </div>

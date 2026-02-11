@@ -58,7 +58,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
         <div className="px-4 py-2 bg-dark-lighter rounded-full border border-gold/20">
           <span className="text-gray-400">Status: </span>
           <span className={product.inStock ? 'text-green-400' : 'text-red-400'}>
-            {product.inStock ? 'In Stock' : 'Out of Stock'}
+            {product.inStock ? 'In Stock' : 'Coming Soon'}
           </span>
         </div>
       </div>

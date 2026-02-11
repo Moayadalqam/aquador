@@ -186,7 +186,7 @@ export default function GiftSetContent({ isSoldOut, perfumes, lotions }: GiftSet
             <div className="space-y-3">
               {isSoldOut ? (
                 <div className="w-full py-4 text-center text-red-400 border border-red-400/30 rounded-lg text-sm uppercase tracking-widest font-medium">
-                  Sold Out
+                  Coming Soon
                 </div>
               ) : (
                 <Button
