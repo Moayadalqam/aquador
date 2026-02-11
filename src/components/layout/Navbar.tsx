@@ -9,11 +9,10 @@ import { CartIcon } from '@/components/cart';
 import { SearchBar } from '@/components/search';
 
 const navLinks = [
-  { label: "Valentine's", href: '/valentines' },
-  { label: 'Lattafa', href: '/shop/lattafa' },
-  { label: 'Dubai Shop', href: '/shop' },
+  { label: 'Lattafa Original', href: '/shop/lattafa' },
+  { label: 'Shop', href: '/shop' },
   { label: 'Create Your Own', href: '/create-perfume' },
-  { label: 'Re-Order Your Scent', href: '/reorder' },
+  { label: 'Re-Order', href: '/reorder' },
   { label: 'About', href: '/about' },
   { label: 'Blog', href: '/blog' },
   { label: 'Contact', href: '/contact' },
@@ -50,9 +49,9 @@ export default function Navbar() {
       }`}
     >
       <nav className="container-wide">
-        <div className="flex items-center justify-between h-20 md:h-24">
+        <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center">
+          <Link href="/" className="flex-shrink-0 flex items-center">
             <motion.div
               whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.2 }}
@@ -61,27 +60,26 @@ export default function Navbar() {
               <Image
                 src="/aquador.webp"
                 alt="Aquad'or"
-                width={280}
-                height={100}
-                className="h-20 md:h-24 w-auto object-contain transition-all duration-300 group-hover:drop-shadow-[0_0_20px_rgba(212,175,55,0.25)]"
+                width={240}
+                height={80}
+                className="h-14 md:h-16 w-auto object-contain transition-all duration-300 group-hover:drop-shadow-[0_0_20px_rgba(212,175,55,0.25)]"
                 priority
               />
             </motion.div>
           </Link>
 
           {/* Desktop Navigation + Search */}
-          <div className="hidden lg:flex items-center gap-6 xl:gap-8">
+          <div className="hidden lg:flex items-center gap-5 xl:gap-7">
             {navLinks.map((link) => (
               <Link
                 key={link.label}
                 href={link.href}
-                className="relative text-xs xl:text-sm font-light uppercase tracking-[0.12em] xl:tracking-[0.15em] text-gray-300 hover:text-gold transition-all duration-300 py-2 group"
+                className="relative text-[11px] xl:text-xs font-normal uppercase tracking-[0.15em] text-gray-300 hover:text-gold transition-all duration-300 py-2 group whitespace-nowrap"
               >
                 {link.label}
                 <span className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-gold to-gold-light scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
               </Link>
             ))}
-            {/* Search Bar - after nav links */}
             <SearchBar variant="navbar" />
           </div>
 
@@ -110,9 +108,9 @@ export default function Navbar() {
               transition={{ duration: 0.25 }}
               className="lg:hidden overflow-hidden border-t border-gold/10 bg-black/98"
             >
-              <div className="py-5 space-y-1">
+              <div className="py-4 space-y-0.5">
                 {/* Mobile Search Bar */}
-                <div className="pb-4">
+                <div className="pb-3 px-1">
                   <SearchBar variant="shop" placeholder="Search fragrances..." />
                 </div>
 
@@ -121,12 +119,12 @@ export default function Navbar() {
                     key={link.label}
                     initial={{ opacity: 0, x: -15 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
+                    transition={{ delay: index * 0.04 }}
                   >
                     <Link
                       href={link.href}
                       onClick={() => setIsOpen(false)}
-                      className="block py-3 text-sm uppercase tracking-[0.15em] text-gray-300 hover:text-gold transition-colors border-b border-gold/5"
+                      className="block py-3 px-1 text-sm font-light uppercase tracking-[0.15em] text-gray-300 hover:text-gold hover:pl-3 transition-all duration-200 border-b border-gold/5"
                     >
                       {link.label}
                     </Link>
