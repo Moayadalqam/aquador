@@ -1,5 +1,6 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Poppins } from "next/font/google";
+import dynamic from "next/dynamic";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
@@ -8,9 +9,12 @@ import Footer from "@/components/layout/Footer";
 import { CartProvider, CartDrawer } from "@/components/cart";
 import CookieConsent from "@/components/ui/CookieConsent";
 import { AbortErrorSuppressor } from "@/components/providers/ErrorBoundary";
-import ChatWidget from "@/components/ai/ChatWidget";
 import ValentineHearts from "@/components/seasonal/ValentineHearts";
 import VisitorTracker from "@/components/VisitorTracker";
+
+const ChatWidget = dynamic(() => import("@/components/ai/ChatWidget"), {
+  ssr: false,
+});
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -28,7 +32,10 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://aquadorcy.com'),
-  title: "Aquad'or | Luxury Perfumes Cyprus",
+  title: {
+    default: "Aquad'or | Luxury Perfumes & Niche Fragrances Cyprus",
+    template: "%s | Aquad'or Cyprus",
+  },
   description: "Where Luxury Meets Distinction. Discover our curated collection of high-end and niche perfumes, or create your own signature fragrance at Aquad'or Cyprus.",
   keywords: ["perfume", "luxury fragrance", "Cyprus", "Nicosia", "custom perfume", "niche perfume", "Aquador"],
   authors: [{ name: "Aquad'or" }],
@@ -43,11 +50,12 @@ export const metadata: Metadata = {
     ],
   },
   openGraph: {
-    title: "Aquad'or | Luxury Perfumes Cyprus",
+    title: "Aquad'or | Luxury Perfumes & Niche Fragrances Cyprus",
     description: "Where Luxury Meets Distinction. Discover our curated collection of high-end and niche perfumes.",
     type: "website",
     locale: "en_US",
     siteName: "Aquad'or",
+    url: "https://aquadorcy.com",
     images: [
       {
         url: "/aquador.webp",
@@ -59,10 +67,30 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Aquad'or | Luxury Perfumes Cyprus",
+    title: "Aquad'or | Luxury Perfumes & Niche Fragrances Cyprus",
     description: "Where Luxury Meets Distinction. Discover our curated collection of high-end and niche perfumes.",
     images: ["/aquador.webp"],
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large' as const,
+      'max-snippet': -1,
+    },
+  },
+  alternates: {
+    canonical: 'https://aquadorcy.com',
+  },
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
 };
 
 export default function RootLayout({
@@ -72,6 +100,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://images.unsplash.com" />
+      </head>
       <body className={`${poppins.variable} ${playfair.variable} antialiased`}>
         <AbortErrorSuppressor />
         <ValentineHearts />

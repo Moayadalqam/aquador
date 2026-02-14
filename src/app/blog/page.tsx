@@ -3,12 +3,22 @@ import { getBlogPosts, getBlogCategories, getFeaturedPost } from '@/lib/blog';
 import BlogListContent from './BlogListContent';
 
 export const metadata: Metadata = {
-  title: 'Blog | The Art of Scent | Aquad\'or Cyprus',
+  title: 'Blog | The Art of Scent',
   description: 'Stories, guides, and inspiration from the world of luxury fragrance. Expert tips on perfumes, reviews, and scent stories from Aquad\'or Cyprus.',
   openGraph: {
     title: 'Blog | The Art of Scent | Aquad\'or Cyprus',
     description: 'Stories, guides, and inspiration from the world of luxury fragrance.',
+    url: 'https://aquadorcy.com/blog',
     type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Blog | The Art of Scent | Aquad\'or Cyprus',
+    description: 'Stories, guides, and inspiration from the world of luxury fragrance.',
+    images: ['/aquador.webp'],
+  },
+  alternates: {
+    canonical: 'https://aquadorcy.com/blog',
   },
 };
 

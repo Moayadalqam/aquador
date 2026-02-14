@@ -4,9 +4,14 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useCallback, useMemo } from 'react';
+import dynamic from 'next/dynamic';
 import { SearchBar } from '@/components/search';
 import { formatPrice } from '@/lib/utils';
-import AnimatedShaderBackground from '@/components/ui/animated-shader-background';
+
+const AnimatedShaderBackground = dynamic(
+  () => import('@/components/ui/animated-shader-background'),
+  { ssr: false }
+);
 import type { Product, ProductGender } from '@/types';
 
 interface LattafaContentProps {

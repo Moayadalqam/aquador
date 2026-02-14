@@ -1,7 +1,8 @@
 import { MetadataRoute } from 'next';
 import { getAllProductSlugs } from '@/lib/product-service';
+import { getBlogPosts } from '@/lib/blog';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://aquadorcy.com';
 
   // Static pages
@@ -11,8 +12,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { route: '/shop/women', priority: 0.8, changeFrequency: 'daily' as const },
     { route: '/shop/men', priority: 0.8, changeFrequency: 'daily' as const },
     { route: '/shop/niche', priority: 0.8, changeFrequency: 'daily' as const },
-    { route: '/create', priority: 0.8, changeFrequency: 'weekly' as const },
+    { route: '/shop/lattafa', priority: 0.8, changeFrequency: 'daily' as const },
     { route: '/create-perfume', priority: 0.8, changeFrequency: 'weekly' as const },
+    { route: '/reorder', priority: 0.7, changeFrequency: 'monthly' as const },
+    { route: '/blog', priority: 0.8, changeFrequency: 'daily' as const },
     { route: '/about', priority: 0.6, changeFrequency: 'monthly' as const },
     { route: '/contact', priority: 0.6, changeFrequency: 'monthly' as const },
     { route: '/privacy', priority: 0.3, changeFrequency: 'yearly' as const },
@@ -36,5 +39,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...staticPages, ...productPages];
+  // Blog posts
+  let blogPages: MetadataRoute.Sitemap = [];
+  try {
+    const { posts } = await getBlogPosts({ limit: 100 });
+    blogPages = posts.map((post) => ({
+      url: `${baseUrl}/blog/${post.slug}`,
+      lastModified: new Date(post.updated_at ?? post.published_at),
+      changeFrequency: 'weekly' as const,
+      priority: 0.6,
+    }));
+  } catch {
+    // Gracefully handle if blog posts can't be fetched
+  }
+
+  return [...staticPages, ...productPages, ...blogPages];
 }

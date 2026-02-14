@@ -7,11 +7,22 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export const metadata: Metadata = {
-  title: "Lattafa Original | Aquad'or",
-  description: 'Discover our original Lattafa Perfumes collection - authentic Arabian fragrances crafted with the finest ingredients.',
+  title: "Lattafa Original Perfumes",
+  description: 'Discover our original Lattafa Perfumes collection - authentic Arabian fragrances crafted with the finest ingredients. Shop online at Aquad\'or Cyprus.',
   openGraph: {
-    title: "Lattafa Original | Aquad'or",
-    description: 'Discover our original Lattafa Perfumes collection - authentic Arabian fragrances crafted with the finest ingredients.',
+    title: "Lattafa Original Perfumes | Aquad'or Cyprus",
+    description: 'Authentic Arabian fragrances crafted with the finest ingredients. Original Lattafa Perfumes collection.',
+    url: 'https://aquadorcy.com/shop/lattafa',
+    images: [{ url: '/aquador.webp', width: 800, height: 600, alt: 'Lattafa Original Perfumes' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "Lattafa Original Perfumes | Aquad'or Cyprus",
+    description: 'Authentic Arabian fragrances. Original Lattafa Perfumes collection.',
+    images: ['/aquador.webp'],
+  },
+  alternates: {
+    canonical: 'https://aquadorcy.com/shop/lattafa',
   },
 };
 

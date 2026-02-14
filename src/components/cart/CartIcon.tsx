@@ -36,7 +36,7 @@ export default function CartIcon() {
       onClick={openCart}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
-      className="relative p-2 text-gray-200 hover:text-gold transition-colors duration-300"
+      className="relative p-3 text-gray-200 hover:text-gold transition-colors duration-300"
       aria-label={`Shopping cart with ${itemCount} items`}
     >
       <PerfumeIcon className="w-6 h-6" />

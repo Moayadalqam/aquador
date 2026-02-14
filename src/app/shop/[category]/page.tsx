@@ -30,11 +30,12 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
   }
 
   return {
-    title: `${category.name} | Aquad'or`,
+    title: `${category.name} Perfumes`,
     description: category.description,
     openGraph: {
-      title: `${category.name} | Aquad'or`,
+      title: `${category.name} Perfumes | Aquad'or Cyprus`,
       description: category.description,
+      url: `https://aquadorcy.com/shop/${categorySlug}`,
       images: [
         {
           url: category.image,
@@ -43,6 +44,15 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
           alt: category.name,
         },
       ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${category.name} Perfumes | Aquad'or Cyprus`,
+      description: category.description,
+      images: [category.image],
+    },
+    alternates: {
+      canonical: `https://aquadorcy.com/shop/${categorySlug}`,
     },
   };
 }
@@ -70,6 +80,32 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
     );
   }
 
+  // BreadcrumbList structured data
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://aquadorcy.com',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Shop',
+        item: 'https://aquadorcy.com/shop',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: category.name,
+        item: `https://aquadorcy.com/shop/${categorySlug}`,
+      },
+    ],
+  };
+
   // Transform Supabase products to match the expected interface
   const transformedProducts = products.map(p => ({
     id: p.id,
@@ -87,5 +123,13 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
     tags: p.tags ?? undefined,
   }));
 
-  return <CategoryContent category={category} products={transformedProducts} />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema).replace(/</g, '\\u003c') }}
+      />
+      <CategoryContent category={category} products={transformedProducts} />
+    </>
+  );
 }

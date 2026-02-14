@@ -35,11 +35,12 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   }
 
   return {
-    title: `${product.name} | Aquad'or`,
+    title: `${product.name}`,
     description: product.description,
     openGraph: {
       title: `${product.name} | Aquad'or`,
       description: product.description,
+      url: `https://aquadorcy.com/products/${slug}`,
       images: [
         {
           url: product.image,
@@ -61,6 +62,9 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
       title: `${product.name} | Aquad'or`,
       description: product.description,
       images: [product.image],
+    },
+    alternates: {
+      canonical: `https://aquadorcy.com/products/${slug}`,
     },
   };
 }
@@ -122,6 +126,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     } : undefined,
     offers: {
       '@type': 'Offer',
+      url: `https://aquadorcy.com/products/${slug}`,
       priceCurrency: 'EUR',
       price: transformedProduct.price,
       availability: transformedProduct.inStock
@@ -134,12 +139,41 @@ export default async function ProductPage({ params }: ProductPageProps) {
     },
   };
 
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://aquadorcy.com',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Shop',
+        item: 'https://aquadorcy.com/shop',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: transformedProduct.name,
+        item: `https://aquadorcy.com/products/${slug}`,
+      },
+    ],
+  };
+
   return (
     <>
       {/* Structured Data */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema).replace(/</g, '\\u003c') }}
       />
 
       <main className="min-h-screen bg-gold-ambient pt-28 pb-20">

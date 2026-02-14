@@ -140,6 +140,7 @@ export default function ContactPage() {
                         <input
                           {...register('name')}
                           type="text"
+                          autoComplete="name"
                           className={`input-base ${errors.name ? 'border-red-500' : ''}`}
                           placeholder="Your name"
                         />
@@ -152,6 +153,8 @@ export default function ContactPage() {
                         <input
                           {...register('email')}
                           type="email"
+                          autoComplete="email"
+                          inputMode="email"
                           className={`input-base ${errors.email ? 'border-red-500' : ''}`}
                           placeholder="your@email.com"
                         />
@@ -166,6 +169,8 @@ export default function ContactPage() {
                       <input
                         {...register('phone')}
                         type="tel"
+                        autoComplete="tel"
+                        inputMode="tel"
                         className="input-base"
                         placeholder="+357 99 000000"
                       />
