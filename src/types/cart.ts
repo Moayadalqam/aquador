@@ -1,14 +1,5 @@
 import type { ProductType, ProductSize } from './product';
 
-export interface CartItemMetadata {
-  giftSetSelections?: {
-    perfumeName: string;
-    perfumeId: string;
-    lotionName: string;
-    lotionId: string;
-  };
-}
-
 export interface CartItem {
   productId: string;
   variantId: string;
@@ -18,7 +9,6 @@ export interface CartItem {
   price: number;
   size: ProductSize;
   productType: ProductType;
-  metadata?: CartItemMetadata;
 }
 
 export interface Cart {

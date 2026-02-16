@@ -51,19 +51,9 @@ export default function CartItem({ item }: CartItemProps) {
         <h4 className="text-sm font-medium text-white truncate pr-6">
           {item.name}
         </h4>
-        {item.productType === 'gift-set' ? (
-          <p className="text-xs text-gold/70 mt-0.5">Limited Edition Gift Set</p>
-        ) : (
-          <p className="text-xs text-gray-400 mt-0.5">
-            {getProductTypeLabel(item.productType)} - {item.size}
-          </p>
-        )}
-        {item.metadata?.giftSetSelections && (
-          <div className="mt-1 space-y-0.5">
-            <p className="text-[11px] text-gold/70">Perfume: {item.metadata.giftSetSelections.perfumeName}</p>
-            <p className="text-[11px] text-gold/70">Body Lotion: {item.metadata.giftSetSelections.lotionName}</p>
-          </div>
-        )}
+        <p className="text-xs text-gray-400 mt-0.5">
+          {getProductTypeLabel(item.productType)} - {item.size}
+        </p>
         <p className="text-sm text-gold font-semibold mt-1">
           {formatPrice(item.price)}
         </p>
@@ -80,8 +70,7 @@ export default function CartItem({ item }: CartItemProps) {
           <span className="text-sm text-white w-8 text-center">{item.quantity}</span>
           <button
             onClick={handleIncrease}
-            disabled={item.productType === 'gift-set'}
-            className="w-7 h-7 rounded-full bg-dark-lighter border border-gold/20 flex items-center justify-center text-gray-400 hover:text-gold hover:border-gold transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:text-gray-400 disabled:hover:border-gold/20"
+            className="w-7 h-7 rounded-full bg-dark-lighter border border-gold/20 flex items-center justify-center text-gray-400 hover:text-gold hover:border-gold transition-colors"
             aria-label="Increase quantity"
           >
             <Plus className="w-3 h-3" />

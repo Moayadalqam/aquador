@@ -14,10 +14,6 @@ const Hero = dynamic(() => import('@/components/home/Hero'), {
   ssr: true,
 });
 
-const ValentineGiftSection = dynamic(() => import('@/components/home/ValentineGiftSection'), {
-  ssr: true,
-});
-
 const Categories = dynamic(() => import('@/components/home/Categories'), {
   ssr: true,
 });
@@ -155,7 +151,6 @@ export default async function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema).replace(/</g, '\\u003c') }}
       />
       <Hero />
-      <ValentineGiftSection />
       <Categories />
       <CreateSection />
       <FeaturedProducts products={featuredProducts} />

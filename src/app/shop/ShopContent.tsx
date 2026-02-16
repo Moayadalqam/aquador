@@ -6,10 +6,8 @@ import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { formatPrice } from '@/lib/utils';
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { Heart, ArrowRight } from 'lucide-react';
 import { SearchBar } from '@/components/search';
 import { PageHero } from '@/components/ui/Section';
-import { VALENTINE_GIFT_SET } from '@/lib/gift-sets';
 import type { Product } from '@/lib/supabase/types';
 import type { Category } from '@/types';
 
@@ -72,49 +70,6 @@ export default function ShopContent({ products, categories }: ShopContentProps) 
         subtitle="Discover our curated selection of premium fragrances"
         titleVariant="white"
       />
-
-      {/* Featured Gift Set */}
-      <section className="container-wide pb-10">
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="relative overflow-hidden rounded-xl bg-gradient-to-r from-[#1a0a0a] to-dark border border-gold/10"
-        >
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_right,rgba(212,175,55,0.06),transparent_70%)]" />
-          <Link href="/gift-set/valentine" className="group flex flex-col sm:flex-row items-center gap-6 p-6 sm:p-8 relative z-10">
-            <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-lg overflow-hidden flex-shrink-0">
-              <Image
-                src={VALENTINE_GIFT_SET.image}
-                alt={VALENTINE_GIFT_SET.name}
-                fill
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
-                sizes="112px"
-              />
-              <div className="absolute top-1.5 left-1.5">
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-black/60 backdrop-blur-sm border border-gold/30 rounded-full text-gold text-[8px] uppercase tracking-[0.15em]">
-                  <Heart className="w-2 h-2 fill-gold" />
-                  {VALENTINE_GIFT_SET.badge}
-                </span>
-              </div>
-            </div>
-            <div className="text-center sm:text-left flex-1">
-              <p className="text-gold/60 text-[10px] uppercase tracking-[0.2em] mb-1">{VALENTINE_GIFT_SET.badge}</p>
-              <h3 className="text-lg sm:text-xl font-playfair text-white mb-1 group-hover:text-gold transition-colors">
-                {VALENTINE_GIFT_SET.name}
-              </h3>
-              <p className="text-gray-400 text-xs leading-relaxed mb-2 max-w-md">
-                {VALENTINE_GIFT_SET.shortDescription}
-              </p>
-              <span className="text-gold font-playfair text-lg">{formatPrice(VALENTINE_GIFT_SET.price)}</span>
-            </div>
-            <div className="flex-shrink-0">
-              <span className="inline-flex items-center gap-2 text-gold text-xs font-medium group-hover:gap-3 transition-all">
-                Shop Now <ArrowRight className="w-4 h-4" />
-              </span>
-            </div>
-          </Link>
-        </motion.div>
-      </section>
 
       {/* Search and Filters */}
       <section className="container-wide pb-10">

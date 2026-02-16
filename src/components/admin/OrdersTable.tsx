@@ -61,30 +61,6 @@ export default function OrdersTable({ orders, onStatusChange }: OrdersTableProps
                 </td>
                 <td className="px-4 py-4">
                   <span className="text-gray-300 text-sm">{itemCount} item{itemCount !== 1 ? 's' : ''}</span>
-                  {items.filter(i => i.metadata?.giftSetSelections).map((item, idx) => (
-                    <div key={idx} className="mt-1 text-[11px] text-gold/80 border-l-2 border-gold/30 pl-2">
-                      <span className="font-medium">{item.name}</span>
-                      <br />Perfume: {item.metadata!.giftSetSelections!.perfumeName}
-                      <br />Lotion: {item.metadata!.giftSetSelections!.lotionName}
-                    </div>
-                  ))}
-                  {tags.WRITTEN_IN_SCENT && (
-                    <div className="mt-2 flex flex-wrap gap-1">
-                      <span className="inline-block px-1.5 py-0.5 text-[10px] font-medium bg-gold/10 text-gold border border-gold/20 rounded">
-                        GIFT SET
-                      </span>
-                      {tags.PERFUME_SELECTED && (
-                        <span className="inline-block px-1.5 py-0.5 text-[10px] bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded">
-                          Perfume: {tags.PERFUME_SELECTED}
-                        </span>
-                      )}
-                      {tags.LOTION_SELECTED && (
-                        <span className="inline-block px-1.5 py-0.5 text-[10px] bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 rounded">
-                          Lotion: {tags.LOTION_SELECTED}
-                        </span>
-                      )}
-                    </div>
-                  )}
                 </td>
                 <td className="px-4 py-4 text-right">
                   <span className="text-white font-medium">

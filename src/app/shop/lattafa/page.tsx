@@ -37,7 +37,7 @@ export default async function LattafaPage() {
     price: Number(p.price),
     salePrice: p.sale_price ? Number(p.sale_price) : undefined,
     category: p.category as 'men' | 'women' | 'niche' | 'essence-oil' | 'body-lotion' | 'lattafa-original',
-    productType: p.product_type as 'perfume' | 'essence-oil' | 'body-lotion' | 'gift-set',
+    productType: p.product_type as 'perfume' | 'essence-oil' | 'body-lotion',
     size: p.size,
     image: p.image,
     inStock: p.in_stock ?? true,

@@ -462,62 +462,6 @@ body {
 .stagger-5 { animation-delay: 0.5s; }
 
 /* ==========================================================================
-   VALENTINE'S SEASONAL THEME
-   ========================================================================== */
-
-/* Falling hearts animation - single keyframe with built-in sway */
-@keyframes valentine-fall {
-  0% {
-    transform: translateY(-20px) translateX(0) rotate(0deg);
-    opacity: 0;
-  }
-  5% {
-    opacity: var(--heart-opacity, 0.3);
-  }
-  25% {
-    transform: translateY(25vh) translateX(15px) rotate(var(--heart-rotation, 15deg));
-  }
-  50% {
-    transform: translateY(50vh) translateX(-10px) rotate(calc(var(--heart-rotation, 15deg) * -0.5));
-  }
-  75% {
-    transform: translateY(75vh) translateX(12px) rotate(var(--heart-rotation, 15deg));
-  }
-  95% {
-    opacity: var(--heart-opacity, 0.3);
-  }
-  100% {
-    transform: translateY(105vh) translateX(-5px) rotate(calc(var(--heart-rotation, 15deg) * -1));
-    opacity: 0;
-  }
-}
-
-.valentine-heart {
-  animation: valentine-fall var(--heart-duration, 12s) var(--heart-delay, 0s) linear infinite backwards;
-  will-change: transform, opacity;
-}
-
-/* Valentine subtle ambient glow */
-.valentine-glow {
-  background:
-    radial-gradient(ellipse 60% 30% at 50% 0%, rgba(200, 130, 130, 0.03) 0%, transparent 50%),
-    radial-gradient(ellipse 40% 20% at 80% 10%, rgba(212, 175, 55, 0.02) 0%, transparent 40%);
-  pointer-events: none;
-}
-
-/* Valentine banner ribbon */
-.valentine-banner {
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(200, 130, 130, 0.08) 20%,
-    rgba(212, 175, 55, 0.06) 50%,
-    rgba(200, 130, 130, 0.08) 80%,
-    transparent 100%
-  );
-}
-
-/* ==========================================================================
    ACCESSIBILITY
    ========================================================================== */
 
@@ -526,8 +470,7 @@ body {
   .animate-shimmer,
   .animate-float,
   .animate-pulse-gold,
-  .animate-fadeInUp,
-  .valentine-heart {
+  .animate-fadeInUp {
     animation: none !important;
   }
 

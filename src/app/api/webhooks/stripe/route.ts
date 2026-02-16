@@ -4,8 +4,6 @@ import * as Sentry from '@sentry/nextjs';
 import { fetchWithTimeout } from '@/lib/api-utils';
 import { formatPrice } from '@/lib/utils';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { decrementGiftSetStock } from '@/lib/supabase/inventory-service';
-import { VALENTINE_GIFT_SET } from '@/lib/gift-sets';
 
 function getStripe() {
   if (!process.env.STRIPE_SECRET_KEY) {
@@ -29,14 +27,6 @@ interface OrderItem {
   quantity: number;
   price: number;
   productType?: string;
-  metadata?: {
-    giftSetSelections?: {
-      perfumeName: string;
-      perfumeId: string;
-      lotionName: string;
-      lotionId: string;
-    };
-  };
 }
 
 interface ShippingAddress {
@@ -157,38 +147,15 @@ async function sendOrderConfirmationEmail(
 
   const itemsHtml = orderDetails.items
     .map(item => {
-      const giftSel = item.metadata?.giftSetSelections;
-      const selectionInfo = giftSel
-        ? `<br><span style="color: #D4AF37; font-size: 12px;">Perfume: ${escapeHtml(giftSel.perfumeName)}<br>Body Lotion: ${escapeHtml(giftSel.lotionName)}</span>`
-        : '';
       return `
         <tr>
-          <td style="padding: 12px; border-bottom: 1px solid #eee;">${escapeHtml(item.name)}${selectionInfo}</td>
+          <td style="padding: 12px; border-bottom: 1px solid #eee;">${escapeHtml(item.name)}</td>
           <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: center;">${item.quantity}</td>
           <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right;">${formatPrice(item.price)}</td>
         </tr>
       `;
     })
     .join('');
-
-  // Gift set details block
-  const giftSetItem = orderDetails.items.find(i => i.productType === 'gift-set' && i.metadata?.giftSetSelections);
-  const giftSetHtml = giftSetItem?.metadata?.giftSetSelections ? `
-    <div style="background: linear-gradient(135deg, #1a0a0a, #0a0a0a); padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid rgba(212,175,55,0.3);">
-      <h3 style="color: #D4AF37; margin-top: 0; font-family: Georgia, serif;">Your Gift Set Selections</h3>
-      <table style="width: 100%; font-size: 14px;">
-        <tr>
-          <td style="color: #888; padding: 6px 0;">Perfume (100 ml):</td>
-          <td style="color: #fff; font-weight: 500; padding: 6px 0;">${escapeHtml(giftSetItem.metadata.giftSetSelections.perfumeName)}</td>
-        </tr>
-        <tr>
-          <td style="color: #888; padding: 6px 0;">Body Lotion (100 ml):</td>
-          <td style="color: #fff; font-weight: 500; padding: 6px 0;">${escapeHtml(giftSetItem.metadata.giftSetSelections.lotionName)}</td>
-        </tr>
-      </table>
-      <p style="color: #888; font-size: 12px; margin: 12px 0 0; font-style: italic;">Each set includes: rose-shaped candle, Lacta chocolate, everlasting decorative rose, and luxury gift packaging.</p>
-    </div>
-  ` : '';
 
   const shippingHtml = orderDetails.shippingAddress?.address ? `
     <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
@@ -254,8 +221,6 @@ async function sendOrderConfirmationEmail(
                   </tr>
                 </tfoot>
               </table>
-
-              ${giftSetHtml}
 
               ${shippingHtml}
 
@@ -350,17 +315,7 @@ export async function POST(request: NextRequest) {
       let items: OrderItem[] = [];
       let shippingAddress: ShippingAddress | null = null;
 
-      // Extract gift set order tags from Stripe metadata
       const orderTags: Record<string, string> = {};
-      if (session.metadata?.WRITTEN_IN_SCENT) {
-        orderTags.WRITTEN_IN_SCENT = session.metadata.WRITTEN_IN_SCENT;
-      }
-      if (session.metadata?.PERFUME_SELECTED) {
-        orderTags.PERFUME_SELECTED = session.metadata.PERFUME_SELECTED;
-      }
-      if (session.metadata?.LOTION_SELECTED) {
-        orderTags.LOTION_SELECTED = session.metadata.LOTION_SELECTED;
-      }
 
       if (session.metadata?.items) {
         try {
@@ -390,22 +345,6 @@ export async function POST(request: NextRequest) {
 
       // Persist order + customer to Supabase
       await persistOrder(session, items, shippingAddress, orderTags);
-
-      // Decrement gift set stock
-      for (const item of items) {
-        if (item.productType === 'gift-set') {
-          for (let i = 0; i < (item.quantity || 1); i++) {
-            const decremented = await decrementGiftSetStock(VALENTINE_GIFT_SET.id);
-            if (!decremented) {
-              console.error('Failed to decrement gift set stock for:', item.name);
-              Sentry.captureMessage('Gift set stock decrement failed', {
-                level: 'error',
-                extra: { sessionId: session.id, item },
-              });
-            }
-          }
-        }
-      }
 
       // Send confirmation email
       if (customerEmail && items.length > 0) {
