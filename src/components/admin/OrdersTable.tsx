@@ -42,9 +42,8 @@ export default function OrdersTable({ orders, onStatusChange }: OrdersTableProps
         </thead>
         <tbody className="divide-y divide-gray-800">
           {orders.map((order) => {
-            const items = Array.isArray(order.items) ? (order.items as Array<{ name?: string; quantity?: number; price?: number; productType?: string; metadata?: { giftSetSelections?: { perfumeName: string; lotionName: string } } }>) : [];
+            const items = Array.isArray(order.items) ? (order.items as Array<{ name?: string; quantity?: number; price?: number }>) : [];
             const itemCount = items.reduce((sum, item) => sum + (item.quantity || 1), 0);
-            const tags = (order.tags && typeof order.tags === 'object' && !Array.isArray(order.tags)) ? order.tags as Record<string, string> : {};
 
             return (
               <tr key={order.id} className="hover:bg-gray-800/50 transition-colors">
