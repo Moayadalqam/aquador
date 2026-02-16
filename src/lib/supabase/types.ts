@@ -395,6 +395,8 @@ export type Database = {
         | "essence-oil"
         | "body-lotion"
         | "lattafa-original"
+        | "al-haramain-originals"
+        | "victorias-secret-originals"
       product_gender: "men" | "women" | "unisex"
       product_type: "perfume" | "essence-oil" | "body-lotion"
     }

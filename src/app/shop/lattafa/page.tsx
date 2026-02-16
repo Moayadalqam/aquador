@@ -7,17 +7,17 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export const metadata: Metadata = {
-  title: "Lattafa Original Perfumes",
+  title: "Lattafa Originals Perfumes",
   description: 'Discover our original Lattafa Perfumes collection - authentic Arabian fragrances crafted with the finest ingredients. Shop online at Aquad\'or Cyprus.',
   openGraph: {
-    title: "Lattafa Original Perfumes | Aquad'or Cyprus",
+    title: "Lattafa Originals Perfumes | Aquad'or Cyprus",
     description: 'Authentic Arabian fragrances crafted with the finest ingredients. Original Lattafa Perfumes collection.',
     url: 'https://aquadorcy.com/shop/lattafa',
-    images: [{ url: '/aquador.webp', width: 800, height: 600, alt: 'Lattafa Original Perfumes' }],
+    images: [{ url: '/aquador.webp', width: 800, height: 600, alt: 'Lattafa Originals Perfumes' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Lattafa Original Perfumes | Aquad'or Cyprus",
+    title: "Lattafa Originals Perfumes | Aquad'or Cyprus",
     description: 'Authentic Arabian fragrances. Original Lattafa Perfumes collection.',
     images: ['/aquador.webp'],
   },
@@ -36,7 +36,7 @@ export default async function LattafaPage() {
     description: p.description,
     price: Number(p.price),
     salePrice: p.sale_price ? Number(p.sale_price) : undefined,
-    category: p.category as 'men' | 'women' | 'niche' | 'essence-oil' | 'body-lotion' | 'lattafa-original',
+    category: p.category as 'men' | 'women' | 'niche' | 'essence-oil' | 'body-lotion' | 'lattafa-original' | 'al-haramain-originals' | 'victorias-secret-originals',
     productType: p.product_type as 'perfume' | 'essence-oil' | 'body-lotion',
     size: p.size,
     image: p.image,
@@ -50,7 +50,7 @@ export default async function LattafaPage() {
     return (
       <div className="pt-32 pb-16 min-h-screen bg-dark text-center">
         <h1 className="text-4xl font-playfair text-white">No products found</h1>
-        <p className="text-gray-400 mt-4">Lattafa Original collection is currently empty.</p>
+        <p className="text-gray-400 mt-4">Lattafa Originals collection is currently empty.</p>
         <Link href="/shop" className="text-gold mt-4 inline-block">
           &larr; Back to Shop
         </Link>

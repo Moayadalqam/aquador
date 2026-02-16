@@ -38,9 +38,23 @@ export const categories: Category[] = [
   },
   {
     id: 'lattafa-original',
-    name: 'Lattafa Original',
+    name: 'Lattafa Originals',
     slug: 'lattafa-original',
     description: 'Original Lattafa Perfumes',
+    image: 'https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/5466a214-db1a-4860-ab90-7f6da0708f7d/image_Pippit_202507021156+-+2025-07-06T153205.581.jpeg',
+  },
+  {
+    id: 'al-haramain-originals',
+    name: 'Al Haramain Originals',
+    slug: 'al-haramain-originals',
+    description: 'Original Al Haramain Perfumes',
+    image: 'https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/5466a214-db1a-4860-ab90-7f6da0708f7d/image_Pippit_202507021156+-+2025-07-06T153205.581.jpeg',
+  },
+  {
+    id: 'victorias-secret-originals',
+    name: "Victoria's Secret Originals",
+    slug: 'victorias-secret-originals',
+    description: "Original Victoria's Secret Perfumes",
     image: 'https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/5466a214-db1a-4860-ab90-7f6da0708f7d/image_Pippit_202507021156+-+2025-07-06T153205.581.jpeg',
   },
 ];

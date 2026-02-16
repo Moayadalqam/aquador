@@ -119,7 +119,9 @@ export default function ProductsPage() {
             <option value="niche">Niche</option>
             <option value="essence-oil">Essence Oil</option>
             <option value="body-lotion">Body Lotion</option>
-            <option value="lattafa-original">Lattafa Original</option>
+            <option value="lattafa-original">Lattafa Originals</option>
+            <option value="al-haramain-originals">Al Haramain Originals</option>
+            <option value="victorias-secret-originals">Victoria&apos;s Secret Originals</option>
           </select>
         </form>
       </div>

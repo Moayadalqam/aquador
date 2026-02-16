@@ -1,6 +1,6 @@
 export type ProductType = 'perfume' | 'essence-oil' | 'body-lotion';
 export type ProductSize = '10ml' | '50ml' | '100ml' | '150ml';
-export type ProductCategory = 'men' | 'women' | 'niche' | 'lattafa-original';
+export type ProductCategory = 'men' | 'women' | 'niche' | 'lattafa-original' | 'al-haramain-originals' | 'victorias-secret-originals';
 
 export interface ProductVariant {
   id: string;

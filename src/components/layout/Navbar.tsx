@@ -9,7 +9,9 @@ import { CartIcon } from '@/components/cart';
 import { SearchBar } from '@/components/search';
 
 const navLinks = [
-  { label: 'Lattafa Original', href: '/shop/lattafa' },
+  { label: 'Lattafa Originals', href: '/shop/lattafa' },
+  { label: 'Al Haramain', href: '/shop/al-haramain-originals' },
+  { label: "Victoria's Secret", href: '/shop/victorias-secret-originals' },
   { label: 'Shop', href: '/shop' },
   { label: 'Create Your Own', href: '/create-perfume' },
   { label: 'Re-Order', href: '/reorder' },
