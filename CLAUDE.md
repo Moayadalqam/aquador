@@ -185,7 +185,7 @@ See `.env.example`:
 
 ## Known Gaps
 
-- **Sitemap**: `src/app/sitemap.ts` includes static routes and product pages but NOT blog posts. Blog posts should be dynamically added.
+- **Sitemap**: `src/app/sitemap.ts` includes static routes, product pages, and blog posts (fetched from Supabase).
 - **Admin Auth**: Disabled in dev with mock user data. Must re-enable Supabase auth before production.
 
 ## Reference Materials
