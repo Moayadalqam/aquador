@@ -2,6 +2,9 @@ import { MetadataRoute } from 'next';
 import { createClient } from '@supabase/supabase-js';
 import { getAllProductSlugs } from '@/lib/product-service';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://aquadorcy.com';
 
@@ -61,8 +64,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.6,
       }));
     }
-  } catch {
-    // Gracefully handle if blog posts can't be fetched
+  } catch (error) {
+    console.error('Sitemap: Failed to fetch blog posts:', error);
   }
 
   return [...staticPages, ...productPages, ...blogPages];
