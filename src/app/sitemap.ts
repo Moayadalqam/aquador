@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next';
+import { createClient } from '@supabase/supabase-js';
 import { getAllProductSlugs } from '@/lib/product-service';
-import { getBlogPosts } from '@/lib/blog';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://aquadorcy.com';
@@ -39,16 +39,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  // Blog posts
+  // Blog posts - use a cookie-free client since sitemap has no request context
   let blogPages: MetadataRoute.Sitemap = [];
   try {
-    const { posts } = await getBlogPosts({ limit: 100 });
-    blogPages = posts.map((post) => ({
-      url: `${baseUrl}/blog/${post.slug}`,
-      lastModified: new Date(post.updated_at || post.published_at || new Date().toISOString()),
-      changeFrequency: 'weekly' as const,
-      priority: 0.6,
-    }));
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+    const { data: posts } = await supabase
+      .from('blog_posts')
+      .select('slug, published_at, updated_at')
+      .eq('status', 'published')
+      .order('published_at', { ascending: false })
+      .limit(100);
+
+    if (posts) {
+      blogPages = posts.map((post) => ({
+        url: `${baseUrl}/blog/${post.slug}`,
+        lastModified: new Date(post.updated_at || post.published_at || new Date().toISOString()),
+        changeFrequency: 'weekly' as const,
+        priority: 0.6,
+      }));
+    }
   } catch {
     // Gracefully handle if blog posts can't be fetched
   }
