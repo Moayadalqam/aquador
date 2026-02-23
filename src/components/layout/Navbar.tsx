@@ -51,7 +51,7 @@ export default function Navbar() {
       }`}
     >
       <nav className="container-wide">
-        <div className="flex items-center justify-between h-16 md:h-20">
+        <div className="flex items-center justify-between h-20 md:h-24">
           {/* Logo */}
           <Link href="/" className="flex-shrink-0 flex items-center">
             <motion.div
@@ -62,9 +62,9 @@ export default function Navbar() {
               <Image
                 src="/aquador.webp"
                 alt="Aquad'or"
-                width={240}
-                height={80}
-                className="h-14 md:h-16 w-auto object-contain transition-all duration-300 group-hover:drop-shadow-[0_0_20px_rgba(212,175,55,0.25)]"
+                width={320}
+                height={100}
+                className="h-16 sm:h-18 md:h-20 lg:h-22 w-auto object-contain transition-all duration-300 group-hover:drop-shadow-[0_0_20px_rgba(212,175,55,0.25)]"
                 priority
               />
             </motion.div>

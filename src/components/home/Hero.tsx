@@ -2,7 +2,6 @@
 
 import { motion, useInView } from 'framer-motion';
 import Link from 'next/link';
-import Image from 'next/image';
 import Button from '@/components/ui/Button';
 import { useState, useRef } from 'react';
 
@@ -61,22 +60,22 @@ export default function Hero() {
             animate={{ opacity: 1 }}
             transition={{ duration: 1.2 }}
           >
-            {/* Logo */}
-            <motion.div
-              className="flex justify-center mb-8"
+            {/* Brand name */}
+            <motion.h1
+              className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-playfair font-normal tracking-[0.15em] sm:tracking-[0.2em] mb-8"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.2 }}
+              style={{
+                background: 'linear-gradient(90deg, #FFD700, #FFF8DC, #FFD700, #D4AF37, #FFD700)',
+                backgroundSize: '200% auto',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                filter: 'drop-shadow(0 0 40px rgba(255, 215, 0, 0.2))',
+              }}
             >
-              <Image
-                src="/aquador.webp"
-                alt="Aquad'or"
-                width={600}
-                height={200}
-                className="w-[280px] sm:w-[360px] md:w-[440px] lg:w-[520px] xl:w-[600px] h-auto object-contain drop-shadow-[0_0_40px_rgba(255,215,0,0.2)]"
-                priority
-              />
-            </motion.div>
+              AQUAD&apos;OR
+            </motion.h1>
 
             {/* Separator line */}
             <motion.div
