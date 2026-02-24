@@ -26,28 +26,35 @@ const features = [
 export default function CTASection() {
   return (
     <section className="relative section-lg overflow-hidden">
-      {/* Background photo */}
+      {/* Dark base */}
+      <div className="absolute inset-0 bg-[#080808]" />
+
+      {/* Gold radial ambience */}
       <div
-        className="absolute inset-0 bg-cover bg-center"
+        className="absolute inset-0 opacity-[0.07]"
         style={{
-          backgroundImage: `url('https://i.ibb.co/Mg00Phx/DSC-1932.jpg')`,
-          filter: 'brightness(0.3) saturate(0.7)',
+          background: 'radial-gradient(ellipse at center, #D4AF37 0%, transparent 60%)',
         }}
       />
 
-      {/* Dark overlay with gold tint */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/80" />
+      {/* Subtle top/bottom edge lines */}
+      <div className="absolute top-0 left-[10%] right-[10%] h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
+      <div className="absolute bottom-0 left-[10%] right-[10%] h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
 
-      {/* Logo watermark */}
+      {/* Logo — large, centered, elegant */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <img
+        <motion.img
           src="/aquador.webp"
           alt=""
           aria-hidden="true"
-          className="w-[300px] md:w-[400px] lg:w-[500px] h-auto opacity-[0.08]"
+          className="w-[320px] md:w-[450px] lg:w-[550px] h-auto opacity-[0.15]"
           style={{
-            filter: 'drop-shadow(0 0 40px rgba(212, 175, 55, 0.1))',
+            filter: 'drop-shadow(0 0 80px rgba(212, 175, 55, 0.2)) brightness(1.3)',
           }}
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 0.15, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.2, ease: 'easeOut' }}
         />
       </div>
 
