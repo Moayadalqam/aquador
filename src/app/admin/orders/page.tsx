@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
-import { ShoppingBag, Search, Plus } from 'lucide-react';
+import { Search, Plus } from 'lucide-react';
 import OrdersTable from '@/components/admin/OrdersTable';
 import type { Order, OrderStatus } from '@/lib/supabase/types';
 
