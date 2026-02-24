@@ -10,10 +10,11 @@ export default function Categories() {
   return (
     <section className="py-2 bg-gold-ambient-subtle">
       <div className="container-wide">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-0.5">
+        <div className="flex flex-wrap justify-center gap-0.5">
           {categories.map((category, index) => (
             <motion.div
               key={category.id}
+              className="w-[calc(50%-1px)] md:w-[calc(33.333%-1.4px)] lg:w-[calc(20%-1.6px)]"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true, margin: '-50px' }}
