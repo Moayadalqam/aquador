@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
+import { timingSafeEqual } from 'crypto';
 
 function getSupabaseAdmin() {
   if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
@@ -12,11 +13,28 @@ function getSupabaseAdmin() {
   );
 }
 
+function validateSetupKey(providedKey: string): boolean {
+  const setupKey = process.env.ADMIN_SETUP_SECRET;
+  if (!setupKey) return false;
+  try {
+    const a = Buffer.from(providedKey);
+    const b = Buffer.from(setupKey);
+    if (a.length !== b.length) return false;
+    return timingSafeEqual(a, b);
+  } catch {
+    return false;
+  }
+}
+
 // POST: Create initial admin user
 export async function POST(request: Request) {
+  if (process.env.ADMIN_SETUP_COMPLETE === 'true') {
+    return NextResponse.json({ error: 'Setup already completed' }, { status: 403 });
+  }
+
   const { email, password, setupKey } = await request.json();
 
-  if (setupKey !== 'aquador-setup-2024') {
+  if (!validateSetupKey(setupKey)) {
     return NextResponse.json({ error: 'Invalid setup key' }, { status: 401 });
   }
 
@@ -69,9 +87,13 @@ export async function POST(request: Request) {
 
 // PUT: Update existing admin password
 export async function PUT(request: Request) {
+  if (process.env.ADMIN_SETUP_COMPLETE === 'true') {
+    return NextResponse.json({ error: 'Setup already completed' }, { status: 403 });
+  }
+
   const { email, password, setupKey } = await request.json();
 
-  if (setupKey !== 'aquador-setup-2024') {
+  if (!validateSetupKey(setupKey)) {
     return NextResponse.json({ error: 'Invalid setup key' }, { status: 401 });
   }
 

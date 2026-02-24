@@ -223,7 +223,7 @@ export default function AdminDashboard() {
               <div key={order.id} className="px-6 py-4 flex items-center justify-between">
                 <div>
                   <p className="text-white font-mono text-sm">
-                    #{order.stripe_session_id.slice(-8).toUpperCase()}
+                    #{order.stripe_session_id ? order.stripe_session_id.slice(-8).toUpperCase() : order.id.slice(0, 8).toUpperCase()}
                   </p>
                   <p className="text-gray-500 text-xs mt-0.5">
                     {order.customer_name || order.customer_email}

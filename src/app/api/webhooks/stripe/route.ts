@@ -4,13 +4,7 @@ import * as Sentry from '@sentry/nextjs';
 import { fetchWithTimeout } from '@/lib/api-utils';
 import { formatPrice } from '@/lib/utils';
 import { createAdminClient } from '@/lib/supabase/admin';
-
-function getStripe() {
-  if (!process.env.STRIPE_SECRET_KEY) {
-    throw new Error('STRIPE_SECRET_KEY is not set');
-  }
-  return new Stripe(process.env.STRIPE_SECRET_KEY);
-}
+import { getStripe } from '@/lib/stripe';
 
 // HTML-escape function to prevent XSS in email templates
 function escapeHtml(text: string): string {
@@ -348,7 +342,16 @@ async function sendStoreOrderNotification(
 
 export async function POST(request: NextRequest) {
   const stripe = getStripe();
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+  if (!webhookSecret) {
+    Sentry.captureMessage('STRIPE_WEBHOOK_SECRET not configured', { level: 'error' });
+    console.error('STRIPE_WEBHOOK_SECRET is not set');
+    return NextResponse.json(
+      { error: 'Webhook configuration error' },
+      { status: 500 }
+    );
+  }
 
   const body = await request.text();
   const signature = request.headers.get('stripe-signature');
@@ -367,6 +370,7 @@ export async function POST(request: NextRequest) {
   } catch (err) {
     Sentry.captureException(err, {
       tags: { webhook: 'stripe', error_type: 'signature_verification' },
+      extra: { ip: request.headers.get('x-forwarded-for') },
     });
     console.error('Webhook signature verification failed:', err);
     return NextResponse.json(
@@ -396,15 +400,33 @@ export async function POST(request: NextRequest) {
 
       const orderTags: Record<string, string> = {};
 
-      if (session.metadata?.items) {
+      const metadata = session.metadata || {};
+
+      if (metadata.items) {
+        // Standard cart checkout — items stored as JSON array
         try {
-          items = JSON.parse(session.metadata.items);
+          items = JSON.parse(metadata.items);
         } catch (parseError) {
           Sentry.captureException(parseError, {
             tags: { action: 'parse_order_items' },
             extra: { sessionId: session.id },
           });
           console.error('Failed to parse order items:', parseError);
+        }
+      } else if (metadata.productType === 'custom-perfume') {
+        // Custom perfume checkout — reconstruct item from individual metadata fields
+        const volume = metadata.volume || '50ml';
+        items = [{
+          name: `Custom Perfume: ${metadata.perfumeName || 'Unnamed'}`,
+          quantity: 1,
+          price: volume === '100ml' ? 199.00 : 29.99,
+          productType: 'custom-perfume',
+        }];
+        orderTags['custom-perfume'] = 'true';
+        orderTags['composition'] = `Top: ${metadata.topNote || '?'}, Heart: ${metadata.heartNote || '?'}, Base: ${metadata.baseNote || '?'}`;
+        orderTags['volume'] = volume;
+        if (metadata.specialRequests) {
+          orderTags['special-requests'] = metadata.specialRequests;
         }
       }
 
@@ -426,7 +448,7 @@ export async function POST(request: NextRequest) {
       await persistOrder(session, items, shippingAddress, orderTags);
 
       // Send confirmation email to customer + notification to store
-      if (customerEmail && items.length > 0) {
+      if (customerEmail) {
         const orderDetails = {
           sessionId: session.id,
           items,

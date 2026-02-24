@@ -170,9 +170,10 @@ export type Database = {
           customer_name: string | null
           id: string
           items: Json
+          order_source: string
           shipping_address: Json | null
           status: Database["public"]["Enums"]["order_status"]
-          stripe_session_id: string
+          stripe_session_id: string | null
           tags: Json
           total: number
           updated_at: string
@@ -184,9 +185,10 @@ export type Database = {
           customer_name?: string | null
           id?: string
           items?: Json
+          order_source?: string
           shipping_address?: Json | null
           status?: Database["public"]["Enums"]["order_status"]
-          stripe_session_id: string
+          stripe_session_id?: string | null
           tags?: Json
           total: number
           updated_at?: string
@@ -198,9 +200,10 @@ export type Database = {
           customer_name?: string | null
           id?: string
           items?: Json
+          order_source?: string
           shipping_address?: Json | null
           status?: Database["public"]["Enums"]["order_status"]
-          stripe_session_id?: string
+          stripe_session_id?: string | null
           tags?: Json
           total?: number
           updated_at?: string

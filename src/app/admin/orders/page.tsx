@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
-import { ShoppingBag, Search } from 'lucide-react';
+import { ShoppingBag, Search, Plus } from 'lucide-react';
 import OrdersTable from '@/components/admin/OrdersTable';
 import type { Order, OrderStatus } from '@/lib/supabase/types';
 
@@ -76,7 +77,13 @@ export default function OrdersPage() {
           <h1 className="text-2xl font-bold text-white">Orders</h1>
           <p className="text-gray-400 mt-1">{totalCount} total order{totalCount !== 1 ? 's' : ''}</p>
         </div>
-        <ShoppingBag className="h-8 w-8 text-gold" />
+        <Link
+          href="/admin/orders/new"
+          className="flex items-center gap-2 px-4 py-2.5 bg-gold text-black font-semibold text-sm rounded-lg hover:bg-gold/90 transition-colors"
+        >
+          <Plus className="h-4 w-4" />
+          Add Order
+        </Link>
       </div>
 
       {/* Filters */}

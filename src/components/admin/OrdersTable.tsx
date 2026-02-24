@@ -49,8 +49,13 @@ export default function OrdersTable({ orders, onStatusChange }: OrdersTableProps
               <tr key={order.id} className="hover:bg-gray-800/50 transition-colors">
                 <td className="px-4 py-4">
                   <span className="text-white font-mono text-sm">
-                    #{order.stripe_session_id.slice(-8).toUpperCase()}
+                    #{order.stripe_session_id ? order.stripe_session_id.slice(-8).toUpperCase() : order.id.slice(0, 8).toUpperCase()}
                   </span>
+                  {order.order_source === 'manual' && (
+                    <span className="ml-2 text-[10px] font-medium px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                      MANUAL
+                    </span>
+                  )}
                 </td>
                 <td className="px-4 py-4">
                   <div>
