@@ -26,14 +26,15 @@ const features = [
 export default function CTASection() {
   return (
     <section className="relative section-lg overflow-hidden">
-      {/* Background image */}
+      {/* Background logo */}
       <div
-        className="absolute inset-0 bg-cover bg-center"
+        className="absolute inset-0 bg-no-repeat bg-center opacity-[0.07]"
         style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1595425970377-c9703cf48b6d?w=1920&q=80')`,
+          backgroundImage: `url('/aquador.webp')`,
+          backgroundSize: '500px auto',
         }}
       />
-      <div className="absolute inset-0 bg-black/75" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black via-dark-light/95 to-black" />
 
       {/* Content */}
       <div className="relative z-10 container-wide">
