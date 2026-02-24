@@ -26,20 +26,21 @@ const features = [
 export default function CTASection() {
   return (
     <section className="relative section-lg overflow-hidden">
-      {/* Background image — black & gold perfume on dark textile */}
+      {/* Background — perfume bottle with charcoal and smoke */}
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1611146264101-358a3b387eee?w=1920&q=80')`,
-          filter: 'brightness(0.35) saturate(0.8)',
+          backgroundImage: `url('https://images.unsplash.com/photo-1771762013405-ad64577dfc55?w=1920&q=80')`,
+          filter: 'brightness(0.4) saturate(0.7)',
         }}
       />
 
-      {/* Dark vignette overlay */}
+      {/* Gradient overlays for depth */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/70" />
       <div
         className="absolute inset-0"
         style={{
-          background: 'radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.7) 100%)',
+          background: 'radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.6) 100%)',
         }}
       />
 
