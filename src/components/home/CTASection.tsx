@@ -27,14 +27,35 @@ export default function CTASection() {
   return (
     <section className="relative section-lg overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black via-dark-light to-black" />
-      <div
-        className="absolute inset-0 bg-no-repeat bg-center opacity-[0.08]"
-        style={{
-          backgroundImage: `url('/aquador.webp')`,
-          backgroundSize: '500px auto',
-        }}
-      />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a] via-[#111] to-[#0a0a0a]" />
+
+      {/* Logo watermark with gold ambient glow */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="relative">
+          {/* Gold glow behind logo */}
+          <div
+            className="absolute inset-0 blur-[80px] opacity-[0.06]"
+            style={{
+              background: 'radial-gradient(ellipse at center, #D4AF37 0%, transparent 70%)',
+              width: '700px',
+              height: '400px',
+              transform: 'translate(-50%, -50%)',
+              left: '50%',
+              top: '50%',
+            }}
+          />
+          {/* Logo */}
+          <img
+            src="/aquador.webp"
+            alt=""
+            aria-hidden="true"
+            className="w-[400px] md:w-[550px] lg:w-[650px] h-auto opacity-[0.12]"
+            style={{
+              filter: 'brightness(1.2) drop-shadow(0 0 60px rgba(212, 175, 55, 0.15))',
+            }}
+          />
+        </div>
+      </div>
 
       {/* Content */}
       <div className="relative z-10 container-wide">
