@@ -30,7 +30,7 @@ export default function CTASection() {
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: `url('/images/493666209_1238713934924382_3231813128284470929_n.jpg')`,
+          backgroundImage: `url('/images/aquadour1.jpg')`,
           filter: 'brightness(0.4) saturate(0.7)',
         }}
       />
