@@ -26,35 +26,29 @@ const features = [
 export default function CTASection() {
   return (
     <section className="relative section-lg overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a] via-[#111] to-[#0a0a0a]" />
+      {/* Background photo */}
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{
+          backgroundImage: `url('https://i.ibb.co/Mg00Phx/DSC-1932.jpg')`,
+          filter: 'brightness(0.3) saturate(0.7)',
+        }}
+      />
 
-      {/* Logo watermark with gold ambient glow */}
+      {/* Dark overlay with gold tint */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/80" />
+
+      {/* Logo watermark */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="relative">
-          {/* Gold glow behind logo */}
-          <div
-            className="absolute inset-0 blur-[80px] opacity-[0.06]"
-            style={{
-              background: 'radial-gradient(ellipse at center, #D4AF37 0%, transparent 70%)',
-              width: '700px',
-              height: '400px',
-              transform: 'translate(-50%, -50%)',
-              left: '50%',
-              top: '50%',
-            }}
-          />
-          {/* Logo */}
-          <img
-            src="/aquador.webp"
-            alt=""
-            aria-hidden="true"
-            className="w-[400px] md:w-[550px] lg:w-[650px] h-auto opacity-[0.12]"
-            style={{
-              filter: 'brightness(1.2) drop-shadow(0 0 60px rgba(212, 175, 55, 0.15))',
-            }}
-          />
-        </div>
+        <img
+          src="/aquador.webp"
+          alt=""
+          aria-hidden="true"
+          className="w-[300px] md:w-[400px] lg:w-[500px] h-auto opacity-[0.08]"
+          style={{
+            filter: 'drop-shadow(0 0 40px rgba(212, 175, 55, 0.1))',
+          }}
+        />
       </div>
 
       {/* Content */}
