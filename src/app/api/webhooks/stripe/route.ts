@@ -267,6 +267,85 @@ async function sendOrderConfirmationEmail(
   }
 }
 
+async function sendStoreOrderNotification(
+  customerEmail: string,
+  orderDetails: {
+    sessionId: string;
+    items: OrderItem[];
+    total: number;
+    currency: string;
+    shippingAddress?: ShippingAddress | null;
+  }
+): Promise<boolean> {
+  const resendApiKey = process.env.RESEND_API_KEY;
+  if (!resendApiKey) return false;
+
+  const itemsList = orderDetails.items
+    .map(item => {
+      const line = `${escapeHtml(item.name)} x${item.quantity} — ${formatPrice(item.price)}`;
+      return `<li style="padding:8px 0;border-bottom:1px solid #333;">${line}</li>`;
+    })
+    .join('');
+
+  const addr = orderDetails.shippingAddress?.address;
+  const shippingText = addr
+    ? `${escapeHtml(orderDetails.shippingAddress?.name || '')}<br>${escapeHtml(addr.line1 || '')}${addr.line2 ? '<br>' + escapeHtml(addr.line2) : ''}<br>${escapeHtml(addr.city || '')} ${escapeHtml(addr.postal_code || '')}<br>${escapeHtml(addr.country || '')}`
+    : 'No shipping address provided';
+
+  try {
+    const response = await fetchWithTimeout('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${resendApiKey}`,
+      },
+      body: JSON.stringify({
+        from: "Aquad'or Orders <orders@aquadorcy.com>",
+        to: ['info@aquadorcy.com'],
+        subject: `New Order #${orderDetails.sessionId.slice(-8).toUpperCase()} — ${formatPrice(orderDetails.total / 100)}`,
+        html: `
+          <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#0a0a0a;color:#fff;padding:30px;border-radius:12px;">
+            <h1 style="color:#D4AF37;margin:0 0 5px;">New Order Received</h1>
+            <p style="color:#888;margin:0 0 20px;">Order #${orderDetails.sessionId.slice(-8).toUpperCase()}</p>
+
+            <div style="background:#1a1a1a;padding:16px;border-radius:8px;margin-bottom:16px;">
+              <h3 style="color:#D4AF37;margin:0 0 8px;">Customer</h3>
+              <p style="margin:0;color:#ccc;">${escapeHtml(customerEmail)}</p>
+            </div>
+
+            <div style="background:#1a1a1a;padding:16px;border-radius:8px;margin-bottom:16px;">
+              <h3 style="color:#D4AF37;margin:0 0 8px;">Items</h3>
+              <ul style="list-style:none;padding:0;margin:0;color:#ccc;">${itemsList}</ul>
+            </div>
+
+            <div style="background:#1a1a1a;padding:16px;border-radius:8px;margin-bottom:16px;">
+              <h3 style="color:#D4AF37;margin:0 0 8px;">Shipping</h3>
+              <p style="margin:0;color:#ccc;">${shippingText}</p>
+            </div>
+
+            <div style="text-align:center;padding:16px;background:linear-gradient(135deg,#D4AF37,#B8960C);border-radius:8px;">
+              <span style="color:#000;font-size:24px;font-weight:bold;">${formatPrice(orderDetails.total / 100)}</span>
+            </div>
+
+            <p style="text-align:center;margin:20px 0 0;"><a href="https://aquadorcy.com/admin/orders" style="color:#D4AF37;">View in Admin Panel →</a></p>
+          </div>
+        `,
+      }),
+      timeout: 10000,
+    });
+
+    if (!response.ok) {
+      console.error('Failed to send store notification:', await response.json());
+      return false;
+    }
+    console.log('Store order notification sent to info@aquadorcy.com');
+    return true;
+  } catch (error) {
+    console.error('Error sending store notification:', error);
+    return false;
+  }
+}
+
 export async function POST(request: NextRequest) {
   const stripe = getStripe();
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
@@ -346,15 +425,19 @@ export async function POST(request: NextRequest) {
       // Persist order + customer to Supabase
       await persistOrder(session, items, shippingAddress, orderTags);
 
-      // Send confirmation email
+      // Send confirmation email to customer + notification to store
       if (customerEmail && items.length > 0) {
-        await sendOrderConfirmationEmail(customerEmail, {
+        const orderDetails = {
           sessionId: session.id,
           items,
           total: session.amount_total || 0,
           currency: session.currency || 'eur',
           shippingAddress,
-        });
+        };
+        await Promise.all([
+          sendOrderConfirmationEmail(customerEmail, orderDetails),
+          sendStoreOrderNotification(customerEmail, orderDetails),
+        ]);
       }
 
       break;
