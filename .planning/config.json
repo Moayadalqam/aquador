@@ -1,0 +1,39 @@
+{
+  "project_name": "Aquadour Full-Stack Audit",
+  "created_at": "2026-02-26",
+  "project_type": "ecommerce_audit",
+  "workflow_preferences": {
+    "commit_strategy": "atomic_per_issue",
+    "testing_approach": "comprehensive",
+    "documentation_level": "detailed",
+    "risk_tolerance": "conservative"
+  },
+  "tech_stack": {
+    "frontend": "Next.js 14",
+    "backend": "Supabase + Next.js API",
+    "database": "PostgreSQL (Supabase)",
+    "payments": "Stripe",
+    "deployment": "Vercel",
+    "testing": "Jest + Playwright"
+  },
+  "phase_settings": {
+    "parallel_execution": false,
+    "validation_gates": true,
+    "real_data_testing": true,
+    "preserve_existing_data": true
+  },
+  "audit_scope": {
+    "frontend_review": true,
+    "backend_security": true,
+    "payment_integration": true,
+    "admin_panel": true,
+    "production_readiness": true,
+    "deployment_preparation": true
+  },
+  "constraints": {
+    "no_data_deletion": true,
+    "test_mode_payments": true,
+    "incremental_commits": true,
+    "follow_claude_md": true
+  }
+}
