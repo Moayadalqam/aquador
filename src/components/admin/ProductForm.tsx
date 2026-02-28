@@ -404,11 +404,14 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
             {additionalImages.length > 0 && (
               <div className="grid grid-cols-2 gap-3">
                 {additionalImages.map((img, i) => (
-                  <div key={i} className="relative group">
-                    <img
+                  <div key={i} className="relative group aspect-square">
+                    <Image
                       src={img}
                       alt={`Additional ${i + 1}`}
-                      className="w-full aspect-square object-cover rounded-lg"
+                      fill
+                      sizes="200px"
+                      unoptimized
+                      className="object-cover rounded-lg"
                     />
                     <button
                       type="button"
