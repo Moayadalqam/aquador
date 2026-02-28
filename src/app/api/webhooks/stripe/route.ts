@@ -118,7 +118,7 @@ async function persistOrder(
       });
     }
 
-    console.log('Order persisted for:', customerEmail);
+    console.log('Order persisted for session:', session.id);
   } catch (error) {
     Sentry.captureException(error, {
       tags: { action: 'persist_order' },
@@ -256,7 +256,7 @@ async function sendOrderConfirmationEmail(
       return false;
     }
 
-    console.log('Order confirmation email sent to:', customerEmail);
+    console.log('Order confirmation email sent for session:', orderDetails.sessionId);
     return true;
   } catch (error) {
     Sentry.captureException(error, {
@@ -304,10 +304,8 @@ export async function POST(request: NextRequest) {
       // Log the successful order
       console.log('Order completed:', {
         sessionId: session.id,
-        customerEmail: session.customer_details?.email,
         amountTotal: session.amount_total,
         currency: session.currency,
-        metadata: session.metadata,
       });
 
       // Parse items, shipping, and order tags
@@ -368,10 +366,7 @@ export async function POST(request: NextRequest) {
 
     case 'payment_intent.payment_failed': {
       const paymentIntent = event.data.object as Stripe.PaymentIntent;
-      console.log('Payment failed:', {
-        id: paymentIntent.id,
-        error: paymentIntent.last_payment_error?.message,
-      });
+      console.log('Payment failed:', paymentIntent.id);
       break;
     }
 
