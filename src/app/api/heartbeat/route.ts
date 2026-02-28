@@ -1,15 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { z } from 'zod';
+
+const heartbeatSchema = z.object({
+  sessionId: z.string().min(1).max(128),
+  page: z.string().max(512).optional(),
+});
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const sessionId = body.sessionId;
-    const page = body.page;
-
-    if (!sessionId || typeof sessionId !== 'string') {
+    const result = heartbeatSchema.safeParse(body);
+    if (!result.success) {
       return NextResponse.json({ error: 'Invalid session' }, { status: 400 });
     }
+    const { sessionId, page } = result.data;
 
     const supabase = createAdminClient();
 
@@ -30,7 +35,7 @@ export async function POST(request: NextRequest) {
     await supabase.from('site_visitors').upsert(
       {
         session_id: sessionId,
-        page: typeof page === 'string' ? page.slice(0, 512) : null,
+        page: page || null,
         user_agent: userAgent,
         country,
         ip_hash: ipHash,

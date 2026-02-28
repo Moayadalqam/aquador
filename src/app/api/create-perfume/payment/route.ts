@@ -1,8 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
 import * as Sentry from '@sentry/nextjs';
+import { z } from 'zod';
 import { formatApiError } from '@/lib/api-utils';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { getStripe } from '@/lib/stripe';
+
+const perfumePaymentSchema = z.object({
+  perfumeName: z.string().min(1, 'Perfume name is required'),
+  composition: z.object({
+    top: z.string().min(1),
+    heart: z.string().min(1),
+    base: z.string().min(1),
+  }),
+  volume: z.enum(['50ml', '100ml']),
+  specialRequests: z.string().max(500).optional(),
+});
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
@@ -14,15 +26,14 @@ export async function POST(request: NextRequest) {
   try {
     const stripe = getStripe();
     const body = await request.json();
-    const { perfumeName, composition, volume, specialRequests } = body;
-
-    // Validate required fields
-    if (!perfumeName || !composition || !volume) {
+    const result = perfumePaymentSchema.safeParse(body);
+    if (!result.success) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: result.error.issues[0]?.message || 'Invalid perfume data' },
         { status: 400 }
       );
     }
+    const { perfumeName, composition, volume, specialRequests } = result.data;
 
     // Calculate price in cents
     const amount = volume === '100ml' ? 19900 : 2999;
@@ -87,7 +98,6 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     Sentry.captureException(error);
-    console.error('Create perfume payment error:', error);
 
     const errorResponse = formatApiError(error, 'Failed to create checkout session');
 

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import * as Sentry from '@sentry/nextjs';
+import { z } from 'zod';
 import { formatApiError } from '@/lib/api-utils';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { catalogueProducts, searchCatalogue } from '@/lib/ai/catalogue-data';
@@ -13,6 +14,18 @@ interface Message {
   role: 'system' | 'user' | 'assistant';
   content: string;
 }
+
+const messageSchema = z.object({
+  role: z.enum(['system', 'user', 'assistant']),
+  content: z.string().min(1).max(2000),
+});
+
+const aiAssistantSchema = z.object({
+  messages: z.array(messageSchema).min(1).optional(),
+  query: z.string().min(1).max(2000).optional(),
+}).refine(data => data.messages || data.query, {
+  message: 'Messages or query required',
+});
 
 const SYSTEM_PROMPT = `You are a concise fragrance consultant for Aquad'or Cyprus. You know our ${catalogueProducts.length} products.
 
@@ -51,21 +64,19 @@ export async function POST(request: NextRequest) {
 
   try {
     if (!API_KEY) {
-      console.error('Missing API key. OPENROUTER_API_KEY:', !!process.env.OPENROUTER_API_KEY);
+      Sentry.captureMessage('AI API key not configured', { level: 'error' });
       throw new Error('AI API key not configured');
     }
 
-    console.log('AI Assistant: Using model:', MODEL);
-
     const body = await request.json();
-    const { messages, query } = body as { messages?: Message[]; query?: string };
-
-    if (!messages && !query) {
+    const result = aiAssistantSchema.safeParse(body);
+    if (!result.success) {
       return NextResponse.json(
-        { error: 'Messages or query required' },
+        { error: result.error.issues[0]?.message || 'Invalid request' },
         { status: 400 }
       );
     }
+    const { messages, query } = result.data;
 
     // If just a query, convert to messages format
     const conversationMessages: Message[] = messages || [
@@ -115,7 +126,7 @@ export async function POST(request: NextRequest) {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('OpenRouter API error:', response.status, errorText);
+      Sentry.captureMessage(`OpenRouter API error: ${response.status}`, { level: 'error', extra: { errorText } });
       throw new Error(`AI API error (${response.status}): ${errorText}`);
     }
 
@@ -133,7 +144,6 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     Sentry.captureException(error);
-    console.error('AI Assistant error:', error);
 
     const errorResponse = formatApiError(error, 'Failed to get AI response');
     return NextResponse.json(errorResponse, { status: 500 });

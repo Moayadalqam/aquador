@@ -1,6 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { estimateReadTime, generateSlug } from '@/lib/blog';
+import { z } from 'zod';
+
+const blogPostSchema = z.object({
+  title: z.string().min(1, 'Title is required').max(200),
+  content: z.string().min(1, 'Content is required'),
+  slug: z.string().max(200).optional(),
+  excerpt: z.string().max(500).optional(),
+  category: z.string().max(100).optional(),
+  status: z.enum(['draft', 'published']).optional(),
+  featured: z.boolean().optional(),
+  cover_image: z.string().url().optional().nullable(),
+  meta_title: z.string().max(200).optional(),
+  meta_description: z.string().max(500).optional(),
+  tags: z.array(z.string()).optional(),
+});
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -86,16 +101,24 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json();
-  const slug = body.slug || generateSlug(body.title);
-  const read_time = estimateReadTime(body.content || '');
+  const result = blogPostSchema.safeParse(body);
+  if (!result.success) {
+    return NextResponse.json(
+      { error: result.error.issues[0]?.message || 'Invalid blog post data' },
+      { status: 400 }
+    );
+  }
+  const postData = result.data;
+  const slug = postData.slug || generateSlug(postData.title);
+  const read_time = estimateReadTime(postData.content || '');
 
   const { data, error } = await supabase
     .from('blog_posts')
     .insert({
-      ...body,
+      ...postData,
       slug,
       read_time,
-      published_at: body.status === 'published' ? new Date().toISOString() : null,
+      published_at: postData.status === 'published' ? new Date().toISOString() : null,
     })
     .select()
     .single();

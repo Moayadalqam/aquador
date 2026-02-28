@@ -1,32 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server';
 import * as Sentry from '@sentry/nextjs';
+import { z } from 'zod';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 
-interface ManualOrderItem {
-  name: string;
-  quantity: number;
-  price: number;
-  productType?: string;
-}
-
-interface ManualOrderBody {
-  customerEmail: string;
-  customerName?: string;
-  items: ManualOrderItem[];
-  total: number;
-  notes?: string;
-  shippingAddress?: {
-    name?: string;
-    address?: {
-      line1?: string;
-      line2?: string;
-      city?: string;
-      postal_code?: string;
-      country?: string;
-    };
-  };
-}
+const manualOrderSchema = z.object({
+  customerEmail: z.string().email('Valid email required'),
+  customerName: z.string().max(200).optional(),
+  items: z.array(z.object({
+    name: z.string().min(1),
+    quantity: z.number().int().positive(),
+    price: z.number().positive(),
+    productType: z.string().optional(),
+  })).min(1, 'At least one item required'),
+  total: z.number().positive('Total must be positive'),
+  notes: z.string().max(1000).optional(),
+  shippingAddress: z.object({
+    name: z.string().optional(),
+    address: z.object({
+      line1: z.string().optional(),
+      line2: z.string().optional(),
+      city: z.string().optional(),
+      postal_code: z.string().optional(),
+      country: z.string().optional(),
+    }).optional(),
+  }).optional(),
+});
 
 export async function POST(request: NextRequest) {
   try {
@@ -57,14 +56,15 @@ export async function POST(request: NextRequest) {
 
     Sentry.setUser({ id: user.id, email: user.email });
 
-    const body: ManualOrderBody = await request.json();
-
-    if (!body.customerEmail || !body.total || body.total <= 0) {
+    const body = await request.json();
+    const result = manualOrderSchema.safeParse(body);
+    if (!result.success) {
       return NextResponse.json(
-        { error: 'Customer email and total are required' },
+        { error: result.error.issues[0]?.message || 'Invalid order data' },
         { status: 400 }
       );
     }
+    const orderData = result.data;
 
     const supabase = createAdminClient();
 
@@ -74,22 +74,22 @@ export async function POST(request: NextRequest) {
       .insert({
         stripe_session_id: null,
         order_source: 'manual',
-        customer_email: body.customerEmail.trim().toLowerCase(),
-        customer_name: body.customerName?.trim() || null,
-        items: JSON.parse(JSON.stringify(body.items || [])),
-        total: Math.round(body.total * 100), // Store in cents
+        customer_email: orderData.customerEmail.trim().toLowerCase(),
+        customer_name: orderData.customerName?.trim() || null,
+        items: JSON.parse(JSON.stringify(orderData.items || [])),
+        total: Math.round(orderData.total * 100), // Store in cents
         currency: 'eur',
         status: 'confirmed' as const,
-        shipping_address: body.shippingAddress
-          ? JSON.parse(JSON.stringify(body.shippingAddress))
+        shipping_address: orderData.shippingAddress
+          ? JSON.parse(JSON.stringify(orderData.shippingAddress))
           : null,
-        tags: body.notes ? { notes: body.notes } : {},
+        tags: orderData.notes ? { notes: orderData.notes } : {},
       })
       .select()
       .single();
 
     if (orderError) {
-      console.error('Failed to create manual order:', orderError);
+      Sentry.captureException(orderError);
       return NextResponse.json(
         { error: 'Failed to create order' },
         { status: 500 }
@@ -98,7 +98,7 @@ export async function POST(request: NextRequest) {
 
     // Upsert customer
     const now = new Date().toISOString();
-    const email = body.customerEmail.trim().toLowerCase();
+    const email = orderData.customerEmail.trim().toLowerCase();
 
     const { data: existing } = await supabase
       .from('customers')
@@ -108,18 +108,18 @@ export async function POST(request: NextRequest) {
 
     if (existing) {
       const addresses = (existing.shipping_addresses as unknown[]) || [];
-      if (body.shippingAddress?.address) {
-        const addrStr = JSON.stringify(body.shippingAddress);
+      if (orderData.shippingAddress?.address) {
+        const addrStr = JSON.stringify(orderData.shippingAddress);
         const alreadyStored = addresses.some(a => JSON.stringify(a) === addrStr);
-        if (!alreadyStored) addresses.push(body.shippingAddress);
+        if (!alreadyStored) addresses.push(orderData.shippingAddress);
       }
 
       await supabase
         .from('customers')
         .update({
-          name: body.customerName?.trim() || undefined,
+          name: orderData.customerName?.trim() || undefined,
           total_orders: existing.total_orders + 1,
-          total_spent: existing.total_spent + Math.round(body.total * 100),
+          total_spent: existing.total_spent + Math.round(orderData.total * 100),
           last_order_at: now,
           shipping_addresses: JSON.parse(JSON.stringify(addresses)),
         })
@@ -127,13 +127,13 @@ export async function POST(request: NextRequest) {
     } else {
       await supabase.from('customers').insert({
         email,
-        name: body.customerName?.trim() || null,
+        name: orderData.customerName?.trim() || null,
         total_orders: 1,
-        total_spent: Math.round(body.total * 100),
+        total_spent: Math.round(orderData.total * 100),
         first_order_at: now,
         last_order_at: now,
-        shipping_addresses: body.shippingAddress
-          ? JSON.parse(JSON.stringify([body.shippingAddress]))
+        shipping_addresses: orderData.shippingAddress
+          ? JSON.parse(JSON.stringify([orderData.shippingAddress]))
           : [],
       });
     }
@@ -141,7 +141,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ order });
   } catch (error) {
     Sentry.captureException(error);
-    console.error('Manual order creation error:', error);
     return NextResponse.json(
       { error: 'Failed to create order' },
       { status: 500 }
