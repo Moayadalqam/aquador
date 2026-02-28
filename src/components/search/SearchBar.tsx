@@ -6,9 +6,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X } from 'lucide-react';
-import { searchProducts } from '@/lib/product-service';
+import { createClient } from '@/lib/supabase/client';
 import { formatPrice } from '@/lib/utils';
-import type { LegacyProduct } from '@/types';
+import type { Product } from '@/lib/supabase/types';
 
 interface SearchBarProps {
   variant?: 'navbar' | 'shop';
@@ -24,7 +24,7 @@ export default function SearchBar({
   className = '',
 }: SearchBarProps) {
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState<LegacyProduct[]>([]);
+  const [results, setResults] = useState<Product[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -38,15 +38,23 @@ export default function SearchBar({
       return;
     }
 
-    const timer = setTimeout(() => {
-      const searchResults = searchProducts(query);
-      setResults(searchResults.slice(0, 6)); // Limit dropdown results
+    const timer = setTimeout(async () => {
+      const supabase = createClient();
+      const { data } = await supabase
+        .from('products')
+        .select('*')
+        .eq('is_active', true)
+        .or(`name.ilike.%${query}%,description.ilike.%${query}%,brand.ilike.%${query}%`)
+        .order('created_at', { ascending: false })
+        .limit(6);
+
+      setResults(data || []);
 
       // If onSearch callback provided (shop page), call it
       if (onSearch) {
         onSearch(query);
       }
-    }, 200);
+    }, 300);
 
     return () => clearTimeout(timer);
   }, [query, onSearch]);
@@ -171,7 +179,7 @@ export default function SearchBar({
                         </p>
                       )}
                       <p className="text-sm text-white truncate">{product.name}</p>
-                      <p className="text-xs text-gold">{formatPrice(product.salePrice || product.price)}</p>
+                      <p className="text-xs text-gold">{formatPrice(product.sale_price || product.price)}</p>
                     </div>
                   </Link>
                 ))}
