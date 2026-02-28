@@ -16,7 +16,7 @@ function getSupabaseAdmin() {
 export async function POST(request: Request) {
   const { email, password, setupKey } = await request.json();
 
-  if (setupKey !== 'aquador-setup-2024') {
+  if (!process.env.ADMIN_SETUP_KEY || setupKey !== process.env.ADMIN_SETUP_KEY) {
     return NextResponse.json({ error: 'Invalid setup key' }, { status: 401 });
   }
 
@@ -71,7 +71,7 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
   const { email, password, setupKey } = await request.json();
 
-  if (setupKey !== 'aquador-setup-2024') {
+  if (!process.env.ADMIN_SETUP_KEY || setupKey !== process.env.ADMIN_SETUP_KEY) {
     return NextResponse.json({ error: 'Invalid setup key' }, { status: 401 });
   }
 
