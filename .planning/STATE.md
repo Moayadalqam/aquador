@@ -1,86 +1,77 @@
 # Project State: Critical Security Vulnerabilities Milestone
 
-## NEW MILESTONE STARTED
-- **Milestone**: Critical Security Vulnerabilities
-- **Date Started**: 2026-02-28
-- **Trigger**: Post-audit discovery of NEW critical security vulnerabilities
-
 ## Current Position
-- **Phase**: 4 (Admin API Security - CRITICAL)
-- **Status**: `planned` ✅
+- **Phase**: 5 (RLS Verification - CRITICAL)
+- **Status**: `complete` ✅
 - **Last Updated**: 2026-02-28
-- **Project Initialized**: Yes
+- **Branch**: `phase-5-rls-verification`
 
 ## Phase Progress (New Milestone)
-- **Phase 4** (Admin API Security - CRITICAL): **PLANNED** ✅ Ready for execution
-- **Phase 5** (RLS Verification - CRITICAL): **READY TO START** 🔴
-- **Phase 6** (Bundle Optimization - HIGH): **WAITING** 🟡
+- **Phase 4** (Admin API Security - CRITICAL): **COMPLETE** ✅ Merged to main
+- **Phase 5** (RLS Verification - CRITICAL): **COMPLETE** ✅ On branch
+- **Phase 6** (Bundle Optimization - HIGH): **READY** 🟡
 - **Phase 7** (Input Validation - MEDIUM): **WAITING** 🟡
 
-## Critical Security Issues Discovered
-Today's comprehensive audit revealed **NEW vulnerabilities** not covered by previous milestone:
+## Phase 5 Execution Summary
 
-### 🔴 CRITICAL (Fix Immediately)
-1. **Unprotected Admin API Route** ← **PLANNED**
-   - `/api/admin/orders` bypasses middleware auth
-   - Middleware checks `startsWith('/admin')` but NOT `/api/admin/*`
-   - Can create manual orders without authorization
-   - **Execution Plan**: `.planning/phases/phase-4/04-PLAN.md`
-   - **Research**: `.planning/phases/phase-4/04-RESEARCH.md`
+### Audit Findings
+- All 9 public tables had RLS **enabled** already
+- 33 RLS policies existed across all tables
+- 3 critical issues discovered during policy audit:
 
-2. **Missing RLS Verification**
-   - Core tables (`products`, `orders`, `customers`, `admin_users`, `blog_posts`) have no confirmed RLS policies
-   - Only `gift_set_inventory` has verified RLS in migrations
-   - Potential data exposure vulnerability
+### Fixes Applied (Migration: `20260228_fix_rls_policies_and_is_admin`)
 
-### 🟡 HIGH/MEDIUM (Fix After Critical)
-3. **Bundle Bloat** - 9,067-line `products.ts` adds ~200-400KB dead weight
-4. **Missing Input Validation** - API routes lack Zod schemas
-5. **Production Logging** - 10 console.log statements
+1. **`is_admin()` function was broken** ✅ FIXED
+   - Old: `auth.jwt() ->> 'role' = 'admin'` — NEVER returns true (JWT role is always `authenticated`)
+   - New: `EXISTS (SELECT 1 FROM admin_users WHERE id = auth.uid())` — checks actual table
+   - Impact: Admin panel pages using browser client can now properly read orders, customers, etc.
+   - Made `SECURITY DEFINER` so RLS on admin_users doesn't block the function itself
 
-## Execution Strategy
-**Approach**: Aggressive parallel execution
-- **Phase 4 & 5**: Start IMMEDIATELY in parallel (both CRITICAL)
-- **Phase 6**: Start after Phase 4 complete
-- **Phase 7**: Start after Phases 4 & 5 complete
+2. **`admin_users` INSERT privilege escalation** ✅ FIXED
+   - Old: `WITH CHECK (auth.uid() IS NOT NULL)` — ANY authenticated user could add themselves as admin
+   - New: `TO service_role WITH CHECK (true)` — only service_role can insert
+   - Impact: Eliminates privilege escalation vulnerability
 
-## Phase 4 Planning Complete
-**Deliverables Created:**
-- ✅ Research document (04-RESEARCH.md) - 637 lines, HIGH confidence
-- ✅ Execution plan (04-PLAN.md) - 688 lines, comprehensive task breakdown
-- ✅ Committed to git (commit 1033ef7)
+3. **Missing anon SELECT on category tables** ✅ FIXED
+   - Added `Anon can read blog categories` (all categories)
+   - Added `Anon can read active product categories` (active only)
+   - Impact: Public blog/shop pages can load categories without auth
 
-**Next Step:** Execute Phase 4 tasks
-- Task 1: Fix `/api/admin/orders` authentication bypass (30 min)
-- Task 2: Verify `/api/admin/setup` protection (15 min)
-- Task 3: Create E2E security test (30 min)
-- Task 4: Comprehensive admin route audit (15 min)
+### Tables Audited (All Secure)
+| Table | RLS | Policies | Status |
+|-------|-----|----------|--------|
+| admin_users | ✅ | 4 (CRUD) | FIXED — INSERT now service_role only |
+| blog_categories | ✅ | 5 | FIXED — added anon SELECT |
+| blog_posts | ✅ | 5 | OK |
+| customers | ✅ | 3 | OK — admin read/update, service_role insert |
+| gift_set_inventory | ✅ | 2 | OK — public read, service_role modify |
+| orders | ✅ | 3 | OK — admin read/update, service_role insert |
+| product_categories | ✅ | 5 | FIXED — added anon SELECT |
+| products | ✅ | 4 | OK — public read, admin CRUD |
+| site_visitors | ✅ | 4 | OK — admin read, service_role CUD |
 
-**Estimated Duration:** 1-2 hours
-**Ready to Start:** YES ✅
+## Critical Security Issues Status
+### 🟢 ALL CRITICAL FIXED
+1. **Unprotected Admin API Route** — FIXED (Phase 4)
+2. **Broken is_admin() function** — FIXED (Phase 5)
+3. **admin_users privilege escalation** — FIXED (Phase 5)
 
-## Previous Milestone Complete
-Phases 1-3 (Security/Code Quality/Performance fixes) completed and merged to main:
-- **Phase 1** (Security Fixes): **DONE** ✅ (XSS, hardcoded keys, PII logs, gitignore)
-- **Phase 2** (Code Quality): **DONE** ✅ (dead code, ESLint, admin clients verified correct)
-- **Phase 3** (Performance): **DONE** ✅ (ISR caching, Three.js tree-shaken, blog API cached)
-
-## Context
-**Previous milestone** achieved A-grade across security, code quality, and performance. **NEW milestone** triggered by discovery of additional CRITICAL vulnerabilities during post-completion audit.
-
-**Current Security Grade**: B (due to new critical findings)
-**Target Security Grade**: A+ (comprehensive security overhaul)
+### 🟡 HIGH/MEDIUM (Pending)
+4. **Bundle Bloat** - Phase 6
+5. **Missing Input Validation** - Phase 7
+6. **Production Logging** - Phase 7
 
 ## Next Action
-Ready to execute Phase 4 (Admin API Security) - All planning artifacts complete
+- Merge `phase-5-rls-verification` to main
+- Begin Phase 6 (Bundle Optimization) or Phase 7 (Input Validation)
 
-## Blockers
-None - ready to begin execution immediately
+## Previous Phases
+- **Phase 1** (Security Fixes): **DONE** ✅
+- **Phase 2** (Code Quality): **DONE** ✅
+- **Phase 3** (Performance): **DONE** ✅
+- **Phase 4** (Admin API Security): **DONE** ✅
+- **Phase 5** (RLS Verification): **DONE** ✅
 
-## Notes
-- Previous 3 phases merged and deployed successfully
-- Current branch: `main`
-- All previous fixes verified working
-- New critical issues require immediate attention
-- Phase 4 plan includes detailed rollback strategy
-- Research findings provide clear implementation path
+## Context
+**Current Security Grade**: A- (all critical/high security issues fixed)
+**Target Security Grade**: A+ (input validation + bundle optimization remaining)
