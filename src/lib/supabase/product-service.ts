@@ -1,4 +1,4 @@
-import { createClient } from './server';
+import { createPublicClient } from './public';
 import type { Product, ProductCategory } from './types';
 import { categories } from '../categories';
 
@@ -7,7 +7,7 @@ export { categories };
 
 // Get all products from Supabase (public-facing, filters inactive)
 export async function getAllProducts(): Promise<Product[]> {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from('products')
     .select('*')
@@ -24,7 +24,7 @@ export async function getAllProducts(): Promise<Product[]> {
 
 // Get product by ID (returns null if inactive)
 export async function getProductById(id: string): Promise<Product | null> {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from('products')
     .select('*')
@@ -47,7 +47,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
 
 // Get products by category (filters inactive)
 export async function getProductsByCategory(category: string): Promise<Product[]> {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from('products')
     .select('*')
@@ -65,7 +65,7 @@ export async function getProductsByCategory(category: string): Promise<Product[]
 
 // Get featured products (active + in stock only)
 export async function getFeaturedProducts(count: number = 6): Promise<Product[]> {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from('products')
     .select('*')
@@ -84,7 +84,7 @@ export async function getFeaturedProducts(count: number = 6): Promise<Product[]>
 
 // Get all product slugs for static generation
 export async function getAllProductSlugs(): Promise<string[]> {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from('products')
     .select('id');
@@ -102,7 +102,7 @@ export async function getRelatedProducts(productId: string, count: number = 4): 
   const product = await getProductById(productId);
   if (!product) return [];
 
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from('products')
     .select('*')
@@ -121,7 +121,7 @@ export async function getRelatedProducts(productId: string, count: number = 4): 
 
 // Search products (active only)
 export async function searchProducts(query: string): Promise<Product[]> {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from('products')
     .select('*')
