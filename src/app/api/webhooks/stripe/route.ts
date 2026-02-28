@@ -64,7 +64,6 @@ async function persistOrder(
     );
 
     if (orderError) {
-      console.error('Failed to persist order:', orderError);
       Sentry.captureMessage('Order persistence failed', {
         level: 'error',
         extra: { orderError, sessionId: session.id },
@@ -111,14 +110,11 @@ async function persistOrder(
           : [],
       });
     }
-
-    console.log('Order persisted for session:', session.id);
   } catch (error) {
     Sentry.captureException(error, {
       tags: { action: 'persist_order' },
       extra: { sessionId: session.id },
     });
-    console.error('Error persisting order:', error);
   }
 }
 
@@ -135,7 +131,6 @@ async function sendOrderConfirmationEmail(
   const resendApiKey = process.env.RESEND_API_KEY;
 
   if (!resendApiKey) {
-    console.log('Order confirmation email skipped (RESEND_API_KEY not configured)');
     return false;
   }
 
@@ -241,7 +236,6 @@ async function sendOrderConfirmationEmail(
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error('Failed to send order confirmation email:', errorData);
       Sentry.captureMessage('Order confirmation email failed', {
         level: 'warning',
         tags: { service: 'resend' },
@@ -250,13 +244,11 @@ async function sendOrderConfirmationEmail(
       return false;
     }
 
-    console.log('Order confirmation email sent for session:', orderDetails.sessionId);
     return true;
   } catch (error) {
     Sentry.captureException(error, {
       tags: { service: 'resend', action: 'order_confirmation' },
     });
-    console.error('Error sending order confirmation email:', error);
     return false;
   }
 }
@@ -329,13 +321,14 @@ async function sendStoreOrderNotification(
     });
 
     if (!response.ok) {
-      console.error('Failed to send store notification:', await response.json());
+      Sentry.captureMessage('Store notification email failed', { level: 'warning' });
       return false;
     }
-    console.log('Store order notification sent to info@aquadorcy.com');
     return true;
   } catch (error) {
-    console.error('Error sending store notification:', error);
+    Sentry.captureException(error, {
+      tags: { service: 'resend', action: 'store_notification' },
+    });
     return false;
   }
 }
@@ -346,7 +339,6 @@ export async function POST(request: NextRequest) {
 
   if (!webhookSecret) {
     Sentry.captureMessage('STRIPE_WEBHOOK_SECRET not configured', { level: 'error' });
-    console.error('STRIPE_WEBHOOK_SECRET is not set');
     return NextResponse.json(
       { error: 'Webhook configuration error' },
       { status: 500 }
@@ -372,7 +364,6 @@ export async function POST(request: NextRequest) {
       tags: { webhook: 'stripe', error_type: 'signature_verification' },
       extra: { ip: request.headers.get('x-forwarded-for') },
     });
-    console.error('Webhook signature verification failed:', err);
     return NextResponse.json(
       { error: 'Invalid signature' },
       { status: 400 }
@@ -384,11 +375,10 @@ export async function POST(request: NextRequest) {
     case 'checkout.session.completed': {
       const session = event.data.object as Stripe.Checkout.Session;
 
-      // Log the successful order
-      console.log('Order completed:', {
-        sessionId: session.id,
-        amountTotal: session.amount_total,
-        currency: session.currency,
+      Sentry.addBreadcrumb({
+        category: 'order',
+        message: 'Checkout completed',
+        data: { sessionId: session.id, amount: session.amount_total },
       });
 
       // Parse items, shipping, and order tags
@@ -409,7 +399,6 @@ export async function POST(request: NextRequest) {
             tags: { action: 'parse_order_items' },
             extra: { sessionId: session.id },
           });
-          console.error('Failed to parse order items:', parseError);
         }
       } else if (metadata.productType === 'custom-perfume') {
         // Custom perfume checkout — reconstruct item from individual metadata fields
@@ -465,18 +454,29 @@ export async function POST(request: NextRequest) {
 
     case 'checkout.session.expired': {
       const session = event.data.object as Stripe.Checkout.Session;
-      console.log('Checkout session expired:', session.id);
+      Sentry.addBreadcrumb({
+        category: 'order',
+        message: 'Session expired',
+        data: { sessionId: session.id },
+      });
       break;
     }
 
     case 'payment_intent.payment_failed': {
       const paymentIntent = event.data.object as Stripe.PaymentIntent;
-      console.log('Payment failed:', paymentIntent.id);
+      Sentry.addBreadcrumb({
+        category: 'order',
+        message: 'Payment failed',
+        data: { paymentIntentId: paymentIntent.id },
+      });
       break;
     }
 
     default:
-      console.log(`Unhandled event type: ${event.type}`);
+      Sentry.addBreadcrumb({
+        category: 'webhook',
+        message: `Unhandled event: ${event.type}`,
+      });
   }
 
   return NextResponse.json({ received: true });

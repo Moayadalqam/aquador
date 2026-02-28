@@ -54,14 +54,6 @@ export async function POST(request: NextRequest) {
     const contactEmailTo = process.env.CONTACT_EMAIL_TO || 'info@aquadorcy.com';
 
     if (!resendApiKey) {
-      // If no Resend key, log the message and return success
-      console.log('Contact form submission (no email service configured):', {
-        name: escapeHtml(name),
-        email: escapeHtml(email),
-        subject: escapeHtml(subject),
-        timestamp: new Date().toISOString(),
-      });
-
       return NextResponse.json({
         success: true,
         message: 'Message received (email service not configured)',
@@ -111,7 +103,11 @@ export async function POST(request: NextRequest) {
 
     if (!emailResponse.ok) {
       const errorData = await emailResponse.json();
-      console.error('Resend API error:', errorData);
+      Sentry.captureMessage('Contact form email failed', {
+        level: 'warning',
+        tags: { service: 'resend' },
+        extra: { errorData },
+      });
       throw new Error('Failed to send email');
     }
 
