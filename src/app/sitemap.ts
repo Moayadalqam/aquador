@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next';
 import { createClient } from '@supabase/supabase-js';
-import { getAllProductSlugs } from '@/lib/product-service';
+import { getAllProductSlugs } from '@/lib/supabase/product-service';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -34,7 +34,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // Product pages
-  const productSlugs = getAllProductSlugs();
+  const productSlugs = await getAllProductSlugs();
   const productPages = productSlugs.map((slug) => ({
     url: `${baseUrl}/products/${slug}`,
     lastModified: new Date(),

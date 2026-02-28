@@ -1,6 +1,6 @@
 import { createClient } from './server';
 import type { Product, ProductCategory } from './types';
-import { categories } from '../products';
+import { categories } from '../categories';
 
 // Re-export categories since they're static
 export { categories };

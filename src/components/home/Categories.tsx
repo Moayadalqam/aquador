@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
-import { categories } from '@/lib/products';
+import { categories } from '@/lib/categories';
 
 export default function Categories() {
   return (
