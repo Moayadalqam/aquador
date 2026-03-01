@@ -29,7 +29,7 @@ npx playwright test e2e/cart.spec.ts
 
 ### Core Features
 
-1. **Product Catalog** (`src/lib/products.ts`) - Static product data with ~100+ perfumes across categories (women, men, niche). Product types: Perfume, Essence Oil, Body Lotion.
+1. **Product Catalog** (`src/lib/supabase/product-service.ts`) - Supabase-backed product data with ~100+ perfumes across categories (women, men, niche, lattafa-original, al-haramain-originals, victorias-secret-originals). Product types: Perfume, Essence Oil, Body Lotion. Static category definitions in `src/lib/categories.ts`.
 
 2. **Custom Perfume Builder** (`src/app/create-perfume/`, `src/lib/perfume/`) - Interactive fragrance creation with three-layer composition (top, heart, base notes). Five fragrance categories: floral, fruity, woody, oriental, gourmand. Integrates with Stripe for payments.
 
@@ -108,11 +108,12 @@ Supabase-backed admin dashboard:
 
 ### Supabase Integration (`src/lib/supabase/`)
 
-Database-backed storage (parallel to static product catalog):
+Primary data layer for products, blog, and admin:
 - `client.ts` - Browser-side Supabase client
-- `server.ts` - Server-side client with cookies
+- `server.ts` - Server-side client with cookies (for mutations, auth-required ops)
+- `public.ts` - Cookie-free read-only client for SSG/ISR pages (avoids forcing dynamic rendering)
 - `admin.ts` - Service-role client for admin operations
-- `product-service.ts` - Supabase-backed product queries
+- `product-service.ts` - All product query functions (`getAllProducts`, `getProductBySlug`, `getFeaturedProducts`, `searchProducts`, `getRelatedProducts`)
 - `types.ts` - Generated TypeScript types from Supabase schema
 
 **Database Tables**:
@@ -123,17 +124,10 @@ Database-backed storage (parallel to static product catalog):
 ### Type System (`src/types/`)
 
 Two product type systems coexist:
-- **Legacy** (`LegacyProduct` in `index.ts`): Used by `src/lib/products.ts` static catalog
-- **Variant-based** (`Product` in `product.ts`): Supports multiple variants per product (size, type)
-- **Supabase** (`src/lib/supabase/types.ts`): Database schema types for admin panel
+- **Legacy** (`LegacyProduct` in `index.ts`): Used by some shop page components
+- **Variant-based** (`Product` in `product.ts`): Supports multiple variants per product (size, type), with helper functions `getDefaultVariant()` and `getVariantLabel()`
+- **Supabase** (`src/lib/supabase/types.ts`): Database schema types — the `Product` type from here is used by `product-service.ts`
 - **Cart** (`cart.ts`): Cart items use variant-based pricing
-
-### Product Service Layer (`src/lib/product-service.ts`)
-
-Provides query functions for the static product catalog:
-- `getAllProducts()`, `getProductById()`, `getProductBySlug()`
-- `getProductsByCategory()`, `getFeaturedProducts()`
-- `searchProducts()`, `getRelatedProducts()`
 
 ### Utilities (`src/lib/`)
 
@@ -177,3 +171,5 @@ See `.env.example`:
 ## Reference Materials
 
 `old-website-pages/` contains archived Squarespace content including the original product CSV export and page content for reference.
+
+`scripts/` contains one-off migration scripts used to move product data from the static catalog into Supabase. These are excluded from TypeScript compilation via `tsconfig.json`.
