@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { checkRateLimit } from '@/lib/rate-limit';
 import { z } from 'zod';
+
+export const maxDuration = 10;
 
 const heartbeatSchema = z.object({
   sessionId: z.string().min(1).max(128),
@@ -8,6 +11,9 @@ const heartbeatSchema = z.object({
 });
 
 export async function POST(request: NextRequest) {
+  const rateLimitResponse = await checkRateLimit(request, 'heartbeat');
+  if (rateLimitResponse) return rateLimitResponse;
+
   try {
     const body = await request.json();
     const result = heartbeatSchema.safeParse(body);

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { CartItem } from '@/types/cart';
-import { getProductById } from '@/lib/supabase/product-service';
+import { getProductsByIds } from '@/lib/supabase/product-service';
 
 /**
  * Zod schema for CartItem validation
@@ -38,6 +38,7 @@ export const cartItemSchema = z.object({
  *
  * Security: Prevents client-side price manipulation by verifying each item's
  * price matches the catalog price (or sale price if available).
+ * Uses batch query to avoid N+1 database calls.
  */
 export async function validateCartPrices(items: CartItem[]): Promise<{
   valid: boolean;
@@ -45,8 +46,13 @@ export async function validateCartPrices(items: CartItem[]): Promise<{
 }> {
   const errors: Array<{ productId: string; reason: string }> = [];
 
+  // Batch fetch all products in a single query
+  const productIds = items.map(item => item.productId);
+  const products = await getProductsByIds(productIds);
+  const productMap = new Map(products.map(p => [p.id, p]));
+
   for (const item of items) {
-    const product = await getProductById(item.productId);
+    const product = productMap.get(item.productId);
 
     if (!product) {
       errors.push({

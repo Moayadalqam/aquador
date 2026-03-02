@@ -65,7 +65,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }));
     }
   } catch (error) {
-    console.error('Sitemap: Failed to fetch blog posts:', error);
+    const Sentry = await import('@sentry/nextjs');
+    Sentry.addBreadcrumb({
+      category: 'sitemap',
+      message: 'Sitemap: Failed to fetch blog posts',
+      level: 'error',
+      data: { error }
+    });
   }
 
   return [...staticPages, ...productPages, ...blogPages];

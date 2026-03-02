@@ -4,6 +4,8 @@ import { z } from 'zod';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 
+export const maxDuration = 10;
+
 const manualOrderSchema = z.object({
   customerEmail: z.string().email('Valid email required'),
   customerName: z.string().max(200).optional(),

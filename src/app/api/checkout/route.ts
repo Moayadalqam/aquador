@@ -9,6 +9,8 @@ import { getProductTypeLabel, SHIPPING_COUNTRIES } from '@/lib/constants';
 import { getStripe } from '@/lib/stripe';
 import { cartItemSchema, validateCartPrices } from '@/lib/validation/cart';
 
+export const maxDuration = 10;
+
 const checkoutSchema = z.object({
   items: z.array(cartItemSchema).min(1, 'Cart is empty'),
 });

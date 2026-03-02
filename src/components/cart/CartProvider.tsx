@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useReducer, useEffect, useState, useCallback, useRef, type ReactNode } from 'react';
+import * as Sentry from '@sentry/nextjs';
 import type { Cart, CartItem, CartAction, CartContextType } from '@/types/cart';
 import { calculateSubtotal } from '@/lib/currency';
 
@@ -85,7 +86,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
         }
       }
     } catch (error) {
-      console.error('Failed to hydrate cart:', error);
+      Sentry.addBreadcrumb({
+        category: 'cart-provider',
+        message: 'Failed to hydrate cart',
+        level: 'error',
+        data: { error }
+      });
     }
     setIsHydrated(true);
   }, []);
@@ -104,7 +110,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
       try {
         localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
       } catch (error) {
-        console.error('Failed to persist cart:', error);
+        Sentry.addBreadcrumb({
+          category: 'cart-provider',
+          message: 'Failed to persist cart',
+          level: 'error',
+          data: { error }
+        });
       }
     }, PERSIST_DEBOUNCE_MS);
 

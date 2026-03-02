@@ -5,6 +5,7 @@ import { useParams, notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
 import { ArrowLeft, AlertCircle } from 'lucide-react';
+import * as Sentry from '@sentry/nextjs';
 import ProductForm from '@/components/admin/ProductForm';
 import type { Product } from '@/lib/supabase/types';
 
@@ -34,7 +35,12 @@ export default function EditProductPage() {
           .maybeSingle();
 
         if (queryError) {
-          console.error('Edit product query error:', queryError);
+          Sentry.addBreadcrumb({
+            category: 'admin-products',
+            message: 'Edit product query error',
+            level: 'error',
+            data: { error: queryError }
+          });
           setError(queryError.message);
         } else if (!data) {
           setNotFoundState(true);
@@ -42,7 +48,12 @@ export default function EditProductPage() {
           setProduct(data as Product);
         }
       } catch (e) {
-        console.error('Edit product page error:', e);
+        Sentry.addBreadcrumb({
+          category: 'admin-products',
+          message: 'Edit product page error',
+          level: 'error',
+          data: { error: e }
+        });
         setError(e instanceof Error ? e.message : 'Unknown error');
       } finally {
         setLoading(false);

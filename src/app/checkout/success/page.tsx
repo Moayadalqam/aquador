@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { CheckCircle, Package, ArrowRight, XCircle } from 'lucide-react';
+import * as Sentry from '@sentry/nextjs';
 import { useCart } from '@/components/cart';
 import { formatPrice } from '@/lib/utils';
 
@@ -50,7 +51,12 @@ export default function CheckoutSuccessPage() {
         setLoading(false);
       })
       .catch((err) => {
-        console.error('Error fetching order details:', err);
+        Sentry.addBreadcrumb({
+          category: 'checkout-success',
+          message: 'Error fetching order details',
+          level: 'error',
+          data: { error: err }
+        });
         setError(true);
         setLoading(false);
       });

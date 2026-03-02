@@ -3,6 +3,8 @@ import { createClient } from '@/lib/supabase/server';
 import { estimateReadTime, generateSlug } from '@/lib/blog';
 import { z } from 'zod';
 
+export const maxDuration = 10;
+
 const blogPostSchema = z.object({
   title: z.string().min(1, 'Title is required').max(200),
   content: z.string().min(1, 'Content is required'),

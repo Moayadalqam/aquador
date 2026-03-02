@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import * as Sentry from '@sentry/nextjs';
 
 export default function AdminError({
   error,
@@ -10,8 +11,12 @@ export default function AdminError({
   reset: () => void;
 }) {
   useEffect(() => {
-    // Log the error to console for debugging
-    console.error('Admin Error:', error);
+    Sentry.addBreadcrumb({
+      category: 'admin-error',
+      message: 'Admin Error',
+      level: 'error',
+      data: { error, digest: error.digest }
+    });
   }, [error]);
 
   return (

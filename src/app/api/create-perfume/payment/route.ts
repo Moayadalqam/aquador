@@ -6,6 +6,8 @@ import { checkRateLimit } from '@/lib/rate-limit';
 import { getStripe } from '@/lib/stripe';
 import { SHIPPING_COUNTRIES } from '@/lib/constants';
 
+export const maxDuration = 10;
+
 const perfumePaymentSchema = z.object({
   perfumeName: z.string().min(1, 'Perfume name is required'),
   composition: z.object({

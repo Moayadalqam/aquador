@@ -48,6 +48,16 @@ export const rateLimiters = {
       })
     : null,
 
+  // Heartbeat: 30 requests per minute
+  heartbeat: isConfigured && redis
+    ? new Ratelimit({
+        redis,
+        limiter: Ratelimit.slidingWindow(30, '1 m'),
+        analytics: true,
+        prefix: 'ratelimit:heartbeat',
+      })
+    : null,
+
   // AI Assistant: 10 requests per minute
   'ai-assistant': isConfigured && redis
     ? new Ratelimit({

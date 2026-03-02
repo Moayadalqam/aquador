@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Lock, Loader2 } from 'lucide-react';
 import { track } from '@vercel/analytics';
+import * as Sentry from '@sentry/nextjs';
 import { useCart } from './CartProvider';
 
 export default function CheckoutButton() {
@@ -66,7 +67,12 @@ export default function CheckoutButton() {
       if (err instanceof Error && err.name === 'AbortError') {
         return;
       }
-      console.error('Checkout error:', err);
+      Sentry.addBreadcrumb({
+        category: 'checkout-button',
+        message: 'Checkout error',
+        level: 'error',
+        data: { error: err }
+      });
       setError(err instanceof Error ? err.message : 'Something went wrong');
     } finally {
       setIsProcessing(false);

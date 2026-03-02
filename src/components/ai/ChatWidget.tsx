@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Send, Loader2 } from 'lucide-react';
+import * as Sentry from '@sentry/nextjs';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -123,7 +124,12 @@ export default function ChatWidget() {
         timestamp: new Date(),
       }]);
     } catch (error) {
-      console.error('Chat error:', error);
+      Sentry.addBreadcrumb({
+        category: 'chat-widget',
+        message: 'Chat error',
+        level: 'error',
+        data: { error }
+      });
       setMessages(prev => [...prev, {
         role: 'assistant',
         content: "Sorry, I'm having trouble connecting. Please try again or [contact us](/contact).",

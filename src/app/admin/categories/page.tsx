@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import * as Sentry from '@sentry/nextjs';
 import type { ProductCategoryRow, ProductCategoryInsert, ProductCategoryUpdate } from '@/lib/supabase/types';
 import {
   AlertCircle,
@@ -72,7 +73,12 @@ export default function CategoriesPage() {
       setCategories(withCounts);
       setError(null);
     } catch (e) {
-      console.error('Categories fetch error:', e);
+      Sentry.addBreadcrumb({
+        category: 'admin-categories',
+        message: 'Categories fetch error',
+        level: 'error',
+        data: { error: e }
+      });
       setError(e instanceof Error ? e.message : 'Failed to load categories');
     } finally {
       setLoading(false);
@@ -164,7 +170,12 @@ export default function CategoriesPage() {
       closeModal();
       await fetchCategories();
     } catch (e) {
-      console.error('Save error:', e);
+      Sentry.addBreadcrumb({
+        category: 'admin-categories',
+        message: 'Save error',
+        level: 'error',
+        data: { error: e }
+      });
       setError(e instanceof Error ? e.message : 'Failed to save category');
     } finally {
       setSaving(false);
@@ -186,7 +197,12 @@ export default function CategoriesPage() {
       setDeleteId(null);
       await fetchCategories();
     } catch (e) {
-      console.error('Delete error:', e);
+      Sentry.addBreadcrumb({
+        category: 'admin-categories',
+        message: 'Delete error',
+        level: 'error',
+        data: { error: e }
+      });
       setError(e instanceof Error ? e.message : 'Failed to delete category');
     } finally {
       setDeleting(false);
@@ -203,7 +219,12 @@ export default function CategoriesPage() {
       if (updateError) throw updateError;
       await fetchCategories();
     } catch (e) {
-      console.error('Toggle error:', e);
+      Sentry.addBreadcrumb({
+        category: 'admin-categories',
+        message: 'Toggle error',
+        level: 'error',
+        data: { error: e }
+      });
       setError(e instanceof Error ? e.message : 'Failed to update category');
     }
   };

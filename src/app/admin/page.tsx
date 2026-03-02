@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Package, DollarSign, ShoppingCart, TrendingUp, AlertCircle, ShoppingBag, Users, Eye } from 'lucide-react';
+import * as Sentry from '@sentry/nextjs';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { Product, Order } from '@/lib/supabase/types';
@@ -81,7 +82,12 @@ export default function AdminDashboard() {
         setRecentProducts((products || []) as Product[]);
         setRecentOrders((latestOrders || []) as Order[]);
       } catch (e) {
-        console.error('Dashboard error:', e);
+        Sentry.addBreadcrumb({
+          category: 'admin-dashboard',
+          message: 'Dashboard error',
+          level: 'error',
+          data: { error: e }
+        });
         setError(e instanceof Error ? e.message : 'Failed to load data');
       } finally {
         setLoading(false);

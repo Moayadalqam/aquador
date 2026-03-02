@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
+import * as Sentry from '@sentry/nextjs'
 import { formatPrice } from '@/lib/utils'
 
 interface OrderData {
@@ -51,7 +52,12 @@ export function SuccessContent() {
         }
       })
       .catch((error) => {
-        console.error('Error fetching session details:', error)
+        Sentry.addBreadcrumb({
+          category: 'perfume-success',
+          message: 'Error fetching session details',
+          level: 'error',
+          data: { error }
+        })
         setStatus('error')
       })
   }, [searchParams])

@@ -3,7 +3,9 @@ import * as Sentry from '@sentry/nextjs';
 import { formatApiError } from '@/lib/api-utils';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { getStripe } from '@/lib/stripe';
-import { getProductById } from '@/lib/supabase/product-service';
+import { getProductsByIds } from '@/lib/supabase/product-service';
+
+export const maxDuration = 10;
 
 interface OrderItem {
   name: string;
@@ -94,8 +96,12 @@ export async function GET(request: NextRequest) {
           qty: number;
         }>;
 
+        const productIds = shortItems.map(si => si.pid);
+        const products = await getProductsByIds(productIds);
+        const productMap = new Map(products.map(p => [p.id, p]));
+
         for (const shortItem of shortItems) {
-          const product = await getProductById(shortItem.pid);
+          const product = productMap.get(shortItem.pid);
           if (product) {
             items.push({
               name: product.name,
@@ -110,7 +116,12 @@ export async function GET(request: NextRequest) {
           tags: { action: 'parse_cart_items' },
           extra: { sessionId },
         });
-        console.error('Failed to parse cart items metadata:', parseError);
+        Sentry.addBreadcrumb({
+          category: 'checkout-session',
+          message: 'Failed to parse cart items metadata',
+          level: 'error',
+          data: { error: parseError }
+        });
       }
     } else if (metadata.productType === 'custom-perfume') {
       // Custom perfume checkout — build item from metadata fields
@@ -165,7 +176,12 @@ export async function GET(request: NextRequest) {
     Sentry.captureException(error, {
       tags: { route: 'session-details' },
     });
-    console.error('Session details error:', error);
+    Sentry.addBreadcrumb({
+      category: 'checkout-session',
+      message: 'Session details error',
+      level: 'error',
+      data: { error }
+    });
 
     const errorResponse = formatApiError(error, 'Failed to retrieve session details');
     return NextResponse.json(errorResponse, { status: 500 });

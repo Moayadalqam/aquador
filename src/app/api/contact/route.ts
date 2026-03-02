@@ -5,6 +5,8 @@ import { fetchWithTimeout, formatApiError } from '@/lib/api-utils';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { escapeHtml } from '@/lib/utils';
 
+export const maxDuration = 10;
+
 const contactSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Please enter a valid email'),

@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
 import { Plus, Search, AlertCircle } from 'lucide-react';
+import * as Sentry from '@sentry/nextjs';
 import ProductsTable from '@/components/admin/ProductsTable';
 import type { ProductCategory, Product } from '@/lib/supabase/types';
 
@@ -52,7 +53,12 @@ export default function ProductsPage() {
         setProducts((data || []) as Product[]);
         setCount(productCount || 0);
       } catch (e) {
-        console.error('Products fetch error:', e);
+        Sentry.addBreadcrumb({
+          category: 'admin-products',
+          message: 'Products fetch error',
+          level: 'error',
+          data: { error: e }
+        });
         setError(e instanceof Error ? e.message : 'Failed to load products');
       } finally {
         setLoading(false);

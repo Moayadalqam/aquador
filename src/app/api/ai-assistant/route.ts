@@ -5,6 +5,8 @@ import { formatApiError } from '@/lib/api-utils';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { catalogueProducts, searchCatalogue } from '@/lib/ai/catalogue-data';
 
+export const maxDuration = 30;
+
 // OpenRouter API (supports OpenAI, Anthropic, Google, and many other models)
 const API_KEY = process.env.OPENROUTER_API_KEY || process.env.OPENAI_API_KEY;
 const API_ENDPOINT = process.env.AI_API_ENDPOINT || 'https://openrouter.ai/api/v1/chat/completions';

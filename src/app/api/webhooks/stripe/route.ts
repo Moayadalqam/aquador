@@ -5,7 +5,9 @@ import { fetchWithTimeout } from '@/lib/api-utils';
 import { formatPrice, escapeHtml } from '@/lib/utils';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { getStripe } from '@/lib/stripe';
-import { getProductById } from '@/lib/supabase/product-service';
+import { getProductsByIds } from '@/lib/supabase/product-service';
+
+export const maxDuration = 30;
 
 interface OrderItem {
   name: string;
@@ -64,7 +66,7 @@ async function persistOrder(
 
     // If orderData is null or empty, the order was a duplicate (ignoreDuplicates blocked insert)
     if (!orderData || orderData.length === 0) {
-      console.log('Duplicate order detected (ignoreDuplicates):', session.id);
+      Sentry.addBreadcrumb({ category: 'stripe-webhook', message: 'Duplicate order detected', level: 'info', data: { sessionId: session.id } });
       return { isNewOrder: false };
     }
 
@@ -400,8 +402,12 @@ export async function POST(request: NextRequest) {
             qty: number;
           }>;
 
+          const productIds = shortItems.map(si => si.pid);
+          const products = await getProductsByIds(productIds);
+          const productMap = new Map(products.map(p => [p.id, p]));
+
           for (const shortItem of shortItems) {
-            const product = await getProductById(shortItem.pid);
+            const product = productMap.get(shortItem.pid);
             if (product) {
               items.push({
                 name: product.name,
@@ -466,9 +472,9 @@ export async function POST(request: NextRequest) {
             sendOrderConfirmationEmail(customerEmail, orderDetails),
             sendStoreOrderNotification(customerEmail, orderDetails),
           ]);
-          console.log('Order confirmation emails sent for new order:', session.id);
+          Sentry.addBreadcrumb({ category: 'stripe-webhook', message: 'Order emails sent', level: 'info', data: { sessionId: session.id } });
         } else {
-          console.log('Duplicate webhook - skipping email sending for session:', session.id);
+          Sentry.addBreadcrumb({ category: 'stripe-webhook', message: 'Duplicate webhook — skipped emails', level: 'info', data: { sessionId: session.id } });
         }
       }
 
