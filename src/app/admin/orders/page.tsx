@@ -43,7 +43,9 @@ export default function OrdersPage() {
     }
 
     if (search.trim()) {
-      query = query.or(`customer_email.ilike.%${search.trim()}%,customer_name.ilike.%${search.trim()}%`);
+      // SEC-03: Escape SQL wildcards to prevent PostgREST filter injection
+      const escapedSearch = search.trim().replace(/[%_]/g, '\\$&');
+      query = query.or(`customer_email.ilike.%${escapedSearch}%,customer_name.ilike.%${escapedSearch}%`);
     }
 
     const { data, count } = await query;
