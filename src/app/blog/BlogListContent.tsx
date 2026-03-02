@@ -63,14 +63,12 @@ export default function BlogListContent({
       )}
 
       {/* Category Filter */}
-      <section className="py-8">
-        <div className="container-wide">
-          <CategoryFilter
-            categories={categories}
-            activeCategory={activeCategory}
-            onCategoryChange={handleCategoryChange}
-          />
-        </div>
+      <section className="container-wide py-8">
+        <CategoryFilter
+          categories={categories}
+          activeCategory={activeCategory}
+          onCategoryChange={handleCategoryChange}
+        />
       </section>
 
       {/* Posts Grid */}

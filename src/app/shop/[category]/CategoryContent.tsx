@@ -4,14 +4,9 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useCallback, useMemo } from 'react';
-import dynamic from 'next/dynamic';
 import { SearchBar } from '@/components/search';
+import { PageHero } from '@/components/ui/Section';
 import { formatPrice } from '@/lib/utils';
-
-const AnimatedShaderBackground = dynamic(
-  () => import('@/components/ui/animated-shader-background'),
-  { ssr: false }
-);
 import type { Product, Category } from '@/types';
 
 const FALLBACK_IMAGE = '/placeholder-product.svg';
@@ -47,167 +42,162 @@ export default function CategoryContent({ category, products }: CategoryContentP
     );
   }, [products, searchQuery]);
 
+  const isEmpty = products.length === 0;
+
   return (
-    <div className="pt-24 pb-16 bg-gold-ambient min-h-screen">
-      {/* Hero */}
-      <section className="relative py-24 overflow-hidden">
-        <AnimatedShaderBackground />
-        <div className="absolute inset-0">
-          <Image
-            src={category.image}
-            alt={category.name}
-            fill
-            className="object-cover opacity-20"
-            sizes="100vw"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-dark/70 to-dark" />
-        </div>
-        <div className="w-full px-4 sm:px-8 lg:px-16 xl:px-24 text-center relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <Link
-              href="/shop"
-              className="inline-flex items-center text-gold/70 hover:text-gold mb-6 text-sm uppercase tracking-wider"
-            >
-              ← Back to Collections
-            </Link>
-            <h1 className="text-5xl md:text-6xl font-playfair text-gradient-gold mb-4">
-              {category.name}
-            </h1>
-            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-              {category.description}
-            </p>
-          </motion.div>
-        </div>
-      </section>
+    <div className="min-h-screen bg-gold-ambient">
+      <PageHero
+        title={category.name}
+        subtitle={category.description}
+        backgroundImage={category.image}
+        titleVariant="gold"
+      />
 
-      {/* Search Bar */}
-      <section className="w-full px-4 sm:px-8 lg:px-16 xl:px-24 py-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="max-w-xl mx-auto"
-        >
-          <SearchBar
-            variant="shop"
-            placeholder={`Search in ${category.name}...`}
-            onSearch={handleSearch}
-          />
-        </motion.div>
-
-        {/* Search results summary */}
-        {searchQuery.length >= 2 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="flex items-center justify-center gap-4 mt-4"
-          >
-            <p className="text-sm text-gray-400">
-              Showing {filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''} for &quot;{searchQuery}&quot;
-            </p>
-            <button
-              onClick={clearSearch}
-              className="text-sm text-gold hover:text-gold/80 transition-colors"
-            >
-              Clear search
-            </button>
-          </motion.div>
-        )}
-      </section>
-
-      {/* Products Grid */}
-      <section className="w-full px-4 sm:px-8 lg:px-16 xl:px-24 py-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredProducts.map((product, index) => (
+      {/* Coming Soon state for empty categories */}
+      {isEmpty ? (
+        <section className="section">
+          <div className="container-wide">
             <motion.div
-              key={product.id}
+              className="max-w-lg mx-auto text-center"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: Math.min(index * 0.05, 0.3) }}
+              transition={{ delay: 0.2 }}
             >
+              <div className="w-16 h-16 rounded-full border border-gold/30 bg-gold/5 flex items-center justify-center mx-auto mb-6">
+                <svg className="w-7 h-7 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-playfair text-white mb-3">Coming Soon</h2>
+              <p className="text-gray-400 text-sm mb-8">
+                We&apos;re curating an exclusive selection for this collection. Check back soon or explore our other categories.
+              </p>
               <Link
-                href={`/products/${product.id}`}
-                className="group block bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2"
+                href="/shop"
+                className="inline-flex items-center gap-2 text-gold text-xs uppercase tracking-[0.2em] hover:text-gold-light transition-colors"
               >
-                {/* Image - 4:5 aspect ratio for better viewport fit */}
-                <div className="relative aspect-[4/5] overflow-hidden">
-                  <Image
-                    src={product.image || FALLBACK_IMAGE}
-                    alt={product.name}
-                    fill
-                    className={`object-cover transition-transform duration-700 group-hover:scale-110 ${!product.inStock ? 'opacity-60' : ''}`}
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                    onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_IMAGE; }}
-                  />
-                  {/* Sale Badge */}
-                  {product.salePrice && product.salePrice < product.price && product.inStock && (
-                    <span className="absolute top-4 left-4 bg-gold text-black text-[10px] uppercase tracking-wider px-3 py-1.5 font-medium">
-                      Sale
-                    </span>
-                  )}
-                  {/* Coming Soon Badge */}
-                  {!product.inStock && (
-                    <span className="absolute top-4 left-4 bg-gray-800 text-white text-[10px] uppercase tracking-wider px-3 py-1.5 font-medium">
-                      Coming Soon
-                    </span>
-                  )}
-                </div>
+                &larr; Browse All Products
+              </Link>
+            </motion.div>
+          </div>
+        </section>
+      ) : (
+        <>
+          {/* Search Bar */}
+          <section className="container-wide py-8">
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="max-w-md mx-auto"
+            >
+              <SearchBar
+                variant="shop"
+                placeholder={`Search in ${category.name}...`}
+                onSearch={handleSearch}
+              />
+            </motion.div>
 
-                {/* Content */}
-                <div className="p-5">
-                  <h3 className="text-lg font-playfair text-gray-900 group-hover:text-gold-dark transition-colors mb-1">
-                    {product.name}
-                  </h3>
-                  {product.brand && (
-                    <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">
-                      {product.brand}
-                    </p>
-                  )}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-lg font-semibold text-gold-dark">
-                        {formatPrice(product.salePrice || product.price)}
-                      </span>
-                      {product.salePrice && product.salePrice < product.price && (
-                        <span className="text-sm text-gray-400 line-through">
-                          {formatPrice(product.price)}
+            {/* Search results summary */}
+            {searchQuery.length >= 2 && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="flex items-center justify-center gap-3 mt-4"
+              >
+                <p className="text-xs text-gray-500">
+                  {filteredProducts.length} result{filteredProducts.length !== 1 ? 's' : ''} for &quot;{searchQuery}&quot;
+                </p>
+                <button
+                  onClick={clearSearch}
+                  className="text-xs text-gold/70 hover:text-gold transition-colors"
+                >
+                  Clear
+                </button>
+              </motion.div>
+            )}
+          </section>
+
+          {/* Products Grid */}
+          <section className="container-wide pb-20">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5">
+              {filteredProducts.map((product, index) => (
+                <motion.div
+                  key={product.id}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: Math.min(index * 0.02, 0.2) }}
+                >
+                  <Link href={`/products/${product.id}`} className="group block product-card">
+                    {/* Image */}
+                    <div className="relative aspect-[3/4] overflow-hidden">
+                      <Image
+                        src={product.image || FALLBACK_IMAGE}
+                        alt={product.name}
+                        fill
+                        className={`object-cover transition-transform duration-700 group-hover:scale-105 ${!product.inStock ? 'opacity-60' : ''}`}
+                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                        onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_IMAGE; }}
+                      />
+                      {product.salePrice && product.salePrice < product.price && product.inStock && (
+                        <span className="absolute top-3 left-3 bg-gold text-black text-[9px] uppercase tracking-wider px-2 py-1 font-medium">
+                          Sale
+                        </span>
+                      )}
+                      {!product.inStock && (
+                        <span className="absolute top-3 left-3 bg-gray-800 text-white text-[9px] uppercase tracking-wider px-2 py-1 font-medium">
+                          Coming Soon
                         </span>
                       )}
                     </div>
-                    <span className="text-xs text-gray-500">{product.size}</span>
-                  </div>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
 
-        {filteredProducts.length === 0 && (
-          <div className="text-center py-20">
-            <p className="text-gray-400 text-lg mb-4">
-              {searchQuery.length >= 2
-                ? `No products found for "${searchQuery}" in this category.`
-                : 'No products found in this category.'}
-            </p>
-            {searchQuery.length >= 2 ? (
-              <button
-                onClick={clearSearch}
-                className="text-gold hover:text-gold/80 transition-colors"
-              >
-                Clear search
-              </button>
-            ) : (
-              <Link href="/shop" className="text-gold">
-                Browse all products
-              </Link>
+                    {/* Content */}
+                    <div className="p-4 bg-white">
+                      {product.brand && (
+                        <p className="label-micro mb-1.5 truncate">{product.brand}</p>
+                      )}
+                      <h3 className="text-sm font-playfair text-gray-900 group-hover:text-gold-dark transition-colors mb-2 line-clamp-1">
+                        {product.name}
+                      </h3>
+                      <div className="pt-2 border-t border-gray-100">
+                        <div className="flex items-baseline justify-between">
+                          <div className="flex items-baseline gap-1.5">
+                            <span className="text-base font-playfair text-gray-900">
+                              {formatPrice(product.salePrice || product.price)}
+                            </span>
+                            {product.salePrice && product.salePrice < product.price && (
+                              <span className="text-xs text-gray-400 line-through">
+                                {formatPrice(product.price)}
+                              </span>
+                            )}
+                          </div>
+                          <span className="text-[9px] text-gray-400 uppercase">
+                            {product.size}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+
+            {filteredProducts.length === 0 && (
+              <div className="text-center py-20">
+                <p className="text-gray-500 text-sm mb-4">
+                  No products found for &quot;{searchQuery}&quot; in this category.
+                </p>
+                <button
+                  onClick={clearSearch}
+                  className="text-gold text-sm hover:text-gold/80 transition-colors"
+                >
+                  Clear search
+                </button>
+              </div>
             )}
-          </div>
-        )}
-      </section>
+          </section>
+        </>
+      )}
     </div>
   );
 }

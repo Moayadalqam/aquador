@@ -26,7 +26,7 @@ export default function Footer() {
   return (
     <footer className="relative bg-gold-ambient-subtle border-t border-gold/5">
       <div className="container-wide section-sm">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-10 md:gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1 space-y-5">
             <Link href="/" className="inline-block">

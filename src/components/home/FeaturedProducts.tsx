@@ -24,45 +24,44 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
         />
 
         {/* Products grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-5">
           {products.map((product, index) => (
             <motion.div
               key={product.id}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-50px' }}
               transition={{ duration: 0.5, delay: index * 0.08 }}
             >
               <Link href={`/products/${product.id}`} className="group block product-card">
                 {/* Image */}
-                <div className="relative aspect-square overflow-hidden">
+                <div className="relative aspect-[3/4] overflow-hidden">
                   <Image
                     src={product.image || FALLBACK_IMAGE}
                     alt={product.name}
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 33vw"
                     onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_IMAGE; }}
                   />
                 </div>
 
                 {/* Content */}
-                <div className="p-5 bg-white">
+                <div className="p-4 bg-white">
                   {product.brand && (
-                    <p className="label-micro mb-2">{product.brand}</p>
+                    <p className="label-micro mb-1.5 truncate">{product.brand}</p>
                   )}
-                  <h3 className="text-base font-playfair text-gray-900 group-hover:text-gold-dark transition-colors mb-3 line-clamp-1">
+                  <h3 className="text-sm font-playfair text-gray-900 group-hover:text-gold-dark transition-colors mb-2 line-clamp-1">
                     {product.name}
                   </h3>
 
                   {/* Price section */}
-                  <div className="pt-3 border-t border-gray-100">
-                    <p className="label-micro mb-1">Price</p>
-                    <div className="flex items-end justify-between">
-                      <span className="text-xl font-playfair text-gray-900 font-light">
+                  <div className="pt-2 border-t border-gray-100">
+                    <div className="flex items-baseline justify-between">
+                      <span className="text-base font-playfair text-gray-900">
                         {formatPrice(product.price)}
                       </span>
-                      <span className="text-[10px] text-gray-500 uppercase tracking-wider">
+                      <span className="text-[9px] text-gray-400 uppercase">
                         {product.size}
                       </span>
                     </div>

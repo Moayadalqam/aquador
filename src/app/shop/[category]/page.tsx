@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import Link from 'next/link';
 import { getProductsByCategory, categories, getCategoryBySlug } from '@/lib/supabase/product-service';
 import CategoryContent from './CategoryContent';
 
@@ -65,19 +64,6 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   }
 
   const products = await getProductsByCategory(categorySlug);
-
-  // Custom not found for empty category
-  if (products.length === 0) {
-    return (
-      <div className="pt-32 pb-16 min-h-screen bg-dark text-center">
-        <h1 className="text-4xl font-playfair text-white">No products found</h1>
-        <p className="text-gray-400 mt-4">This category is currently empty.</p>
-        <Link href="/shop" className="text-gold mt-4 inline-block">
-          &larr; Back to Shop
-        </Link>
-      </div>
-    );
-  }
 
   // BreadcrumbList structured data
   const breadcrumbSchema = {

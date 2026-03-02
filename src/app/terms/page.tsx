@@ -1,31 +1,22 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { PageHero } from '@/components/ui/Section';
 
 export default function TermsPage() {
   return (
-    <div className="pt-24 pb-16 bg-gold-ambient min-h-screen">
-      {/* Hero */}
-      <section className="relative py-16 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-gold/5 to-transparent" />
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-          <motion.h1
+    <div className="min-h-screen bg-gold-ambient">
+      <PageHero title="Terms of Service" />
+
+      <section className="section-sm">
+        <div className="container-wide">
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-5xl font-playfair text-gradient-gold mb-4"
+            transition={{ delay: 0.2 }}
+            className="max-w-4xl mx-auto"
           >
-            Terms of Service
-          </motion.h1>
-        </div>
-      </section>
-
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="bg-dark-light rounded-2xl p-8 border border-gold/20 space-y-8"
-        >
+            <div className="glass-card p-8 space-y-8">
           <p className="text-gray-400">
             Welcome to Aquad&apos;or. By accessing or using our website aquadorcy.com, purchasing our products, or using our services, you agree to be bound by these Terms of Service. Please read these Terms carefully.
           </p>
@@ -112,8 +103,10 @@ export default function TermsPage() {
           <p className="text-gray-500 text-sm pt-6 border-t border-gold/20">
             By using our website and services, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service.
           </p>
-        </motion.div>
-      </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
     </div>
   );
 }

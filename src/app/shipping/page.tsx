@@ -2,52 +2,42 @@
 
 import { motion } from 'framer-motion';
 import { Truck, RotateCcw, Clock, Package } from 'lucide-react';
+import { PageHero } from '@/components/ui/Section';
 
 export default function ShippingPage() {
   return (
-    <div className="pt-24 pb-16 bg-gold-ambient min-h-screen">
-      {/* Hero */}
-      <section className="relative py-16 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-gold/5 to-transparent" />
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-5xl font-playfair text-gradient-gold mb-4"
-          >
-            Shipping & Returns
-          </motion.h1>
-        </div>
-      </section>
+    <div className="min-h-screen bg-gold-ambient">
+      <PageHero title="Shipping & Returns" />
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Quick info cards */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12"
-        >
-          {[
-            { icon: Clock, label: '24h Processing' },
-            { icon: Truck, label: 'Fast Delivery' },
-            { icon: RotateCcw, label: '14-Day Returns' },
-            { icon: Package, label: 'Secure Packaging' },
-          ].map((item, i) => (
-            <div key={i} className="bg-dark-light rounded-xl p-4 text-center border border-gold/20">
-              <item.icon className="w-8 h-8 text-gold mx-auto mb-2" />
-              <span className="text-sm text-gray-400">{item.label}</span>
-            </div>
-          ))}
-        </motion.div>
+      <section className="section-sm">
+        <div className="container-wide">
+          <div className="max-w-4xl mx-auto">
+            {/* Quick info cards */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-12"
+            >
+              {[
+                { icon: Clock, label: '24h Processing' },
+                { icon: Truck, label: 'Fast Delivery' },
+                { icon: RotateCcw, label: '14-Day Returns' },
+                { icon: Package, label: 'Secure Packaging' },
+              ].map((item, i) => (
+                <div key={i} className="glass-card p-4 text-center">
+                  <item.icon className="w-8 h-8 text-gold mx-auto mb-2" />
+                  <span className="text-sm text-gray-400">{item.label}</span>
+                </div>
+              ))}
+            </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="prose prose-invert prose-gold max-w-none"
-        >
-          <div className="bg-dark-light rounded-2xl p-8 border border-gold/20 space-y-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              <div className="glass-card p-8 space-y-8">
             <section>
               <h2 className="text-2xl font-playfair text-gold mb-4">Shipping Information</h2>
               <div className="space-y-4 text-gray-400">
@@ -109,9 +99,11 @@ export default function ShippingPage() {
                 For any questions about our shipping and return policy, please contact our Customer Service team. We&apos;re happy to assist you!
               </p>
             </section>
+              </div>
+            </motion.div>
           </div>
-        </motion.div>
-      </div>
+        </div>
+      </section>
     </div>
   );
 }
