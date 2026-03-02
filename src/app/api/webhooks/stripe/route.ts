@@ -2,19 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import * as Sentry from '@sentry/nextjs';
 import { fetchWithTimeout } from '@/lib/api-utils';
-import { formatPrice } from '@/lib/utils';
+import { formatPrice, escapeHtml } from '@/lib/utils';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { getStripe } from '@/lib/stripe';
-
-// HTML-escape function to prevent XSS in email templates
-function escapeHtml(text: string): string {
-  return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-}
 
 interface OrderItem {
   name: string;

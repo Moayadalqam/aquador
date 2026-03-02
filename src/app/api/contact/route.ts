@@ -3,6 +3,7 @@ import { z } from 'zod';
 import * as Sentry from '@sentry/nextjs';
 import { fetchWithTimeout, formatApiError } from '@/lib/api-utils';
 import { checkRateLimit } from '@/lib/rate-limit';
+import { escapeHtml } from '@/lib/utils';
 
 const contactSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -12,16 +13,6 @@ const contactSchema = z.object({
   message: z.string().min(10, 'Message must be at least 10 characters'),
   honeypot: z.string().max(0).optional(), // Spam protection - must be empty
 });
-
-// HTML-escape function to prevent XSS in email templates
-function escapeHtml(text: string): string {
-  return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-}
 
 export async function POST(request: NextRequest) {
   // Check rate limit
