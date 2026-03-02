@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Lock, Loader2 } from 'lucide-react';
 import { track } from '@vercel/analytics';
@@ -10,10 +10,30 @@ export default function CheckoutButton() {
   const { cart } = useCart();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, []);
 
   const handleCheckout = async () => {
+    if (isProcessing) return;
+
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    setIsProcessing(true);
     setIsLoading(true);
     setError(null);
+
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
 
     // Track checkout started
     const totalValue = cart.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -29,6 +49,7 @@ export default function CheckoutButton() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ items: cart.items }),
+        signal: abortController.signal,
       });
 
       const data = await response.json();
@@ -42,9 +63,15 @@ export default function CheckoutButton() {
         window.location.href = data.url;
       }
     } catch (err) {
+      if (err instanceof Error && err.name === 'AbortError') {
+        return;
+      }
       console.error('Checkout error:', err);
       setError(err instanceof Error ? err.message : 'Something went wrong');
+    } finally {
+      setIsProcessing(false);
       setIsLoading(false);
+      abortControllerRef.current = null;
     }
   };
 
@@ -52,7 +79,7 @@ export default function CheckoutButton() {
     <div className="space-y-2">
       <motion.button
         onClick={handleCheckout}
-        disabled={isLoading || cart.items.length === 0}
+        disabled={isLoading || isProcessing || cart.items.length === 0}
         whileHover={{ scale: isLoading ? 1 : 1.02 }}
         whileTap={{ scale: isLoading ? 1 : 0.98 }}
         className="w-full py-4 bg-gold text-black font-semibold rounded-full flex items-center justify-center gap-2 hover:bg-gold-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
