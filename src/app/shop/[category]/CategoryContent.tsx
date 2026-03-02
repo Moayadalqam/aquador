@@ -7,7 +7,8 @@ import { useState, useCallback, useMemo } from 'react';
 import { SearchBar } from '@/components/search';
 import { PageHero } from '@/components/ui/Section';
 import { formatPrice } from '@/lib/utils';
-import type { Product, Category } from '@/types';
+import type { Product } from '@/lib/supabase/types';
+import type { Category } from '@/types';
 
 const FALLBACK_IMAGE = '/placeholder-product.svg';
 
@@ -135,16 +136,16 @@ export default function CategoryContent({ category, products }: CategoryContentP
                         src={product.image || FALLBACK_IMAGE}
                         alt={product.name}
                         fill
-                        className={`object-cover transition-transform duration-700 group-hover:scale-105 ${!product.inStock ? 'opacity-60' : ''}`}
+                        className={`object-cover transition-transform duration-700 group-hover:scale-105 ${!(product.in_stock ?? true) ? 'opacity-60' : ''}`}
                         sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                         onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_IMAGE; }}
                       />
-                      {product.salePrice && product.salePrice < product.price && product.inStock && (
+                      {product.sale_price && product.sale_price < product.price && (product.in_stock ?? true) && (
                         <span className="absolute top-3 left-3 bg-gold text-black text-[9px] uppercase tracking-wider px-2 py-1 font-medium">
                           Sale
                         </span>
                       )}
-                      {!product.inStock && (
+                      {!(product.in_stock ?? true) && (
                         <span className="absolute top-3 left-3 bg-gray-800 text-white text-[9px] uppercase tracking-wider px-2 py-1 font-medium">
                           Coming Soon
                         </span>
@@ -163,9 +164,9 @@ export default function CategoryContent({ category, products }: CategoryContentP
                         <div className="flex items-baseline justify-between">
                           <div className="flex items-baseline gap-1.5">
                             <span className="text-base font-playfair text-gray-900">
-                              {formatPrice(product.salePrice || product.price)}
+                              {formatPrice(product.sale_price || product.price)}
                             </span>
-                            {product.salePrice && product.salePrice < product.price && (
+                            {product.sale_price && product.sale_price < product.price && (
                               <span className="text-xs text-gray-400 line-through">
                                 {formatPrice(product.price)}
                               </span>

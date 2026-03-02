@@ -91,30 +91,13 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
     ],
   };
 
-  // Transform Supabase products to match the expected interface
-  const transformedProducts = products.map(p => ({
-    id: p.id,
-    name: p.name,
-    description: p.description,
-    price: Number(p.price),
-    salePrice: p.sale_price ? Number(p.sale_price) : undefined,
-    category: p.category,
-    productType: p.product_type,
-    size: p.size,
-    image: p.image,
-    inStock: p.in_stock ?? true,
-    brand: p.brand ?? undefined,
-    gender: p.gender ?? undefined,
-    tags: p.tags ?? undefined,
-  }));
-
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema).replace(/</g, '\\u003c') }}
       />
-      <CategoryContent category={category} products={transformedProducts} />
+      <CategoryContent category={category} products={products} />
     </>
   );
 }
