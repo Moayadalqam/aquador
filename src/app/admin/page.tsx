@@ -40,47 +40,50 @@ export default function AdminDashboard() {
 
     const fetchData = async () => {
       try {
-        // Fetch product stats
+        // Consolidated queries (5 total instead of 10)
         const [
-          { count: totalProducts },
-          { count: inStockProducts },
-          { count: outOfStockProducts },
-          { data: categories },
-          { data: products },
-          { count: totalOrders },
-          { data: revenueData },
+          { data: allProducts },
+          { data: recentProductsData },
+          { data: allOrders },
           { count: totalCustomers },
           { data: visitors },
-          { data: latestOrders },
         ] = await Promise.all([
-          supabase.from('products').select('*', { count: 'exact', head: true }),
-          supabase.from('products').select('*', { count: 'exact', head: true }).eq('in_stock', true),
-          supabase.from('products').select('*', { count: 'exact', head: true }).eq('in_stock', false),
-          supabase.from('products').select('category').limit(1000),
+          // Query 1: Get all products for stats aggregation
+          supabase.from('products').select('in_stock, category'),
+          // Query 2: Recent products for display
           supabase.from('products').select('*').order('created_at', { ascending: false }).limit(5),
-          supabase.from('orders').select('*', { count: 'exact', head: true }),
-          supabase.from('orders').select('total'),
+          // Query 3: Get all orders for stats and recent orders
+          supabase.from('orders').select('*').order('created_at', { ascending: false }),
+          // Query 4: Customer count
           supabase.from('customers').select('*', { count: 'exact', head: true }),
+          // Query 5: Live visitors
           supabase.from('site_visitors').select('id').gte('last_seen', new Date(Date.now() - 2 * 60 * 1000).toISOString()),
-          supabase.from('orders').select('*').order('created_at', { ascending: false }).limit(5),
         ]);
 
-        const categoryCount = new Set(categories?.map((p: { category: string }) => p.category)).size;
-        const totalRevenue = (revenueData || []).reduce((sum: number, o: { total: number }) => sum + o.total, 0);
+        // Derive product stats from single query
+        const totalProducts = allProducts?.length || 0;
+        const inStockProducts = allProducts?.filter(p => p.in_stock).length || 0;
+        const outOfStockProducts = totalProducts - inStockProducts;
+        const categoryCount = new Set(allProducts?.map(p => p.category)).size;
+
+        // Derive order stats from single query
+        const totalOrders = allOrders?.length || 0;
+        const totalRevenue = (allOrders || []).reduce((sum, o) => sum + o.total, 0);
+        const latestOrders = (allOrders || []).slice(0, 5);
 
         setStats({
-          totalProducts: totalProducts || 0,
-          inStockProducts: inStockProducts || 0,
-          outOfStockProducts: outOfStockProducts || 0,
+          totalProducts,
+          inStockProducts,
+          outOfStockProducts,
           categoryCount,
-          totalOrders: totalOrders || 0,
+          totalOrders,
           totalRevenue,
           totalCustomers: totalCustomers || 0,
           liveVisitors: visitors?.length || 0,
         });
 
-        setRecentProducts((products || []) as Product[]);
-        setRecentOrders((latestOrders || []) as Order[]);
+        setRecentProducts((recentProductsData || []) as Product[]);
+        setRecentOrders(latestOrders as Order[]);
       } catch (e) {
         Sentry.addBreadcrumb({
           category: 'admin-dashboard',
