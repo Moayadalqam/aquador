@@ -2,29 +2,64 @@
  * @jest-environment node
  */
 import { NextRequest } from 'next/server';
+import Stripe from 'stripe';
 
-// Mock Stripe before importing the route
-jest.mock('stripe', () => {
-  return jest.fn().mockImplementation(() => ({
-    checkout: {
-      sessions: {
-        create: jest.fn().mockResolvedValue({
-          id: 'cs_test_123',
-          url: 'https://checkout.stripe.com/pay/cs_test_123',
-        }),
-      },
-    },
-  }));
-});
+// Mock dependencies before imports
+const mockGetStripe = jest.fn();
+const mockValidateCartPrices = jest.fn();
+const mockCheckRateLimit = jest.fn();
 
-// Mock environment variable
+// Mock Stripe
+jest.mock('@/lib/stripe', () => ({
+  getStripe: (...args: any[]) => mockGetStripe(...args),
+}));
+
+// Mock cart validation
+jest.mock('@/lib/validation/cart', () => ({
+  cartItemSchema: require('zod').z.object({
+    productId: require('zod').z.string(),
+    variantId: require('zod').z.string(),
+    name: require('zod').z.string(),
+    price: require('zod').z.number(),
+    quantity: require('zod').z.number(),
+    productType: require('zod').z.string().optional(),
+    size: require('zod').z.string().optional(),
+    image: require('zod').z.string().optional(),
+  }),
+  validateCartPrices: (...args: any[]) => mockValidateCartPrices(...args),
+}));
+
+// Mock rate limiter
+jest.mock('@/lib/rate-limit', () => ({
+  checkRateLimit: (...args: any[]) => mockCheckRateLimit(...args),
+}));
+
+// Mock Sentry
+jest.mock('@sentry/nextjs', () => ({
+  captureException: jest.fn(),
+  captureMessage: jest.fn(),
+}));
+
+// Mock currency functions
+jest.mock('@/lib/currency', () => ({
+  CURRENCY_CODE: 'eur',
+  toCents: (amount: number) => Math.round(amount * 100),
+}));
+
+// Mock constants
+jest.mock('@/lib/constants', () => ({
+  getProductTypeLabel: (type: string) => type === 'perfume' ? 'Perfume' : 'Product',
+  SHIPPING_COUNTRIES: ['CY', 'GR', 'UK'],
+}));
+
+// Store original env
 const originalEnv = process.env;
 
 beforeAll(() => {
   process.env = {
     ...originalEnv,
     STRIPE_SECRET_KEY: 'sk_test_123',
-    NEXT_PUBLIC_APP_URL: 'http://localhost:3000',
+    NEXT_PUBLIC_APP_URL: 'https://aquadorcy.com',
   };
 });
 
@@ -32,12 +67,12 @@ afterAll(() => {
   process.env = originalEnv;
 });
 
-// Import after mocking
+// Import after all mocks
 import { POST } from '../route';
 
-describe('Checkout API Route', () => {
-  const createMockRequest = (body: object) => {
-    return new NextRequest('http://localhost:3000/api/checkout', {
+describe('POST /api/checkout', () => {
+  const createMockRequest = (body: any) => {
+    return new NextRequest('https://aquadorcy.com/api/checkout', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -46,83 +81,285 @@ describe('Checkout API Route', () => {
     });
   };
 
-  const validCartItems = [
-    {
-      productId: 'test-product',
-      variantId: 'test-variant',
-      quantity: 1,
-      name: 'Test Perfume',
-      image: 'https://example.com/image.jpg',
-      price: 29.99,
-      size: '50ml',
-      productType: 'perfume',
-    },
-  ];
+  const mockCheckoutSession: Stripe.Checkout.Session = {
+    id: 'cs_test_checkout_session',
+    object: 'checkout.session',
+    url: 'https://checkout.stripe.com/pay/cs_test_checkout_session',
+    amount_total: 5999,
+    currency: 'eur',
+    // Required Stripe fields
+    livemode: false,
+    status: 'open',
+    payment_status: 'unpaid',
+    mode: 'payment',
+    customer_details: null,
+    created: Math.floor(Date.now() / 1000),
+    expires_at: Math.floor(Date.now() / 1000) + 3600,
+  } as unknown as Stripe.Checkout.Session;
 
-  describe('POST /api/checkout', () => {
-    it('should create a checkout session for valid cart', async () => {
-      const request = createMockRequest({ items: validCartItems });
+  beforeEach(() => {
+    jest.clearAllMocks();
 
+    // Default: no rate limit
+    mockCheckRateLimit.mockResolvedValue(null);
+
+    // Default: prices are valid
+    mockValidateCartPrices.mockResolvedValue({ valid: true, errors: [] });
+
+    // Default: Stripe creates session successfully
+    mockGetStripe.mockReturnValue({
+      checkout: {
+        sessions: {
+          create: jest.fn().mockResolvedValue(mockCheckoutSession),
+        },
+      },
+    });
+  });
+
+  describe('Happy Path', () => {
+    it('should create Stripe session for valid cart checkout', async () => {
+      const validCart = {
+        items: [
+          {
+            productId: 'prod_1',
+            variantId: 'var_1',
+            name: 'Luxury Perfume',
+            price: 59.99,
+            quantity: 1,
+            productType: 'perfume',
+            size: '50ml',
+            image: 'https://example.com/image.jpg',
+          },
+        ],
+      };
+
+      const request = createMockRequest(validCart);
       const response = await POST(request);
       const data = await response.json();
 
       expect(response.status).toBe(200);
-      expect(data).toHaveProperty('sessionId');
-      expect(data).toHaveProperty('url');
+      expect(data.sessionId).toBe('cs_test_checkout_session');
+      expect(data.url).toBe('https://checkout.stripe.com/pay/cs_test_checkout_session');
+      expect(mockValidateCartPrices).toHaveBeenCalledWith(validCart.items);
     });
 
+    it('should include correct line items in Stripe session', async () => {
+      const mockCreate = jest.fn().mockResolvedValue(mockCheckoutSession);
+      mockGetStripe.mockReturnValue({
+        checkout: {
+          sessions: {
+            create: mockCreate,
+          },
+        },
+      });
+
+      const validCart = {
+        items: [
+          {
+            productId: 'prod_1',
+            variantId: 'var_1',
+            name: 'Rose Perfume',
+            price: 45.50,
+            quantity: 2,
+            productType: 'perfume',
+            size: '100ml',
+          },
+        ],
+      };
+
+      const request = createMockRequest(validCart);
+      await POST(request);
+
+      expect(mockCreate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          mode: 'payment',
+          line_items: [
+            {
+              price_data: {
+                currency: 'eur',
+                product_data: {
+                  name: 'Rose Perfume',
+                  description: 'Perfume - 100ml',
+                  images: undefined,
+                },
+                unit_amount: 4550,
+              },
+              quantity: 2,
+            },
+          ],
+        })
+      );
+    });
+
+    it('should store minimal metadata for webhook reconstruction', async () => {
+      const mockCreate = jest.fn().mockResolvedValue(mockCheckoutSession);
+      mockGetStripe.mockReturnValue({
+        checkout: {
+          sessions: {
+            create: mockCreate,
+          },
+        },
+      });
+
+      const validCart = {
+        items: [
+          {
+            productId: 'prod_1',
+            variantId: 'var_1',
+            name: 'Test Perfume',
+            price: 29.99,
+            quantity: 1,
+          },
+        ],
+      };
+
+      const request = createMockRequest(validCart);
+      await POST(request);
+
+      expect(mockCreate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          metadata: {
+            itemCount: '1',
+            items: JSON.stringify([{ pid: 'prod_1', vid: 'var_1', qty: 1 }]),
+          },
+        })
+      );
+    });
+
+    it('should include shipping configuration', async () => {
+      const mockCreate = jest.fn().mockResolvedValue(mockCheckoutSession);
+      mockGetStripe.mockReturnValue({
+        checkout: {
+          sessions: {
+            create: mockCreate,
+          },
+        },
+      });
+
+      const validCart = {
+        items: [
+          {
+            productId: 'prod_1',
+            variantId: 'var_1',
+            name: 'Test',
+            price: 29.99,
+            quantity: 1,
+          },
+        ],
+      };
+
+      const request = createMockRequest(validCart);
+      await POST(request);
+
+      expect(mockCreate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          shipping_address_collection: {
+            allowed_countries: ['CY', 'GR', 'UK'],
+          },
+          shipping_options: expect.arrayContaining([
+            expect.objectContaining({
+              shipping_rate_data: expect.objectContaining({
+                display_name: 'Free shipping',
+              }),
+            }),
+          ]),
+        })
+      );
+    });
+  });
+
+  describe('Validation', () => {
     it('should return 400 for empty cart', async () => {
       const request = createMockRequest({ items: [] });
-
       const response = await POST(request);
       const data = await response.json();
 
       expect(response.status).toBe(400);
-      expect(data.error).toBe('Cart is empty');
+      expect(data.error).toContain('Cart is empty');
     });
 
-    it('should return 400 for missing items', async () => {
+    it('should return 400 for missing items field', async () => {
       const request = createMockRequest({});
-
       const response = await POST(request);
       const data = await response.json();
 
       expect(response.status).toBe(400);
-      expect(data.error).toBe('Cart is empty');
+      expect(data.error).toBeDefined();
     });
 
-    it('should return 400 for non-array items', async () => {
-      const request = createMockRequest({ items: 'not an array' });
+    it('should return 400 when price validation fails', async () => {
+      mockValidateCartPrices.mockResolvedValue({
+        valid: false,
+        errors: [{ productId: 'prod_1', expectedPrice: 59.99, receivedPrice: 49.99 }],
+      });
 
+      const validCart = {
+        items: [
+          {
+            productId: 'prod_1',
+            variantId: 'var_1',
+            name: 'Test',
+            price: 49.99, // Client sent wrong price
+            quantity: 1,
+          },
+        ],
+      };
+
+      const request = createMockRequest(validCart);
       const response = await POST(request);
       const data = await response.json();
 
       expect(response.status).toBe(400);
-      expect(data.error).toBe('Cart is empty');
+      expect(data.error).toBe('Price mismatch detected');
+      expect(data.details).toHaveLength(1);
     });
+  });
 
-    it('should handle multiple items in cart', async () => {
-      const multipleItems = [
-        ...validCartItems,
-        {
-          productId: 'test-product-2',
-          variantId: 'test-variant-2',
-          quantity: 2,
-          name: 'Test Perfume 2',
-          image: 'https://example.com/image2.jpg',
-          price: 39.99,
-          size: '100ml',
-          productType: 'perfume',
+  describe('Rate Limiting', () => {
+    it('should return rate limit response if limit exceeded', async () => {
+      const rateLimitResponse = new Response(
+        JSON.stringify({ error: 'Too many requests' }),
+        { status: 429 }
+      );
+      mockCheckRateLimit.mockResolvedValue(rateLimitResponse);
+
+      const request = createMockRequest({
+        items: [{ productId: 'prod_1', variantId: 'var_1', name: 'Test', price: 29.99, quantity: 1 }],
+      });
+
+      const response = await POST(request);
+      expect(response.status).toBe(429);
+    });
+  });
+
+  describe('Stripe Errors', () => {
+    it('should return 500 when Stripe session creation fails', async () => {
+      mockGetStripe.mockReturnValue({
+        checkout: {
+          sessions: {
+            create: jest.fn().mockRejectedValue(new Error('Stripe API error')),
+          },
         },
-      ];
+      });
 
-      const request = createMockRequest({ items: multipleItems });
+      const validCart = {
+        items: [
+          {
+            productId: 'prod_1',
+            variantId: 'var_1',
+            name: 'Test',
+            price: 29.99,
+            quantity: 1,
+          },
+        ],
+      };
 
+      const request = createMockRequest(validCart);
       const response = await POST(request);
       const data = await response.json();
 
-      expect(response.status).toBe(200);
-      expect(data).toHaveProperty('sessionId');
+      expect(response.status).toBe(500);
+      expect(data.error).toContain('Failed to create checkout session');
     });
   });
 });
