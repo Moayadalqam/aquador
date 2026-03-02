@@ -161,9 +161,13 @@ describe('Stripe Webhook Handler', () => {
       }
       if (table === 'customers') {
         return {
-          select: mockSupabaseSelect,
-          insert: mockSupabaseInsert.mockResolvedValue({ data: null, error: null }),
-          update: mockSupabaseUpdate.mockResolvedValue({ data: null, error: null }),
+          select: jest.fn().mockReturnValue({
+            eq: jest.fn().mockReturnValue({
+              single: jest.fn().mockResolvedValue({ data: null, error: null }),
+            }),
+          }),
+          insert: jest.fn().mockResolvedValue({ data: null, error: null }),
+          update: jest.fn().mockResolvedValue({ data: null, error: null }),
         };
       }
       return {
@@ -335,6 +339,17 @@ describe('Stripe Webhook Handler', () => {
             }),
           };
         }
+        if (table === 'customers') {
+          return {
+            select: jest.fn().mockReturnValue({
+              eq: jest.fn().mockReturnValue({
+                single: jest.fn().mockResolvedValue({ data: null, error: null }),
+              }),
+            }),
+            insert: jest.fn().mockResolvedValue({ data: null, error: null }),
+            update: jest.fn().mockResolvedValue({ data: null, error: null }),
+          };
+        }
         return { select: mockSupabaseSelect, insert: mockSupabaseInsert, update: mockSupabaseUpdate };
       });
 
@@ -354,6 +369,17 @@ describe('Stripe Webhook Handler', () => {
                 error: null,
               }),
             }),
+          };
+        }
+        if (table === 'customers') {
+          return {
+            select: jest.fn().mockReturnValue({
+              eq: jest.fn().mockReturnValue({
+                single: jest.fn().mockResolvedValue({ data: null, error: null }),
+              }),
+            }),
+            insert: jest.fn().mockResolvedValue({ data: null, error: null }),
+            update: jest.fn().mockResolvedValue({ data: null, error: null }),
           };
         }
         return { select: mockSupabaseSelect, insert: mockSupabaseInsert, update: mockSupabaseUpdate };
