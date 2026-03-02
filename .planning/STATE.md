@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-03-02)
 
 **Core value:** A customer completes a purchase and knows it worked — order details on screen, confirmation email received, store notified. No silent failures.
-**Current focus:** v1.0 milestone complete — ready for deployment
+**Current focus:** v1.1 milestone — security audit remediation
 
 ## Current Position
 
-Phase: All v1.0 phases complete (1-4)
-Plan: All plans complete (7/7)
-Status: Milestone v1.0 shipped
-Last activity: 2026-03-02 — v1.0 milestone archived
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-02 — Milestone v1.1 started
 
 Progress: [##########] 100% (v1.0 complete)
 

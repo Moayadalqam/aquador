@@ -37,7 +37,16 @@ A customer completes a purchase and knows it worked — they see their order det
 
 ### Active
 
-(None — next milestone requirements TBD)
+## Current Milestone: v1.1 Security Audit Remediation
+
+**Goal:** Eliminate critical and high-priority security vulnerabilities, then optimize performance and polish the application.
+
+**Target features:**
+- Row Level Security implementation across all Supabase tables
+- Fix SQL injection and authentication bypass vulnerabilities
+- Comprehensive API testing coverage (especially Stripe webhook)
+- Performance optimization (database indexes, caching, bundle size)
+- Production hardening (CSP, error boundaries, monitoring)
 
 ### Out of Scope
 
@@ -92,4 +101,4 @@ Both converge at `/api/webhooks/stripe` which persists orders and sends emails.
 | Webhook metadata reconstruction | Parse shortened format and rebuild from product catalog | ✓ Good |
 
 ---
-*Last updated: 2026-03-02 after v1.0 milestone*
+*Last updated: 2026-03-02 after v1.1 milestone start*
