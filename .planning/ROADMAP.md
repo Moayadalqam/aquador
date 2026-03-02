@@ -42,11 +42,11 @@ Plans:
   2. Cart checkout success page displays purchased items, total, and order number
   3. Custom perfume success page displays perfume composition, size, and order number
   4. Customer receives exactly one confirmation email even if Stripe retries webhook
-**Plans**: TBD
+**Plans**: 2 plans in 1 wave
 
 Plans:
-- [ ] 02-01: Fix custom perfume success page detection and enhance both success pages
-- [ ] 02-02: Idempotent email sending in webhook
+- [ ] 02-01-PLAN.md — Create session details API and fix both success pages
+- [ ] 02-02-PLAN.md — Idempotent email sending in webhook
 
 ### Phase 3: Admin Security & UX Polish
 **Goal**: Secure admin search and standardize all shipping messaging
