@@ -3,7 +3,7 @@
 ## Milestones
 
 - ✅ **v1.0 Order/Payment System Fix** - Phases 1-4 (shipped 2026-03-01)
-- 🚧 **v1.1 Security Audit Remediation** - Phases 8-9 (in progress)
+- ✅ **v1.1 Security Audit Remediation** - Phases 8-9 (code complete 2026-03-03, pending Supabase migration deploy)
 
 ## Phases
 
@@ -43,7 +43,7 @@ Plans:
 
 </details>
 
-### 🚧 v1.1 Security Audit Remediation (In Progress)
+### ✅ v1.1 Security Audit Remediation (Code Complete)
 
 **Milestone Goal:** Eliminate all CRITICAL and HIGH security vulnerabilities, optimize database performance, and prepare for production scale.
 
@@ -101,12 +101,12 @@ Plans:
 - Wave 1 (parallel): All plans — Database indexes, blog ISR, cart hydration, query optimization, cleanup, accessibility
 
 Plans:
-- [ ] 09-01-PLAN.md — Add database indexes for <200ms query performance
-- [ ] 09-02-PLAN.md — Blog ISR optimization + admin query consolidation
-- [ ] 09-03-PLAN.md — Fix cart hydration race + CartIcon test
-- [ ] 09-04-PLAN.md — Optimize product queries (N+1 + column selection)
-- [ ] 09-05-PLAN.md — Remove Three.js + dead code + category consolidation
-- [ ] 09-06-PLAN.md — Accessibility improvements + magic number extraction
+- [x] 09-01-PLAN.md — Add database indexes for <200ms query performance
+- [x] 09-02-PLAN.md — Blog ISR optimization + admin query consolidation
+- [x] 09-03-PLAN.md — Fix cart hydration race + CartIcon test
+- [x] 09-04-PLAN.md — Optimize product queries (N+1 + column selection)
+- [x] 09-05-PLAN.md — Remove Three.js + dead code + category consolidation
+- [x] 09-06-PLAN.md — Accessibility improvements + magic number extraction
 
 ## Progress
 
@@ -120,7 +120,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 8 → 9
 | 3. Order Confirmation | v1.0 | 2/2 | Complete | 2026-03-01 |
 | 4. Security Hardening | v1.0 | 1/1 | Complete | 2026-03-01 |
 | 8. Security & Data Integrity | v1.1 | 9/9 | Complete | 2026-03-03 |
-| 9. Performance & Polish | v1.1 | 0/6 | Not started | - |
+| 9. Performance & Polish | v1.1 | 6/6 | Complete | 2026-03-03 |
 
 ---
-*Last updated: 2026-03-03 — Phase 9 planned (6 plans, 1 wave, all parallel)*
+*Last updated: 2026-03-03 — Phase 9 complete (6/6 plans, 22 commits). v1.1 milestone code complete.*
