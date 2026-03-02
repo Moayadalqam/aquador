@@ -7,17 +7,17 @@
 
 ### Security
 
-- [ ] **SEC-01**: Checkout API validates item prices server-side against product catalog before creating Stripe session
-- [ ] **SEC-02**: Checkout API validates cart items with Zod schema (types, bounds, required fields)
+- [x] **SEC-01**: Checkout API validates item prices server-side against product catalog before creating Stripe session ✓
+- [x] **SEC-02**: Checkout API validates cart items with Zod schema (types, bounds, required fields) ✓
 - [ ] **SEC-03**: Admin order search uses parameterized filtering instead of string interpolation
-- [ ] **SEC-04**: Stripe metadata stays under 500-char limit by storing only essential item data (product IDs + quantities)
+- [x] **SEC-04**: Stripe metadata stays under 500-char limit by storing only essential item data (product IDs + quantities) ✓
 
 ### Payment Flow
 
 - [ ] **PAY-01**: Custom perfume success page correctly detects successful payment via `session_id` parameter
 - [ ] **PAY-02**: Both success pages fetch and display order details (items, total, order number) from Stripe session
 - [ ] **PAY-03**: Webhook checks if order already exists before sending emails (idempotent email sending)
-- [ ] **PAY-04**: Checkout button prevents duplicate session creation during redirect
+- [x] **PAY-04**: Checkout button prevents duplicate session creation during redirect ✓
 
 ### UX Consistency
 
@@ -57,14 +57,14 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SEC-01 | Phase 1 | Pending |
-| SEC-02 | Phase 1 | Pending |
+| SEC-01 | Phase 1 | ✓ Done |
+| SEC-02 | Phase 1 | ✓ Done |
 | SEC-03 | Phase 3 | Pending |
-| SEC-04 | Phase 1 | Pending |
+| SEC-04 | Phase 1 | ✓ Done |
 | PAY-01 | Phase 2 | Pending |
 | PAY-02 | Phase 2 | Pending |
 | PAY-03 | Phase 2 | Pending |
-| PAY-04 | Phase 1 | Pending |
+| PAY-04 | Phase 1 | ✓ Done |
 | UX-01 | Phase 3 | Pending |
 | UX-02 | Phase 3 | Pending |
 | CQ-01 | Phase 3 | Pending |
