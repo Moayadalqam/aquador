@@ -453,9 +453,9 @@ export async function POST(request: NextRequest) {
       }
 
       // Persist order + customer to Supabase
-      await persistOrder(session, items, shippingAddress, orderTags);
+      const { isNewOrder } = await persistOrder(session, items, shippingAddress, orderTags);
 
-      // Send confirmation email to customer + notification to store
+      // Send confirmation email to customer + notification to store (only for new orders)
       if (customerEmail) {
         const orderDetails = {
           sessionId: session.id,
@@ -464,10 +464,16 @@ export async function POST(request: NextRequest) {
           currency: session.currency || 'eur',
           shippingAddress,
         };
-        await Promise.all([
-          sendOrderConfirmationEmail(customerEmail, orderDetails),
-          sendStoreOrderNotification(customerEmail, orderDetails),
-        ]);
+
+        if (isNewOrder) {
+          await Promise.all([
+            sendOrderConfirmationEmail(customerEmail, orderDetails),
+            sendStoreOrderNotification(customerEmail, orderDetails),
+          ]);
+          console.log('Order confirmation emails sent for new order:', session.id);
+        } else {
+          console.log('Duplicate webhook - skipping email sending for session:', session.id);
+        }
       }
 
       break;
