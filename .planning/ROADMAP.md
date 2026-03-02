@@ -27,11 +27,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. Checkout API rejects malformed cart items (Zod validation catches bad data)
   3. Large carts (10+ items) create Stripe sessions without metadata overflow errors
   4. Double-clicking checkout button does not create duplicate Stripe sessions
-**Plans**: TBD
+**Plans**: 2 plans in 1 wave
 
 Plans:
-- [ ] 01-01: Server-side price validation and Zod schema validation
-- [ ] 01-02: Metadata optimization and checkout button protection
+- [ ] 01-01-PLAN.md — Server-side price validation and Zod schema validation
+- [ ] 01-02-PLAN.md — Metadata optimization and checkout button protection
 
 ### Phase 2: Success Pages & Email Reliability
 **Goal**: Customers see order details after payment and receive exactly one confirmation email
