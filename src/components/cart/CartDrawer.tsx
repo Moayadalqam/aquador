@@ -92,7 +92,7 @@ export default function CartDrawer() {
 
                 {/* Shipping Note */}
                 <p className="text-xs text-gray-500 text-center">
-                  Shipping calculated at checkout. Free delivery on orders over €100.
+                  Free shipping on all orders. Delivery within 3-7 business days.
                 </p>
 
                 {/* Checkout Button */}
