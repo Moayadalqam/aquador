@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import type Stripe from 'stripe';
 import * as Sentry from '@sentry/nextjs';
+import { z } from 'zod';
 import type { CartItem } from '@/types/cart';
 import { CURRENCY_CODE, toCents } from '@/lib/currency';
 import { formatApiError } from '@/lib/api-utils';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { getProductTypeLabel } from '@/lib/constants';
 import { getStripe } from '@/lib/stripe';
+import { cartItemSchema, validateCartPrices } from '@/lib/validation/cart';
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
@@ -23,6 +25,27 @@ export async function POST(request: NextRequest) {
     if (!items || !Array.isArray(items) || items.length === 0) {
       return NextResponse.json(
         { error: 'Cart is empty' },
+        { status: 400 }
+      );
+    }
+
+    // SECURITY: Validate cart items and verify prices against server-side catalog
+    // to prevent client-side price manipulation (SEC-01, SEC-02)
+
+    // Validate cart items schema
+    const validationResult = z.array(cartItemSchema).safeParse(items);
+    if (!validationResult.success) {
+      return NextResponse.json(
+        { error: 'Invalid cart data', details: validationResult.error.errors },
+        { status: 400 }
+      );
+    }
+
+    // Validate prices against catalog
+    const priceValidation = validateCartPrices(items);
+    if (!priceValidation.valid) {
+      return NextResponse.json(
+        { error: 'Price mismatch detected', details: priceValidation.errors },
         { status: 400 }
       );
     }
