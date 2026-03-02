@@ -21,11 +21,4 @@ export function getStripe(): Stripe {
   return stripeInstance;
 }
 
-// Legacy export for backward compatibility (lazy getter)
-export const stripe = {
-  get instance(): Stripe {
-    return getStripe();
-  },
-};
-
 export const STRIPE_PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
