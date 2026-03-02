@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import type { CartItem } from '@/types/cart';
 import { getProductsByIds } from '@/lib/supabase/product-service';
+import { MIN_QUANTITY, MAX_QUANTITY } from '@/lib/constants';
 
 /**
  * Zod schema for CartItem validation
@@ -18,8 +19,8 @@ export const cartItemSchema = z.object({
     ),
   quantity: z.number()
     .int('Quantity must be an integer')
-    .min(1, 'Quantity must be at least 1')
-    .max(100, 'Quantity cannot exceed 100'),
+    .min(MIN_QUANTITY, `Quantity must be at least ${MIN_QUANTITY}`)
+    .max(MAX_QUANTITY, `Quantity cannot exceed ${MAX_QUANTITY}`),
   name: z.string()
     .min(1, 'Product name is required')
     .max(200, 'Product name too long'),

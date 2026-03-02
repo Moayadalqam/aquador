@@ -5,6 +5,7 @@ import { z } from 'zod';
 import * as Sentry from '@sentry/nextjs';
 import type { Cart, CartItem, CartAction, CartContextType } from '@/types/cart';
 import { calculateSubtotal } from '@/lib/currency';
+import { CART_DEBOUNCE_MS } from '@/lib/constants';
 
 const CART_STORAGE_KEY = 'aquador_cart';
 
@@ -84,8 +85,6 @@ function cartReducer(state: Cart, action: CartAction): Cart {
 
 const CartContext = createContext<CartContextType | null>(null);
 
-const PERSIST_DEBOUNCE_MS = 500;
-
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, dispatch] = useReducer(cartReducer, initialCart, (init) => {
     // Only hydrate from localStorage on client side during initialization
@@ -156,7 +155,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
           data: { error }
         });
       }
-    }, PERSIST_DEBOUNCE_MS);
+    }, CART_DEBOUNCE_MS);
 
     return () => {
       if (persistTimeoutRef.current) {

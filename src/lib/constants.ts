@@ -26,3 +26,11 @@ export function getProductTypeLabel(type: string): string {
 export const SHIPPING_COUNTRIES = [
   'CY', 'GR', 'GB', 'DE', 'FR', 'IT', 'ES', 'NL', 'BE', 'AT',
 ] as const;
+
+/**
+ * Cart configuration constants
+ */
+export const CART_DEBOUNCE_MS = 500;
+export const MIN_QUANTITY = 1;
+export const MAX_QUANTITY = 99;
+export const MAX_CART_ITEMS = 50;
