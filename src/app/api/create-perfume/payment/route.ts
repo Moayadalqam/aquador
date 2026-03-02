@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
       success_url: `${BASE_URL}/create-perfume/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${BASE_URL}/create-perfume`,
       shipping_address_collection: {
-        allowed_countries: SHIPPING_COUNTRIES,
+        allowed_countries: [...SHIPPING_COUNTRIES],
       },
       shipping_options: [
         {

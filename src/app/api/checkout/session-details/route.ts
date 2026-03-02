@@ -3,7 +3,7 @@ import * as Sentry from '@sentry/nextjs';
 import { formatApiError } from '@/lib/api-utils';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { getStripe } from '@/lib/stripe';
-import { getProductById } from '@/lib/product-service';
+import { getProductById } from '@/lib/supabase/product-service';
 
 interface OrderItem {
   name: string;
@@ -38,7 +38,7 @@ interface SessionDetailsResponse {
 
 export async function GET(request: NextRequest) {
   // Check rate limit
-  const rateLimitResponse = await checkRateLimit(request, 'session-details');
+  const rateLimitResponse = await checkRateLimit(request, 'checkout');
   if (rateLimitResponse) return rateLimitResponse;
 
   try {
@@ -95,12 +95,12 @@ export async function GET(request: NextRequest) {
         }>;
 
         for (const shortItem of shortItems) {
-          const product = getProductById(shortItem.pid);
+          const product = await getProductById(shortItem.pid);
           if (product) {
             items.push({
               name: product.name,
               quantity: shortItem.qty,
-              price: product.salePrice || product.price,
+              price: product.sale_price || product.price,
               size: product.size,
             });
           }

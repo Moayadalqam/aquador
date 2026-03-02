@@ -9,17 +9,6 @@ import { getProductTypeLabel, SHIPPING_COUNTRIES } from '@/lib/constants';
 import { getStripe } from '@/lib/stripe';
 import { cartItemSchema, validateCartPrices } from '@/lib/validation/cart';
 
-const cartItemSchema = z.object({
-  productId: z.string(),
-  variantId: z.string().optional(),
-  name: z.string().min(1),
-  price: z.number().positive(),
-  quantity: z.number().int().positive(),
-  image: z.string().optional(),
-  size: z.string().optional(),
-  productType: z.string().optional(),
-});
-
 const checkoutSchema = z.object({
   items: z.array(cartItemSchema).min(1, 'Cart is empty'),
 });
@@ -43,20 +32,8 @@ export async function POST(request: NextRequest) {
     }
     const { items } = result.data;
 
-    // SECURITY: Validate cart items and verify prices against server-side catalog
-    // to prevent client-side price manipulation (SEC-01, SEC-02)
-
-    // Validate cart items schema
-    const validationResult = z.array(cartItemSchema).safeParse(items);
-    if (!validationResult.success) {
-      return NextResponse.json(
-        { error: 'Invalid cart data', details: validationResult.error.errors },
-        { status: 400 }
-      );
-    }
-
-    // Validate prices against catalog
-    const priceValidation = validateCartPrices(items);
+    // SECURITY: Validate prices against server-side catalog
+    const priceValidation = await validateCartPrices(items);
     if (!priceValidation.valid) {
       return NextResponse.json(
         { error: 'Price mismatch detected', details: priceValidation.errors },
@@ -89,7 +66,7 @@ export async function POST(request: NextRequest) {
       success_url: `${BASE_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${BASE_URL}/checkout/cancel`,
       shipping_address_collection: {
-        allowed_countries: SHIPPING_COUNTRIES,
+        allowed_countries: [...SHIPPING_COUNTRIES],
       },
       shipping_options: [
         {
@@ -115,7 +92,7 @@ export async function POST(request: NextRequest) {
       ],
       // Store minimal metadata (Stripe 500-char limit per key)
       // pid=productId, vid=variantId, qty=quantity
-      // Webhook reconstructs full data from these identifiers (SEC-04)
+      // Webhook reconstructs full data from these identifiers
       metadata: {
         itemCount: items.length.toString(),
         items: JSON.stringify(items.map(i => ({

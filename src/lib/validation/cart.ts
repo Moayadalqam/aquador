@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import type { CartItem } from '@/types/cart';
-import type { ProductType, ProductSize } from '@/types/product';
-import { getProductById } from '@/lib/product-service';
+import { getProductById } from '@/lib/supabase/product-service';
 
 /**
  * Zod schema for CartItem validation
@@ -26,11 +25,11 @@ export const cartItemSchema = z.object({
     .max(200, 'Product name too long'),
   image: z.string().min(1, 'Product image is required'),
   price: z.number().positive('Price must be positive'),
-  size: z.enum(['10ml', '50ml', '100ml', '150ml'], {
-    errorMap: () => ({ message: 'Invalid product size' })
+  size: z.enum(['10ml', '50ml', '100ml', '150ml'] as const, {
+    message: 'Invalid product size',
   }),
-  productType: z.enum(['perfume', 'essence-oil', 'body-lotion'], {
-    errorMap: () => ({ message: 'Invalid product type' })
+  productType: z.enum(['perfume', 'essence-oil', 'body-lotion'] as const, {
+    message: 'Invalid product type',
   }),
 });
 
@@ -39,30 +38,16 @@ export const cartItemSchema = z.object({
  *
  * Security: Prevents client-side price manipulation by verifying each item's
  * price matches the catalog price (or sale price if available).
- *
- * @param items - Array of cart items to validate
- * @returns Validation result with errors if any items fail validation
- *
- * @example
- * const result = validateCartPrices(cartItems);
- * if (!result.valid) {
- *   return NextResponse.json(
- *     { error: 'Price mismatch', details: result.errors },
- *     { status: 400 }
- *   );
- * }
  */
-export function validateCartPrices(items: CartItem[]): {
+export async function validateCartPrices(items: CartItem[]): Promise<{
   valid: boolean;
   errors?: Array<{ productId: string; reason: string }>;
-} {
+}> {
   const errors: Array<{ productId: string; reason: string }> = [];
 
   for (const item of items) {
-    // Fetch product from server-side catalog
-    const product = getProductById(item.productId);
+    const product = await getProductById(item.productId);
 
-    // Product must exist in catalog
     if (!product) {
       errors.push({
         productId: item.productId,
@@ -72,7 +57,7 @@ export function validateCartPrices(items: CartItem[]): {
     }
 
     // Get the expected catalog price (sale price takes precedence)
-    const catalogPrice = product.salePrice ?? product.price;
+    const catalogPrice = product.sale_price ?? product.price;
 
     // Allow 1-cent tolerance for floating-point rounding errors
     const priceDifference = Math.abs(item.price - catalogPrice);
@@ -85,10 +70,10 @@ export function validateCartPrices(items: CartItem[]): {
     }
 
     // Verify product type matches
-    if (item.productType !== product.productType) {
+    if (item.productType !== product.product_type) {
       errors.push({
         productId: item.productId,
-        reason: `Product type mismatch: client sent "${item.productType}", catalog has "${product.productType}"`,
+        reason: `Product type mismatch: client sent "${item.productType}", catalog has "${product.product_type}"`,
       });
       continue;
     }
@@ -103,15 +88,9 @@ export function validateCartPrices(items: CartItem[]): {
     }
   }
 
-  // Return validation result
   if (errors.length > 0) {
-    return {
-      valid: false,
-      errors,
-    };
+    return { valid: false, errors };
   }
 
-  return {
-    valid: true,
-  };
+  return { valid: true };
 }

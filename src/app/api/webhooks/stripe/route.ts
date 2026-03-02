@@ -5,7 +5,7 @@ import { fetchWithTimeout } from '@/lib/api-utils';
 import { formatPrice, escapeHtml } from '@/lib/utils';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { getStripe } from '@/lib/stripe';
-import { getProductById } from '@/lib/product-service';
+import { getProductById } from '@/lib/supabase/product-service';
 
 interface OrderItem {
   name: string;
@@ -401,13 +401,13 @@ export async function POST(request: NextRequest) {
           }>;
 
           for (const shortItem of shortItems) {
-            const product = getProductById(shortItem.pid);
+            const product = await getProductById(shortItem.pid);
             if (product) {
               items.push({
                 name: product.name,
                 quantity: shortItem.qty,
-                price: product.salePrice || product.price,
-                productType: product.type,
+                price: product.sale_price || product.price,
+                productType: product.product_type,
               });
             }
           }
