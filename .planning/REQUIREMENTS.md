@@ -57,25 +57,25 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SEC-01 | — | Pending |
-| SEC-02 | — | Pending |
-| SEC-03 | — | Pending |
-| SEC-04 | — | Pending |
-| PAY-01 | — | Pending |
-| PAY-02 | — | Pending |
-| PAY-03 | — | Pending |
-| PAY-04 | — | Pending |
-| UX-01 | — | Pending |
-| UX-02 | — | Pending |
-| CQ-01 | — | Pending |
-| CQ-02 | — | Pending |
-| CQ-03 | — | Pending |
+| SEC-01 | Phase 1 | Pending |
+| SEC-02 | Phase 1 | Pending |
+| SEC-03 | Phase 3 | Pending |
+| SEC-04 | Phase 1 | Pending |
+| PAY-01 | Phase 2 | Pending |
+| PAY-02 | Phase 2 | Pending |
+| PAY-03 | Phase 2 | Pending |
+| PAY-04 | Phase 1 | Pending |
+| UX-01 | Phase 3 | Pending |
+| UX-02 | Phase 3 | Pending |
+| CQ-01 | Phase 3 | Pending |
+| CQ-02 | Phase 3 | Pending |
+| CQ-03 | Phase 3 | Pending |
 
 **Coverage:**
 - v1 requirements: 13 total
-- Mapped to phases: 0
-- Unmapped: 13 ⚠️
+- Mapped to phases: 13
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-03-02*
-*Last updated: 2026-03-02 after initial definition*
+*Last updated: 2026-03-02 after roadmap creation*
