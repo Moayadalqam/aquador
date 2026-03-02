@@ -62,11 +62,23 @@ Plans:
   4. Stripe webhook handles edge cases gracefully — duplicate events, malformed payloads, and failures do not crash or leak data
   5. Type system is unified — shop pages use consistent Supabase Product types, no legacy type confusion
 
-**Plans**: TBD
+**Plans**: 9 plans in 3 waves
+
+**Wave Structure:**
+- Wave 1 (parallel): Plans 01-04 — Database security, Sentry config, admin hardening, headers
+- Wave 2 (parallel): Plans 05-07 — Webhook tests, type unification, error boundaries
+- Wave 3 (parallel): Plans 08-09 — AI catalogue generation, API test expansion
 
 Plans:
-- [ ] 08-01: TBD
-- [ ] 08-02: TBD
+- [ ] 08-01-PLAN.md — Enable RLS on all Supabase tables with appropriate policies
+- [ ] 08-02-PLAN.md — Configure Sentry for GDPR compliance and optimize trace sampling
+- [ ] 08-03-PLAN.md — Fix SQL injection and open redirect in admin panel
+- [ ] 08-04-PLAN.md — Tighten CSP and add Permissions-Policy header
+- [ ] 08-05-PLAN.md — Create comprehensive Stripe webhook test suite (TDD)
+- [ ] 08-06-PLAN.md — Unify product type system across shop pages
+- [ ] 08-07-PLAN.md — Replace fake error boundary and add cart validation
+- [ ] 08-08-PLAN.md — Generate AI catalogue from Supabase at build time
+- [ ] 08-09-PLAN.md — Expand API test coverage to 8/14 routes
 
 #### Phase 9: Performance & Polish
 
@@ -100,8 +112,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 8 → 9
 | 2. Payment Processing | v1.0 | 2/2 | Complete | 2026-02-28 |
 | 3. Order Confirmation | v1.0 | 2/2 | Complete | 2026-03-01 |
 | 4. Security Hardening | v1.0 | 1/1 | Complete | 2026-03-01 |
-| 8. Security & Data Integrity | v1.1 | 0/TBD | Not started | - |
+| 8. Security & Data Integrity | v1.1 | 0/9 | Ready | - |
 | 9. Performance & Polish | v1.1 | 0/TBD | Not started | - |
 
 ---
-*Last updated: 2026-03-02 — v1.1 milestone roadmap created*
+*Last updated: 2026-03-02 — Phase 8 execution plans created (9 plans, 3 waves)*
