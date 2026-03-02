@@ -15,6 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Checkout Security & Validation** - Close critical security holes in payment flow ✓ (2026-03-02)
 - [x] **Phase 2: Success Pages & Email Reliability** - Fix broken confirmation experience ✓ (2026-03-02)
 - [x] **Phase 3: Admin Security & UX Polish** - Secure admin panel and standardize messaging ✓ (2026-03-02)
+- [ ] **Phase 4: Webhook Metadata Reconstruction** - Fix webhook to reconstruct full item data from shortened metadata keys (Gap Closure)
 
 ## Phase Details
 
@@ -63,13 +64,28 @@ Plans:
 - [x] 03-01-PLAN.md — Admin search security and code deduplication ✓
 - [x] 03-02-PLAN.md — Shipping messaging standardization ✓
 
+### Phase 4: Webhook Metadata Reconstruction
+**Goal**: Fix webhook handler to reconstruct full item data from shortened metadata keys, enabling correct order persistence and confirmation emails
+**Depends on**: Phase 1, Phase 2
+**Requirements**: PAY-02 (completing partial satisfaction)
+**Gap Closure**: Closes gaps from v1.0 audit — requirement PAY-02, integration Phase 1→2, flow Cart Checkout
+**Success Criteria** (what must be TRUE):
+  1. Webhook reconstructs full item data (name, quantity, price) from shortened metadata (pid, vid, qty)
+  2. Cart orders stored in Supabase contain correct product names and prices
+  3. Customer confirmation email displays correct item names, quantities, and prices
+  4. Store notification email displays correct order details
+
+Plans:
+- [ ] 04-01-PLAN.md — Webhook metadata reconstruction and email fix
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3
+Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Checkout Security & Validation | 2/2 | ✓ Complete | 2026-03-02 |
 | 2. Success Pages & Email Reliability | 2/2 | ✓ Complete | 2026-03-02 |
 | 3. Admin Security & UX Polish | 2/2 | ✓ Complete | 2026-03-02 |
+| 4. Webhook Metadata Reconstruction | 0/1 | Planned | — |
