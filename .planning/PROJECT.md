@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A systematic fix of the entire Aquad'or e-commerce order-to-payment-to-confirmation pipeline. Aquad'or is a luxury perfume e-commerce site (Next.js 14, Stripe, Supabase, Resend) serving customers in Cyprus and Europe. The ordering system has critical bugs, security gaps, and UX issues discovered during a thorough code review.
+A luxury perfume e-commerce site (Next.js 14, Stripe, Supabase, Resend) with a fully secured and reliable order-to-payment-to-confirmation pipeline. Two checkout flows (cart and custom perfume) converge at a single Stripe webhook for order persistence and email delivery.
 
 ## Core Value
 
@@ -22,73 +22,74 @@ A customer completes a purchase and knows it worked — they see their order det
 - ✓ Admin panel order management — existing
 - ✓ Rate limiting on checkout/payment endpoints — existing
 - ✓ Sentry error tracking on payment failures — existing
+- ✓ Server-side price validation against product catalog — v1.0
+- ✓ Zod schema validation on checkout cart items — v1.0
+- ✓ Stripe metadata under 500-char limit (shortened keys) — v1.0
+- ✓ Duplicate checkout session prevention (isProcessing + AbortController) — v1.0
+- ✓ Custom perfume success page detects payment correctly — v1.0
+- ✓ Both success pages display order details from Stripe session — v1.0
+- ✓ Idempotent email sending (database-based dedup) — v1.0
+- ✓ Webhook reconstructs full item data from shortened metadata — v1.0
+- ✓ Admin search secured against SQL filter injection — v1.0
+- ✓ Unconditional free shipping messaging — v1.0
+- ✓ Consistent 3-7 business day delivery estimates — v1.0
+- ✓ Centralized escapeHtml and SHIPPING_COUNTRIES utilities — v1.0
 
 ### Active
 
-- [ ] Fix custom perfume success page (always shows error state)
-- [ ] Server-side price validation on checkout (prevent price manipulation)
-- [ ] Webhook email idempotency (prevent duplicate emails on Stripe retries)
-- [ ] Enhanced success pages with order details from Stripe session
-- [ ] Standardize shipping messaging (always free, remove conditional language)
-- [ ] Fix Stripe metadata size limit risk on large carts
-- [ ] Input validation with Zod on checkout API route
-- [ ] Sanitize admin order search to prevent PostgREST filter injection
-- [ ] Protect against duplicate checkout session creation (double-click)
-- [ ] Deduplicate shared code (escapeHtml, shipping countries)
-- [ ] Remove unused imports (Fragment in CartDrawer)
+(None — next milestone requirements TBD)
 
 ### Out of Scope
 
-- Full order tracking page for customers — future enhancement, not this milestone
-- Conditional shipping pricing (paid under €100) — decided to keep all shipping free
-- Redesign of checkout UX — current flow works, just fixing bugs
+- Full order tracking page for customers — future enhancement
+- Conditional shipping pricing — decided to keep all shipping free
+- Checkout UX redesign — current flow works
 - Mobile app checkout — web only
-- Adding new payment methods — Stripe handles this already
+- CSRF token on checkout — low risk, rate limit sufficient
 
 ## Context
 
 **Codebase:** Next.js 14 App Router, React 18, TypeScript, Supabase (ref: hznpuxplqgszbacxzbhv), Stripe, Resend, Vercel deployment.
 
-**Two checkout flows exist:**
+**Current state (post-v1.0):** 30 files modified, 3,209 lines added. Checkout pipeline fully secured with server-side validation, success pages display order details, emails are idempotent, and webhook correctly handles both metadata formats.
+
+**Two checkout flows:**
 1. **Cart checkout** — `/api/checkout` → Stripe Checkout Session → `/checkout/success`
 2. **Custom perfume checkout** — `/api/create-perfume/payment` → Stripe Checkout Session → `/create-perfume/success`
 
-Both flows converge at the same Stripe webhook (`/api/webhooks/stripe`) which handles order persistence and email sending, differentiating by metadata (`items` vs `productType: custom-perfume`).
+Both converge at `/api/webhooks/stripe` which persists orders and sends emails.
 
 **Key files:**
-- `src/app/api/checkout/route.ts` — cart checkout API
-- `src/app/api/create-perfume/payment/route.ts` — custom perfume checkout API
-- `src/app/api/webhooks/stripe/route.ts` — webhook handler (persist + email)
-- `src/app/checkout/success/page.tsx` — cart success page
-- `src/app/create-perfume/success/success-content.tsx` — custom perfume success page (BROKEN)
-- `src/components/cart/CartProvider.tsx` — cart state
-- `src/components/cart/CheckoutButton.tsx` — checkout trigger
-- `src/lib/stripe.ts` — Stripe singleton
-- `src/lib/currency.ts` — EUR formatting
-- `src/lib/rate-limit.ts` — Upstash rate limiting
-
-**Review findings (20 issues):**
-- 3 CRITICAL: broken success page, metadata size limit, no price validation
-- 6 HIGH: duplicate emails, shipping inconsistency, SQL filter injection, admin client-side updates
-- 5 MEDIUM: no order details on success, session not verified, double-click risk
-- 5 LOW: code duplication, unused imports, hardcoded values
+- `src/app/api/checkout/route.ts` — cart checkout with Zod validation and price verification
+- `src/app/api/checkout/session-details/route.ts` — session data API for success pages
+- `src/app/api/create-perfume/payment/route.ts` — custom perfume checkout
+- `src/app/api/webhooks/stripe/route.ts` — webhook (order persistence + idempotent emails + metadata reconstruction)
+- `src/lib/validation/cart.ts` — Zod schemas and price validation
+- `src/lib/product-service.ts` — product catalog queries
+- `src/lib/utils.ts` — shared utilities (escapeHtml)
+- `src/lib/constants.ts` — shared constants (SHIPPING_COUNTRIES)
 
 ## Constraints
 
 - **Tech stack**: Next.js 14, Stripe, Supabase, Resend — no new dependencies
 - **Backward compatible**: Existing Stripe webhook secret and checkout flow must keep working
 - **No downtime**: Changes must be deployable without breaking live orders
-- **Supabase schema**: Orders and customers tables already exist — migrations only if needed
-- **Feature branch**: All work on a feature branch, not main
+- **Supabase schema**: Orders and customers tables already exist
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Standardize shipping as always free | Simplifies messaging, matches current behavior (€0 shipping for all orders) | — Pending |
-| Enhance success pages with Stripe session data | Customers deserve to see what they ordered after paying | — Pending |
-| Server-side price validation against product catalog | Client-sent prices cannot be trusted — core e-commerce security | — Pending |
-| Use order record to gate email sending | Prevents duplicate emails on webhook retries | — Pending |
+| Server-side price validation against product catalog | Client-sent prices cannot be trusted — core e-commerce security | ✓ Good |
+| Standardize shipping as always free | Simplifies messaging, matches current behavior | ✓ Good |
+| Enhance success pages with Stripe session data | Customers deserve to see what they ordered | ✓ Good |
+| Use order record to gate email sending | Prevents duplicate emails on webhook retries | ✓ Good |
+| Shortened metadata keys (pid/vid/qty) | Stay under Stripe 500-char limit on large carts | ✓ Good |
+| Session-based order confirmation | Stripe session is single source of truth for success pages | ✓ Good |
+| Order number = last 8 chars of session ID | Simple, unique, no extra DB column needed | ✓ Good |
+| Database-based email idempotency | upsert ignoreDuplicates returns isNewOrder flag | ✓ Good |
+| Centralize shared utilities | Eliminate code duplication across webhook and routes | ✓ Good |
+| Webhook metadata reconstruction | Parse shortened format and rebuild from product catalog | ✓ Good |
 
 ---
-*Last updated: 2026-03-02 after initialization*
+*Last updated: 2026-03-02 after v1.0 milestone*

@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-03-02)
 
 **Core value:** A customer completes a purchase and knows it worked — order details on screen, confirmation email received, store notified. No silent failures.
-**Current focus:** All phases complete — milestone ready for completion
+**Current focus:** v1.0 milestone complete — ready for deployment
 
 ## Current Position
 
-Phase: 4 of 4 COMPLETE
-Plan: 1 of 1 complete (04-01)
-Status: Phase 4 complete — gap closure achieved
-Last activity: 2026-03-02 — Completed 04-01 (webhook metadata reconstruction)
+Phase: All v1.0 phases complete (1-4)
+Plan: All plans complete (7/7)
+Status: Milestone v1.0 shipped
+Last activity: 2026-03-02 — v1.0 milestone archived
 
-Progress: [██████████] 100% (4 of 4 phases)
+Progress: [##########] 100% (v1.0 complete)
 
 ## Performance Metrics
 
@@ -32,30 +32,11 @@ Progress: [██████████] 100% (4 of 4 phases)
 | 03-admin-security-ux-polish | 2 | 3 min | 1.5 min |
 | 04-webhook-metadata-reconstruction | 1 | 1 min | 1 min |
 
-*Updated after each plan completion*
-
 ## Accumulated Context
 
 ### Decisions
 
-Decisions are logged in PROJECT.md Key Decisions table.
-Recent decisions affecting current work:
-
-- Server-side price validation against product catalog (core e-commerce security)
-- Standardize shipping as always free (simplifies messaging, matches current behavior)
-- Enhance success pages with Stripe session data — IMPLEMENTED in 02-01
-- Use order record to gate email sending — IMPLEMENTED in 02-02
-- Use shortened keys (pid, vid, qty) in Stripe metadata to stay under 500-char limit
-- Webhook reconstructs full data from identifiers (plan 01-02)
-- Dual protection for checkout: isProcessing state guard + AbortController (plan 01-02)
-- Session-based order confirmation: Stripe session is single source of truth for success pages (02-01)
-- Order number format: Last 8 chars of session ID uppercase (02-01)
-- Security: Only display order details for paid sessions (02-01)
-- Database-based email idempotency: upsert ignoreDuplicates determines isNewOrder flag (02-02)
-- Admin order search: Escape SQL wildcards (% and _) to prevent PostgREST filter injection (03-01)
-- Code deduplication: Centralize escapeHtml and SHIPPING_COUNTRIES as shared utilities (03-01)
-- Shipping messaging: Unconditional "Free shipping on all orders" with 3-7 business day estimate (03-02)
-- Webhook metadata reconstruction: Parse shortened {pid, vid, qty} format and rebuild full item data from product catalog (04-01)
+All decisions documented in PROJECT.md Key Decisions table with outcomes.
 
 ### Pending Todos
 
@@ -67,6 +48,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-02 (Phase 4 gap closure)
-Stopped at: Phase 4 complete. All 4 phases verified. Milestone ready for completion.
-Resume with: /gsd:complete-milestone
+Last session: 2026-03-02 (v1.0 milestone completion)
+Stopped at: v1.0 milestone archived. Ready for deployment or next milestone.
+Resume with: Deploy to production or /gsd:new-milestone
