@@ -1,22 +1,117 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { CheckCircle, Package, ArrowRight } from 'lucide-react';
+import { CheckCircle, Package, ArrowRight, XCircle } from 'lucide-react';
 import { useCart } from '@/components/cart';
+import { formatPrice } from '@/lib/utils';
+
+interface OrderData {
+  orderNumber: string;
+  items: Array<{ name: string; quantity: number; price: number; size: string }>;
+  total: number;
+  currency: string;
+}
 
 export default function CheckoutSuccessPage() {
+  const searchParams = useSearchParams();
   const { clearCart } = useCart();
+  const [loading, setLoading] = useState(true);
+  const [orderData, setOrderData] = useState<OrderData | null>(null);
+  const [error, setError] = useState(false);
 
-  // Clear cart on successful checkout
+  // Fetch order details from session
   useEffect(() => {
-    clearCart();
-  }, [clearCart]);
+    const sessionId = searchParams.get('session_id');
+
+    if (!sessionId) {
+      setError(true);
+      setLoading(false);
+      return;
+    }
+
+    fetch(`/api/checkout/session-details?session_id=${sessionId}`)
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch session details');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setOrderData({
+          orderNumber: data.orderNumber,
+          items: data.items,
+          total: data.total / 100, // Convert cents to euros
+          currency: data.currency,
+        });
+        clearCart();
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error('Error fetching order details:', err);
+        setError(true);
+        setLoading(false);
+      });
+  }, [searchParams, clearCart]);
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gold-ambient pt-32 pb-16">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: 'spring', damping: 15, stiffness: 200 }}
+            className="w-24 h-24 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-8"
+          >
+            <CheckCircle className="w-12 h-12 text-green-500" />
+          </motion.div>
+          <p className="text-xl text-gray-400">Processing your order...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error || !orderData) {
+    return (
+      <div className="min-h-screen bg-gold-ambient pt-32 pb-16">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: 'spring', damping: 15, stiffness: 200 }}
+            className="w-24 h-24 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-8"
+          >
+            <XCircle className="w-12 h-12 text-red-500" />
+          </motion.div>
+          <h1 className="text-3xl font-playfair text-white mb-4">
+            Unable to Load Order Details
+          </h1>
+          <p className="text-gray-400 mb-8">
+            We couldn&apos;t retrieve your order information. Please contact us for assistance.
+          </p>
+          <Link
+            href="/contact"
+            className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-gold text-black font-semibold rounded-full hover:bg-gold-light transition-colors"
+          >
+            Contact Us
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // Success state with order details
+  const subtotal = orderData.total;
+  const shipping = 0; // Free shipping
 
   return (
     <div className="min-h-screen bg-gold-ambient pt-32 pb-16">
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
@@ -26,23 +121,75 @@ export default function CheckoutSuccessPage() {
           <CheckCircle className="w-12 h-12 text-green-500" />
         </motion.div>
 
-        <motion.h1
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="text-4xl md:text-5xl font-playfair text-white mb-4"
+          className="text-center mb-8"
         >
-          Thank You!
-        </motion.h1>
+          <h1 className="text-4xl md:text-5xl font-playfair text-white mb-4">
+            Thank You!
+          </h1>
+          <p className="text-xl text-gray-400 mb-2">
+            Your order has been confirmed
+          </p>
+          <p className="text-2xl text-gold font-semibold">
+            {orderData.orderNumber}
+          </p>
+        </motion.div>
 
-        <motion.p
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="text-xl text-gray-400 mb-8"
+          className="bg-dark-light rounded-2xl p-8 border border-gold/20 mb-8"
         >
-          Your order has been confirmed and is being prepared.
-        </motion.p>
+          <h2 className="text-xl font-semibold text-white mb-6">Order Details</h2>
+
+          {/* Items table */}
+          <div className="overflow-x-auto mb-6">
+            <table className="w-full text-left">
+              <thead>
+                <tr className="border-b border-gold/20">
+                  <th className="pb-3 text-sm font-medium text-gray-400">Product</th>
+                  <th className="pb-3 text-sm font-medium text-gray-400 text-center">Size</th>
+                  <th className="pb-3 text-sm font-medium text-gray-400 text-center">Qty</th>
+                  <th className="pb-3 text-sm font-medium text-gray-400 text-right">Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                {orderData.items.map((item, index) => (
+                  <tr key={index} className="border-b border-gold/10">
+                    <td className="py-4 text-white">{item.name}</td>
+                    <td className="py-4 text-gray-400 text-center">{item.size}</td>
+                    <td className="py-4 text-gray-400 text-center">{item.quantity}</td>
+                    <td className="py-4 text-white text-right">{formatPrice(item.price)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Totals */}
+          <div className="space-y-2 border-t border-gold/20 pt-4">
+            <div className="flex justify-between text-gray-400">
+              <span>Subtotal</span>
+              <span>{formatPrice(subtotal)}</span>
+            </div>
+            <div className="flex justify-between text-gray-400">
+              <span>Shipping</span>
+              <span className="text-green-500 font-semibold">FREE</span>
+            </div>
+            <div className="flex justify-between text-xl font-semibold text-white pt-2 border-t border-gold/20">
+              <span>Total</span>
+              <span className="text-gold">{formatPrice(subtotal + shipping)}</span>
+            </div>
+          </div>
+
+          <p className="text-sm text-gray-500 mt-6 pt-6 border-t border-gold/20">
+            Expect delivery within <strong className="text-white">3-7 business days</strong>
+          </p>
+        </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
