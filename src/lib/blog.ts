@@ -5,6 +5,11 @@ import type { BlogPost, BlogCategory, BlogListParams } from './blog-types';
 export type { BlogPost, BlogCategory, BlogListParams } from './blog-types';
 export { formatBlogDate, generateSlug, estimateReadTime } from './blog-types';
 
+/** Explicit column selection for blog queries (avoids select(*) overhead) */
+const BLOG_POST_FULL_COLUMNS = 'id, slug, title, content, excerpt, category, status, featured, author_name, author_avatar, author_role, cover_image, meta_title, meta_description, tags, featured_products, read_time, published_at, created_at, updated_at' as const;
+const BLOG_POST_LIST_COLUMNS = 'id, slug, title, excerpt, category, status, featured, author_name, author_avatar, author_role, cover_image, tags, read_time, published_at, created_at' as const;
+const BLOG_CATEGORY_COLUMNS = 'id, slug, name, description, created_at' as const;
+
 export async function getBlogPosts(params: BlogListParams = {}) {
   const { page = 1, limit = 9, category, featured, status = 'published' } = params;
   const supabase = createPublicClient();
@@ -12,7 +17,7 @@ export async function getBlogPosts(params: BlogListParams = {}) {
 
   let query = supabase
     .from('blog_posts')
-    .select('*', { count: 'exact' })
+    .select(BLOG_POST_LIST_COLUMNS, { count: 'exact' })
     .eq('status', status)
     .order('published_at', { ascending: false });
 
@@ -43,7 +48,7 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
 
   const { data, error } = await supabase
     .from('blog_posts')
-    .select('*')
+    .select(BLOG_POST_FULL_COLUMNS)
     .eq('slug', slug)
     .eq('status', 'published')
     .single();
@@ -57,7 +62,7 @@ export async function getFeaturedPost(): Promise<BlogPost | null> {
 
   const { data, error } = await supabase
     .from('blog_posts')
-    .select('*')
+    .select(BLOG_POST_FULL_COLUMNS)
     .eq('status', 'published')
     .eq('featured', true)
     .order('published_at', { ascending: false })
@@ -73,7 +78,7 @@ export async function getRelatedPosts(category: string, excludeSlug: string, lim
 
   const { data, error } = await supabase
     .from('blog_posts')
-    .select('*')
+    .select(BLOG_POST_LIST_COLUMNS)
     .eq('status', 'published')
     .eq('category', category)
     .neq('slug', excludeSlug)
@@ -89,7 +94,7 @@ export async function getBlogCategories(): Promise<BlogCategory[]> {
 
   const { data, error } = await supabase
     .from('blog_categories')
-    .select('*')
+    .select(BLOG_CATEGORY_COLUMNS)
     .order('name');
 
   if (error) return [];
