@@ -9,6 +9,11 @@ import * as Sentry from '@sentry/nextjs';
 import ProductsTable from '@/components/admin/ProductsTable';
 import type { ProductCategory, Product } from '@/lib/supabase/types';
 
+/** Escape PostgREST special characters in search queries */
+function escapePostgrestQuery(query: string): string {
+  return query.replace(/[%_\\*()[\]!,]/g, '\\$&');
+}
+
 export default function ProductsPage() {
   const searchParams = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
@@ -37,7 +42,8 @@ export default function ProductsPage() {
           .range(offset, offset + perPage - 1);
 
         if (searchQuery) {
-          query = query.ilike('name', `%${searchQuery}%`);
+          const escapedQuery = escapePostgrestQuery(searchQuery);
+          query = query.ilike('name', `%${escapedQuery}%`);
         }
 
         if (categoryFilter) {
