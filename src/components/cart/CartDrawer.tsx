@@ -1,6 +1,5 @@
 'use client';
 
-import { Fragment } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingBag } from 'lucide-react';
 import Link from 'next/link';

@@ -3,6 +3,7 @@ import * as Sentry from '@sentry/nextjs';
 import { formatApiError } from '@/lib/api-utils';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { getStripe } from '@/lib/stripe';
+import { SHIPPING_COUNTRIES } from '@/lib/constants';
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
@@ -46,7 +47,7 @@ export async function POST(request: NextRequest) {
       success_url: `${BASE_URL}/create-perfume/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${BASE_URL}/create-perfume`,
       shipping_address_collection: {
-        allowed_countries: ['CY', 'GR', 'GB', 'DE', 'FR', 'IT', 'ES', 'NL', 'BE', 'AT'],
+        allowed_countries: SHIPPING_COUNTRIES,
       },
       shipping_options: [
         {

@@ -6,7 +6,7 @@ import type { CartItem } from '@/types/cart';
 import { CURRENCY_CODE, toCents } from '@/lib/currency';
 import { formatApiError } from '@/lib/api-utils';
 import { checkRateLimit } from '@/lib/rate-limit';
-import { getProductTypeLabel } from '@/lib/constants';
+import { getProductTypeLabel, SHIPPING_COUNTRIES } from '@/lib/constants';
 import { getStripe } from '@/lib/stripe';
 import { cartItemSchema, validateCartPrices } from '@/lib/validation/cart';
 
@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
       success_url: `${BASE_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${BASE_URL}/checkout/cancel`,
       shipping_address_collection: {
-        allowed_countries: ['CY', 'GR', 'GB', 'DE', 'FR', 'IT', 'ES', 'NL', 'BE', 'AT'],
+        allowed_countries: SHIPPING_COUNTRIES,
       },
       shipping_options: [
         {
