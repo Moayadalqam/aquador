@@ -30,12 +30,12 @@ All decisions logged in PROJECT.md Key Decisions table (24 decisions across v1.0
 
 ### Pending Checkpoints
 
-- **Supabase migrations not deployed:** RLS migration (08-01) and index migration (09-01) blocked by migration history mismatch (21 remote migrations not in local)
-- **AI catalogue generation:** Needs verification that `npm run generate:catalogue` works locally and Vercel has SUPABASE_SERVICE_ROLE_KEY configured
+- ✅ ~~Supabase migrations~~ — DEPLOYED. Migration history repaired, RLS + indexes pushed.
+- ✅ ~~AI catalogue generation~~ — Working on Vercel (323 products generated at build time)
 
 ### Open Blockers
 
-- Supabase migration history mismatch — 21 remote migrations not present in local directory. Must repair before pushing RLS + index migrations.
+None — all blockers resolved.
 
 ## Session Continuity
 
