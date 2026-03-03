@@ -26,17 +26,19 @@ async function generateCatalogue() {
   // Query all products with fields needed for AI matching
   const { data: products, error } = await supabase
     .from('products')
-    .select('id, name, brand, gender, type, tags')
+    .select('id, name, brand, gender, product_type, tags')
     .order('id');
 
   if (error) {
-    console.error('❌ Failed to fetch products:', error.message);
-    process.exit(1);
+    console.warn('⚠ Failed to fetch products:', error.message);
+    console.warn('  Using existing catalogue-data.ts (if available)');
+    process.exit(0);
   }
 
   if (!products || products.length === 0) {
-    console.error('❌ No products found in database');
-    process.exit(1);
+    console.warn('⚠ No products found in database');
+    console.warn('  Using existing catalogue-data.ts (if available)');
+    process.exit(0);
   }
 
   console.log(`✓ Fetched ${products.length} products`);
@@ -47,7 +49,7 @@ async function generateCatalogue() {
     name: p.name,
     brand: p.brand || 'Unknown',
     gender: p.gender || 'Unisex',
-    type: p.type || 'perfume',
+    type: p.product_type || 'perfume',
     searchTerms: p.tags || [],
   }));
 
