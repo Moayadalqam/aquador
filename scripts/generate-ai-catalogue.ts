@@ -12,11 +12,10 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
-  console.error('❌ Missing Supabase credentials');
-  console.error('Required environment variables:');
-  console.error('  - NEXT_PUBLIC_SUPABASE_URL');
-  console.error('  - SUPABASE_SERVICE_ROLE_KEY');
-  process.exit(1);
+  console.warn('⚠ Missing Supabase credentials — skipping catalogue generation');
+  console.warn('  Using existing catalogue-data.ts (if available)');
+  console.warn('  Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY to generate fresh data');
+  process.exit(0);
 }
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
