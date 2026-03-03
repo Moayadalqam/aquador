@@ -43,13 +43,16 @@ async function generateCatalogue() {
 
   console.log(`✓ Fetched ${products.length} products`);
 
+  // Capitalize first letter for TypeScript enum compatibility
+  const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+
   // Transform to CatalogueProduct format
   const catalogueProducts = products.map((p, index) => ({
     number: String(index + 1),
     name: p.name,
     brand: p.brand || 'Unknown',
-    gender: p.gender || 'Unisex',
-    type: p.product_type || 'perfume',
+    gender: capitalize(p.gender || 'unisex') as 'Men' | 'Women' | 'Unisex',
+    type: (p.product_type || 'perfume') as 'perfume' | 'essence-oil',
     searchTerms: p.tags || [],
   }));
 
