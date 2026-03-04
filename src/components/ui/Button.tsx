@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 
 interface ButtonProps extends Omit<HTMLMotionProps<'button'>, 'ref'> {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'icon';
   isLoading?: boolean;
 }
 
@@ -16,7 +16,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       'relative inline-flex items-center justify-center',
       'font-medium tracking-wide uppercase',
       'transition-all duration-300',
-      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/50 focus-visible:ring-offset-2 focus-visible:ring-offset-dark'
+      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-black'
     );
 
     const variants = {
@@ -43,9 +43,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     };
 
     const sizes = {
-      sm: 'px-5 py-2.5 text-xs',
-      md: 'px-7 py-3 text-sm',
-      lg: 'px-9 py-4 text-sm',
+      sm: 'px-5 py-2.5 text-xs min-h-[40px]',
+      md: 'px-7 py-3 text-sm min-h-[44px]',
+      lg: 'px-9 py-4 text-sm min-h-[52px]',
+      icon: 'p-2 min-h-[44px] min-w-[44px]',
     };
 
     return (

@@ -10,8 +10,6 @@ import { SearchBar } from '@/components/search';
 
 const navLinks = [
   { label: 'Lattafa Originals', href: '/shop/lattafa' },
-  { label: 'Al Haramain', href: '/shop/al-haramain-originals' },
-  { label: "Victoria's Secret", href: '/shop/victorias-secret-originals' },
   { label: 'Shop', href: '/shop' },
   { label: 'Create Your Own', href: '/create-perfume' },
   { label: 'Re-Order', href: '/reorder' },
@@ -51,7 +49,7 @@ export default function Navbar() {
       }`}
     >
       <nav className="container-wide">
-        <div className="flex items-center justify-between h-24 md:h-32 lg:h-36">
+        <div className="flex items-center justify-between h-[var(--nav-height-mobile)] md:h-[var(--nav-height)]">
           {/* Logo */}
           <Link href="/" className="flex-shrink-0 flex items-center">
             <motion.div
@@ -92,7 +90,7 @@ export default function Navbar() {
             {/* Mobile menu button */}
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="lg:hidden p-3 -mr-1 text-gray-300 hover:text-gold transition-colors"
+              className="lg:hidden min-h-[44px] min-w-[44px] p-2 -mr-1 text-gray-300 hover:text-gold transition-colors flex items-center justify-center"
               aria-label={isOpen ? 'Close menu' : 'Open menu'}
             >
               {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -126,7 +124,7 @@ export default function Navbar() {
                     <Link
                       href={link.href}
                       onClick={() => setIsOpen(false)}
-                      className="block py-3 px-1 text-sm font-light uppercase tracking-[0.15em] text-gray-300 hover:text-gold hover:pl-3 transition-all duration-200 border-b border-gold/5"
+                      className="block min-h-[44px] py-3 px-1 text-sm font-light uppercase tracking-[0.15em] text-gray-300 hover:text-gold hover:pl-3 transition-all duration-200 border-b border-gold/5 flex items-center"
                     >
                       {link.label}
                     </Link>
