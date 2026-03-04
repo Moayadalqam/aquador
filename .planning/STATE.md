@@ -10,14 +10,15 @@ See: .planning/PROJECT.md (updated 2026-03-03)
 
 ## Current Position
 
-Phase: 11 of 12 (Product Experience Enhancement)
-Plan: 1 of 3 complete
-Status: In progress
-Last activity: 2026-03-04 — Completed 11-01 (Product Gallery Enhancement)
+Phase: 12 of 12 (Interactive Design Polish)
+Plan: 2 of 3 complete
+Status: In progress — 12-03 tasks 1-3 complete, awaiting human-verify checkpoint
+Last activity: 2026-03-04 — Executing 12-03 (Interactive Animation Integration)
 
 Progress v1.0+v1.1: [██████████] 100% (22 of 22 plans)
 Progress v1.2 Phase 10: [██████████] 100% (3 of 3 plans)
-Progress v1.2 Phase 11: [███░░░░░░░] 33% (1 of 3 plans)
+Progress v1.2 Phase 11: [███████░░░] 100% (3 of 3 plans)
+Progress v1.2 Phase 12: [██████░░░░] 66% (2 of 3 plans)
 
 ## Milestones
 
@@ -53,6 +54,15 @@ All v1.0 + v1.1 decisions logged in PROJECT.md Key Decisions table (24 total).
 | Increase transition duration to 0.4s with custom luxury bezier [0.25, 0.1, 0.25, 1] | Premium feel, slower timing feels more intentional and luxurious | 11-01 |
 | 44px touch targets on mobile dot indicators | WCAG 2.1 AA compliance, maintains accessibility standard from Phase 10 | 11-01 |
 
+**v1.2 Interactive Design Polish (Phase 12):**
+
+| Decision | Rationale | Plan |
+|----------|-----------|------|
+| Use OKLCH easing constants from globals.css for all animations | Maintains consistency with existing design system, perceptually uniform timing | 12-01 |
+| Disable parallax scrolling on mobile viewports | Prevents jank and GPU layer issues on mobile Safari, improves performance | 12-01 |
+| Reduce animation distance by 50% on mobile | Smaller screens need subtler movement, prevents excessive visual disruption | 12-01 |
+| Default intersection threshold 0.2 with -50px margin | Triggers animations before element fully enters viewport, feels more responsive | 12-01 |
+
 ### Pending Checkpoints
 
 - ✅ ~~Supabase migrations~~ — DEPLOYED. Migration history repaired, RLS + indexes pushed.
@@ -65,8 +75,8 @@ None — all blockers resolved.
 ## Session Continuity
 
 Last session: 2026-03-04
-Stopped at: Completed 11-01 (Product Gallery Enhancement)
-Next action: Execute 11-02 (Product Detail Page Enhancement) or 11-03 (Shop Page Refinements)
+Stopped at: 12-03 Task 4 checkpoint — awaiting human verification of animation system
+Resume action: After verification approval, create 12-03-SUMMARY.md and complete phase
 
 ---
 *Last updated: 2026-03-04*
