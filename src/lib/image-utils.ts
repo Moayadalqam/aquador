@@ -15,6 +15,16 @@ export const IMAGE_DIMENSIONS = {
 } as const;
 
 /**
+ * Zoom configuration for ProductGallery image zoom functionality
+ */
+export const ZOOM_CONFIG = {
+  maxZoom: 3,
+  minZoom: 1,
+  defaultZoom: 2,     // Default zoom level on click
+  pinchThreshold: 20, // Minimum pixel distance change to trigger zoom
+} as const;
+
+/**
  * Generates a minimal SVG gradient as a blur placeholder
  * Creates a base64-encoded data URL for use with Next.js Image placeholder="blur"
  */

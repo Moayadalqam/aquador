@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ProductImage } from '@/components/ui/ProductImage';
 import { OptimizedImage } from '@/components/ui/OptimizedImage';
+import { ZOOM_CONFIG } from '@/lib/image-utils';
 
 const FALLBACK_IMAGE = '/placeholder-product.svg';
 
@@ -19,7 +20,10 @@ export default function ProductGallery({ mainImage, images, name, inStock }: Pro
   const hasMultiple = allImages.length > 1;
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [direction, setDirection] = useState(0);
+  const [isZoomed, setIsZoomed] = useState(false);
+  const [zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 }); // percentage
   const touchStartX = useRef(0);
+  const initialPinchDistance = useRef<number | null>(null);
 
   const goTo = useCallback((index: number) => {
     setDirection(index > selectedIndex ? 1 : -1);
@@ -40,17 +44,80 @@ export default function ProductGallery({ mainImage, images, name, inStock }: Pro
     }
   }, [selectedIndex]);
 
+  const handleImageClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setZoomPosition({ x, y });
+    setIsZoomed(!isZoomed);
+  }, [isZoomed]);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isZoomed) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setZoomPosition({ x, y });
+  }, [isZoomed]);
+
   const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
+    if (e.touches.length === 2) {
+      // Pinch zoom
+      const distance = Math.hypot(
+        e.touches[1].clientX - e.touches[0].clientX,
+        e.touches[1].clientY - e.touches[0].clientY
+      );
+      initialPinchDistance.current = distance;
+    } else if (!isZoomed) {
+      // Swipe navigation
+      touchStartX.current = e.touches[0].clientX;
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length === 2 && initialPinchDistance.current !== null) {
+      const distance = Math.hypot(
+        e.touches[1].clientX - e.touches[0].clientX,
+        e.touches[1].clientY - e.touches[0].clientY
+      );
+      const distanceChange = Math.abs(distance - initialPinchDistance.current);
+
+      if (distanceChange > ZOOM_CONFIG.pinchThreshold) {
+        setIsZoomed(distance > initialPinchDistance.current);
+      }
+    }
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
-    const diff = touchStartX.current - e.changedTouches[0].clientX;
-    if (Math.abs(diff) > 50) {
-      if (diff > 0) goNext();
-      else goPrev();
+    if (initialPinchDistance.current !== null) {
+      initialPinchDistance.current = null;
+      return;
+    }
+
+    if (!isZoomed && e.changedTouches.length === 1) {
+      const diff = touchStartX.current - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 50) {
+        if (diff > 0) goNext();
+        else goPrev();
+      }
     }
   };
+
+  // Reset zoom when image changes
+  useEffect(() => {
+    setIsZoomed(false);
+  }, [selectedIndex]);
+
+  // ESC key to exit zoom
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isZoomed) {
+        setIsZoomed(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isZoomed]);
 
   const variants = {
     enter: (dir: number) => ({ opacity: 0, x: dir > 0 ? 40 : -40 }),
@@ -60,10 +127,19 @@ export default function ProductGallery({ mainImage, images, name, inStock }: Pro
 
   return (
     <div>
+      {/* Zoom backdrop */}
+      {isZoomed && (
+        <div
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
+          onClick={() => setIsZoomed(false)}
+        />
+      )}
+
       {/* Main image */}
       <div
         className="relative aspect-square overflow-hidden rounded-2xl bg-white"
         onTouchStart={hasMultiple ? handleTouchStart : undefined}
+        onTouchMove={hasMultiple ? handleTouchMove : undefined}
         onTouchEnd={hasMultiple ? handleTouchEnd : undefined}
       >
         <AnimatePresence mode="wait" custom={direction}>
@@ -75,7 +151,20 @@ export default function ProductGallery({ mainImage, images, name, inStock }: Pro
             animate="center"
             exit="exit"
             transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="absolute inset-0 flex items-center justify-center"
+            className={`absolute inset-0 flex items-center justify-center ${
+              isZoomed ? 'cursor-zoom-out z-50' : 'cursor-zoom-in'
+            }`}
+            onClick={handleImageClick}
+            onMouseMove={handleMouseMove}
+            style={
+              isZoomed
+                ? {
+                    transform: `scale(${ZOOM_CONFIG.defaultZoom})`,
+                    transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`,
+                    transition: 'transform 0.3s ease-out',
+                  }
+                : undefined
+            }
           >
             <OptimizedImage
               src={allImages[selectedIndex] || FALLBACK_IMAGE}
@@ -99,7 +188,7 @@ export default function ProductGallery({ mainImage, images, name, inStock }: Pro
         )}
 
         {/* Arrow buttons (desktop) */}
-        {hasMultiple && (
+        {hasMultiple && !isZoomed && (
           <>
             <button
               onClick={goPrev}

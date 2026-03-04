@@ -10,7 +10,6 @@ import { Variants, Transition } from 'framer-motion';
 
 // Easing from globals.css
 const EXPO_EASE = [0.16, 1, 0.3, 1] as const;
-const EXPO_IN_OUT = [0.87, 0, 0.13, 1] as const;
 
 /**
  * SPRING CONFIGURATIONS
