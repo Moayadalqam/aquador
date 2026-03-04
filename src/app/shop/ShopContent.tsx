@@ -1,19 +1,15 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import Link from 'next/link';
-import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
-import { formatPrice } from '@/lib/utils';
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { SearchBar } from '@/components/search';
 import { PageHero } from '@/components/ui/Section';
 import { AnimatedSection } from '@/components/ui/AnimatedSection';
+import { ProductCard } from '@/components/ui/ProductCard';
 import { fadeInUp } from '@/lib/animations/scroll-animations';
 import type { Product } from '@/lib/supabase/types';
 import type { Category } from '@/types';
-
-const FALLBACK_IMAGE = '/placeholder-product.svg';
 
 interface ShopContentProps {
   products: Product[];
@@ -94,13 +90,17 @@ export default function ShopContent({ products, categories }: ShopContentProps) 
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15 }}
-          className="flex flex-col items-center gap-5"
+          className="flex flex-col items-center gap-[var(--spacing-md)]"
         >
           {/* Category filters */}
           <div className="flex flex-wrap justify-center gap-2">
             <button
               onClick={() => setSelectedCategory(null)}
-              className={`btn-filter ${selectedCategory === null ? 'btn-filter-active' : 'btn-filter-inactive'}`}
+              className={`px-4 py-2.5 min-h-[44px] rounded-lg text-sm font-medium tracking-wide uppercase transition-all ${
+                selectedCategory === null
+                  ? 'bg-gold-500 text-dark shadow-lg shadow-gold-500/20'
+                  : 'bg-dark-lighter border border-gold-500/20 text-gray-300 hover:border-gold-500/40 hover:text-white'
+              }`}
             >
               All
             </button>
@@ -108,7 +108,11 @@ export default function ShopContent({ products, categories }: ShopContentProps) 
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`btn-filter ${selectedCategory === cat.id ? 'btn-filter-active' : 'btn-filter-inactive'}`}
+                className={`px-4 py-2.5 min-h-[44px] rounded-lg text-sm font-medium tracking-wide uppercase transition-all ${
+                  selectedCategory === cat.id
+                    ? 'bg-gold-500 text-dark shadow-lg shadow-gold-500/20'
+                    : 'bg-dark-lighter border border-gold-500/20 text-gray-300 hover:border-gold-500/40 hover:text-white'
+                }`}
               >
                 {cat.name.replace("'s Collection", '')}
               </button>
@@ -161,64 +165,13 @@ export default function ShopContent({ products, categories }: ShopContentProps) 
       {/* Products Grid */}
       <section className="container-wide pb-20">
         <AnimatedSection variant="stagger" staggerDelay={0.1} key={filteredProducts.length}>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5">
-            {filteredProducts.map((product) => (
+          <div className="card-grid">
+            {filteredProducts.map((product, i) => (
               <motion.div
                 key={product.id}
                 variants={fadeInUp}
               >
-                <Link href={`/products/${product.id}`} className="group block product-card">
-                {/* Image */}
-                <div className="relative aspect-[3/4] overflow-hidden">
-                  <Image
-                    src={product.image || FALLBACK_IMAGE}
-                    alt={product.name}
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                    onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_IMAGE; }}
-                  />
-                  {product.sale_price && product.in_stock && (
-                    <span className="absolute top-3 left-3 bg-gold text-black text-[9px] uppercase tracking-wider px-2 py-1 font-medium">
-                      Sale
-                    </span>
-                  )}
-                  {!product.in_stock && (
-                    <span className="absolute top-3 left-3 bg-gray-800 text-white text-[9px] uppercase tracking-wider px-2 py-1 font-medium">
-                      Coming Soon
-                    </span>
-                  )}
-                </div>
-
-                {/* Content */}
-                <div className="p-4 bg-white">
-                  {product.brand && (
-                    <p className="label-micro mb-1.5 truncate">{product.brand}</p>
-                  )}
-                  <h3 className="text-sm font-playfair text-gray-900 group-hover:text-gold-dark transition-colors mb-2 line-clamp-1">
-                    {product.name}
-                  </h3>
-
-                  {/* Price */}
-                  <div className="pt-2 border-t border-gray-100">
-                    <div className="flex items-baseline justify-between">
-                      <div className="flex items-baseline gap-1.5">
-                        <span className="text-base font-playfair text-gray-900">
-                          {formatPrice(product.sale_price || product.price)}
-                        </span>
-                        {product.sale_price && (
-                          <span className="text-xs text-gray-400 line-through">
-                            {formatPrice(product.price)}
-                          </span>
-                        )}
-                      </div>
-                      <span className="text-[9px] text-gray-400 uppercase">
-                        {product.size}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </Link>
+                <ProductCard product={product} priority={i < 4} />
               </motion.div>
             ))}
           </div>
