@@ -3,10 +3,12 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { CartIcon } from '@/components/cart';
 import { SearchBar } from '@/components/search';
+import { navLinkVariants } from '@/lib/animations/page-transitions';
 
 const navLinks = [
   { label: 'Lattafa Originals', href: '/shop/lattafa' },
@@ -19,6 +21,7 @@ const navLinks = [
 ];
 
 export default function Navbar() {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const ticking = useRef(false);
@@ -70,16 +73,43 @@ export default function Navbar() {
 
           {/* Desktop Navigation + Search */}
           <div className="hidden lg:flex items-center gap-5 xl:gap-7">
-            {navLinks.map((link) => (
-              <Link
-                key={link.label}
-                href={link.href}
-                className="relative text-[11px] xl:text-xs font-normal uppercase tracking-[0.15em] text-gray-300 hover:text-gold transition-all duration-300 py-2 group whitespace-nowrap"
-              >
-                {link.label}
-                <span className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-gold to-gold-light scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const isActive = pathname === link.href ||
+                (link.href !== '/' && pathname.startsWith(link.href));
+
+              return (
+                <Link
+                  key={link.label}
+                  href={link.href}
+                  className="relative text-[11px] xl:text-xs font-normal uppercase tracking-[0.15em] py-2 group whitespace-nowrap"
+                >
+                  <motion.span
+                    variants={navLinkVariants}
+                    initial="idle"
+                    whileHover="hover"
+                    className={`block transition-colors duration-300 ${
+                      isActive ? 'text-gold' : 'text-gray-300 group-hover:text-gold'
+                    }`}
+                  >
+                    {link.label}
+                  </motion.span>
+
+                  {/* Active indicator with shared layout animation */}
+                  {isActive && (
+                    <motion.span
+                      layoutId="activeNav"
+                      className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-gold to-gold-light"
+                      transition={{ duration: 0.3, ease: 'easeOut' }}
+                    />
+                  )}
+
+                  {/* Hover underline (only when not active) */}
+                  {!isActive && (
+                    <span className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-gold to-gold-light scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+                  )}
+                </Link>
+              );
+            })}
             <SearchBar variant="navbar" />
           </div>
 
@@ -114,22 +144,31 @@ export default function Navbar() {
                   <SearchBar variant="shop" placeholder="Search fragrances..." />
                 </div>
 
-                {navLinks.map((link, index) => (
-                  <motion.div
-                    key={link.label}
-                    initial={{ opacity: 0, x: -15 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.04 }}
-                  >
-                    <Link
-                      href={link.href}
-                      onClick={() => setIsOpen(false)}
-                      className="block min-h-[44px] py-3 px-1 text-sm font-light uppercase tracking-[0.15em] text-gray-300 hover:text-gold hover:pl-3 transition-all duration-200 border-b border-gold/5 flex items-center"
+                {navLinks.map((link, index) => {
+                  const isActive = pathname === link.href ||
+                    (link.href !== '/' && pathname.startsWith(link.href));
+
+                  return (
+                    <motion.div
+                      key={link.label}
+                      initial={{ opacity: 0, x: -15 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.04 }}
                     >
-                      {link.label}
-                    </Link>
-                  </motion.div>
-                ))}
+                      <Link
+                        href={link.href}
+                        onClick={() => setIsOpen(false)}
+                        className={`block min-h-[44px] py-3 px-1 text-sm font-light uppercase tracking-[0.15em] hover:pl-3 transition-all duration-200 border-b border-gold/5 flex items-center ${
+                          isActive
+                            ? 'text-gold font-normal'
+                            : 'text-gray-300 hover:text-gold'
+                        }`}
+                      >
+                        {link.label}
+                      </Link>
+                    </motion.div>
+                  );
+                })}
               </div>
             </motion.div>
           )}

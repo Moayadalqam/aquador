@@ -10,6 +10,7 @@ import { CartProvider, CartDrawer } from "@/components/cart";
 import CookieConsent from "@/components/ui/CookieConsent";
 import { ErrorBoundary, AbortErrorSuppressor } from "@/components/providers/ErrorBoundary";
 import VisitorTracker from "@/components/VisitorTracker";
+import { PageTransition } from "@/components/providers/PageTransition";
 
 const ChatWidget = dynamic(() => import("@/components/ai/ChatWidget"), {
   ssr: false,
@@ -113,9 +114,11 @@ export default function RootLayout({
         <ErrorBoundary>
           <CartProvider>
             <Navbar />
-            <main className="min-h-screen">
-              {children}
-            </main>
+            <PageTransition>
+              <main className="min-h-screen">
+                {children}
+              </main>
+            </PageTransition>
             <Footer />
             <CartDrawer />
             <CookieConsent />
