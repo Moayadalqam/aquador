@@ -6,6 +6,8 @@ import Image from 'next/image';
 import { formatPrice } from '@/lib/utils';
 import { ArrowRight } from 'lucide-react';
 import { SectionHeader } from '@/components/ui/Section';
+import { AnimatedSection } from '@/components/ui/AnimatedSection';
+import { fadeInUp } from '@/lib/animations/scroll-animations';
 import type { LegacyProduct } from '@/types';
 
 const FALLBACK_IMAGE = '/placeholder-product.svg';
@@ -24,16 +26,14 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
         />
 
         {/* Products grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-5">
-          {products.map((product, index) => (
-            <motion.div
-              key={product.id}
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-50px' }}
-              transition={{ duration: 0.5, delay: index * 0.08 }}
-            >
-              <Link href={`/products/${product.id}`} className="group block product-card">
+        <AnimatedSection variant="stagger" staggerDelay={0.1}>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-5">
+            {products.map((product) => (
+              <motion.div
+                key={product.id}
+                variants={fadeInUp}
+              >
+                <Link href={`/products/${product.id}`} className="group block product-card">
                 {/* Image */}
                 <div className="relative aspect-[3/4] overflow-hidden">
                   <Image
@@ -68,9 +68,10 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
                   </div>
                 </div>
               </Link>
-            </motion.div>
-          ))}
-        </div>
+              </motion.div>
+            ))}
+          </div>
+        </AnimatedSection>
 
         {/* View all link */}
         <motion.div

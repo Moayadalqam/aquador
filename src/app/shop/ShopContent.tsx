@@ -8,6 +8,8 @@ import { formatPrice } from '@/lib/utils';
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { SearchBar } from '@/components/search';
 import { PageHero } from '@/components/ui/Section';
+import { AnimatedSection } from '@/components/ui/AnimatedSection';
+import { fadeInUp } from '@/lib/animations/scroll-animations';
 import type { Product } from '@/lib/supabase/types';
 import type { Category } from '@/types';
 
@@ -158,15 +160,14 @@ export default function ShopContent({ products, categories }: ShopContentProps) 
 
       {/* Products Grid */}
       <section className="container-wide pb-20">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5">
-          {filteredProducts.map((product, index) => (
-            <motion.div
-              key={product.id}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: Math.min(index * 0.02, 0.2) }}
-            >
-              <Link href={`/products/${product.id}`} className="group block product-card">
+        <AnimatedSection variant="stagger" staggerDelay={0.1} key={filteredProducts.length}>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5">
+            {filteredProducts.map((product) => (
+              <motion.div
+                key={product.id}
+                variants={fadeInUp}
+              >
+                <Link href={`/products/${product.id}`} className="group block product-card">
                 {/* Image */}
                 <div className="relative aspect-[3/4] overflow-hidden">
                   <Image
@@ -218,9 +219,10 @@ export default function ShopContent({ products, categories }: ShopContentProps) 
                   </div>
                 </div>
               </Link>
-            </motion.div>
-          ))}
-        </div>
+              </motion.div>
+            ))}
+          </div>
+        </AnimatedSection>
 
         {filteredProducts.length === 0 && (
           <div className="text-center py-20">
