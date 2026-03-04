@@ -67,21 +67,21 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| VISUAL-01 | TBD | Pending |
-| VISUAL-02 | TBD | Pending |
-| VISUAL-03 | TBD | Pending |
-| VISUAL-04 | TBD | Pending |
-| PRODUCT-01 | TBD | Pending |
-| PRODUCT-02 | TBD | Pending |
-| PRODUCT-03 | TBD | Pending |
-| INTERACT-01 | TBD | Pending |
-| INTERACT-02 | TBD | Pending |
-| INTERACT-03 | TBD | Pending |
+| VISUAL-01 | Phase 10 | Pending |
+| VISUAL-02 | Phase 10 | Pending |
+| VISUAL-03 | Phase 10 | Pending |
+| VISUAL-04 | Phase 10 | Pending |
+| PRODUCT-01 | Phase 11 | Pending |
+| PRODUCT-02 | Phase 11 | Pending |
+| PRODUCT-03 | Phase 11 | Pending |
+| INTERACT-01 | Phase 12 | Pending |
+| INTERACT-02 | Phase 12 | Pending |
+| INTERACT-03 | Phase 12 | Pending |
 
 **Coverage:**
 - v1.2 requirements: 10 total
-- Mapped to phases: 0 (pending roadmap creation)
-- Unmapped: 10 ⚠️
+- Mapped to phases: 10
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-03-04*
