@@ -69,10 +69,10 @@ export default function Navbar() {
         }`}
       >
         <nav className="container-wide">
-          <div className="relative flex items-center justify-between h-[52px] md:h-[58px]">
+          <div className="relative flex items-center justify-between h-[56px] md:h-[62px]">
 
             {/* Left: Hamburger (mobile) + Left nav links (desktop) */}
-            <div className="flex items-center">
+            <div className="flex items-center h-full">
               <button
                 onClick={() => setIsMobileOpen(!isMobileOpen)}
                 className="xl:hidden min-h-[44px] min-w-[44px] flex items-center justify-center text-white hover:text-gold transition-colors duration-300 -ml-3"
@@ -91,7 +91,7 @@ export default function Navbar() {
                 </div>
               </button>
 
-              <div className="hidden xl:flex items-center">
+              <div className="hidden xl:flex items-center h-full">
                 {leftLinks.map((link) => (
                   <NavLink key={link.href} {...link} active={checkActive(link.href)} />
                 ))}
@@ -114,15 +114,15 @@ export default function Navbar() {
             </Link>
 
             {/* Right: Right nav links (desktop) + Icons */}
-            <div className="flex items-center">
-              <div className="hidden xl:flex items-center">
+            <div className="flex items-center h-full">
+              <div className="hidden xl:flex items-center h-full">
                 {rightLinks.map((link) => (
                   <NavLink key={link.href} {...link} active={checkActive(link.href)} />
                 ))}
               </div>
 
               {/* Separator — desktop only */}
-              <div className="hidden xl:block w-px h-3.5 bg-white/[0.08] mx-2" />
+              <div className="hidden xl:block w-px h-4 bg-white/[0.08] mx-3" />
 
               {/* Search toggle */}
               <button
@@ -241,8 +241,8 @@ export default function Navbar() {
 
 function NavLink({ label, href, active }: { label: string; href: string; active: boolean }) {
   return (
-    <Link href={href} className="relative px-4 xl:px-5 py-2 group">
-      <span className={`text-[10px] xl:text-[10.5px] uppercase tracking-[0.16em] font-light transition-colors duration-300 whitespace-nowrap ${
+    <Link href={href} className="relative h-full flex items-center px-4 xl:px-5 group">
+      <span className={`text-[10.5px] xl:text-[11px] uppercase tracking-[0.18em] font-light transition-colors duration-300 whitespace-nowrap ${
         active ? 'text-gold' : 'text-white group-hover:text-gold'
       }`}>
         {label}
@@ -250,11 +250,11 @@ function NavLink({ label, href, active }: { label: string; href: string; active:
       {active ? (
         <motion.span
           layoutId="navActive"
-          className="absolute bottom-0.5 left-4 right-4 xl:left-5 xl:right-5 h-px bg-gold"
+          className="absolute bottom-0 left-4 right-4 xl:left-5 xl:right-5 h-px bg-gold"
           transition={{ type: 'spring', stiffness: 400, damping: 28 }}
         />
       ) : (
-        <span className="absolute bottom-0.5 left-4 right-4 xl:left-5 xl:right-5 h-px bg-gold/50 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+        <span className="absolute bottom-0 left-4 right-4 xl:left-5 xl:right-5 h-px bg-gold/50 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
       )}
     </Link>
   );
