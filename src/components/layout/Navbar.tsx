@@ -75,7 +75,7 @@ export default function Navbar() {
             <div className="flex items-center">
               <button
                 onClick={() => setIsMobileOpen(!isMobileOpen)}
-                className="lg:hidden min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-400 hover:text-white transition-colors duration-300 -ml-3"
+                className="lg:hidden min-h-[44px] min-w-[44px] flex items-center justify-center text-white hover:text-gold transition-colors duration-300 -ml-3"
                 aria-label={isMobileOpen ? 'Close menu' : 'Open menu'}
               >
                 <div className="w-[18px] h-3 flex flex-col justify-between">
@@ -108,7 +108,7 @@ export default function Navbar() {
                 alt="Aquad'or"
                 width={280}
                 height={80}
-                className="h-8 sm:h-9 md:h-10 w-auto object-contain"
+                className="h-16 sm:h-[72px] md:h-20 w-auto object-contain"
                 priority
               />
             </Link>
@@ -127,7 +127,7 @@ export default function Navbar() {
               {/* Search toggle */}
               <button
                 onClick={() => setIsSearchOpen(prev => !prev)}
-                className="min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-400 hover:text-white transition-colors duration-300"
+                className="min-h-[44px] min-w-[44px] flex items-center justify-center text-white hover:text-gold transition-colors duration-300"
                 aria-label={isSearchOpen ? 'Close search' : 'Open search'}
               >
                 <AnimatePresence mode="wait">
@@ -246,20 +246,20 @@ export default function Navbar() {
 
 function NavLink({ label, href, active }: { label: string; href: string; active: boolean }) {
   return (
-    <Link href={href} className="relative px-3 xl:px-3.5 py-2 group">
+    <Link href={href} className="relative px-4 xl:px-5 py-2 group">
       <span className={`text-[10px] xl:text-[10.5px] uppercase tracking-[0.16em] font-light transition-colors duration-300 whitespace-nowrap ${
-        active ? 'text-gold' : 'text-gray-500 group-hover:text-white'
+        active ? 'text-gold' : 'text-white group-hover:text-gold'
       }`}>
         {label}
       </span>
       {active ? (
         <motion.span
           layoutId="navActive"
-          className="absolute bottom-0.5 left-3 right-3 xl:left-3.5 xl:right-3.5 h-px bg-gold"
+          className="absolute bottom-0.5 left-4 right-4 xl:left-5 xl:right-5 h-px bg-gold"
           transition={{ type: 'spring', stiffness: 400, damping: 28 }}
         />
       ) : (
-        <span className="absolute bottom-0.5 left-3 right-3 xl:left-3.5 xl:right-3.5 h-px bg-gold/50 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+        <span className="absolute bottom-0.5 left-4 right-4 xl:left-5 xl:right-5 h-px bg-gold/50 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
       )}
     </Link>
   );

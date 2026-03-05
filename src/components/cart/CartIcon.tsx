@@ -11,7 +11,7 @@ export default function CartIcon() {
       onClick={openCart}
       whileHover={{ scale: 1.04 }}
       whileTap={{ scale: 0.96 }}
-      className="relative min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-400 hover:text-white transition-colors duration-300"
+      className="relative min-h-[44px] min-w-[44px] flex items-center justify-center text-white hover:text-gold transition-colors duration-300"
       aria-label={`Shopping cart with ${itemCount} items`}
     >
       <svg
