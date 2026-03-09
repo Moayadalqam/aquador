@@ -51,8 +51,10 @@ export interface ParallaxSectionProps {
  *
  * Drop-in wrapper that adds smooth parallax scrolling to any content.
  * Automatically handles:
- * - Reduced motion preferences
- * - Mobile viewport detection
+ * - Reduced motion / vestibular safety: when prefers-reduced-motion is active,
+ *   parallax speed is reduced to 33% (via ACCESSIBILITY_CONFIG.vestibularSafeMultiplier)
+ *   rather than fully disabled — retaining visual depth without triggering symptoms
+ * - Mobile viewport detection: parallax fully disabled on < 768px to prevent jank
  * - GPU-accelerated transforms
  * - SSR compatibility
  *

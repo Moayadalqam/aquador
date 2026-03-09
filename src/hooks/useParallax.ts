@@ -3,7 +3,7 @@
 import { useRef } from 'react';
 import { useScroll, useTransform, MotionValue } from 'framer-motion';
 import { useReducedMotion } from './useReducedMotion';
-import { isMobileViewport, PARALLAX_CONFIG } from '@/lib/animations/parallax';
+import { isMobileViewport, PARALLAX_CONFIG, getAccessibleSpeed } from '@/lib/animations/parallax';
 
 /**
  * Options for useParallax hook
@@ -106,7 +106,12 @@ export function useParallax(
 
   // Check if we should disable parallax
   const isMobile = typeof window !== 'undefined' && disableOnMobile && isMobileViewport();
-  const shouldAnimate = !reducedMotion && !isMobile;
+  const shouldAnimate = !isMobile;
+
+  // Apply vestibular-safe speed reduction when prefers-reduced-motion is active.
+  // Rather than fully disabling parallax (which removes visual depth cues),
+  // we reduce speed to 33% — safe for vestibular disorders per WCAG 2.3.3.
+  const accessibleSpeed = getAccessibleSpeed(speed, reducedMotion);
 
   // Track scroll position relative to element
   const { scrollYProgress } = useScroll({
@@ -114,9 +119,9 @@ export function useParallax(
     offset: [`start end`, `end start`],
   });
 
-  // Calculate parallax distance based on speed
+  // Calculate parallax distance based on accessible speed
   // Higher speed = more movement
-  const parallaxDistance = 200 * speed;
+  const parallaxDistance = 200 * accessibleSpeed;
 
   // Transform scroll progress to parallax offset
   const transform = useTransform(
@@ -125,7 +130,7 @@ export function useParallax(
     [-parallaxDistance / 2, parallaxDistance / 2]
   );
 
-  // If animation is disabled, return static transform
+  // If animation is disabled (mobile), return static transform
   if (!shouldAnimate) {
     const staticTransform = {
       get: () => 0,
@@ -151,6 +156,7 @@ export function useParallax(
   return {
     ref,
     transform,
+    // shouldAnimate is true even with reducedMotion — speed is reduced, not disabled
     shouldAnimate: true,
   };
 }
