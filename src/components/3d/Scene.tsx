@@ -5,14 +5,6 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { CAMERA_CONFIG, ORBIT_CONFIG } from '@/lib/three/config';
 
-function Loader() {
-  return (
-    <div className="flex items-center justify-center h-full">
-      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold-500" />
-    </div>
-  );
-}
-
 type SceneProps = {
   children: React.ReactNode;
   className?: string;
