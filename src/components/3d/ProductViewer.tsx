@@ -5,6 +5,7 @@ import { Scene } from './Scene';
 import { Lighting } from './Lighting';
 import { PerfumeBottle } from './PerfumeBottle';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { useDeviceCapabilities } from '@/hooks/useDeviceCapabilities';
 
 type ProductViewerProps = {
   productName?: string;
@@ -12,10 +13,12 @@ type ProductViewerProps = {
 };
 
 function ProductViewer3DContent() {
+  const { isMobile } = useDeviceCapabilities();
+
   return (
     <Scene>
       <PerfumeBottle position={[0, 0, 0]} />
-      <Lighting />
+      <Lighting simplified={isMobile} />
     </Scene>
   );
 }
