@@ -7,8 +7,10 @@ import { useState, useCallback, useMemo } from 'react';
 import { SearchBar } from '@/components/search';
 import { PageHero } from '@/components/ui/Section';
 import { CategoryTransition } from '@/components/shop/CategoryTransition';
+import { SwipeableProductGrid } from '@/components/shop/SwipeableProductGrid';
 import { formatPrice } from '@/lib/utils';
 import { gridLayoutTransition, gridItemVariants } from '@/lib/animations/filter-transitions';
+import { categories as allCategories } from '@/lib/categories';
 import type { Product } from '@/lib/supabase/types';
 import type { Category } from '@/types';
 
@@ -124,72 +126,77 @@ export default function CategoryContent({ category, products }: CategoryContentP
 
           {/* Products Grid */}
           <section className="container-wide pb-20">
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              transition={{ staggerChildren: 0.03, delayChildren: 0.1 }}
-              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5"
+            <SwipeableProductGrid
+              categories={allCategories}
+              currentCategorySlug={category.slug}
             >
-              {filteredProducts.map((product) => (
-                <motion.div
-                  key={product.id}
-                  variants={gridItemVariants}
-                  layout
-                  transition={gridLayoutTransition}
-                >
-                  <Link href={`/products/${product.id}`} className="group block product-card">
-                    {/* Image */}
-                    <div className="relative aspect-[3/4] overflow-hidden">
-                      <Image
-                        src={product.image || FALLBACK_IMAGE}
-                        alt={product.name}
-                        fill
-                        className={`object-cover transition-transform duration-700 group-hover:scale-105 ${!(product.in_stock ?? true) ? 'opacity-60' : ''}`}
-                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                        onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_IMAGE; }}
-                      />
-                      {product.sale_price && product.sale_price < product.price && (product.in_stock ?? true) && (
-                        <span className="absolute top-3 left-3 bg-gold text-black text-[9px] uppercase tracking-wider px-2 py-1 font-medium">
-                          Sale
-                        </span>
-                      )}
-                      {!(product.in_stock ?? true) && (
-                        <span className="absolute top-3 left-3 bg-gray-800 text-white text-[9px] uppercase tracking-wider px-2 py-1 font-medium">
-                          Coming Soon
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Content */}
-                    <div className="p-4 bg-white">
-                      {product.brand && (
-                        <p className="label-micro mb-1.5 truncate">{product.brand}</p>
-                      )}
-                      <h3 className="text-sm font-playfair text-gray-900 group-hover:text-gold-dark transition-colors mb-2 line-clamp-1">
-                        {product.name}
-                      </h3>
-                      <div className="pt-2 border-t border-gray-100">
-                        <div className="flex items-baseline justify-between">
-                          <div className="flex items-baseline gap-1.5">
-                            <span className="text-base font-playfair text-gray-900">
-                              {formatPrice(product.sale_price || product.price)}
-                            </span>
-                            {product.sale_price && product.sale_price < product.price && (
-                              <span className="text-xs text-gray-400 line-through">
-                                {formatPrice(product.price)}
-                              </span>
-                            )}
-                          </div>
-                          <span className="text-[9px] text-gray-400 uppercase">
-                            {product.size}
+              <motion.div
+                initial="hidden"
+                animate="visible"
+                transition={{ staggerChildren: 0.03, delayChildren: 0.1 }}
+                className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5"
+              >
+                {filteredProducts.map((product) => (
+                  <motion.div
+                    key={product.id}
+                    variants={gridItemVariants}
+                    layout
+                    transition={gridLayoutTransition}
+                  >
+                    <Link href={`/products/${product.id}`} className="group block product-card">
+                      {/* Image */}
+                      <div className="relative aspect-[3/4] overflow-hidden">
+                        <Image
+                          src={product.image || FALLBACK_IMAGE}
+                          alt={product.name}
+                          fill
+                          className={`object-cover transition-transform duration-700 group-hover:scale-105 ${!(product.in_stock ?? true) ? 'opacity-60' : ''}`}
+                          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                          onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_IMAGE; }}
+                        />
+                        {product.sale_price && product.sale_price < product.price && (product.in_stock ?? true) && (
+                          <span className="absolute top-3 left-3 bg-gold text-black text-[9px] uppercase tracking-wider px-2 py-1 font-medium">
+                            Sale
                           </span>
+                        )}
+                        {!(product.in_stock ?? true) && (
+                          <span className="absolute top-3 left-3 bg-gray-800 text-white text-[9px] uppercase tracking-wider px-2 py-1 font-medium">
+                            Coming Soon
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Content */}
+                      <div className="p-4 bg-white">
+                        {product.brand && (
+                          <p className="label-micro mb-1.5 truncate">{product.brand}</p>
+                        )}
+                        <h3 className="text-sm font-playfair text-gray-900 group-hover:text-gold-dark transition-colors mb-2 line-clamp-1">
+                          {product.name}
+                        </h3>
+                        <div className="pt-2 border-t border-gray-100">
+                          <div className="flex items-baseline justify-between">
+                            <div className="flex items-baseline gap-1.5">
+                              <span className="text-base font-playfair text-gray-900">
+                                {formatPrice(product.sale_price || product.price)}
+                              </span>
+                              {product.sale_price && product.sale_price < product.price && (
+                                <span className="text-xs text-gray-400 line-through">
+                                  {formatPrice(product.price)}
+                                </span>
+                              )}
+                            </div>
+                            <span className="text-[9px] text-gray-400 uppercase">
+                              {product.size}
+                            </span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </Link>
-                </motion.div>
-              ))}
-            </motion.div>
+                    </Link>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </SwipeableProductGrid>
 
             {filteredProducts.length === 0 && (
               <div className="text-center py-20">
