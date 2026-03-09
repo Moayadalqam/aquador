@@ -2,11 +2,35 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import dynamic from 'next/dynamic'
 import { fragranceDatabase, fragranceCategories } from '@/lib/perfume/notes'
 import { PerfumeComposition, FragranceNote, PerfumeVolume, FragranceCategory } from '@/lib/perfume/types'
 import { isCompositionComplete } from '@/lib/perfume/composition'
 import { validatePerfumeForm } from '@/lib/perfume/validation'
 import { calculatePrice } from '@/lib/perfume/pricing'
+
+// Dynamically import 3D components (client-side only)
+const CustomPerfumeBottle = dynamic(
+  () => import('@/components/3d/CustomPerfumeBottle').then(mod => ({ default: mod.CustomPerfumeBottle })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex items-center justify-center h-[400px] bg-dark-900/50 backdrop-blur-sm rounded-lg">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold-500" />
+      </div>
+    )
+  }
+);
+
+const Scene = dynamic(
+  () => import('@/components/3d/Scene').then(mod => ({ default: mod.Scene })),
+  { ssr: false }
+);
+
+const Lighting = dynamic(
+  () => import('@/components/3d/Lighting').then(mod => ({ default: mod.Lighting })),
+  { ssr: false }
+);
 
 type NoteLayer = 'top' | 'heart' | 'base'
 
@@ -130,6 +154,7 @@ export default function CreatePerfumePage() {
   const [isProcessing, setIsProcessing] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [showForm, setShowForm] = useState(false)
+  const [show3DPreview, setShow3DPreview] = useState(false)
   const reducedMotion = useReducedMotion()
 
   const handleSelectNote = (note: FragranceNote) => {
@@ -148,6 +173,11 @@ export default function CreatePerfumePage() {
   const notes = fragranceDatabase[activeCategory] || []
   const theme = categoryThemes[activeCategory]
   const completedCount = [composition.top, composition.heart, composition.base].filter(Boolean).length
+
+  // Derive 3D bottle colors from selected notes
+  const topNoteColor = composition.top?.color || '#D4AF37'
+  const heartNoteColor = composition.heart?.color || '#D4AF37'
+  const baseNoteColor = composition.base?.color || '#D4AF37'
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -202,8 +232,8 @@ export default function CreatePerfumePage() {
             <div className="max-w-6xl mx-auto px-4 grid lg:grid-cols-[280px_240px_1fr] gap-8 items-start">
 
               {/* Left: Layer Steps */}
-              <div className="bg-white/[0.02] rounded-2xl p-5 border border-white/5">
-                <span className="text-[10px] tracking-[0.3em] text-gold/60 uppercase block mb-4">Build Your Scent</span>
+              <div className="bg-white/[0.02] rounded-2xl p-5 border border-white/5 space-y-5">
+                <span className="text-[10px] tracking-[0.3em] text-gold/60 uppercase block">Build Your Scent</span>
                 <div className="space-y-2">
                   {(['base', 'heart', 'top'] as NoteLayer[]).map((layer) => {
                     const isActive = activeLayer === layer
@@ -251,17 +281,60 @@ export default function CreatePerfumePage() {
                     ))}
                   </div>
                 </div>
+
+                {/* 3D Preview Toggle */}
+                <div className="pt-5 border-t border-white/5">
+                  <button
+                    onClick={() => setShow3DPreview(!show3DPreview)}
+                    aria-pressed={show3DPreview}
+                    aria-label="Toggle 3D preview"
+                    className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-medium transition-all ${
+                      show3DPreview
+                        ? 'bg-gold/15 text-gold border border-gold/30'
+                        : 'bg-white/5 text-gray-400 border border-white/10 hover:bg-white/[0.08] hover:text-white'
+                    }`}
+                  >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    </svg>
+                    {show3DPreview ? '3D Preview On' : '3D Preview Off'}
+                  </button>
+                </div>
               </div>
 
               {/* Center: Bottle */}
               <div className="flex flex-col items-center justify-start pt-4">
-                <BottleSVG composition={composition} activeLayer={activeLayer} />
-                <div className="mt-4 flex gap-1">
-                  {[0, 1, 2].map((i) => (
-                    <div key={i} className={`w-2 h-2 rounded-full ${i < completedCount ? 'bg-gold' : 'bg-white/20'}`} />
-                  ))}
-                </div>
-                <span className="text-[10px] text-gray-500 mt-1">{completedCount}/3 selected</span>
+                {!show3DPreview ? (
+                  <>
+                    <BottleSVG composition={composition} activeLayer={activeLayer} />
+                    <div className="mt-4 flex gap-1">
+                      {[0, 1, 2].map((i) => (
+                        <div key={i} className={`w-2 h-2 rounded-full ${i < completedCount ? 'bg-gold' : 'bg-white/20'}`} />
+                      ))}
+                    </div>
+                    <span className="text-[10px] text-gray-500 mt-1">{completedCount}/3 selected</span>
+                  </>
+                ) : (
+                  <div className="w-full">
+                    <div className="bg-gradient-to-b from-dark-900/30 to-dark-900/60 backdrop-blur-sm rounded-xl border border-gold/20 overflow-hidden">
+                      <Scene className="w-full h-[400px]">
+                        <Lighting simplified={false} />
+                        <CustomPerfumeBottle
+                          _topNoteColor={topNoteColor}
+                          heartNoteColor={heartNoteColor}
+                          _baseNoteColor={baseNoteColor}
+                          autoRotate={true}
+                        />
+                      </Scene>
+                    </div>
+                    <div className="mt-4 flex gap-1 justify-center">
+                      {[0, 1, 2].map((i) => (
+                        <div key={i} className={`w-2 h-2 rounded-full ${i < completedCount ? 'bg-gold' : 'bg-white/20'}`} />
+                      ))}
+                    </div>
+                    <span className="text-[10px] text-gray-500 mt-1 block text-center">{completedCount}/3 selected</span>
+                  </div>
+                )}
               </div>
 
               {/* Right: Notes Grid */}
