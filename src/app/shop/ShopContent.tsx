@@ -1,13 +1,17 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { SearchBar } from '@/components/search';
 import { PageHero } from '@/components/ui/Section';
-import { AnimatedSection } from '@/components/ui/AnimatedSection';
 import { ProductCard } from '@/components/ui/ProductCard';
-import { fadeInUp } from '@/lib/animations/scroll-animations';
+import { AnimatedFilterBar, AnimatedTypeFilter } from '@/components/shop/AnimatedFilterBar';
+import {
+  gridLayoutTransition,
+  gridItemVariants,
+  FILTER_TIMING,
+} from '@/lib/animations/filter-transitions';
 import type { Product } from '@/lib/supabase/types';
 import type { Category } from '@/types';
 
@@ -93,52 +97,26 @@ export default function ShopContent({ products, categories }: ShopContentProps) 
           className="flex flex-col items-center gap-[var(--spacing-md)]"
         >
           {/* Category filters */}
-          <div className="flex flex-wrap justify-center gap-2">
-            <button
-              onClick={() => setSelectedCategory(null)}
-              className={`px-4 py-2.5 min-h-[44px] rounded-lg text-sm font-medium tracking-wide uppercase transition-all ${
-                selectedCategory === null
-                  ? 'bg-gold-500 text-dark shadow-lg shadow-gold-500/20'
-                  : 'bg-dark-lighter border border-gold-500/20 text-gray-300 hover:border-gold-500/40 hover:text-white'
-              }`}
-            >
-              All
-            </button>
-            {categories.map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
-                className={`px-4 py-2.5 min-h-[44px] rounded-lg text-sm font-medium tracking-wide uppercase transition-all ${
-                  selectedCategory === cat.id
-                    ? 'bg-gold-500 text-dark shadow-lg shadow-gold-500/20'
-                    : 'bg-dark-lighter border border-gold-500/20 text-gray-300 hover:border-gold-500/40 hover:text-white'
-                }`}
-              >
-                {cat.name.replace("'s Collection", '')}
-              </button>
-            ))}
-          </div>
+          <AnimatedFilterBar
+            filters={categories.map((cat) => ({
+              id: cat.id,
+              label: cat.name.replace("'s Collection", ''),
+            }))}
+            activeFilter={selectedCategory}
+            onFilterChange={setSelectedCategory}
+          />
 
           {/* Type filters */}
-          <div className="flex flex-wrap justify-center gap-1">
-            {['All Types', 'perfume', 'essence-oil', 'body-lotion'].map((type) => {
-              const isAll = type === 'All Types';
-              const isActive = isAll ? selectedType === null : selectedType === type;
-              return (
-                <button
-                  key={type}
-                  onClick={() => setSelectedType(isAll ? null : type)}
-                  className={`px-3 py-1 text-[10px] uppercase tracking-[0.12em] transition-all ${
-                    isActive
-                      ? 'text-gold'
-                      : 'text-gray-500 hover:text-gray-300'
-                  }`}
-                >
-                  {type.replace('-', ' ')}
-                </button>
-              );
-            })}
-          </div>
+          <AnimatedTypeFilter
+            types={[
+              { id: null, label: 'All Types' },
+              { id: 'perfume', label: 'Perfume' },
+              { id: 'essence-oil', label: 'Essence Oil' },
+              { id: 'body-lotion', label: 'Body Lotion' },
+            ]}
+            activeType={selectedType}
+            onTypeChange={setSelectedType}
+          />
         </motion.div>
 
         {/* Results count */}
@@ -164,21 +142,34 @@ export default function ShopContent({ products, categories }: ShopContentProps) 
 
       {/* Products Grid */}
       <section className="container-wide pb-20">
-        <AnimatedSection variant="stagger" staggerDelay={0.1} key={filteredProducts.length}>
-          <div className="card-grid">
+        <AnimatePresence mode="popLayout">
+          <motion.div
+            key={`${selectedCategory}-${selectedType}-${searchQuery}`}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            transition={{ staggerChildren: FILTER_TIMING.stagger, delayChildren: 0.1 }}
+            className="card-grid"
+          >
             {filteredProducts.map((product, i) => (
               <motion.div
                 key={product.id}
-                variants={fadeInUp}
+                variants={gridItemVariants}
+                layout
+                transition={gridLayoutTransition}
               >
                 <ProductCard product={product} priority={i < 4} />
               </motion.div>
             ))}
-          </div>
-        </AnimatedSection>
+          </motion.div>
+        </AnimatePresence>
 
         {filteredProducts.length === 0 && (
-          <div className="text-center py-20">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center py-20"
+          >
             <p className="text-gray-500 text-sm mb-4">
               No products found.
             </p>
@@ -188,7 +179,7 @@ export default function ShopContent({ products, categories }: ShopContentProps) 
             >
               Clear all filters
             </button>
-          </div>
+          </motion.div>
         )}
       </section>
     </div>

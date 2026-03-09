@@ -6,7 +6,9 @@ import Image from 'next/image';
 import { useState, useCallback, useMemo } from 'react';
 import { SearchBar } from '@/components/search';
 import { PageHero } from '@/components/ui/Section';
+import { CategoryTransition } from '@/components/shop/CategoryTransition';
 import { formatPrice } from '@/lib/utils';
+import { gridLayoutTransition, gridItemVariants } from '@/lib/animations/filter-transitions';
 import type { Product } from '@/lib/supabase/types';
 import type { Category } from '@/types';
 
@@ -46,13 +48,14 @@ export default function CategoryContent({ category, products }: CategoryContentP
   const isEmpty = products.length === 0;
 
   return (
-    <div className="min-h-screen bg-gold-ambient">
-      <PageHero
-        title={category.name}
-        subtitle={category.description}
-        backgroundImage={category.image}
-        titleVariant="gold"
-      />
+    <CategoryTransition categorySlug={category.slug}>
+      <div className="min-h-screen bg-gold-ambient">
+        <PageHero
+          title={category.name}
+          subtitle={category.description}
+          backgroundImage={category.image}
+          titleVariant="gold"
+        />
 
       {/* Coming Soon state for empty categories */}
       {isEmpty ? (
@@ -121,13 +124,18 @@ export default function CategoryContent({ category, products }: CategoryContentP
 
           {/* Products Grid */}
           <section className="container-wide pb-20">
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5">
-              {filteredProducts.map((product, index) => (
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              transition={{ staggerChildren: 0.03, delayChildren: 0.1 }}
+              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5"
+            >
+              {filteredProducts.map((product) => (
                 <motion.div
                   key={product.id}
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: Math.min(index * 0.02, 0.2) }}
+                  variants={gridItemVariants}
+                  layout
+                  transition={gridLayoutTransition}
                 >
                   <Link href={`/products/${product.id}`} className="group block product-card">
                     {/* Image */}
@@ -181,7 +189,7 @@ export default function CategoryContent({ category, products }: CategoryContentP
                   </Link>
                 </motion.div>
               ))}
-            </div>
+            </motion.div>
 
             {filteredProducts.length === 0 && (
               <div className="text-center py-20">
@@ -199,6 +207,7 @@ export default function CategoryContent({ category, products }: CategoryContentP
           </section>
         </>
       )}
-    </div>
+      </div>
+    </CategoryTransition>
   );
 }
