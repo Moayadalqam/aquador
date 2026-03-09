@@ -3,6 +3,7 @@
 import { motion, useInView } from 'framer-motion';
 import Link from 'next/link';
 import Button from '@/components/ui/Button';
+import { ParallaxSection } from '@/components/ui/ParallaxSection';
 import { useState, useRef } from 'react';
 
 export default function Hero() {
@@ -14,8 +15,8 @@ export default function Hero() {
     <section className="relative min-h-screen flex flex-col overflow-hidden">
       {/* Main Hero Content */}
       <div ref={sectionRef} className="relative flex-1 flex items-center justify-center pt-24">
-        {/* Video Background */}
-        <div className="absolute inset-0 z-0">
+        {/* Video Background - Slow parallax for depth */}
+        <ParallaxSection speed={0.3} className="absolute inset-0 z-0">
           {!videoError ? (
             <video
               autoPlay
@@ -35,10 +36,10 @@ export default function Hero() {
             <div className="absolute inset-0 bg-gradient-to-br from-black via-dark-light to-black" />
           )}
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black" />
-        </div>
+        </ParallaxSection>
 
-        {/* Subtle ambient glow */}
-        <div className="absolute inset-0 z-0 pointer-events-none">
+        {/* Subtle ambient glow - Medium parallax layer */}
+        <ParallaxSection speed={0.5} className="absolute inset-0 z-0 pointer-events-none">
           <motion.div
             className="absolute top-1/3 left-1/4 w-[500px] h-[500px] bg-gold/[0.03] rounded-full blur-[100px]"
             animate={isInView ? {
@@ -51,7 +52,7 @@ export default function Hero() {
               ease: 'easeInOut',
             }}
           />
-        </div>
+        </ParallaxSection>
 
         {/* Content */}
         <div className="relative z-10 text-center container-wide py-16 md:py-24">

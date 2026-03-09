@@ -7,6 +7,7 @@ import ProductInfo from '@/components/products/ProductInfo';
 import AddToCartButton from '@/components/products/AddToCartButton';
 import RelatedProducts from '@/components/products/RelatedProducts';
 import ProductGallery from '@/components/products/ProductGallery';
+import ParallaxWrapper from './ParallaxWrapper';
 
 export const revalidate = 3600;
 
@@ -190,13 +191,15 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
           {/* Product Content */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-20">
-            {/* Product Images */}
-            <ProductGallery
-              mainImage={transformedProduct.image}
-              images={transformedProduct.images}
-              name={transformedProduct.name}
-              inStock={transformedProduct.inStock}
-            />
+            {/* Product Images - Subtle parallax for depth */}
+            <ParallaxWrapper>
+              <ProductGallery
+                mainImage={transformedProduct.image}
+                images={transformedProduct.images}
+                name={transformedProduct.name}
+                inStock={transformedProduct.inStock}
+              />
+            </ParallaxWrapper>
 
             {/* Product Details */}
             <div className="space-y-8">
