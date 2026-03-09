@@ -4,9 +4,14 @@
  * Handles both LegacyProduct (camelCase) and Supabase Product (snake_case) formats
  */
 
+'use client';
+
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { formatPrice } from '@/lib/currency';
 import { ProductImage } from './ProductImage';
+import { hoverVariants, tapVariants } from '@/lib/animations/micro-interactions';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 import type { LegacyProduct } from '@/types';
 import type { Product } from '@/lib/supabase/types';
 
@@ -17,6 +22,8 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, priority = false, variant = 'default' }: ProductCardProps) {
+  const reducedMotion = useReducedMotion();
+
   // Normalize property names to handle both LegacyProduct (camelCase) and Supabase Product (snake_case)
   const inStock = 'in_stock' in product ? product.in_stock : product.inStock;
   const salePrice = 'sale_price' in product ? product.sale_price : product.salePrice;
@@ -34,12 +41,22 @@ export function ProductCard({ product, priority = false, variant = 'default' }: 
   const nameSize = isCompact ? 'text-[0.875rem] md:text-[1rem]' : 'text-[clamp(1rem,0.875rem+0.625vw,1.25rem)]';
   const priceSize = isCompact ? 'text-[1rem] md:text-[1.125rem]' : 'text-[clamp(1.125rem,1rem+0.625vw,1.5rem)]';
 
+  // Animation variants based on reduced motion preference
+  const cardHover = reducedMotion ? { scale: 1.01 } : hoverVariants.lift;
+  const cardTap = reducedMotion ? { scale: 0.98 } : tapVariants.shrink;
+
   return (
-    <Link
-      href={`/products/${product.id}`}
-      className={`group block bg-dark-lighter/80 backdrop-blur-sm border border-gold-500/10 hover:border-gold-500/30 rounded-2xl ${padding} shadow-lg shadow-black/20 hover:shadow-xl hover:shadow-gold-500/10 transition-all duration-300 ease-out hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 focus-visible:ring-offset-dark ${!inStock ? 'opacity-75' : ''}`}
-      aria-label={`View ${product.name}`}
+    <motion.div
+      whileHover={cardHover}
+      whileTap={cardTap}
+      transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+      className={!inStock ? 'opacity-75' : ''}
     >
+      <Link
+        href={`/products/${product.id}`}
+        className={`group block bg-dark-lighter/80 backdrop-blur-sm border border-gold-500/10 hover:border-gold-500/30 rounded-2xl ${padding} shadow-lg shadow-black/20 hover:shadow-xl hover:shadow-gold-500/10 transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 focus-visible:ring-offset-dark`}
+        aria-label={`View ${product.name}`}
+      >
       {/* Product Image */}
       <div className="relative mb-3 md:mb-4 overflow-hidden rounded-xl">
         <ProductImage
@@ -47,7 +64,13 @@ export function ProductCard({ product, priority = false, variant = 'default' }: 
           alt={product.name}
           variant="card"
           priority={priority}
-          className="w-full"
+          className="w-full transition-transform duration-500 group-hover:scale-105"
+        />
+
+        {/* Hover overlay with subtle backdrop blur */}
+        <motion.div
+          className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          style={{ backdropFilter: 'blur(1px)' }}
         />
 
         {/* Sale Badge */}
@@ -100,6 +123,7 @@ export function ProductCard({ product, priority = false, variant = 'default' }: 
           </p>
         )}
       </div>
-    </Link>
+      </Link>
+    </motion.div>
   );
 }

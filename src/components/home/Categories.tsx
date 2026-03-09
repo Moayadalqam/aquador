@@ -5,8 +5,16 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import { categories } from '@/lib/categories';
+import { hoverVariants, tapVariants } from '@/lib/animations/micro-interactions';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 export default function Categories() {
+  const reducedMotion = useReducedMotion();
+
+  // Animation variants based on reduced motion preference
+  const cardHover = reducedMotion ? { scale: 1.01 } : hoverVariants.lift;
+  const cardTap = reducedMotion ? { scale: 0.98 } : tapVariants.shrink;
+
   return (
     <section className="py-2 bg-gold-ambient-subtle">
       <div className="container-wide">
@@ -16,6 +24,8 @@ export default function Categories() {
               key={category.id}
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
+              whileHover={cardHover}
+              whileTap={cardTap}
               viewport={{ once: true, margin: '-50px' }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
@@ -29,13 +39,13 @@ export default function Categories() {
                     src={category.image}
                     alt={category.name}
                     fill
-                    className="object-cover transition-all duration-700 group-hover:scale-105 filter grayscale-[20%] brightness-[0.7] group-hover:grayscale-0 group-hover:brightness-90"
+                    className="object-cover transition-all duration-700 group-hover:scale-110 filter grayscale-[20%] brightness-[0.7] group-hover:grayscale-0 group-hover:brightness-90"
                     sizes="(max-width: 1024px) 50vw, 25vw"
                   />
                 </div>
 
-                {/* Gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+                {/* Gradient overlay with hover enhancement */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent transition-all duration-500 group-hover:from-black/80 group-hover:via-black/30" />
 
                 {/* Content */}
                 <div className="absolute bottom-0 left-0 right-0 p-5 md:p-6 z-10">
@@ -51,8 +61,8 @@ export default function Categories() {
                   </span>
                 </div>
 
-                {/* Subtle border on hover */}
-                <div className="absolute inset-0 border border-gold/0 transition-all duration-500 group-hover:border-gold/20" />
+                {/* Subtle border and glow on hover */}
+                <div className="absolute inset-0 border border-gold/0 transition-all duration-500 group-hover:border-gold/30 group-hover:shadow-lg group-hover:shadow-gold/10" />
               </Link>
             </motion.div>
           ))}
