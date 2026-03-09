@@ -23,12 +23,15 @@ type SceneProps = {
   className?: string;
   /** Product name passed to analytics events */
   productName?: string;
+  /** Callback fired when OrbitControls instance is ready */
+  onControlsReady?: (ctrl: OrbitControlsImpl) => void;
 };
 
 export function Scene({
   children,
   className = 'w-full h-[600px]',
   productName,
+  onControlsReady,
 }: SceneProps) {
   const capabilities = useDeviceCapabilities();
   const { supports3D } = capabilities;
@@ -42,6 +45,12 @@ export function Scene({
     measureLoadTime('3D-Scene');
     return () => { endLoadMeasurement('3D-Scene'); };
   }, []);
+
+  useEffect(() => {
+    if (controlsRef.current && onControlsReady) {
+      onControlsReady(controlsRef.current);
+    }
+  }, [onControlsReady]);
 
   const handleRotateStart = useCallback(() => {
     rotateStartTimeRef.current = performance.now();

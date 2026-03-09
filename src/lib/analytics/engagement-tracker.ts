@@ -20,7 +20,8 @@ export type Interaction3DType =
   | 'rotate_end'
   | 'zoom_in'
   | 'zoom_out'
-  | 'reset';
+  | 'reset'
+  | 'angle_preset';
 
 export type ScrollDepthMilestone = 25 | 50 | 75 | 100;
 
@@ -29,6 +30,8 @@ export interface Track3DInteractionOptions {
   productName?: string;
   /** Duration in milliseconds (for *_end events) */
   durationMs?: number;
+  /** Angle preset ID (for angle_preset events) */
+  angle?: string;
 }
 
 // ─── Device Detection ─────────────────────────────────────────────────────────

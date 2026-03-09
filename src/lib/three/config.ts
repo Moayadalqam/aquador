@@ -42,3 +42,16 @@ export const KEYBOARD_CONFIG = {
    */
   zoomStep: 0.5,
 } as const;
+
+/**
+ * Preset camera angles for the angle-selector UI.
+ * azimuth: spherical.theta (radians, 0 = front)
+ * polar: spherical.phi (radians, clamped by ORBIT_CONFIG.minPolarAngle/maxPolarAngle)
+ */
+export const ANGLE_PRESETS = [
+  { id: 'front', label: 'Front', azimuth: 0,           polar: Math.PI / 3 },
+  { id: 'side',  label: 'Side',  azimuth: Math.PI / 2, polar: Math.PI / 3 },
+  { id: 'back',  label: 'Back',  azimuth: Math.PI,     polar: Math.PI / 3 },
+] as const;
+
+export type AnglePresetId = typeof ANGLE_PRESETS[number]['id'];
