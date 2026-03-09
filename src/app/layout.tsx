@@ -11,6 +11,7 @@ import CookieConsent from "@/components/ui/CookieConsent";
 import { ErrorBoundary, AbortErrorSuppressor } from "@/components/providers/ErrorBoundary";
 import VisitorTracker from "@/components/VisitorTracker";
 import { PageTransition } from "@/components/providers/PageTransition";
+import { AnimationBudgetProvider } from "@/lib/performance/animation-budget";
 
 const ChatWidget = dynamic(() => import("@/components/ai/ChatWidget"), {
   ssr: false,
@@ -112,18 +113,20 @@ export default function RootLayout({
       <body className={`${poppins.variable} ${playfair.variable} antialiased`}>
         <AbortErrorSuppressor />
         <ErrorBoundary>
-          <CartProvider>
-            <Navbar />
-            <PageTransition>
-              <main className="min-h-screen">
-                {children}
-              </main>
-            </PageTransition>
-            <Footer />
-            <CartDrawer />
-            <CookieConsent />
-            <ChatWidget />
-          </CartProvider>
+          <AnimationBudgetProvider>
+            <CartProvider>
+              <Navbar />
+              <PageTransition>
+                <main className="min-h-screen">
+                  {children}
+                </main>
+              </PageTransition>
+              <Footer />
+              <CartDrawer />
+              <CookieConsent />
+              <ChatWidget />
+            </CartProvider>
+          </AnimationBudgetProvider>
         </ErrorBoundary>
         <VisitorTracker />
         <Analytics />

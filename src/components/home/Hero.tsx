@@ -4,15 +4,23 @@ import { motion, useInView } from 'framer-motion';
 import Link from 'next/link';
 import Button from '@/components/ui/Button';
 import { ParallaxSection } from '@/components/ui/ParallaxSection';
+import { cinematicVariants, revealVariants } from '@/lib/animations/cinematic';
+import { useAnimationBudget } from '@/lib/performance/animation-budget';
 import { useState, useRef } from 'react';
 
 export default function Hero() {
   const [videoError, setVideoError] = useState(false);
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { amount: 0.1 });
+  const { shouldUseSimplifiedAnimations } = useAnimationBudget();
 
   return (
-    <section className="relative min-h-screen flex flex-col overflow-hidden">
+    <motion.section
+      className="relative min-h-screen flex flex-col overflow-hidden"
+      variants={shouldUseSimplifiedAnimations ? cinematicVariants.simpleFade : cinematicVariants.heroEntry}
+      initial="initial"
+      animate="animate"
+    >
       {/* Main Hero Content */}
       <div ref={sectionRef} className="relative flex-1 flex items-center justify-center pt-24">
         {/* Video Background - Slow parallax for depth */}
@@ -55,71 +63,62 @@ export default function Hero() {
         </ParallaxSection>
 
         {/* Content */}
-        <div className="relative z-10 text-center container-wide py-16 md:py-24">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1.2 }}
+        <motion.div
+          className="relative z-10 text-center container-wide py-16 md:py-24"
+          variants={revealVariants.fadeInSequence}
+          initial="initial"
+          animate="animate"
+        >
+          {/* Brand name */}
+          <motion.h1
+            className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-playfair font-normal tracking-[0.15em] sm:tracking-[0.2em] mb-8"
+            variants={revealVariants.fadeInSequence}
+            style={{
+              background: 'linear-gradient(90deg, #FFD700, #FFF8DC, #FFD700, #D4AF37, #FFD700)',
+              backgroundSize: '200% auto',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              filter: 'drop-shadow(0 0 40px rgba(255, 215, 0, 0.2))',
+            }}
           >
-            {/* Brand name */}
-            <motion.h1
-              className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-playfair font-normal tracking-[0.15em] sm:tracking-[0.2em] mb-8"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.2 }}
-              style={{
-                background: 'linear-gradient(90deg, #FFD700, #FFF8DC, #FFD700, #D4AF37, #FFD700)',
-                backgroundSize: '200% auto',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                filter: 'drop-shadow(0 0 40px rgba(255, 215, 0, 0.2))',
-              }}
-            >
-              AQUAD&apos;OR
-            </motion.h1>
+            AQUAD&apos;OR
+          </motion.h1>
 
-            {/* Separator line */}
-            <motion.div
-              className="relative w-24 h-px mx-auto mb-8"
-              initial={{ width: 0, opacity: 0 }}
-              animate={{ width: 96, opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gold/60 to-transparent" />
-            </motion.div>
-
-            {/* Tagline */}
-            <motion.p
-              className="text-sm sm:text-base md:text-lg text-gray-400 tracking-[0.2em] sm:tracking-[0.25em] uppercase font-light mb-14"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.8 }}
-            >
-              Where Luxury Meets Distinction
-            </motion.p>
-
-            {/* CTA Buttons */}
-            <motion.div
-              className="flex flex-col sm:flex-row gap-4 justify-center items-center"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 1.1 }}
-            >
-              <Link href="/shop">
-                <Button size="lg" className="min-w-[200px]">
-                  Explore Collection
-                </Button>
-              </Link>
-              <Link href="/create-perfume">
-                <Button variant="outline" size="lg" className="min-w-[200px]">
-                  Create Your Own
-                </Button>
-              </Link>
-            </motion.div>
+          {/* Separator line */}
+          <motion.div
+            className="relative w-24 h-px mx-auto mb-8"
+            variants={revealVariants.fadeInSequence}
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gold/60 to-transparent" />
           </motion.div>
-        </div>
+
+          {/* Tagline */}
+          <motion.p
+            className="text-sm sm:text-base md:text-lg text-gray-400 tracking-[0.2em] sm:tracking-[0.25em] uppercase font-light mb-14"
+            variants={revealVariants.fadeInSequence}
+          >
+            Where Luxury Meets Distinction
+          </motion.p>
+
+          {/* CTA Buttons */}
+          <motion.div
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+            variants={revealVariants.fadeInSequence}
+          >
+            <Link href="/shop">
+              <Button size="lg" className="min-w-[200px]">
+                Explore Collection
+              </Button>
+            </Link>
+            <Link href="/create-perfume">
+              <Button variant="outline" size="lg" className="min-w-[200px]">
+                Create Your Own
+              </Button>
+            </Link>
+          </motion.div>
+        </motion.div>
 
       </div>
-    </section>
+    </motion.section>
   );
 }
