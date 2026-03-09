@@ -10,12 +10,12 @@ See: .planning/PROJECT.md (updated 2026-03-09)
 
 ## Current Position
 
-Phase: 14 of 17 (3D Product Showcase) — COMPLETE
-Plan: 4 of 4 complete
-Status: Phase 14 done
-Last activity: 2026-03-09 — Completed 14-04 (Mobile Optimization)
+Phase: 16 of 17 (Analytics & Engagement Tracking) — In progress
+Plan: 1 of 3 complete
+Status: In progress
+Last activity: 2026-03-09 — Completed 16-01 (Centralized Engagement Tracking Infrastructure)
 
-Progress: [███████████████░░░░░] 80% (38/47 total plans complete)
+Progress: [████████████████░░░░] 83% (39/47 total plans complete)
 
 ## Milestones
 
@@ -55,6 +55,10 @@ All v1.0 + v1.1 + v1.2 decisions logged in PROJECT.md Key Decisions table.
 - **Phase 14-04:** PerformanceMonitor for adaptive DPR (auto-scales 1.0-2.0 based on frame rate)
 - **Phase 14-04:** useDeviceCapabilities hook for mobile/memory detection
 - **Phase 14-04:** Simplified lighting (no shadows) on mobile via device detection
+- **Phase 16-01:** try/catch wraps all track() calls — analytics never blocks UI or 3D
+- **Phase 16-01:** rotateStartTimeRef at component top level (not inside useEffect)
+- **Phase 16-01:** Parallax engagement threshold >1000ms to filter accidental visibility
+- **Phase 16-01:** Scroll depth dedup via sessionStorage keyed by pathname
 
 ### Pending Checkpoints
 
@@ -79,10 +83,10 @@ All v1.0 + v1.1 + v1.2 decisions logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-03-09
-Completed: Phase 14 — all 4 plans complete (3D Product Showcase)
-Commits: 6fbe1cd (14-04 mobile optimization)
-Phase 14 Status: COMPLETE (Plans 01-04 all done)
-Resume: Ready for Phase 16 (Phase 15 already complete)
+Completed: Phase 16-01 — Centralized Engagement Tracking Infrastructure
+Commits: 43bfbca (task 1), 7a19f59 (task 2), dcd7c1c (task 3)
+Phase 16 Status: In progress (Plan 01 done, Plans 02-03 remaining)
+Resume: .planning/phases/16-analytics-engagement-tracking/16-02-PLAN.md
 
 ---
 *Last updated: 2026-03-09 after Phase 14-04 completion*
