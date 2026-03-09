@@ -6,16 +6,16 @@ See: .planning/PROJECT.md (updated 2026-03-09)
 
 **Core value:** A customer completes a purchase and knows it worked — they see their order details on screen, receive a confirmation email, and the store is notified. No silent failures, no misleading messages, no security holes.
 
-**Current focus:** v2.0 Immersive Luxury Experience - Phase 14 complete, ready for Phase 16
+**Current focus:** v2.0 Immersive Luxury Experience - Phase 16 in progress (Plans 01 and 03 complete)
 
 ## Current Position
 
 Phase: 16 of 17 (Analytics & Engagement Tracking) — In progress
-Plan: 1 of 3 complete
+Plan: 3 of 3 complete (plan 02 status unknown — check for SUMMARY.md)
 Status: In progress
-Last activity: 2026-03-09 — Completed 16-01 (Centralized Engagement Tracking Infrastructure)
+Last activity: 2026-03-09 — Completed 16-03 (Performance Monitoring & Cinematic Tracking)
 
-Progress: [████████████████░░░░] 83% (39/47 total plans complete)
+Progress: [████████████████░░░░] 85% (40/47 total plans complete)
 
 ## Milestones
 
@@ -59,6 +59,10 @@ All v1.0 + v1.1 + v1.2 decisions logged in PROJECT.md Key Decisions table.
 - **Phase 16-01:** rotateStartTimeRef at component top level (not inside useEffect)
 - **Phase 16-01:** Parallax engagement threshold >1000ms to filter accidental visibility
 - **Phase 16-01:** Scroll depth dedup via sessionStorage keyed by pathname
+- **Phase 16-03:** getDeviceType inlined in performance-monitor.ts (16-01 engagement-tracker not yet present when plan ran)
+- **Phase 16-03:** animation_budget_exceeded uses existing POOR threshold (45fps) to keep thresholds DRY
+- **Phase 16-03:** createTrackedCinematicVariant returns plain props object (not HOC) for composability
+- **Phase 16-03:** transitionStartRef over useState for timing — no re-render needed
 
 ### Pending Checkpoints
 
@@ -83,10 +87,10 @@ All v1.0 + v1.1 + v1.2 decisions logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-03-09
-Completed: Phase 16-01 — Centralized Engagement Tracking Infrastructure
-Commits: 43bfbca (task 1), 7a19f59 (task 2), dcd7c1c (task 3)
-Phase 16 Status: In progress (Plan 01 done, Plans 02-03 remaining)
-Resume: .planning/phases/16-analytics-engagement-tracking/16-02-PLAN.md
+Completed: Phase 16-03 — Performance Monitoring & Cinematic Tracking
+Commits: 5f67064 (task 1), 864691a (task 2), 017624b (task 3)
+Phase 16 Status: Plans 01 and 03 done; Plan 02 status unknown
+Resume: .planning/phases/16-analytics-engagement-tracking/16-02-PLAN.md (if not done)
 
 ---
-*Last updated: 2026-03-09 after Phase 14-04 completion*
+*Last updated: 2026-03-09 after Phase 16-03 completion*
