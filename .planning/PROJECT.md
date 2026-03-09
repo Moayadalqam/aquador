@@ -59,20 +59,33 @@ A customer completes a purchase and knows it worked — they see their order det
 - ✓ Form accessibility (htmlFor/id, aria-labels, fieldset/legend) — v1.1
 - ✓ Magic numbers extracted to named constants — v1.1
 
+- ✓ Complete luxury design overhaul with new template and layout structure — v1.2
+- ✓ Perfect responsive design across all screen sizes (mobile, tablet, desktop) — v1.2
+- ✓ Premium brand identity preserving gold accents with sophisticated color palette — v1.2
+- ✓ Smooth animations and micro-interactions throughout user journey — v1.2
+- ✓ High-end typography and spacing system for luxury feel — v1.2
+- ✓ Optimized perfume e-commerce UX (product discovery, customization, checkout) — v1.2
+- ✓ Homepage redesign with luxury brand storytelling — v1.2
+- ✓ Product catalog with enhanced visual hierarchy and filtering — v1.2
+- ✓ Custom perfume builder with premium interface design — v1.2
+- ✓ Cart and checkout flow with luxury shopping experience — v1.2
+- ✓ Customer account area with premium dashboard design — v1.2
+- ✓ Admin panel design consistency (maintain functionality, elevate aesthetics) — v1.2
+
 ### Active
 
-- [ ] Complete luxury design overhaul with new template and layout structure
-- [ ] Perfect responsive design across all screen sizes (mobile, tablet, desktop)
-- [ ] Premium brand identity preserving gold accents with sophisticated color palette
-- [ ] Smooth animations and micro-interactions throughout user journey
-- [ ] High-end typography and spacing system for luxury feel
-- [ ] Optimized perfume e-commerce UX (product discovery, customization, checkout)
-- [ ] Homepage redesign with luxury brand storytelling
-- [ ] Product catalog with enhanced visual hierarchy and filtering
-- [ ] Custom perfume builder with premium interface design
-- [ ] Cart and checkout flow with luxury shopping experience
-- [ ] Customer account area with premium dashboard design
-- [ ] Admin panel design consistency (maintain functionality, elevate aesthetics)
+- [ ] Cinematic homepage with parallax scrolling and immersive brand storytelling
+- [ ] 3D product showcases with interactive rotation and zoom capabilities
+- [ ] Advanced product discovery with smooth filtering and immersive browsing
+- [ ] Parallax scrolling effects throughout entire user journey
+- [ ] Cinematic page transitions and micro-animations
+- [ ] 3D enhanced custom perfume builder with interactive visualization
+- [ ] Mobile-first responsive design optimized for touch interactions
+- [ ] Performance-optimized animations and smooth 60fps experiences
+- [ ] Middle East luxury retail inspired visual design language
+- [ ] Customer engagement analytics and interaction tracking
+- [ ] High-end loading states and progressive disclosure patterns
+- [ ] Advanced scroll-triggered animations and reveals
 
 ### Out of Scope
 
@@ -85,16 +98,17 @@ A customer completes a purchase and knows it worked — they see their order det
 - Framer Motion replacement — 53 files, too broad for current scope
 - Admin dashboard redesign — functional, not UX overhaul
 
-## Current Milestone: v1.2 Design Overhaul & Premium UX
+## Current Milestone: v2.0 Immersive Luxury Experience
 
-**Goal:** Transform Aquador into a luxury perfume e-commerce experience with Apple-level design quality, perfect responsiveness, and sophisticated brand presentation.
+**Goal:** Transform Aquador into an exceptional luxury perfume destination with cutting-edge visual effects, 3D showcases, and immersive interactions that create customer amazement and engagement.
 
 **Target features:**
-- Complete visual overhaul with new luxury template preserving gold brand identity
-- Perfect responsive design with precise spacing, alignment, and premium layout system
-- Smooth animations and sophisticated micro-interactions
-- High-end typography and visual hierarchy optimized for luxury perfume shopping
-- Enhanced product discovery and customization experience with premium interface design
+- Complete site transformation with smooth parallax scrolling throughout
+- 3D product showcases with interactive capabilities
+- Cinematic animations and page transitions
+- Immersive product discovery and browsing experience
+- Middle East luxury retail inspired design language
+- Customer engagement focused interactions and micro-animations
 
 ## Context
 
@@ -157,4 +171,4 @@ Both converge at `/api/webhooks/stripe` which persists orders and sends emails.
 - **CSP limitation**: unsafe-inline required by Next.js/Tailwind
 
 ---
-*Last updated: 2026-03-04 after v1.2 milestone start*
+*Last updated: 2026-03-09 after v2.0 milestone start*
