@@ -8,6 +8,9 @@
  * Safari jank and improve battery performance.
  */
 
+import { useEffect, useRef } from 'react';
+import { trackParallaxEngagement } from '@/lib/analytics/engagement-tracker';
+
 // Easing from scroll-animations.ts
 const EXPO_EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -109,4 +112,65 @@ export function getEffectiveSpeed(
     return 0;
   }
   return speed;
+}
+
+// ─── Parallax Engagement Tracking Hook ───────────────────────────────────────
+
+/**
+ * useParallaxEngagementTracking
+ *
+ * Tracks when a parallax element has been visible in the viewport for >1 second.
+ * Uses IntersectionObserver for efficient visibility detection.
+ * Fires trackParallaxEngagement when the element leaves the viewport after
+ * sufficient engagement time.
+ *
+ * @param ref - React ref attached to the parallax container element
+ * @param elementId - Identifier for this element in analytics (e.g. "hero-background")
+ *
+ * @example
+ * ```tsx
+ * const ref = useRef<HTMLDivElement>(null);
+ * useParallaxEngagementTracking(ref, 'hero-background');
+ * return <div ref={ref}>...</div>;
+ * ```
+ */
+export function useParallaxEngagementTracking(
+  ref: React.RefObject<Element>,
+  elementId: string
+): void {
+  const enterTimeRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      entries => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            // Element entered viewport — start timer
+            enterTimeRef.current = performance.now();
+          } else if (enterTimeRef.current !== null) {
+            // Element left viewport — calculate duration and fire if >1s
+            const durationMs = performance.now() - enterTimeRef.current;
+            enterTimeRef.current = null;
+            trackParallaxEngagement(elementId, durationMs);
+          }
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(el);
+
+    return () => {
+      observer.disconnect();
+      // Fire on unmount if element was still visible
+      if (enterTimeRef.current !== null) {
+        const durationMs = performance.now() - enterTimeRef.current;
+        trackParallaxEngagement(elementId, durationMs);
+        enterTimeRef.current = null;
+      }
+    };
+  }, [elementId]);
 }

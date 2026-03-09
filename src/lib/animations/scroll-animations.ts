@@ -1,4 +1,6 @@
 import { Variants } from 'framer-motion';
+import { useEffect, useRef } from 'react';
+import { trackScrollDepth, type ScrollDepthMilestone } from '@/lib/analytics/engagement-tracker';
 
 /**
  * Scroll-triggered animation variants with mobile optimization
@@ -330,3 +332,66 @@ export const getResponsiveVariant = (
       return fadeInUp;
   }
 };
+
+// ─── Scroll Depth Tracking Hook ───────────────────────────────────────────────
+
+const SCROLL_MILESTONES: ScrollDepthMilestone[] = [25, 50, 75, 100];
+const SCROLL_DEDUP_KEY = 'aq_scroll_depth_';
+
+/**
+ * useScrollDepthTracking
+ *
+ * Tracks scroll depth milestones (25/50/75/100%) via Vercel Analytics.
+ * Uses sessionStorage to prevent duplicate events within a session.
+ * Safe to use in any page component — attaches/detaches cleanly on unmount.
+ *
+ * @example
+ * ```tsx
+ * function ProductPage() {
+ *   useScrollDepthTracking();
+ *   return <main>...</main>;
+ * }
+ * ```
+ */
+export function useScrollDepthTracking(): void {
+  const firedRef = useRef<Set<ScrollDepthMilestone>>(new Set());
+
+  useEffect(() => {
+    const pagePath = window.location.pathname;
+    const dedupPrefix = SCROLL_DEDUP_KEY + pagePath;
+
+    // Restore already-fired milestones from sessionStorage
+    SCROLL_MILESTONES.forEach(milestone => {
+      try {
+        if (sessionStorage.getItem(`${dedupPrefix}_${milestone}`)) {
+          firedRef.current.add(milestone);
+        }
+      } catch {
+        // sessionStorage unavailable — proceed without dedup
+      }
+    });
+
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (docHeight <= 0) return;
+
+      const pct = (scrollTop / docHeight) * 100;
+
+      for (const milestone of SCROLL_MILESTONES) {
+        if (pct >= milestone && !firedRef.current.has(milestone)) {
+          firedRef.current.add(milestone);
+          trackScrollDepth(milestone, pagePath);
+          try {
+            sessionStorage.setItem(`${dedupPrefix}_${milestone}`, '1');
+          } catch {
+            // sessionStorage unavailable — ignore
+          }
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+}
