@@ -9,6 +9,11 @@ import { useDeviceCapabilities } from '@/hooks/useDeviceCapabilities';
 import { useKeyboardControls } from '@/hooks/useKeyboardControls';
 import { track3DInteraction } from '@/lib/analytics/engagement-tracker';
 import { KeyboardHints } from '@/components/3d/KeyboardHints';
+import {
+  get3DSceneLabel,
+  get3DStateAnnouncement,
+  isHighContrastMode,
+} from '@/lib/accessibility/aria-labels';
 
 type SceneProps = {
   children: React.ReactNode;
@@ -24,8 +29,10 @@ export function Scene({
 }: SceneProps) {
   const capabilities = useDeviceCapabilities();
   const [dpr, setDpr] = useState(capabilities.recommendedDPR);
+  const [announcement, setAnnouncement] = useState('');
   const rotateStartTimeRef = useRef<number | null>(null);
   const controlsRef = useRef<OrbitControlsImpl>(null);
+  const highContrast = isHighContrastMode();
 
   const handleRotateStart = useCallback(() => {
     rotateStartTimeRef.current = performance.now();
@@ -58,6 +65,7 @@ export function Scene({
       );
       ctrl.update();
       track3DInteraction('rotate_start', { productName });
+      setAnnouncement(get3DStateAnnouncement('rotate', productName));
     }
   }, [productName]);
 
@@ -88,7 +96,9 @@ export function Scene({
         ctrl.update?.();
       }
     }
-    track3DInteraction(delta > 0 ? 'zoom_in' : 'zoom_out', { productName });
+    const zoomAction = delta > 0 ? 'zoom_in' : 'zoom_out';
+    track3DInteraction(zoomAction, { productName });
+    setAnnouncement(get3DStateAnnouncement(zoomAction, productName));
   }, [productName]);
 
   // Keyboard reset: restore default camera position
@@ -99,6 +109,7 @@ export function Scene({
     const ctrl = controls as any;
     ctrl.reset?.();
     track3DInteraction('reset', { productName });
+    setAnnouncement(get3DStateAnnouncement('reset', productName));
   }, [productName]);
 
   // Register keyboard controls — arrow keys rotate, +/- zoom, R resets
@@ -111,7 +122,21 @@ export function Scene({
   });
 
   return (
-    <div className={`${className} relative`}>
+    <div
+      className={`${className} relative`}
+      role="img"
+      aria-label={get3DSceneLabel(productName)}
+      style={highContrast ? { outline: '2px solid currentColor' } : undefined}
+    >
+      {/* Screen reader live region — announces keyboard interactions */}
+      <div
+        aria-live="polite"
+        aria-atomic="true"
+        className="sr-only"
+      >
+        {announcement}
+      </div>
+
       <Canvas
         camera={CAMERA_CONFIG}
         gl={{ preserveDrawingBuffer: true }}
