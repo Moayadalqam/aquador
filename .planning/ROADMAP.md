@@ -214,11 +214,12 @@ Plans:
   4. User using screen readers receives appropriate descriptions of 3D elements and animations
   5. User can access all product discovery and customization features without motion dependency
   6. User experiences smooth transitions from loading to interactive states with contextual indicators
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 17-01: TBD
-- [ ] 17-02: TBD
+- [ ] 17-01-PLAN.md — Motion accessibility and keyboard navigation (parallax vestibular-safe mode, 3D keyboard controls, keyboard hints overlay)
+- [ ] 17-02-PLAN.md — Screen reader support and ARIA (ARIA labels for 3D, live regions, high contrast mode, accessible filters)
+- [ ] 17-03-PLAN.md — Progressive loading and performance polish (staged loading states, luxury transitions, performance metrics)
 
 ## Progress
 
@@ -240,7 +241,7 @@ Phases execute in numeric order: 1 → 4 → 8 → 9 → 10 → 11 → 12 → 13
 | 14. 3D Product Showcase | v2.0 | 0/4 | Planned | - |
 | 15. Navigation & Discovery | v2.0 | 3/3 | Complete | 2026-03-09 |
 | 16. Analytics Tracking | v2.0 | 0/? | Not started | - |
-| 17. Accessibility & Polish | v2.0 | 0/? | Not started | - |
+| 17. Accessibility & Polish | v2.0 | 0/3 | Planned | - |
 
 ---
-*Last updated: 2026-03-09 after Phase 14 planning*
+*Last updated: 2026-03-09 after Phase 17 planning*
