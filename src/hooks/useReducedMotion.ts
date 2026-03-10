@@ -29,8 +29,11 @@ import { useEffect, useState } from 'react';
  * ```
  */
 export function useReducedMotion(): boolean {
-  // Default to false (enable animations) for SSR
-  const [reducedMotion, setReducedMotion] = useState(false);
+  // Read matchMedia synchronously on client to prevent animation flash
+  const [reducedMotion, setReducedMotion] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+  });
 
   useEffect(() => {
     // Check if browser supports matchMedia
