@@ -73,13 +73,28 @@ export default function MaintenanceClient() {
 
   return (
     <div className="fixed inset-0 z-[9999] bg-[#FAFAF8] flex flex-col items-center justify-center px-6 text-center overflow-y-auto">
-      {/* Logo */}
+      {/* Background bottle image */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
+        <Image
+          src="/images/aquadour1.jpg"
+          alt=""
+          width={900}
+          height={900}
+          className="w-[70vw] max-w-[600px] h-auto opacity-[0.06] scale-110 blur-[1px] select-none"
+          priority
+        />
+      </div>
+
+      {/* Content */}
+      <div className="relative z-10 flex flex-col items-center">
+
+      {/* Logo — 2× size */}
       <Image
         src="/aquador.webp"
         alt="Aquad'or"
-        width={320}
-        height={96}
-        className="h-20 sm:h-24 w-auto mb-12"
+        width={640}
+        height={192}
+        className="h-36 sm:h-44 w-auto mb-12"
         priority
       />
 
@@ -136,6 +151,8 @@ export default function MaintenanceClient() {
           Qualia Solutions
         </a>
       </p>
+
+      </div>{/* end relative z-10 content wrapper */}
     </div>
   );
 }
