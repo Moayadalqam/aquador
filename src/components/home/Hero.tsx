@@ -94,7 +94,7 @@ export default function Hero() {
 
           {/* Tagline */}
           <motion.p
-            className="text-sm sm:text-base md:text-lg text-gray-400 tracking-[0.2em] sm:tracking-[0.25em] uppercase font-light mb-14"
+            className="text-sm sm:text-base md:text-lg text-white tracking-[0.2em] sm:tracking-[0.25em] uppercase font-light mb-14"
             variants={revealVariants.fadeInSequence}
           >
             Where Luxury Meets Distinction
