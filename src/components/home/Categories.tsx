@@ -34,12 +34,12 @@ export default function Categories() {
                 className="group block relative aspect-[3/4] overflow-hidden bg-gray-200"
               >
                 {/* Image */}
-                <div className="absolute inset-0">
+                <div className={`absolute inset-0 ${category.contain ? 'bg-[#1a1a1a]' : ''}`}>
                   <Image
                     src={category.image}
                     alt={category.name}
                     fill
-                    className="object-cover transition-all duration-700 group-hover:scale-110 filter grayscale-[20%] brightness-[0.7] group-hover:grayscale-0 group-hover:brightness-90"
+                    className={`transition-all duration-700 group-hover:scale-110 filter grayscale-[20%] brightness-[0.7] group-hover:grayscale-0 group-hover:brightness-90 ${category.contain ? 'object-contain p-6' : 'object-cover'}`}
                     sizes="(max-width: 1024px) 50vw, 25vw"
                   />
                 </div>
