@@ -13,7 +13,6 @@ import VisitorTracker from "@/components/VisitorTracker";
 import { PageTransition } from "@/components/providers/PageTransition";
 import { AnimationBudgetProvider } from "@/lib/performance/animation-budget";
 import { ScrollDepthTracker } from "@/components/analytics/ScrollDepthTracker";
-import MaintenanceGate from "@/components/MaintenanceGate";
 
 const ChatWidget = dynamic(() => import("@/components/ai/ChatWidget"), {
   ssr: false,
@@ -119,26 +118,24 @@ export default function RootLayout({
           Skip to content
         </a>
         <AbortErrorSuppressor />
-        <MaintenanceGate>
-          <ErrorBoundary>
-            <AnimationBudgetProvider>
-              <CartProvider>
-                <Navbar />
-                <PageTransition>
-                  <main id="main-content" className="min-h-screen">
-                    {children}
-                  </main>
-                </PageTransition>
-                <Footer />
-                <CartDrawer />
-                <CookieConsent />
-                <ScrollDepthTracker />
-                <ChatWidget />
-                <VisitorTracker />
-              </CartProvider>
-            </AnimationBudgetProvider>
-          </ErrorBoundary>
-        </MaintenanceGate>
+        <ErrorBoundary>
+          <AnimationBudgetProvider>
+            <CartProvider>
+              <Navbar />
+              <PageTransition>
+                <main id="main-content" className="min-h-screen">
+                  {children}
+                </main>
+              </PageTransition>
+              <Footer />
+              <CartDrawer />
+              <CookieConsent />
+              <ScrollDepthTracker />
+              <ChatWidget />
+              <VisitorTracker />
+            </CartProvider>
+          </AnimationBudgetProvider>
+        </ErrorBoundary>
         <Analytics />
         <SpeedInsights />
       </body>

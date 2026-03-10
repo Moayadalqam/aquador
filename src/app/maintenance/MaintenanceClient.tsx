@@ -1,53 +1,36 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
 const ACCESS_CODE = '516278';
-const COOKIE_NAME = 'aq_access';
-
-function getCookie(name: string): string | null {
-  if (typeof document === 'undefined') return null;
-  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-  return match ? match[2] : null;
-}
 
 function setCookie(name: string, value: string, days: number) {
   const expires = new Date(Date.now() + days * 864e5).toUTCString();
   document.cookie = `${name}=${value}; expires=${expires}; path=/; SameSite=Lax`;
 }
 
-export default function MaintenanceGate({ children }: { children: React.ReactNode }) {
-  const [authorized, setAuthorized] = useState<boolean | null>(null);
+export default function MaintenanceClient() {
+  const router = useRouter();
   const [code, setCode] = useState('');
   const [error, setError] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
 
-  useEffect(() => {
-    setAuthorized(getCookie(COOKIE_NAME) === '1');
-  }, []);
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (code.trim() === ACCESS_CODE) {
-      setCookie(COOKIE_NAME, '1', 30);
-      setAuthorized(true);
+      setCookie('aq_access', '1', 30);
+      router.push('/');
     } else {
       setError(true);
       setTimeout(() => setError(false), 2000);
     }
   };
 
-  // Still checking cookie — render nothing to avoid flash
-  if (authorized === null) return null;
-
-  // Authorized — render the site
-  if (authorized) return <>{children}</>;
-
-  // Login form
   if (showLogin) {
     return (
-      <div className="min-h-screen bg-[#FAFAF8] flex items-center justify-center px-6">
+      <div className="fixed inset-0 z-[9999] bg-[#FAFAF8] flex items-center justify-center px-6">
         <div className="w-full max-w-sm text-center">
           <Image
             src="/aquador.webp"
@@ -63,16 +46,16 @@ export default function MaintenanceGate({ children }: { children: React.ReactNod
               value={code}
               onChange={(e) => setCode(e.target.value)}
               placeholder="Enter access code"
-              className={`w-full px-5 py-3 text-center text-lg tracking-[0.3em] bg-white border rounded-xl outline-none transition-all duration-300 ${
+              className={`w-full px-5 py-3 text-center text-lg tracking-[0.3em] bg-white border rounded-xl outline-none transition-all duration-300 font-[family-name:var(--font-poppins)] ${
                 error
                   ? 'border-red-400 text-red-500'
-                  : 'border-gray-200 focus:border-gold text-black'
+                  : 'border-gray-200 focus:border-[#D4AF37] text-black'
               }`}
               autoFocus
             />
             <button
               type="submit"
-              className="w-full py-3 bg-black text-white text-sm uppercase tracking-[0.15em] rounded-xl hover:bg-gray-900 transition-colors"
+              className="w-full py-3 bg-black text-white text-sm uppercase tracking-[0.15em] rounded-xl hover:bg-gray-900 transition-colors font-[family-name:var(--font-poppins)]"
             >
               Enter
             </button>
@@ -88,9 +71,8 @@ export default function MaintenanceGate({ children }: { children: React.ReactNod
     );
   }
 
-  // Under construction page
   return (
-    <div className="min-h-screen bg-[#FAFAF8] flex flex-col items-center justify-center px-6 text-center">
+    <div className="fixed inset-0 z-[9999] bg-[#FAFAF8] flex flex-col items-center justify-center px-6 text-center overflow-y-auto">
       {/* Logo */}
       <Image
         src="/aquador.webp"
@@ -106,7 +88,7 @@ export default function MaintenanceGate({ children }: { children: React.ReactNod
 
       {/* Heading */}
       <h1
-        className="text-3xl sm:text-4xl md:text-5xl tracking-tight mb-5"
+        className="text-3xl sm:text-4xl md:text-5xl tracking-tight mb-5 text-black"
         style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}
       >
         Something Beautiful
@@ -115,7 +97,7 @@ export default function MaintenanceGate({ children }: { children: React.ReactNod
       </h1>
 
       {/* Subtext */}
-      <p className="text-gray-500 text-sm sm:text-base max-w-md leading-relaxed mb-10">
+      <p className="text-gray-500 text-sm sm:text-base max-w-md leading-relaxed mb-10 font-[family-name:var(--font-poppins)]">
         We are crafting a new digital experience to match the luxury of our fragrances.
         Stay connected for the grand reveal.
       </p>
@@ -125,7 +107,7 @@ export default function MaintenanceGate({ children }: { children: React.ReactNod
         href="https://www.instagram.com/aquadorfragrances/"
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center gap-3 px-8 py-4 bg-black text-white text-xs sm:text-sm uppercase tracking-[0.2em] rounded-xl hover:bg-gray-900 transition-all duration-300 shadow-lg shadow-black/10 hover:shadow-xl"
+        className="inline-flex items-center gap-3 px-8 py-4 bg-black text-white text-xs sm:text-sm uppercase tracking-[0.2em] rounded-xl hover:bg-gray-900 transition-all duration-300 shadow-lg shadow-black/10 hover:shadow-xl font-[family-name:var(--font-poppins)]"
       >
         <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
@@ -136,13 +118,13 @@ export default function MaintenanceGate({ children }: { children: React.ReactNod
       {/* Login link */}
       <button
         onClick={() => setShowLogin(true)}
-        className="mt-16 text-[10px] text-gray-300 hover:text-gray-500 transition-colors tracking-[0.1em] uppercase"
+        className="mt-16 text-[10px] text-gray-300 hover:text-gray-500 transition-colors tracking-[0.1em] uppercase font-[family-name:var(--font-poppins)]"
       >
         Login with code
       </button>
 
       {/* Qualia credit */}
-      <p className="mt-8 text-[11px] text-gray-400">
+      <p className="mt-8 text-[11px] text-gray-400 font-[family-name:var(--font-poppins)]">
         This website is being developed and designed by{' '}
         <a
           href="https://qualiasolutions.net"
