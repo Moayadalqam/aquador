@@ -105,20 +105,25 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://images.unsplash.com" />
         <link rel="preconnect" href="https://hznpuxplqgszbacxzbhv.supabase.co" />
         <link rel="preconnect" href="https://js.stripe.com" />
         <link rel="dns-prefetch" href="https://hznpuxplqgszbacxzbhv.supabase.co" />
         <link rel="dns-prefetch" href="https://js.stripe.com" />
       </head>
       <body className={`${poppins.variable} ${playfair.variable} antialiased`}>
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-gold focus:text-black focus:text-sm focus:font-medium focus:rounded"
+        >
+          Skip to content
+        </a>
         <AbortErrorSuppressor />
         <ErrorBoundary>
           <AnimationBudgetProvider>
             <CartProvider>
               <Navbar />
               <PageTransition>
-                <main className="min-h-screen">
+                <main id="main-content" className="min-h-screen">
                   {children}
                 </main>
               </PageTransition>
@@ -127,10 +132,10 @@ export default function RootLayout({
               <CookieConsent />
               <ScrollDepthTracker />
               <ChatWidget />
+              <VisitorTracker />
             </CartProvider>
           </AnimationBudgetProvider>
         </ErrorBoundary>
-        <VisitorTracker />
         <Analytics />
         <SpeedInsights />
       </body>

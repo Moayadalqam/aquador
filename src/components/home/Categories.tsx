@@ -16,7 +16,7 @@ export default function Categories() {
   const cardTap = reducedMotion ? { scale: 0.98 } : tapVariants.shrink;
 
   return (
-    <section className="py-2 bg-gold-ambient-subtle">
+    <section className="bg-gold-ambient-subtle">
       <div className="container-wide">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-1">
           {categories.map((category, index) => (
@@ -39,6 +39,7 @@ export default function Categories() {
                     src={category.image}
                     alt={category.name}
                     fill
+                    priority={index < 2}
                     className={`transition-all duration-700 group-hover:scale-110 filter grayscale-[20%] brightness-[0.7] group-hover:grayscale-0 group-hover:brightness-90 ${category.contain ? 'object-contain p-6' : 'object-cover'}`}
                     sizes="(max-width: 1024px) 50vw, 25vw"
                   />
@@ -49,13 +50,14 @@ export default function Categories() {
 
                 {/* Content */}
                 <div className="absolute bottom-0 left-0 right-0 p-5 md:p-6 z-10">
-                  <h2 className="font-playfair text-xl md:text-2xl text-white mb-1">
+                  <h3 className="font-playfair text-xl md:text-2xl text-white mb-1">
                     {category.name}
-                  </h2>
+                  </h3>
                   <p className="text-xs text-gray-400 tracking-wide mb-4 line-clamp-2 transition-colors duration-300 group-hover:text-gray-300">
                     {category.description}
                   </p>
-                  <span className="inline-flex items-center gap-2 text-gold text-[10px] uppercase tracking-[0.15em] opacity-0 -translate-x-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0">
+                  {/* Always visible on touch; transitions in on hover for pointer devices */}
+                  <span className="inline-flex items-center gap-2 text-gold text-[10px] uppercase tracking-[0.15em] opacity-60 md:opacity-0 md:-translate-x-2 transition-all duration-300 md:group-hover:opacity-100 md:group-hover:translate-x-0">
                     Explore
                     <ArrowRight className="w-3 h-3" />
                   </span>

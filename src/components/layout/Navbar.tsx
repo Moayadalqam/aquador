@@ -33,7 +33,7 @@ export default function Navbar() {
     const handleScroll = () => {
       if (!ticking.current) {
         requestAnimationFrame(() => {
-          setIsScrolled(window.scrollY > 10);
+          setIsScrolled(window.scrollY > 80);
           ticking.current = false;
         });
         ticking.current = true;
@@ -57,8 +57,10 @@ export default function Navbar() {
   // White text only on homepage with dark hero behind transparent header
   const useLightText = isHome && !isScrolled;
 
-  const checkActive = (href: string) =>
-    pathname === href || (href !== '/' && pathname.startsWith(href));
+  const checkActive = (href: string) => {
+    if (href === '/shop') return pathname === '/shop' || (pathname.startsWith('/shop/') && pathname !== '/shop/lattafa' && !pathname.startsWith('/shop/lattafa/'));
+    return pathname === href || (href !== '/' && pathname.startsWith(href));
+  };
 
   return (
     <>
@@ -81,6 +83,7 @@ export default function Navbar() {
                 onClick={() => setIsMobileOpen(!isMobileOpen)}
                 className={`xl:hidden min-h-[44px] min-w-[44px] flex items-center justify-center hover:text-gold transition-colors duration-300 -ml-3 ${useLightText ? 'text-white' : 'text-black/80'}`}
                 aria-label={isMobileOpen ? 'Close menu' : 'Open menu'}
+                aria-expanded={isMobileOpen}
               >
                 <div className="w-[18px] h-3 flex flex-col justify-between">
                   <span className={`block h-px bg-current transition-all duration-500 origin-center ${

@@ -47,7 +47,7 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
                 </div>
 
                 {/* Content */}
-                <div className="p-4 bg-white">
+                <div className="p-4 bg-[#FAFAF8]">
                   {product.brand && (
                     <p className="label-micro mb-1.5 truncate">{product.brand}</p>
                   )}
@@ -58,12 +58,21 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
                   {/* Price section */}
                   <div className="pt-2 border-t border-gray-100">
                     <div className="flex items-baseline justify-between">
-                      <span className="text-base font-playfair text-gray-900">
-                        {formatPrice(product.price)}
-                      </span>
-                      <span className="text-[9px] text-gray-400 uppercase">
-                        {product.size}
-                      </span>
+                      <div className="flex items-baseline gap-2">
+                        <span className={`text-base font-playfair ${product.salePrice ? 'text-gold-dark' : 'text-gray-900'}`}>
+                          {formatPrice(product.salePrice ?? product.price)}
+                        </span>
+                        {product.salePrice && (
+                          <span className="text-xs text-gray-400 line-through">
+                            {formatPrice(product.price)}
+                          </span>
+                        )}
+                      </div>
+                      {product.size && (
+                        <span className="text-xs text-gray-400 uppercase">
+                          {product.size}
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>

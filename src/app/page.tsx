@@ -1,6 +1,10 @@
 import { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 import { getFeaturedProducts } from '@/lib/supabase/product-service';
+import Hero from '@/components/home/Hero';
+import Categories from '@/components/home/Categories';
+import CreateSection from '@/components/home/CreateSection';
+import CTASection from '@/components/home/CTASection';
 
 export const metadata: Metadata = {
   title: "Aquad'or | Luxury Perfumes & Niche Fragrances Cyprus",
@@ -10,28 +14,7 @@ export const metadata: Metadata = {
   },
 };
 
-const Hero = dynamic(() => import('@/components/home/Hero'), {
-  ssr: true,
-});
-
-const Categories = dynamic(() => import('@/components/home/Categories'), {
-  ssr: true,
-});
-
-const CreateSection = dynamic(() => import('@/components/home/CreateSection'), {
-  ssr: true,
-});
-
 const FeaturedProducts = dynamic(() => import('@/components/home/FeaturedProducts'), {
-  ssr: true,
-  loading: () => (
-    <div className="py-20 text-center">
-      <div className="inline-block w-8 h-8 border-2 border-gold border-t-transparent rounded-full animate-spin" />
-    </div>
-  ),
-});
-
-const CTASection = dynamic(() => import('@/components/home/CTASection'), {
   ssr: true,
 });
 
@@ -136,19 +119,23 @@ export default async function Home() {
     priceRange: '€€',
   };
 
+  // Safe JSON-LD serialization: escape </script> injection vector only
+  const safeStringify = (obj: unknown) =>
+    JSON.stringify(obj).replace(/<\/script>/gi, '<\\/script>');
+
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema).replace(/</g, '\\u003c') }}
+        dangerouslySetInnerHTML={{ __html: safeStringify(organizationSchema) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema).replace(/</g, '\\u003c') }}
+        dangerouslySetInnerHTML={{ __html: safeStringify(websiteSchema) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema).replace(/</g, '\\u003c') }}
+        dangerouslySetInnerHTML={{ __html: safeStringify(localBusinessSchema) }}
       />
       <Hero />
       <Categories />

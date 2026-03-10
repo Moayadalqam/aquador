@@ -78,8 +78,8 @@ export default function CTASection() {
                   <div className="w-12 h-12 rounded-full border border-gold/30 bg-gold/5 flex items-center justify-center mb-3">
                     <feature.icon className="w-5 h-5 text-gold" />
                   </div>
-                  <h3 className="text-black text-sm font-medium mb-0.5">{feature.title}</h3>
-                  <p className="text-gray-500 text-xs">{feature.description}</p>
+                  <h3 className="text-white text-sm font-medium mb-0.5">{feature.title}</h3>
+                  <p className="text-gray-300 text-xs">{feature.description}</p>
                 </motion.div>
               ))}
             </div>

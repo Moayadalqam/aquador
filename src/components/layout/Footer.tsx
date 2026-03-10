@@ -24,7 +24,7 @@ const footerLinks = {
 
 export default function Footer() {
   return (
-    <footer className="relative bg-gold-ambient-subtle border-t border-gold/5">
+    <footer className="relative bg-gold-ambient-subtle border-t border-gold/10">
       <div className="container-wide section-sm">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10">
           {/* Brand */}
@@ -35,7 +35,7 @@ export default function Footer() {
                 alt="Aquad'or"
                 width={400}
                 height={120}
-                className="h-20 sm:h-24 md:h-28 lg:h-32 w-auto object-contain"
+                className="h-16 sm:h-20 w-auto object-contain"
               />
             </Link>
             <p className="text-black/80 text-sm leading-relaxed max-w-[220px] font-playfair italic">
@@ -43,7 +43,7 @@ export default function Footer() {
             </p>
             <div className="flex gap-3">
               <a
-                href="https://instagram.com"
+                href="https://instagram.com/aquadorcy"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2.5 text-black/60 hover:text-gold transition-colors"
@@ -52,7 +52,7 @@ export default function Footer() {
                 <Instagram className="w-5 h-5" />
               </a>
               <a
-                href="https://facebook.com"
+                href="https://facebook.com/aquadorcy"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2.5 text-black/60 hover:text-gold transition-colors"
@@ -132,7 +132,7 @@ export default function Footer() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="mt-12 pt-6 border-t border-gold/5 flex flex-col sm:flex-row justify-between items-center gap-3"
+          className="mt-12 pt-6 border-t border-gold/10 flex flex-col sm:flex-row justify-between items-center gap-3"
         >
           <p className="text-black/40 text-[10px] tracking-wide">
             © {new Date().getFullYear()} Aquad&apos;or Cyprus

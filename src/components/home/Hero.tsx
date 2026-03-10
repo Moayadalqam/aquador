@@ -31,6 +31,7 @@ export default function Hero() {
               muted
               loop
               playsInline
+              poster="/images/aquadour1.jpg"
               className="absolute w-full h-full object-cover opacity-30"
               style={{ filter: 'brightness(0.4) saturate(0.8)' }}
               onError={() => setVideoError(true)}
@@ -47,18 +48,18 @@ export default function Hero() {
         </ParallaxSection>
 
         {/* Subtle ambient glow - Medium parallax layer */}
-        <ParallaxSection speed={0.5} className="absolute inset-0 z-0 pointer-events-none">
+        <ParallaxSection speed={0.5} className="absolute inset-0 z-0 pointer-events-none gpu-accelerated">
           <motion.div
             className="absolute top-1/3 left-1/4 w-[500px] h-[500px] bg-gold/[0.03] rounded-full blur-[100px]"
             animate={isInView ? {
               scale: [1, 1.1, 1],
               opacity: [0.5, 0.7, 0.5],
-            } : {}}
-            transition={{
+            } : { scale: 1, opacity: 0.5 }}
+            transition={isInView ? {
               duration: 10,
               repeat: Infinity,
               ease: 'easeInOut',
-            }}
+            } : { duration: 0 }}
           />
         </ParallaxSection>
 
@@ -72,7 +73,7 @@ export default function Hero() {
           {/* Brand name */}
           <motion.h1
             className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-playfair font-normal tracking-[0.15em] sm:tracking-[0.2em] mb-8"
-            variants={revealVariants.fadeInSequence}
+            aria-label="Aquad'or"
             style={{
               background: 'linear-gradient(90deg, #FFD700, #FFF8DC, #FFD700, #D4AF37, #FFD700)',
               backgroundSize: '200% auto',
@@ -119,6 +120,22 @@ export default function Hero() {
         </motion.div>
 
       </div>
+
+      {/* Scroll indicator */}
+      <motion.div
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.5, duration: 0.6 }}
+        aria-hidden="true"
+      >
+        <span className="text-white/40 text-[9px] uppercase tracking-[0.25em]">Scroll</span>
+        <motion.div
+          className="w-px h-10 bg-gradient-to-b from-gold/60 to-transparent"
+          animate={{ scaleY: [0, 1, 0], originY: 0 }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+        />
+      </motion.div>
     </motion.section>
   );
 }
