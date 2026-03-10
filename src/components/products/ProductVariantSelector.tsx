@@ -1,7 +1,5 @@
 'use client';
 
-import { motion } from 'framer-motion';
-
 export interface ProductVariant {
   type: 'perfume' | 'essence-oil' | 'body-lotion';
   label: string;
@@ -80,25 +78,17 @@ export default function ProductVariantSelector({
           {PRODUCT_VARIANTS.map((variant) => {
             const isActive = selected.type === variant.type;
             return (
-              <motion.button
+              <button
                 key={variant.type}
                 onClick={() => handleTypeChange(variant)}
-                whileTap={{ scale: 0.97 }}
-                className={`relative px-5 py-3 rounded-xl text-sm font-medium transition-all duration-300 ${
+                className={`px-5 py-3 rounded-xl text-sm font-medium transition-all duration-300 ${
                   isActive
                     ? 'bg-black text-white shadow-lg shadow-black/10'
                     : 'bg-white text-gray-600 border border-gray-200 hover:border-gold/40 hover:text-black'
                 }`}
               >
                 {variant.label}
-                {isActive && (
-                  <motion.div
-                    layoutId="variantType"
-                    className="absolute inset-0 rounded-xl bg-black -z-10"
-                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                  />
-                )}
-              </motion.button>
+              </button>
             );
           })}
         </div>
@@ -113,10 +103,9 @@ export default function ProductVariantSelector({
           {activeVariant.sizes.map(({ size, price }) => {
             const isActive = selected.size === size;
             return (
-              <motion.button
+              <button
                 key={size}
                 onClick={() => handleSizeChange(size, price)}
-                whileTap={{ scale: 0.97 }}
                 className={`px-5 py-3 rounded-xl text-sm transition-all duration-300 flex items-baseline gap-2 ${
                   isActive
                     ? 'bg-gold/10 text-black border-2 border-gold'
@@ -127,7 +116,7 @@ export default function ProductVariantSelector({
                 <span className={`text-xs ${isActive ? 'text-gold-600' : 'text-gray-400'}`}>
                   €{price.toFixed(2)}
                 </span>
-              </motion.button>
+              </button>
             );
           })}
         </div>

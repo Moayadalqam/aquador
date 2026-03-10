@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { formatPrice } from '@/lib/currency';
 import ProductVariantSelector, {
   getDefaultVariant,
@@ -41,24 +40,15 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
         {product.name}
       </h1>
 
-      {/* Animated Price */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={`${variant.type}-${variant.size}`}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8 }}
-          transition={{ duration: 0.2 }}
-          className="flex items-baseline gap-3"
-        >
-          <span className="text-[clamp(1.75rem,1.5rem+1.25vw,2.5rem)] font-playfair font-medium text-gold-600">
-            {formatPrice(variant.price)}
-          </span>
-          <span className="text-sm text-gray-400">
-            {variant.label} · {variant.size}
-          </span>
-        </motion.div>
-      </AnimatePresence>
+      {/* Price */}
+      <div className="flex items-baseline gap-3 transition-all duration-300">
+        <span className="text-[clamp(1.75rem,1.5rem+1.25vw,2.5rem)] font-playfair font-medium text-gold-600">
+          {formatPrice(variant.price)}
+        </span>
+        <span className="text-sm text-gray-400">
+          {variant.label} · {variant.size}
+        </span>
+      </div>
 
       {/* Variant Selector */}
       <ProductVariantSelector selected={variant} onChange={setVariant} />
