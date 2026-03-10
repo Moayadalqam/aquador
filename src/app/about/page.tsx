@@ -6,7 +6,9 @@ import Link from 'next/link';
 import Button from '@/components/ui/Button';
 import { PageHero, SectionHeader } from '@/components/ui/Section';
 import { FeatureCard } from '@/components/ui/Card';
+import { AnimatedSection, AnimatedSectionItem } from '@/components/ui/AnimatedSection';
 import { Heart, Leaf, Award, Users } from 'lucide-react';
+import { fadeInLeft, fadeInRight } from '@/lib/animations/scroll-animations';
 
 const values = [
   {
@@ -45,10 +47,10 @@ export default function AboutPage() {
         <div className="container-wide">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
+              initial="initial"
+              whileInView="animate"
+              viewport={{ once: true, margin: '-50px' }}
+              variants={fadeInLeft}
             >
               <h2 className="text-2xl md:text-3xl font-playfair text-black mb-6">
                 Where Luxury Meets <span className="text-gold">Distinction</span>
@@ -67,10 +69,10 @@ export default function AboutPage() {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
+              initial="initial"
+              whileInView="animate"
+              viewport={{ once: true, margin: '-50px' }}
+              variants={fadeInRight}
               className="relative aspect-[4/5] lg:aspect-square overflow-hidden"
             >
               <Image
@@ -89,34 +91,34 @@ export default function AboutPage() {
       {/* Values */}
       <section className="section bg-gold-ambient-dark">
         <div className="container-wide">
-          <SectionHeader
-            title="Our Values"
-            subtitle="The principles that guide everything we do"
-          />
+          <AnimatedSection variant="fadeInUp">
+            <SectionHeader
+              title="Our Values"
+              subtitle="The principles that guide everything we do"
+            />
+          </AnimatedSection>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-            {values.map((value, index) => (
-              <FeatureCard
-                key={value.title}
-                icon={value.icon}
-                title={value.title}
-                description={value.description}
-                index={index}
-              />
-            ))}
-          </div>
+          <AnimatedSection variant="stagger" staggerDelay={0.1}>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+              {values.map((value, index) => (
+                <AnimatedSectionItem key={value.title}>
+                  <FeatureCard
+                    icon={value.icon}
+                    title={value.title}
+                    description={value.description}
+                    index={index}
+                  />
+                </AnimatedSectionItem>
+              ))}
+            </div>
+          </AnimatedSection>
         </div>
       </section>
 
       {/* CTA */}
       <section className="section">
         <div className="container-wide">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="max-w-2xl mx-auto text-center"
-          >
+          <AnimatedSection variant="fadeInUp" className="max-w-2xl mx-auto text-center">
             <h2 className="text-2xl md:text-3xl font-playfair text-black mb-5">
               Experience the Difference
             </h2>
@@ -131,7 +133,7 @@ export default function AboutPage() {
                 <Button variant="outline" size="md">Contact Us</Button>
               </Link>
             </div>
-          </motion.div>
+          </AnimatedSection>
         </div>
       </section>
     </div>

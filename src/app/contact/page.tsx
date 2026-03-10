@@ -9,6 +9,7 @@ import { track } from '@vercel/analytics';
 import { MapPin, Phone, Mail, Clock, Send, CheckCircle } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { PageHero } from '@/components/ui/Section';
+import { fadeInLeft, fadeInRight, fadeInUp } from '@/lib/animations/scroll-animations';
 
 const contactSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -99,9 +100,10 @@ export default function ContactPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
             {/* Contact Form */}
             <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
+              initial="initial"
+              whileInView="animate"
+              viewport={{ once: true, margin: '-50px' }}
+              variants={fadeInLeft}
             >
               <div className="glass-card p-8">
                 <h2 className="text-2xl font-playfair text-black mb-6">Send us a Message</h2>
@@ -218,9 +220,10 @@ export default function ContactPage() {
 
             {/* Contact Info */}
             <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 }}
+              initial="initial"
+              whileInView="animate"
+              viewport={{ once: true, margin: '-50px' }}
+              variants={fadeInRight}
               className="space-y-8"
             >
               <div>
@@ -229,9 +232,11 @@ export default function ContactPage() {
                   {contactInfo.map((item, index) => (
                     <motion.div
                       key={item.title}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.4 + index * 0.1 }}
+                      initial="initial"
+                      whileInView="animate"
+                      viewport={{ once: true, margin: '-30px' }}
+                      variants={fadeInUp}
+                      transition={{ delay: index * 0.1 }}
                       className="glass-card p-5"
                     >
                       <div className="w-10 h-10 rounded-full bg-gold/10 border border-gold/30 flex items-center justify-center mb-3">
@@ -250,9 +255,11 @@ export default function ContactPage() {
 
               {/* Map */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8 }}
+                initial="initial"
+                whileInView="animate"
+                viewport={{ once: true, margin: '-30px' }}
+                variants={fadeInUp}
+                transition={{ delay: 0.4 }}
                 className="glass-card overflow-hidden h-64"
               >
                 <iframe
