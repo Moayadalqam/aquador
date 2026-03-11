@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, type Variants } from 'framer-motion';
-import { type ReactNode } from 'react';
+import { type ReactNode, useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import {
@@ -37,6 +37,11 @@ export interface AnimatedSectionProps {
   /** Custom intersection margin (e.g., "-50px" triggers 50px before viewport) */
   margin?: string;
   /**
+   * Replay animation every time element enters viewport (both scroll directions).
+   * When true, elements fade out when leaving and re-animate when scrolling back.
+   */
+  repeat?: boolean;
+  /**
    * Optional ARIA label for the section wrapper.
    * Use when the section contains a meaningful landmark that screen readers
    * should identify (e.g. "Featured products").
@@ -67,11 +72,15 @@ function getVariant(
 }
 
 /**
- * Detect if viewport is mobile (<768px)
+ * Hydration-safe mobile detection hook.
+ * Returns false on server and first render to avoid SSR mismatch.
  */
-function isMobileViewport(): boolean {
-  if (typeof window === 'undefined') return false;
-  return window.innerWidth < 768;
+function useIsMobile(): boolean {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 768);
+  }, []);
+  return isMobile;
 }
 
 /**
@@ -130,33 +139,19 @@ export function AnimatedSection({
   staggerDelay = 0.1,
   threshold = 0.2,
   disableOnMobile = false,
-  margin: _margin = '-50px', // Renamed to _margin to indicate it's currently unused
+  margin: _margin = '-50px',
+  repeat = false,
   ariaLabel,
 }: AnimatedSectionProps) {
   // Use scroll animation hook with custom options
-  const { ref, shouldAnimate } = useScrollAnimation({
-    once: true,
+  const { ref, shouldAnimate, isInView } = useScrollAnimation({
+    once: !repeat,
     amount: threshold,
-    // Note: margin param temporarily disabled due to MarginType incompatibility
-    // Using default '-50px' from hook
   });
 
-  // Check if we should disable animations on mobile
-  const isMobile = isMobileViewport();
+  // Check if we should disable animations on mobile (hydration-safe)
+  const isMobile = useIsMobile();
   const disableAnimation = disableOnMobile && isMobile;
-
-  // If animations disabled (mobile override or reduced motion), render children instantly
-  if (disableAnimation || !shouldAnimate) {
-    return (
-      <div
-        ref={ref as React.Ref<HTMLDivElement>}
-        className={cn(className)}
-        aria-label={ariaLabel}
-      >
-        {children}
-      </div>
-    );
-  }
 
   // Get the appropriate animation variant
   const animationVariant = getVariant(variant, staggerDelay);
@@ -168,7 +163,7 @@ export function AnimatedSection({
         animate: {
           ...animationVariant.animate,
           transition: {
-            duration: 0.4, // Faster on mobile
+            duration: 0.4,
           },
         },
       }
@@ -177,25 +172,27 @@ export function AnimatedSection({
   // Apply mobile distance reduction for movement-based animations
   if (isMobile && mobileOptimizedVariant.initial) {
     const initial = mobileOptimizedVariant.initial as Record<string, unknown>;
-
-    // Reduce y-axis movement by 50% on mobile
     if (typeof initial.y === 'number') {
       initial.y = initial.y * 0.5;
     }
-
-    // Reduce x-axis movement by 50% on mobile
     if (typeof initial.x === 'number') {
       initial.x = initial.x * 0.5;
     }
   }
 
-  // Render animated section
+  // For repeat mode or non-animated, always render motion.div to avoid flash
+  const animateState = disableAnimation
+    ? 'animate'
+    : repeat
+      ? (isInView ? 'animate' : 'initial')
+      : (shouldAnimate ? 'animate' : 'initial');
+
   return (
     <motion.div
       ref={ref as React.Ref<HTMLDivElement>}
       className={cn(className)}
       initial="initial"
-      animate={shouldAnimate ? 'animate' : 'initial'}
+      animate={animateState}
       variants={mobileOptimizedVariant}
       transition={{
         delay,

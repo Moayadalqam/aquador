@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRef } from 'react';
 import Button from '@/components/ui/Button';
-import { AnimatedSection, AnimatedSectionItem } from '@/components/ui/AnimatedSection';
+import { AnimatedSection } from '@/components/ui/AnimatedSection';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 const stages = [
@@ -62,7 +62,7 @@ export default function CreateSection() {
               className="eyebrow text-gold/50 mb-4"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
+              viewport={{ once: false, amount: 0.5 }}
               transition={{ duration: 0.6 }}
             >
               Bespoke Perfumery
@@ -71,7 +71,7 @@ export default function CreateSection() {
               className="font-playfair text-3xl md:text-4xl lg:text-5xl text-gradient-gold mb-5 leading-tight"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: false, amount: 0.5 }}
               transition={{ duration: 0.7, delay: 0.1 }}
             >
               Create Your Signature
@@ -81,7 +81,7 @@ export default function CreateSection() {
               className="text-gray-500 text-base md:text-lg leading-relaxed"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
+              viewport={{ once: false, amount: 0.5 }}
               transition={{ duration: 0.7, delay: 0.2 }}
             >
               Design a perfume that&apos;s uniquely yours. Select from our premium notes and craft your personal masterpiece.
@@ -89,59 +89,67 @@ export default function CreateSection() {
           </div>
         </AnimatedSection>
 
-        {/* Stages — overlapping editorial layout */}
-        <AnimatedSection variant="stagger" staggerDelay={0.1} className="mb-14 md:mb-20">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-0.5 md:gap-0">
-            {stages.map((stage) => (
-              <AnimatedSectionItem key={stage.title}>
-                <div className="group relative overflow-hidden bg-[#111] border border-white/5 hover:border-gold/25 transition-all duration-700 cursor-default">
-                  {/* Full image background with parallax */}
-                  <div className="relative aspect-[3/4] md:aspect-[4/5] overflow-hidden">
-                    <motion.div
-                      className="absolute inset-0"
-                      style={{ y: reducedMotion ? 0 : bgY, scale: 1.15 }}
-                    >
-                      <Image
-                        src={stage.image}
-                        alt={stage.title}
-                        fill
-                        className="object-cover transition-transform duration-1000 group-hover:scale-106 filter brightness-[0.5] group-hover:brightness-[0.6]"
-                        sizes="(max-width: 768px) 100vw, 33vw"
-                      />
-                    </motion.div>
-                    {/* Gradient from bottom */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+        {/* Stages — staggered 1→2→3 cascade */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-0.5 md:gap-0 mb-14 md:mb-20">
+          {stages.map((stage, index) => (
+            <motion.div
+              key={stage.title}
+              initial={{ opacity: 0, y: 60, scale: 0.95 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: false, amount: 0.3 }}
+              transition={{
+                duration: 0.7,
+                delay: index * 0.2,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+            >
+              <div className="group relative overflow-hidden bg-[#111] border border-white/5 hover:border-gold/25 transition-all duration-700 cursor-default">
+                {/* Full image background with parallax */}
+                <div className="relative aspect-[3/4] md:aspect-[4/5] overflow-hidden">
+                  <motion.div
+                    className="absolute inset-0"
+                    style={{ y: reducedMotion ? 0 : bgY, scale: 1.15 }}
+                  >
+                    <Image
+                      src={stage.image}
+                      alt={stage.title}
+                      fill
+                      className="object-cover transition-transform duration-1000 group-hover:scale-106 filter brightness-[0.5] group-hover:brightness-[0.6]"
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                    />
+                  </motion.div>
+                  {/* Gradient from bottom */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
 
-                    {/* Step number — large decorative */}
-                    <div className="absolute top-6 right-6 z-10">
-                      <span className="font-playfair text-5xl font-normal text-white/10 leading-none">
-                        {stage.step}
-                      </span>
-                    </div>
-
-                    {/* Accent label */}
-                    <div className="absolute top-6 left-6 z-10">
-                      <span className="text-[9px] uppercase tracking-[0.2em] text-gold/50">{stage.accent}</span>
-                    </div>
-
-                    {/* Content — bottom overlay */}
-                    <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
-                      <h3 className="font-playfair text-xl md:text-2xl text-white mb-2 transition-colors duration-300 group-hover:text-gold/90">
-                        {stage.title}
-                      </h3>
-                      <p className="text-gray-500 text-sm leading-relaxed transition-colors duration-500 group-hover:text-gray-400">
-                        {stage.description}
-                      </p>
-                    </div>
+                  {/* Step number — large decorative */}
+                  <div className="absolute top-6 right-6 z-10">
+                    <span className="font-playfair text-5xl font-normal text-white/10 leading-none">
+                      {stage.step}
+                    </span>
                   </div>
 
-                  {/* Gold bottom line reveal on hover */}
-                  <div className="absolute bottom-0 left-0 right-0 h-px bg-gold/0 group-hover:bg-gold/40 transition-colors duration-700" />
+                  {/* Accent label */}
+                  <div className="absolute top-6 left-6 z-10">
+                    <span className="text-[9px] uppercase tracking-[0.2em] text-gold/50">{stage.accent}</span>
+                  </div>
+
+                  {/* Content — bottom overlay */}
+                  <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
+                    <h3 className="font-playfair text-xl md:text-2xl text-white mb-2 transition-colors duration-300 group-hover:text-gold/90">
+                      {stage.title}
+                    </h3>
+                    <p className="text-gray-500 text-sm leading-relaxed transition-colors duration-500 group-hover:text-gray-400">
+                      {stage.description}
+                    </p>
+                  </div>
                 </div>
-              </AnimatedSectionItem>
-            ))}
-          </div>
-        </AnimatedSection>
+
+                {/* Gold bottom line reveal on hover */}
+                <div className="absolute bottom-0 left-0 right-0 h-px bg-gold/0 group-hover:bg-gold/40 transition-colors duration-700" />
+              </div>
+            </motion.div>
+          ))}
+        </div>
 
         {/* CTA — centered */}
         <AnimatedSection variant="fadeInUp" delay={0.2} className="text-center">

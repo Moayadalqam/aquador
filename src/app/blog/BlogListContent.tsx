@@ -3,7 +3,6 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import BlogHero from '@/components/blog/BlogHero';
-import FeaturedPost from '@/components/blog/FeaturedPost';
 import BlogCard from '@/components/blog/BlogCard';
 import CategoryFilter from '@/components/blog/CategoryFilter';
 import type { BlogPost, BlogCategory } from '@/lib/blog-types';
@@ -11,7 +10,7 @@ import type { BlogPost, BlogCategory } from '@/lib/blog-types';
 interface BlogListContentProps {
   posts: BlogPost[];
   categories: BlogCategory[];
-  featuredPost: BlogPost | null;
+  featuredPost?: BlogPost | null;
   currentPage: number;
   totalPages: number;
   activeCategory: string | null;
@@ -20,7 +19,6 @@ interface BlogListContentProps {
 export default function BlogListContent({
   posts,
   categories,
-  featuredPost,
   currentPage,
   totalPages,
   activeCategory,
@@ -52,15 +50,6 @@ export default function BlogListContent({
   return (
     <div className="min-h-screen bg-gold-ambient">
       <BlogHero />
-
-      {/* Featured Post */}
-      {featuredPost && (
-        <section className="section-sm">
-          <div className="container-wide">
-            <FeaturedPost post={featuredPost} />
-          </div>
-        </section>
-      )}
 
       {/* Category Filter */}
       <section className="container-wide py-8">

@@ -157,7 +157,7 @@ export function PageHero({
   eyebrow,
 }: PageHeroProps) {
   return (
-    <section className={cn('relative pt-36 md:pt-48 lg:pt-52 pb-20 md:pb-28 overflow-hidden', className)}>
+    <section className={cn('relative pt-24 md:pt-32 lg:pt-36 pb-14 md:pb-20 overflow-hidden', className)}>
       {backgroundImage && (
         <>
           <div

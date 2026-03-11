@@ -71,9 +71,9 @@ export default function LattafaContent({ products }: LattafaContentProps) {
   }, [products]);
 
   return (
-    <div className="pt-32 md:pt-40 lg:pt-44 pb-16 bg-gold-ambient min-h-screen">
-      {/* Hero */}
-      <section className="relative py-24 overflow-hidden">
+    <div className="pt-20 md:pt-24 pb-16 bg-gold-ambient min-h-screen">
+      {/* Hero — compact */}
+      <section className="relative py-14 md:py-20 overflow-hidden">
         <AnimatedShaderBackground />
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-dark/70 to-dark" />
@@ -85,7 +85,7 @@ export default function LattafaContent({ products }: LattafaContentProps) {
           >
             <Link
               href="/shop"
-              className="inline-flex items-center text-gold/70 hover:text-gold mb-6 text-sm uppercase tracking-wider"
+              className="inline-flex items-center text-gold/50 hover:text-gold mb-4 text-[10px] uppercase tracking-[0.2em] transition-colors"
             >
               &larr; Back to Collections
             </Link>
