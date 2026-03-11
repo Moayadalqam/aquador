@@ -92,10 +92,11 @@ export default function Hero() {
 
           {/* Brand name — cinematic scale */}
           <motion.h1
-            className="font-playfair font-normal mb-0 tracking-[0.18em] sm:tracking-[0.22em] leading-none"
+            className="font-playfair font-normal mb-0 tracking-[0.18em] sm:tracking-[0.22em] py-2"
             aria-label="Aquad'or"
             style={{
-              fontSize: 'clamp(3.5rem, 10vw, 7rem)',
+              fontSize: 'clamp(3rem, 9vw, 6.5rem)',
+              lineHeight: 1.15,
               background: 'linear-gradient(180deg, #FFF8DC 0%, #FFD700 35%, #D4AF37 65%, #B8960C 100%)',
               backgroundSize: '100% 100%',
               WebkitBackgroundClip: 'text',

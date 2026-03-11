@@ -3,176 +3,124 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { Instagram, Facebook, Mail, Phone, MapPin, ArrowUpRight } from 'lucide-react';
+import { Mail, Phone, MapPin, ArrowUpRight } from 'lucide-react';
 
-const footerLinks = {
-  shop: [
-    { label: "Women's Collection", href: '/shop/women' },
-    { label: "Men's Collection", href: '/shop/men' },
-    { label: 'Niche Collection', href: '/shop/niche' },
-    { label: 'Create Your Own', href: '/create-perfume' },
-  ],
-  company: [
-    { label: 'About', href: '/about' },
-    { label: 'Blog', href: '/blog' },
-    { label: 'Contact', href: '/contact' },
-    { label: 'Shipping', href: '/shipping' },
-    { label: 'Terms and Conditions', href: '/terms' },
-    { label: 'Privacy Policy', href: '/privacy' },
-  ],
-};
+const shopLinks = [
+  { label: "Women's", href: '/shop/women' },
+  { label: "Men's", href: '/shop/men' },
+  { label: 'Niche', href: '/shop/niche' },
+  { label: 'Create Your Own', href: '/create-perfume' },
+];
+
+const companyLinks = [
+  { label: 'About', href: '/about' },
+  { label: 'Blog', href: '/blog' },
+  { label: 'Contact', href: '/contact' },
+  { label: 'Shipping', href: '/shipping' },
+  { label: 'Terms', href: '/terms' },
+  { label: 'Privacy', href: '/privacy' },
+];
 
 export default function Footer() {
   return (
-    <footer className="relative bg-[#0a0a0a] overflow-hidden">
-      {/* Ambient gold glow — top */}
-      <div
-        className="absolute top-0 left-0 right-0 pointer-events-none"
-        style={{
-          height: '1px',
-          background: 'linear-gradient(90deg, transparent 0%, rgba(212,175,55,0.3) 40%, rgba(212,175,55,0.15) 70%, transparent 100%)',
-        }}
-      />
-      <div
-        className="absolute top-0 left-0 right-0 pointer-events-none"
-        style={{
-          height: '200px',
-          background: 'radial-gradient(ellipse 80% 100% at 50% 0%, rgba(212,175,55,0.04) 0%, transparent 70%)',
-        }}
-      />
+    <footer className="relative bg-[#0a0a0a]">
+      {/* Top gold line */}
+      <div className="h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
 
-      <div className="container-wide">
-        {/* Main footer content */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="pt-16 md:pt-20 pb-12 md:pb-16"
-        >
-          {/* Logo centered at top */}
-          <div className="flex flex-col items-center text-center mb-14">
-            <Link href="/" className="inline-block mb-5">
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+        className="container-wide py-12 md:py-14"
+      >
+        {/* Main grid — logo left, links right */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-6 items-start">
+
+          {/* Logo + tagline — compact */}
+          <div className="md:col-span-3 flex flex-col items-center md:items-start">
+            <Link href="/" className="inline-block mb-3">
               <Image
                 src="/aquador.webp"
                 alt="Aquad'or"
-                width={600}
-                height={180}
-                className="h-32 sm:h-40 md:h-48 w-auto object-contain"
+                width={400}
+                height={120}
+                className="h-16 md:h-20 w-auto object-contain"
               />
             </Link>
-
-            <p className="text-white/80 text-sm leading-relaxed font-playfair italic mb-2">
-              Where Luxury Meets Distinction.
+            <p className="text-white/40 text-xs font-playfair italic">
+              Where Luxury Meets Distinction
             </p>
-
-            <p className="text-white/50 text-xs leading-relaxed max-w-[320px]">
-              Cyprus&apos;s premier destination for luxury and niche fragrances. Based in Nicosia.
-            </p>
-
-            {/* Social links */}
-            <div className="flex gap-2 mt-5">
-              <a
-                href="https://instagram.com/aquadorcy"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center w-10 h-10 text-white/60 hover:text-gold border border-white/10 hover:border-gold/30 rounded-full transition-all duration-300"
-                aria-label="Instagram"
-              >
-                <Instagram className="w-4 h-4" />
-              </a>
-              <a
-                href="https://facebook.com/aquadorcy"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center w-10 h-10 text-white/60 hover:text-gold border border-white/10 hover:border-gold/30 rounded-full transition-all duration-300"
-                aria-label="Facebook"
-              >
-                <Facebook className="w-4 h-4" />
-              </a>
+            {/* Social */}
+            <div className="flex gap-3 mt-4">
+              <a href="https://instagram.com/aquadorcy" target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-gold text-xs uppercase tracking-wider transition-colors" aria-label="Instagram">IG</a>
+              <span className="text-white/15">|</span>
+              <a href="https://facebook.com/aquadorcy" target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-gold text-xs uppercase tracking-wider transition-colors" aria-label="Facebook">FB</a>
             </div>
           </div>
 
-          {/* Links grid — centered under logo */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8 lg:gap-12 text-center">
-
-            {/* Shop Links */}
-            <div>
-              <h3 className="text-[9px] uppercase tracking-[0.25em] text-gold/60 mb-6">Shop</h3>
-              <ul className="space-y-3.5">
-                {footerLinks.shop.map((link) => (
-                  <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      className="text-white/70 hover:text-white transition-colors duration-300 text-[13px]"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Company Links */}
-            <div>
-              <h3 className="text-[9px] uppercase tracking-[0.25em] text-gold/60 mb-6">Company</h3>
-              <ul className="space-y-3.5">
-                {footerLinks.company.map((link) => (
-                  <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      className="text-white/70 hover:text-white transition-colors duration-300 text-[13px]"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Contact */}
-            <div>
-              <h3 className="text-[9px] uppercase tracking-[0.25em] text-gold/60 mb-6">Find Us</h3>
-              <ul className="space-y-4">
-                <li className="flex items-center justify-center gap-3 text-white/70 text-[13px]">
-                  <MapPin className="w-3.5 h-3.5 text-gold/50 flex-shrink-0" />
-                  <span>Ledra 145, Nicosia, Cyprus</span>
+          {/* Shop links */}
+          <div className="md:col-span-2">
+            <h3 className="text-[9px] uppercase tracking-[0.25em] text-gold/50 mb-4">Shop</h3>
+            <ul className="space-y-2.5">
+              {shopLinks.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className="text-white/60 hover:text-white transition-colors text-[13px]">
+                    {link.label}
+                  </Link>
                 </li>
-                <li className="flex justify-center">
-                  <a
-                    href="tel:99980809"
-                    className="flex items-center gap-3 text-white/70 hover:text-white transition-colors duration-300 text-[13px]"
-                  >
-                    <Phone className="w-3.5 h-3.5 text-gold/50 flex-shrink-0" />
-                    +357 99 980809
-                  </a>
+              ))}
+            </ul>
+          </div>
+
+          {/* Company links */}
+          <div className="md:col-span-2">
+            <h3 className="text-[9px] uppercase tracking-[0.25em] text-gold/50 mb-4">Company</h3>
+            <ul className="space-y-2.5">
+              {companyLinks.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className="text-white/60 hover:text-white transition-colors text-[13px]">
+                    {link.label}
+                  </Link>
                 </li>
-                <li className="flex justify-center">
-                  <a
-                    href="mailto:info@aquadorcy.com"
-                    className="flex items-center gap-3 text-white/70 hover:text-white transition-colors duration-300 text-[13px]"
-                  >
-                    <Mail className="w-3.5 h-3.5 text-gold/50 flex-shrink-0" />
-                    info@aquadorcy.com
-                  </a>
-                </li>
-              </ul>
+              ))}
+            </ul>
+          </div>
+
+          {/* Contact — compact */}
+          <div className="md:col-span-5 md:text-right">
+            <h3 className="text-[9px] uppercase tracking-[0.25em] text-gold/50 mb-4">Contact</h3>
+            <div className="space-y-2.5 text-[13px]">
+              <div className="flex items-center md:justify-end gap-2 text-white/60">
+                <MapPin className="w-3 h-3 text-gold/40 flex-shrink-0" />
+                Ledra 145, Nicosia, Cyprus
+              </div>
+              <a href="tel:99980809" className="flex items-center md:justify-end gap-2 text-white/60 hover:text-white transition-colors">
+                <Phone className="w-3 h-3 text-gold/40 flex-shrink-0" />
+                +357 99 980809
+              </a>
+              <a href="mailto:info@aquadorcy.com" className="flex items-center md:justify-end gap-2 text-white/60 hover:text-white transition-colors">
+                <Mail className="w-3 h-3 text-gold/40 flex-shrink-0" />
+                info@aquadorcy.com
+              </a>
             </div>
           </div>
-        </motion.div>
+        </div>
+      </motion.div>
 
-        {/* Bottom bar */}
-        <div className="border-t border-white/[0.06] py-6 flex flex-col items-center gap-3">
-          <p className="text-white/50 text-[10px] tracking-[0.1em]">
-            &copy; {new Date().getFullYear()} Aquad&apos;or Cyprus. All rights reserved.
+      {/* Bottom bar — single row */}
+      <div className="border-t border-white/[0.06]">
+        <div className="container-wide py-5 flex flex-col sm:flex-row justify-between items-center gap-2">
+          <p className="text-white/30 text-[10px] tracking-[0.08em]">
+            &copy; {new Date().getFullYear()} Aquad&apos;or Cyprus
           </p>
-          <p className="text-white/40 text-[10px] tracking-[0.08em]">
+          <p className="text-white/30 text-[10px] tracking-[0.08em]">
             Designed and Developed by{' '}
             <a
               href="https://qualiasolutions.net"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gold/60 hover:text-gold transition-colors duration-300 inline-flex items-center gap-1"
+              className="text-gold/50 hover:text-gold transition-colors inline-flex items-center gap-0.5"
             >
               Qualia Solutions
               <ArrowUpRight className="w-2.5 h-2.5" />

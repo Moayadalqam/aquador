@@ -301,7 +301,7 @@ export default function CreatePerfumePage() {
             </div>
 
             {/* Main Content */}
-            <div className="max-w-6xl mx-auto px-4">
+            <div className="container-wide">
               {/* Step Progress - Horizontal on all sizes */}
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
