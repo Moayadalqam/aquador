@@ -147,25 +147,6 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      {/* Refined scroll indicator */}
-      <motion.div
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-3"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.8, duration: 0.7 }}
-        aria-hidden="true"
-      >
-        <span className="text-white/30 text-[8px] uppercase tracking-[0.3em] font-light">Scroll</span>
-        {/* Animated mouse icon */}
-        <div className="w-5 h-8 rounded-full border border-white/20 flex justify-center pt-1.5">
-          <motion.div
-            className="w-0.5 h-1.5 rounded-full bg-gold/60"
-            animate={{ y: [0, 8, 0], opacity: [1, 0, 1] }}
-            transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
-          />
-        </div>
-      </motion.div>
-
       {/* Bottom vignette edge */}
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#FAFAF8] to-transparent z-[1]" />
     </motion.section>

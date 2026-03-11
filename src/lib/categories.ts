@@ -63,6 +63,6 @@ export const categories: Category[] = [
     slug: 'lattafa-original',
     description: 'Original Lattafa Perfumes',
     image: 'https://images.squarespace-cdn.com/content/v1/66901f0f8865462c0ac066ba/39636dc6-a6c4-4b4d-968d-46a0f5bea78c/image_Pippit_202509201633.jpeg',
-    contain: true,
+    contain: false,
   },
 ];

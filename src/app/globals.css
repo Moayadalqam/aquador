@@ -104,7 +104,7 @@
   --section-gap: clamp(3rem, 8vw, 6rem);
   --section-padding-y: clamp(4rem, 10vw, 8rem);
   --section-padding-x: clamp(1.5rem, 5vw, 6rem);
-  --content-max-width: 1400px;
+  --content-max-width: 1600px;
   --prose-max-width: 65ch;
 
   /* Component-level Spacing */
