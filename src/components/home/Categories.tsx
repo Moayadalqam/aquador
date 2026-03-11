@@ -97,11 +97,14 @@ export default function Categories() {
             {/* Right half — 2x2 sub-grid for 3 tiles (last spans 2 cols) */}
             <div className="grid grid-cols-2 grid-rows-2 gap-1 h-full">
               {rest.map((category, index) => (
-                <AnimatedSectionItem key={category.id}>
+                <AnimatedSectionItem
+                  key={category.id}
+                  className={index === rest.length - 1 && rest.length % 2 !== 0 ? 'col-span-2' : ''}
+                >
                   <motion.div
                     whileHover={cardHover}
                     whileTap={cardTap}
-                    className={`h-full ${index === rest.length - 1 && rest.length % 2 !== 0 ? 'col-span-2' : ''}`}
+                    className="h-full"
                   >
                     <Link
                       href={`/shop/${category.slug}`}
