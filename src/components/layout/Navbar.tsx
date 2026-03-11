@@ -124,7 +124,7 @@ export default function Navbar() {
                 alt="Aquad'or"
                 width={400}
                 height={120}
-                className="h-20 sm:h-24 xl:h-22 2xl:h-26 w-auto object-contain transition-opacity duration-300"
+                className="h-[120px] sm:h-[144px] xl:h-[132px] 2xl:h-[156px] w-auto object-contain transition-opacity duration-300"
                 priority
               />
             </Link>

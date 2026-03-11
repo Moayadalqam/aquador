@@ -91,7 +91,7 @@ export default function CartDrawer() {
 
                 {/* Shipping Note */}
                 <p className="text-xs text-gray-500 text-center">
-                  Free shipping on all orders. Delivery within 3-7 business days.
+                  Free shipping on all orders. Delivery within 1-2 business days.
                 </p>
 
                 {/* Checkout Button */}

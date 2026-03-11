@@ -193,7 +193,7 @@ export default function CheckoutSuccessPage() {
           </div>
 
           <p className="text-sm text-gray-500 mt-6 pt-6 border-t border-gold/20">
-            Expect delivery within <strong className="text-black">3-7 business days</strong>
+            Expect delivery within <strong className="text-black">1-2 business days</strong>
           </p>
         </motion.div>
 
@@ -238,7 +238,7 @@ export default function CheckoutSuccessPage() {
               </div>
               <div>
                 <p className="text-black text-sm font-medium">Shipping</p>
-                <p className="text-gray-500 text-xs">Expect delivery within 3-7 business days</p>
+                <p className="text-gray-500 text-xs">Expect delivery within 1-2 business days</p>
               </div>
             </div>
           </div>
