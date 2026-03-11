@@ -89,17 +89,17 @@ export default function CreateSection() {
           </div>
         </AnimatedSection>
 
-        {/* Stages — staggered 1→2→3 cascade */}
+        {/* Stages — cinematic 1→2→3 reveal */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-0.5 md:gap-0 mb-14 md:mb-20">
           {stages.map((stage, index) => (
             <motion.div
               key={stage.title}
-              initial={{ opacity: 0, y: 60, scale: 0.95 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: false, amount: 0.3 }}
+              initial={{ opacity: 0, clipPath: 'inset(100% 0 0 0)' }}
+              whileInView={{ opacity: 1, clipPath: 'inset(0% 0 0 0)' }}
+              viewport={{ once: true, amount: 0.15 }}
               transition={{
-                duration: 0.7,
-                delay: index * 0.2,
+                duration: 1,
+                delay: index * 0.3,
                 ease: [0.16, 1, 0.3, 1],
               }}
             >
@@ -121,26 +121,66 @@ export default function CreateSection() {
                   {/* Gradient from bottom */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
 
-                  {/* Step number — large decorative */}
-                  <div className="absolute top-6 right-6 z-10">
-                    <span className="font-playfair text-5xl font-normal text-white/10 leading-none">
+                  {/* Step number — cinematic large reveal */}
+                  <motion.div
+                    className="absolute top-6 right-6 z-10"
+                    initial={{ opacity: 0, scale: 2, y: -20 }}
+                    whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.3 }}
+                    transition={{
+                      duration: 0.8,
+                      delay: index * 0.3 + 0.4,
+                      ease: [0.16, 1, 0.3, 1],
+                    }}
+                  >
+                    <span className="font-playfair text-6xl md:text-7xl font-normal text-white/[0.07] leading-none">
                       {stage.step}
                     </span>
-                  </div>
+                  </motion.div>
 
-                  {/* Accent label */}
-                  <div className="absolute top-6 left-6 z-10">
+                  {/* Accent label — slide in */}
+                  <motion.div
+                    className="absolute top-6 left-6 z-10"
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, amount: 0.3 }}
+                    transition={{
+                      duration: 0.6,
+                      delay: index * 0.3 + 0.5,
+                      ease: [0.16, 1, 0.3, 1],
+                    }}
+                  >
                     <span className="text-[9px] uppercase tracking-[0.2em] text-gold/50">{stage.accent}</span>
-                  </div>
+                  </motion.div>
 
-                  {/* Content — bottom overlay */}
+                  {/* Content — staggered bottom reveal */}
                   <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
-                    <h3 className="font-playfair text-xl md:text-2xl text-white mb-2 transition-colors duration-300 group-hover:text-gold/90">
+                    <motion.h3
+                      className="font-playfair text-xl md:text-2xl text-white mb-2 transition-colors duration-300 group-hover:text-gold/90"
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, amount: 0.3 }}
+                      transition={{
+                        duration: 0.6,
+                        delay: index * 0.3 + 0.6,
+                        ease: [0.16, 1, 0.3, 1],
+                      }}
+                    >
                       {stage.title}
-                    </h3>
-                    <p className="text-gray-500 text-sm leading-relaxed transition-colors duration-500 group-hover:text-gray-400">
+                    </motion.h3>
+                    <motion.p
+                      className="text-gray-500 text-sm leading-relaxed transition-colors duration-500 group-hover:text-gray-400"
+                      initial={{ opacity: 0, y: 15 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, amount: 0.3 }}
+                      transition={{
+                        duration: 0.6,
+                        delay: index * 0.3 + 0.75,
+                        ease: [0.16, 1, 0.3, 1],
+                      }}
+                    >
                       {stage.description}
-                    </p>
+                    </motion.p>
                   </div>
                 </div>
 
