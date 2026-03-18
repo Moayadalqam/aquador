@@ -91,8 +91,8 @@ export default function AboutPage() {
             >
               <div className="relative aspect-[4/3] lg:aspect-[16/11] overflow-hidden">
                 <Image
-                  src="https://images.unsplash.com/photo-1595425970377-c9703cf48b6d?w=1200&q=85"
-                  alt="Perfume crafting"
+                  src="https://i.ibb.co/xSqkdDL6/image-Cap-Cut-Commerce-Pro-202502202047.jpg"
+                  alt="Aquad'or luxury perfumes"
                   fill
                   className="object-cover"
                   sizes="(max-width: 1024px) 100vw, 60vw"

@@ -321,23 +321,27 @@ function NoteCard({
         boxShadow: `0 0 40px ${theme.glow}, 0 0 0 1px ${theme.primary}80`,
       } : undefined}
     >
-      {/* Emoji icon */}
+      {/* Icon — elegant circle badge */}
       <div className="relative">
-        <motion.span
-          className="text-3xl sm:text-4xl block"
-          animate={isSelected ? { scale: [1, 1.15, 1] } : {}}
+        <motion.div
+          className="w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center border"
+          animate={isSelected ? { scale: [1, 1.08, 1] } : {}}
           transition={{ duration: 0.4 }}
           style={{
-            filter: isSelected ? `drop-shadow(0 0 12px ${note.color}80)` : 'none',
+            background: isSelected
+              ? `radial-gradient(circle at 35% 35%, ${note.color}30, ${note.color}10)`
+              : 'rgba(255,255,255,0.04)',
+            borderColor: isSelected ? `${note.color}50` : 'rgba(255,255,255,0.08)',
+            boxShadow: isSelected ? `0 0 20px ${note.color}25` : 'none',
           }}
         >
-          {note.icon}
-        </motion.span>
+          <span className="text-xl">{note.icon}</span>
+        </motion.div>
         {isSelected && (
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            className="absolute -top-1 -right-2 w-5 h-5 rounded-full flex items-center justify-center bg-gold"
+            className="absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center bg-gold"
           >
             <Check className="w-3 h-3 text-black" />
           </motion.div>
