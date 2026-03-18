@@ -61,92 +61,185 @@ function AmbientParticles({ color = '#D4AF37' }: { color?: string }) {
   )
 }
 
-// Cinematic bottle with liquid fill animation
+// Realistic luxury perfume bottle with curved silhouette
 function CinematicBottle({ composition, activeLayer, className = '' }: { composition: PerfumeComposition; activeLayer: NoteLayer; className?: string }) {
   const getColor = (layer: NoteLayer) => composition[layer]?.color || 'transparent'
   const has = (layer: NoteLayer) => composition[layer] !== null
+  const anyFilled = has('base') || has('heart') || has('top')
 
   return (
     <div className={`relative ${className}`}>
-      {/* Glow behind bottle */}
-      <motion.div
-        className="absolute inset-0 -z-10"
-        style={{ filter: 'blur(60px)' }}
-        animate={{
-          background: has('base')
-            ? `radial-gradient(ellipse at center, ${getColor('base')}30 0%, transparent 70%)`
-            : 'none'
-        }}
-        transition={{ duration: 1.5 }}
-      />
+      {/* Ambient glow behind bottle */}
+      {anyFilled && (
+        <motion.div
+          className="absolute inset-0 -z-10"
+          style={{ filter: 'blur(60px)' }}
+          animate={{
+            background: `radial-gradient(ellipse at center, ${getColor(has('base') ? 'base' : has('heart') ? 'heart' : 'top')}25 0%, transparent 70%)`
+          }}
+          transition={{ duration: 1.5 }}
+        />
+      )}
 
-      <svg viewBox="0 -35 120 190" className="w-full h-auto drop-shadow-2xl">
+      {/* Reflection surface */}
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[70%] h-6 bg-gradient-to-t from-white/[0.03] to-transparent rounded-full blur-sm" />
+
+      <svg viewBox="0 -50 140 220" className="w-full h-auto drop-shadow-2xl">
         <defs>
-          <linearGradient id="capGold" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#E8D5A3" />
-            <stop offset="30%" stopColor="#D4AF37" />
-            <stop offset="60%" stopColor="#FFD700" />
+          {/* Gold gradient for cap */}
+          <linearGradient id="capGold2" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#F0DFA0" />
+            <stop offset="25%" stopColor="#D4AF37" />
+            <stop offset="50%" stopColor="#FFD700" />
+            <stop offset="75%" stopColor="#D4AF37" />
             <stop offset="100%" stopColor="#B8960F" />
           </linearGradient>
-          <linearGradient id="glassShine" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="rgba(255,255,255,0.15)" />
-            <stop offset="50%" stopColor="rgba(255,255,255,0)" />
+          <linearGradient id="capSide" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#8B7420" />
+            <stop offset="30%" stopColor="#D4AF37" />
+            <stop offset="70%" stopColor="#FFD700" />
+            <stop offset="100%" stopColor="#8B7420" />
+          </linearGradient>
+
+          {/* Glass body gradients */}
+          <linearGradient id="glassBody" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="rgba(255,255,255,0.08)" />
+            <stop offset="20%" stopColor="rgba(255,255,255,0.03)" />
+            <stop offset="80%" stopColor="rgba(255,255,255,0.03)" />
             <stop offset="100%" stopColor="rgba(255,255,255,0.08)" />
           </linearGradient>
-          <clipPath id="liquidClip">
-            <rect x="22" y="10" width="76" height="105" rx="6" />
+          <linearGradient id="glassEdge" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="rgba(255,255,255,0.2)" />
+            <stop offset="15%" stopColor="rgba(255,255,255,0.05)" />
+            <stop offset="85%" stopColor="rgba(255,255,255,0.05)" />
+            <stop offset="100%" stopColor="rgba(255,255,255,0.12)" />
+          </linearGradient>
+          <linearGradient id="glassVertical" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="rgba(255,255,255,0.06)" />
+            <stop offset="50%" stopColor="rgba(255,255,255,0.01)" />
+            <stop offset="100%" stopColor="rgba(255,255,255,0.04)" />
+          </linearGradient>
+
+          {/* Curved bottle body path for clipping */}
+          <clipPath id="bottleBodyClip">
+            <path d="M 30 15 C 30 12, 35 8, 42 5 L 42 -2 L 98 -2 L 98 5 C 105 8, 110 12, 110 15 L 112 40 C 114 60, 114 80, 114 100 L 114 130 C 114 148, 100 158, 70 158 C 40 158, 26 148, 26 130 L 26 100 C 26 80, 26 60, 28 40 Z" />
           </clipPath>
-          <filter id="glow">
-            <feGaussianBlur stdDeviation="3" result="blur" />
+
+          {/* Bottle outline path */}
+          <path id="bottlePath" d="M 30 15 C 30 12, 35 8, 42 5 L 42 -2 L 98 -2 L 98 5 C 105 8, 110 12, 110 15 L 112 40 C 114 60, 114 80, 114 100 L 114 130 C 114 148, 100 158, 70 158 C 40 158, 26 148, 26 130 L 26 100 C 26 80, 26 60, 28 40 Z" />
+
+          {/* Liquid glow filter */}
+          <filter id="liquidGlow">
+            <feGaussianBlur stdDeviation="2" result="blur" />
             <feComposite in="SourceGraphic" in2="blur" operator="over" />
           </filter>
+
+          {/* Shadow under bottle */}
+          <radialGradient id="bottleShadow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="rgba(0,0,0,0.3)" />
+            <stop offset="100%" stopColor="transparent" />
+          </radialGradient>
         </defs>
 
-        {/* Cap */}
-        <rect x="44" y="-30" width="32" height="8" rx="2" fill="url(#capGold)" />
-        <rect x="48" y="-22" width="24" height="16" rx="3" fill="url(#capGold)" />
-        <rect x="42" y="-7" width="36" height="5" rx="1.5" fill="#B8960F" />
+        {/* Shadow ellipse */}
+        <ellipse cx="70" cy="162" rx="38" ry="4" fill="url(#bottleShadow)" />
 
-        {/* Bottle body */}
-        <rect x="20" y="8" width="80" height="110" rx="8" fill="rgba(255,255,255,0.08)" stroke="rgba(212,175,55,0.2)" strokeWidth="1" />
+        {/* ===== CAP ===== */}
+        {/* Cap top ornament */}
+        <rect x="56" y="-46" width="28" height="6" rx="3" fill="url(#capGold2)" />
+        <rect x="56" y="-46" width="28" height="3" rx="1.5" fill="rgba(255,255,255,0.15)" />
 
-        {/* Liquid layers with glow */}
-        <g clipPath="url(#liquidClip)" filter="url(#glow)">
+        {/* Cap body */}
+        <rect x="52" y="-40" width="36" height="22" rx="4" fill="url(#capGold2)" />
+        {/* Cap highlight streak */}
+        <rect x="62" y="-38" width="8" height="18" rx="4" fill="rgba(255,255,255,0.12)" />
+        {/* Cap bottom detail line */}
+        <rect x="52" y="-20" width="36" height="2" fill="#8B7420" opacity="0.6" />
+
+        {/* Neck ring */}
+        <rect x="48" y="-18" width="44" height="6" rx="2" fill="url(#capSide)" />
+        <rect x="48" y="-18" width="44" height="2" rx="1" fill="rgba(255,255,255,0.2)" />
+
+        {/* Neck */}
+        <path d="M 50 -12 L 42 -2 L 42 5 L 98 5 L 98 -2 L 90 -12 Z" fill="rgba(255,255,255,0.06)" stroke="rgba(212,175,55,0.15)" strokeWidth="0.5" />
+
+        {/* ===== BOTTLE BODY ===== */}
+        {/* Glass body fill */}
+        <use href="#bottlePath" fill="url(#glassBody)" />
+        <use href="#bottlePath" fill="url(#glassVertical)" />
+        {/* Glass outline */}
+        <use href="#bottlePath" fill="none" stroke="rgba(212,175,55,0.18)" strokeWidth="1" />
+
+        {/* ===== LIQUID LAYERS ===== */}
+        <g clipPath="url(#bottleBodyClip)" filter="url(#liquidGlow)">
+          {/* Base layer — bottom third */}
           <motion.rect
-            x="22" y="78" width="76" height="37"
+            x="24" y="108" width="92" height="52"
             fill={getColor('base')}
-            animate={{ scaleY: has('base') ? 1 : 0, opacity: has('base') ? 0.9 : 0 }}
+            animate={{ scaleY: has('base') ? 1 : 0, opacity: has('base') ? 0.85 : 0 }}
             style={{ transformOrigin: 'center bottom' }}
             transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
           />
+          {/* Base liquid highlight */}
+          {has('base') && (
+            <motion.rect
+              x="30" y="108" width="16" height="50"
+              fill="rgba(255,255,255,0.08)"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+            />
+          )}
+
+          {/* Heart layer — middle third */}
           <motion.rect
-            x="22" y="43" width="76" height="35"
+            x="24" y="58" width="92" height="50"
             fill={getColor('heart')}
-            animate={{ scaleY: has('heart') ? 1 : 0, opacity: has('heart') ? 0.85 : 0 }}
+            animate={{ scaleY: has('heart') ? 1 : 0, opacity: has('heart') ? 0.8 : 0 }}
             style={{ transformOrigin: 'center bottom' }}
             transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
           />
+          {has('heart') && (
+            <motion.rect
+              x="30" y="58" width="16" height="48"
+              fill="rgba(255,255,255,0.06)"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+            />
+          )}
+
+          {/* Top layer — top third */}
           <motion.rect
-            x="22" y="10" width="76" height="33"
+            x="24" y="8" width="92" height="50"
             fill={getColor('top')}
-            animate={{ scaleY: has('top') ? 1 : 0, opacity: has('top') ? 0.8 : 0 }}
+            animate={{ scaleY: has('top') ? 1 : 0, opacity: has('top') ? 0.75 : 0 }}
             style={{ transformOrigin: 'center bottom' }}
             transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
           />
+          {has('top') && (
+            <motion.rect
+              x="30" y="8" width="16" height="48"
+              fill="rgba(255,255,255,0.05)"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+            />
+          )}
         </g>
 
-        {/* Active layer pulse */}
+        {/* Active layer indicator (pulsing dashed outline) */}
         <motion.rect
-          x="18"
-          width="84"
-          height={activeLayer === 'base' ? 37 : activeLayer === 'heart' ? 35 : 33}
-          rx="8"
+          x={activeLayer === 'base' ? 25 : activeLayer === 'heart' ? 25 : 28}
+          width={activeLayer === 'base' ? 90 : activeLayer === 'heart' ? 90 : 84}
+          height={activeLayer === 'base' ? 50 : 50}
+          rx="6"
           fill="none"
           stroke="rgba(212,175,55,0.4)"
           strokeWidth="1.5"
           strokeDasharray="4,4"
           animate={{
-            y: activeLayer === 'top' ? 10 : activeLayer === 'heart' ? 43 : 78,
+            y: activeLayer === 'top' ? 8 : activeLayer === 'heart' ? 58 : 108,
             opacity: [0.2, 0.6, 0.2],
           }}
           transition={{
@@ -155,20 +248,35 @@ function CinematicBottle({ composition, activeLayer, className = '' }: { composi
           }}
         />
 
-        {/* Glass highlights */}
-        <rect x="20" y="8" width="80" height="110" rx="8" fill="url(#glassShine)" />
-        <line x1="28" y1="16" x2="28" y2="108" stroke="white" strokeWidth="1" opacity="0.06" />
+        {/* Glass reflections */}
+        <g opacity="0.5">
+          {/* Left edge highlight */}
+          <line x1="32" y1="20" x2="28" y2="140" stroke="white" strokeWidth="1.5" opacity="0.08" />
+          {/* Broad left reflection */}
+          <line x1="36" y1="25" x2="30" y2="135" stroke="white" strokeWidth="3" opacity="0.03" />
+          {/* Right subtle edge */}
+          <line x1="108" y1="20" x2="112" y2="130" stroke="white" strokeWidth="0.5" opacity="0.06" />
+        </g>
 
-        {/* Layer labels */}
-        <text x="60" y="28" textAnchor="middle" fill="rgba(255,255,255,0.2)" fontSize="5.5" fontFamily="sans-serif" letterSpacing="0.15em">TOP</text>
-        <text x="60" y="63" textAnchor="middle" fill="rgba(255,255,255,0.2)" fontSize="5.5" fontFamily="sans-serif" letterSpacing="0.15em">HEART</text>
-        <text x="60" y="100" textAnchor="middle" fill="rgba(255,255,255,0.2)" fontSize="5.5" fontFamily="sans-serif" letterSpacing="0.15em">BASE</text>
+        {/* Layer divider lines (subtle) */}
+        <g opacity="0.15">
+          <line x1="30" y1="58" x2="110" y2="58" stroke="rgba(255,255,255,0.4)" strokeWidth="0.5" strokeDasharray="2,3" />
+          <line x1="30" y1="108" x2="110" y2="108" stroke="rgba(255,255,255,0.4)" strokeWidth="0.5" strokeDasharray="2,3" />
+        </g>
+
+        {/* Layer text labels inside bottle */}
+        <text x="70" y="36" textAnchor="middle" fill="rgba(255,255,255,0.15)" fontSize="6" fontFamily="sans-serif" letterSpacing="0.2em">TOP</text>
+        <text x="70" y="86" textAnchor="middle" fill="rgba(255,255,255,0.15)" fontSize="6" fontFamily="sans-serif" letterSpacing="0.2em">HEART</text>
+        <text x="70" y="136" textAnchor="middle" fill="rgba(255,255,255,0.15)" fontSize="6" fontFamily="sans-serif" letterSpacing="0.2em">BASE</text>
+
+        {/* Bottom edge highlight */}
+        <ellipse cx="70" cy="157" rx="30" ry="2" fill="rgba(212,175,55,0.08)" />
       </svg>
     </div>
   )
 }
 
-// Note selection card with hover glow
+// Note selection card with emoji icon
 function NoteCard({
   note,
   isSelected,
@@ -204,20 +312,23 @@ function NoteCard({
         boxShadow: `0 0 40px ${theme.glow}, 0 0 0 1px ${theme.primary}80`,
       } : undefined}
     >
-      {/* Color orb */}
+      {/* Emoji icon */}
       <div className="relative">
-        <div
-          className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-white/10"
+        <motion.span
+          className="text-3xl sm:text-4xl block"
+          animate={isSelected ? { scale: [1, 1.15, 1] } : {}}
+          transition={{ duration: 0.4 }}
           style={{
-            background: `radial-gradient(circle at 30% 30%, ${note.color}dd, ${note.color}88)`,
-            boxShadow: isSelected ? `0 0 24px ${note.color}60` : `0 4px 12px ${note.color}30`,
+            filter: isSelected ? `drop-shadow(0 0 12px ${note.color}80)` : 'none',
           }}
-        />
+        >
+          {note.icon}
+        </motion.span>
         {isSelected && (
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            className="absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center bg-gold"
+            className="absolute -top-1 -right-2 w-5 h-5 rounded-full flex items-center justify-center bg-gold"
           >
             <Check className="w-3 h-3 text-black" />
           </motion.div>
@@ -550,10 +661,7 @@ export default function CreatePerfumePage() {
                         if (!note) return null
                         return (
                           <div key={layer} className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.06]">
-                            <div
-                              className="w-5 h-5 rounded-full flex-shrink-0"
-                              style={{ background: `radial-gradient(circle at 30% 30%, ${note.color}dd, ${note.color}88)` }}
-                            />
+                            <span className="text-lg flex-shrink-0">{note.icon}</span>
                             <div className="flex-1 min-w-0">
                               <span className="text-[9px] uppercase tracking-wider text-white/30">{layer}</span>
                               <span className="block text-xs text-white/80 font-medium truncate">{note.name}</span>
@@ -714,13 +822,7 @@ export default function CreatePerfumePage() {
                           transition={{ delay: 0.3 + i * 0.1 }}
                           className="flex items-center gap-4"
                         >
-                          <div
-                            className="w-8 h-8 rounded-full flex-shrink-0"
-                            style={{
-                              background: `radial-gradient(circle at 30% 30%, ${note.color}dd, ${note.color}88)`,
-                              boxShadow: `0 0 16px ${note.color}40`,
-                            }}
-                          />
+                          <span className="text-2xl flex-shrink-0">{note.icon}</span>
                           <div>
                             <span className="text-[9px] uppercase tracking-[0.2em] text-white/30 block">{layer} note</span>
                             <span className="text-white/90 font-medium">{note.name}</span>
