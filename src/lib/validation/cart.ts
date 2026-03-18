@@ -3,6 +3,17 @@ import type { CartItem } from '@/types/cart';
 import { getProductsByIds } from '@/lib/supabase/product-service';
 import { MIN_QUANTITY, MAX_QUANTITY } from '@/lib/constants';
 
+// Aquador's own categories sell the same fragrance in multiple formats
+// with fixed pricing that's not stored per-variant in the DB.
+const AQUADOR_CATEGORIES = new Set(['women', 'men', 'niche']);
+
+// Server-side source of truth for Aquador variant pricing
+const AQUADOR_VARIANT_PRICES: Record<string, Record<string, number>> = {
+  'perfume':     { '50ml': 29.99, '100ml': 49.99 },
+  'essence-oil': { '10ml': 19.99 },
+  'body-lotion': { '150ml': 29.99 },
+};
+
 /**
  * Zod schema for CartItem validation
  *
@@ -66,7 +77,23 @@ export async function validateCartPrices(items: CartItem[]): Promise<{
       continue;
     }
 
-    // Verify product type matches
+    // Aquador's own products support virtual variants (perfume/oil/lotion)
+    // with fixed pricing — the DB stores the base product, variants are derived.
+    if (AQUADOR_CATEGORIES.has(product.category)) {
+      const variantPrices = AQUADOR_VARIANT_PRICES[item.productType];
+      const variantPrice = variantPrices?.[item.size];
+      if (!variantPrice) {
+        errors.push({
+          productId: item.productId,
+          reason: `Invalid variant: ${item.productType} / ${item.size}`,
+        });
+        continue;
+      }
+      correctedItems.push({ ...item, price: variantPrice });
+      continue;
+    }
+
+    // Branded products: type and size must exactly match the catalog row
     if (item.productType !== product.product_type) {
       errors.push({
         productId: item.productId,
@@ -75,7 +102,6 @@ export async function validateCartPrices(items: CartItem[]): Promise<{
       continue;
     }
 
-    // Verify size matches
     if (item.size !== product.size) {
       errors.push({
         productId: item.productId,
@@ -85,11 +111,8 @@ export async function validateCartPrices(items: CartItem[]): Promise<{
     }
 
     // Always use catalog price (sale price takes precedence)
-    const catalogPrice = product.sale_price ?? product.price;
-    correctedItems.push({
-      ...item,
-      price: catalogPrice,
-    });
+    const catalogPrice = Number(product.sale_price ?? product.price);
+    correctedItems.push({ ...item, price: catalogPrice });
   }
 
   if (errors.length > 0) {

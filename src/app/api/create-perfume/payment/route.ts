@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     const { perfumeName, composition, volume, specialRequests } = result.data;
 
     // Calculate price in cents
-    const amount = volume === '100ml' ? 19900 : 2999;
+    const amount = volume === '100ml' ? 4999 : 2999;
 
     // Create Stripe Checkout Session (same as regular checkout)
     const session = await stripe.checkout.sessions.create({

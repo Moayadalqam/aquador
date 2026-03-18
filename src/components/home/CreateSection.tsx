@@ -114,12 +114,12 @@ export default function CreateSection() {
                       src={stage.image}
                       alt={stage.title}
                       fill
-                      className="object-cover transition-transform duration-1000 group-hover:scale-106 filter brightness-[0.5] group-hover:brightness-[0.6]"
+                      className="object-cover transition-all duration-1000 group-hover:scale-105 filter brightness-[0.75] group-hover:brightness-[1]"
                       sizes="(max-width: 768px) 100vw, 33vw"
                     />
                   </motion.div>
                   {/* Gradient from bottom */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent group-hover:via-black/10 transition-all duration-700" />
 
                   {/* Step number — cinematic large reveal */}
                   <motion.div

@@ -82,14 +82,16 @@ export function ProductQuickView({ product, isVisible, onClose }: ProductQuickVi
           animate="visible"
           exit="exit"
           variants={variants}
-          className="absolute inset-0 z-10 flex flex-col justify-end p-3 md:p-4 bg-black/80 backdrop-blur-md rounded-xl pointer-events-none"
+          className="absolute inset-0 z-10 flex flex-col justify-end rounded-xl pointer-events-none overflow-hidden"
           onMouseLeave={onClose}
         >
+          {/* Gradient only at bottom — image stays visible */}
+          <div className="absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t from-black/75 via-black/30 to-transparent rounded-b-xl" />
           <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="space-y-2"
+            className="relative z-10 p-3 md:p-4 space-y-2"
           >
             {/* Product Description */}
             <motion.p

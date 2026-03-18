@@ -1,9 +1,17 @@
 'use client';
 
+import { useState } from 'react';
 import { formatPrice } from '@/lib/currency';
+import ProductVariantSelector, {
+  getDefaultVariant,
+  type SelectedVariant,
+} from './ProductVariantSelector';
 import AddToCartButton from './AddToCartButton';
 import RichDescription from './RichDescription';
 import type { LegacyProduct } from '@/types';
+
+// Aquador's own fragrances support perfume / essence oil / body lotion variants
+const AQUADOR_CATEGORIES = ['women', 'men', 'niche'];
 
 const productTypeLabel = (type: string) => {
   if (type === 'essence-oil') return 'Essence Oil';
@@ -16,10 +24,18 @@ interface ProductDetailsProps {
 }
 
 export default function ProductDetails({ product }: ProductDetailsProps) {
-  // Always use the actual database price — no hardcoded variant overrides
-  const displayPrice = product.salePrice && product.salePrice < product.price
-    ? product.salePrice
-    : product.price;
+  const isAquador = AQUADOR_CATEGORIES.includes(product.category);
+  const [variant, setVariant] = useState<SelectedVariant>(getDefaultVariant);
+
+  // Aquador products: use selected variant price/type/size
+  // Branded products: use exact DB price/type/size
+  const displayProduct: LegacyProduct = isAquador
+    ? { ...product, price: variant.price, salePrice: undefined, productType: variant.type, size: variant.size }
+    : product;
+
+  const displayPrice = isAquador
+    ? variant.price
+    : (product.salePrice && product.salePrice < product.price ? product.salePrice : product.price);
 
   return (
     <div className="flex flex-col gap-6">
@@ -40,13 +56,20 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
         <span className="text-[clamp(1.75rem,1.5rem+1.25vw,2.5rem)] font-playfair font-medium text-gold-600">
           {formatPrice(displayPrice)}
         </span>
-        <span className="text-sm text-gray-400">
-          {productTypeLabel(product.productType)} · {product.size}
-          {product.salePrice && product.salePrice < product.price && (
-            <span className="ml-2 line-through text-gray-300">{formatPrice(product.price)}</span>
-          )}
-        </span>
+        {isAquador ? (
+          <span className="text-sm text-gray-400">{variant.label} · {variant.size}</span>
+        ) : (
+          <span className="text-sm text-gray-400">
+            {productTypeLabel(product.productType)} · {product.size}
+            {product.salePrice && product.salePrice < product.price && (
+              <span className="ml-2 line-through text-gray-300">{formatPrice(product.price)}</span>
+            )}
+          </span>
+        )}
       </div>
+
+      {/* Variant selector — Aquador products only */}
+      {isAquador && <ProductVariantSelector selected={variant} onChange={setVariant} />}
 
       {/* Stock + Add to Cart */}
       <div className="flex items-center gap-3 text-sm">
@@ -60,7 +83,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
         </span>
       </div>
 
-      <AddToCartButton product={product} />
+      <AddToCartButton product={displayProduct} />
 
       {/* Compact info row */}
       <div className="flex flex-wrap gap-3 pt-2">
@@ -68,7 +91,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
           <svg className="w-4 h-4 text-gold-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
           </svg>
-          Free shipping over €100
+          Free shipping over €50
         </div>
         <div className="flex items-center gap-2 text-xs text-gray-500">
           <svg className="w-4 h-4 text-gold-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
