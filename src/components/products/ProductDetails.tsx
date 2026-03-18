@@ -10,21 +10,32 @@ import AddToCartButton from './AddToCartButton';
 import RichDescription from './RichDescription';
 import type { LegacyProduct } from '@/types';
 
+// Branded categories have their own pricing per product — don't show variant selector
+const BRANDED_CATEGORIES = ['lattafa-original', 'al-haramain-originals', 'victorias-secret-originals'];
+
 interface ProductDetailsProps {
   product: LegacyProduct;
 }
 
 export default function ProductDetails({ product }: ProductDetailsProps) {
+  const isBranded = BRANDED_CATEGORIES.includes(product.category);
   const [variant, setVariant] = useState<SelectedVariant>(getDefaultVariant);
 
-  // Build a product override with variant pricing/type/size
-  const variantProduct: LegacyProduct = {
-    ...product,
-    price: variant.price,
-    salePrice: undefined,
-    productType: variant.type,
-    size: variant.size,
-  };
+  // For branded products: use the actual database price/size/type
+  // For Aquador products: allow variant selection
+  const displayProduct: LegacyProduct = isBranded
+    ? product
+    : {
+        ...product,
+        price: variant.price,
+        salePrice: undefined,
+        productType: variant.type,
+        size: variant.size,
+      };
+
+  const displayPrice = isBranded
+    ? (product.salePrice && product.salePrice < product.price ? product.salePrice : product.price)
+    : variant.price;
 
   return (
     <div className="flex flex-col gap-6">
@@ -43,15 +54,24 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
       {/* Price */}
       <div className="flex items-baseline gap-3 transition-all duration-300">
         <span className="text-[clamp(1.75rem,1.5rem+1.25vw,2.5rem)] font-playfair font-medium text-gold-600">
-          {formatPrice(variant.price)}
+          {formatPrice(displayPrice)}
         </span>
-        <span className="text-sm text-gray-400">
-          {variant.label} · {variant.size}
-        </span>
+        {isBranded ? (
+          <span className="text-sm text-gray-400">
+            {product.productType === 'perfume' ? 'Perfume' : product.productType === 'essence-oil' ? 'Essence Oil' : 'Body Lotion'} · {product.size}
+            {product.salePrice && product.salePrice < product.price && (
+              <span className="ml-2 line-through text-gray-300">{formatPrice(product.price)}</span>
+            )}
+          </span>
+        ) : (
+          <span className="text-sm text-gray-400">
+            {variant.label} · {variant.size}
+          </span>
+        )}
       </div>
 
-      {/* Variant Selector */}
-      <ProductVariantSelector selected={variant} onChange={setVariant} />
+      {/* Variant Selector — only for Aquador's own products */}
+      {!isBranded && <ProductVariantSelector selected={variant} onChange={setVariant} />}
 
       {/* Stock + Add to Cart */}
       <div className="flex items-center gap-3 text-sm">
@@ -65,7 +85,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
         </span>
       </div>
 
-      <AddToCartButton product={variantProduct} />
+      <AddToCartButton product={displayProduct} />
 
       {/* Compact info row */}
       <div className="flex flex-wrap gap-3 pt-2">

@@ -29,30 +29,39 @@ const categoryThemes: Record<FragranceCategory, { primary: string; glow: string 
   gourmand: { primary: '#C08B5C', glow: 'rgba(192,139,92,0.2)' },
 }
 
-// Ambient floating particles
+// Ambient floating particles — deterministic seeds to avoid hydration mismatch
+const PARTICLE_SEEDS = Array.from({ length: 20 }, (_, i) => ({
+  w: ((i * 7 + 3) % 30) / 10 + 1,
+  left: ((i * 37 + 13) % 100),
+  top: ((i * 53 + 7) % 100),
+  drift: 60 + ((i * 17 + 11) % 80),
+  dur: 4 + ((i * 23 + 5) % 40) / 10,
+  delay: ((i * 41 + 3) % 50) / 10,
+}))
+
 function AmbientParticles({ color = '#D4AF37' }: { color?: string }) {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {Array.from({ length: 20 }).map((_, i) => (
+      {PARTICLE_SEEDS.map((seed, i) => (
         <motion.div
           key={i}
           className="absolute rounded-full"
           style={{
-            width: Math.random() * 3 + 1,
-            height: Math.random() * 3 + 1,
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
+            width: seed.w,
+            height: seed.w,
+            left: `${seed.left}%`,
+            top: `${seed.top}%`,
             background: color,
             opacity: 0,
           }}
           animate={{
-            y: [0, -60 - Math.random() * 80],
+            y: [0, -seed.drift],
             opacity: [0, 0.4, 0],
           }}
           transition={{
-            duration: 4 + Math.random() * 4,
+            duration: seed.dur,
             repeat: Infinity,
-            delay: Math.random() * 5,
+            delay: seed.delay,
             ease: 'easeOut',
           }}
         />
