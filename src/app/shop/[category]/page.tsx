@@ -63,7 +63,9 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
     notFound();
   }
 
-  const products = await getProductsByCategory(categorySlug);
+  const allProducts = await getProductsByCategory(categorySlug);
+  // Only show perfumes — oils/lotions are variants on the product page, not separate listings
+  const products = allProducts.filter(p => p.product_type === 'perfume');
 
   // BreadcrumbList structured data
   const breadcrumbSchema = {

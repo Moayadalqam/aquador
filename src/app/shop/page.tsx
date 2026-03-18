@@ -28,8 +28,8 @@ export const metadata: Metadata = {
 export default async function ShopPage() {
   const allProducts = await getAllProducts();
 
-  // Dubai Shop excludes Lattafa products (they have their own dedicated page)
-  const products = allProducts.filter(p => p.category !== 'lattafa-original');
+  // Dubai Shop: exclude Lattafa (own page) and non-perfume types (oils/lotions are variants, not separate listings)
+  const products = allProducts.filter(p => p.category !== 'lattafa-original' && p.product_type === 'perfume');
 
   return (
     <Suspense fallback={<div className="pt-32 md:pt-40 lg:pt-44 pb-20 bg-white min-h-screen" />}>
