@@ -31,7 +31,8 @@ async function persistOrder(
   session: Stripe.Checkout.Session,
   items: OrderItem[],
   shippingAddress: ShippingAddress | null,
-  orderTags: Record<string, string>
+  orderTags: Record<string, string>,
+  customerPhone: string | null = null
 ): Promise<{ isNewOrder: boolean }> {
   try {
     const supabase = createAdminClient();
@@ -94,12 +95,14 @@ async function persistOrder(
           total_spent: existing.total_spent + (session.amount_total || 0),
           last_order_at: now,
           shipping_addresses: JSON.parse(JSON.stringify(addresses)),
+          ...(customerPhone ? { phone: customerPhone } : {}),
         })
         .eq('id', existing.id);
     } else {
       await supabase.from('customers').insert({
         email: customerEmail,
         name: customerName || null,
+        phone: customerPhone,
         total_orders: 1,
         total_spent: session.amount_total || 0,
         first_order_at: now,
@@ -385,6 +388,7 @@ export async function POST(request: NextRequest) {
 
       // Parse items, shipping, and order tags
       const customerEmail = session.customer_details?.email;
+      const customerPhone = session.customer_details?.phone || null;
       let items: OrderItem[] = [];
       let shippingAddress: ShippingAddress | null = null;
 
@@ -455,7 +459,7 @@ export async function POST(request: NextRequest) {
       }
 
       // Persist order + customer to Supabase
-      const { isNewOrder } = await persistOrder(session, items, shippingAddress, orderTags);
+      const { isNewOrder } = await persistOrder(session, items, shippingAddress, orderTags, customerPhone);
 
       // Send confirmation email to customer + notification to store (only for new orders)
       if (customerEmail) {

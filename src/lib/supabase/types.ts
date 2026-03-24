@@ -131,6 +131,7 @@ export type Database = {
           id: string
           last_order_at: string | null
           name: string | null
+          phone: string | null
           shipping_addresses: Json
           total_orders: number
           total_spent: number
@@ -143,6 +144,7 @@ export type Database = {
           id?: string
           last_order_at?: string | null
           name?: string | null
+          phone?: string | null
           shipping_addresses?: Json
           total_orders?: number
           total_spent?: number
@@ -155,6 +157,7 @@ export type Database = {
           id?: string
           last_order_at?: string | null
           name?: string | null
+          phone?: string | null
           shipping_addresses?: Json
           total_orders?: number
           total_spent?: number

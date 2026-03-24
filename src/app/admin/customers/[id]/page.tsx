@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
-import { ArrowLeft, Mail, MapPin } from 'lucide-react';
+import { ArrowLeft, Mail, MapPin, Phone } from 'lucide-react';
 import type { Customer, Order } from '@/lib/supabase/types';
 
 interface ShippingAddress {
@@ -98,6 +98,12 @@ export default function CustomerDetailPage() {
             <Mail className="h-3.5 w-3.5" />
             {customer.email}
           </p>
+          {customer.phone && (
+            <p className="text-gray-400 text-sm flex items-center gap-1.5 mt-0.5">
+              <Phone className="h-3.5 w-3.5" />
+              {customer.phone}
+            </p>
+          )}
         </div>
       </div>
 

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { Phone } from 'lucide-react';
 import type { Customer } from '@/lib/supabase/types';
 
 interface CustomersTableProps {
@@ -37,6 +38,12 @@ export default function CustomersTable({ customers }: CustomersTableProps) {
                 <div>
                   <p className="text-white text-sm font-medium">{customer.name || 'N/A'}</p>
                   <p className="text-gray-500 text-xs">{customer.email}</p>
+                  {customer.phone && (
+                    <p className="text-gray-500 text-xs flex items-center gap-1 mt-0.5">
+                      <Phone className="h-3 w-3" />
+                      {customer.phone}
+                    </p>
+                  )}
                 </div>
               </td>
               <td className="px-4 py-4 text-right">

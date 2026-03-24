@@ -62,6 +62,7 @@ export async function POST(request: NextRequest) {
       shipping_address_collection: {
         allowed_countries: [...SHIPPING_COUNTRIES],
       },
+      phone_number_collection: { enabled: true },
       shipping_options: [
         {
           shipping_rate_data: {
