@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -14,7 +15,9 @@ import {
   ShoppingBag,
   Users,
   X,
+  MessageCircle,
 } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
 
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
@@ -33,6 +36,37 @@ interface AdminSidebarProps {
 
 export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
   const pathname = usePathname();
+  const [waitingCount, setWaitingCount] = useState(0);
+  const supabaseRef = useRef(createClient());
+
+  useEffect(() => {
+    const supabase = supabaseRef.current;
+
+    const loadCount = async () => {
+      const { count } = await supabase
+        .from('live_chat_sessions')
+        .select('*', { count: 'exact', head: true })
+        .in('status', ['waiting', 'active']);
+      setWaitingCount(count ?? 0);
+    };
+
+    loadCount();
+
+    const channel = supabase
+      .channel('sidebar-live-chat-count')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'live_chat_sessions' },
+        () => {
+          loadCount();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   return (
     <>
@@ -91,6 +125,24 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
                 </Link>
               );
             })}
+
+            {/* Live Chat with badge */}
+            <Link
+              href="/admin/live-chat"
+              className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
+                pathname.startsWith('/admin/live-chat')
+                  ? 'bg-gold/10 text-gold border border-gold/20'
+                  : 'text-gray-400 hover:bg-gray-800 hover:text-white'
+              }`}
+            >
+              <MessageCircle className="h-5 w-5" />
+              Live Chat
+              {waitingCount > 0 && (
+                <span className="ml-auto bg-amber-500 text-black text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center animate-pulse">
+                  {waitingCount}
+                </span>
+              )}
+            </Link>
           </nav>
 
           {/* Quick Actions */}

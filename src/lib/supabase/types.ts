@@ -372,6 +372,63 @@ export type Database = {
         }
         Relationships: []
       }
+      live_chat_sessions: {
+        Row: {
+          admin_id: string | null
+          closed_at: string | null
+          created_at: string
+          id: string
+          status: string
+          updated_at: string
+          visitor_id: string
+          visitor_name: string | null
+        }
+        Insert: {
+          admin_id?: string | null
+          closed_at?: string | null
+          created_at?: string
+          id?: string
+          status?: string
+          updated_at?: string
+          visitor_id: string
+          visitor_name?: string | null
+        }
+        Update: {
+          admin_id?: string | null
+          closed_at?: string | null
+          created_at?: string
+          id?: string
+          status?: string
+          updated_at?: string
+          visitor_id?: string
+          visitor_name?: string | null
+        }
+        Relationships: []
+      }
+      live_chat_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          sender_type: string
+          session_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          sender_type: string
+          session_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          sender_type?: string
+          session_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -434,3 +491,5 @@ export type Customer = Database['public']['Tables']['customers']['Row'];
 export type CustomerInsert = Database['public']['Tables']['customers']['Insert'];
 
 export type SiteVisitor = Database['public']['Tables']['site_visitors']['Row'];
+export type LiveChatSession = Database['public']['Tables']['live_chat_sessions']['Row'];
+export type LiveChatMessage = Database['public']['Tables']['live_chat_messages']['Row'];
