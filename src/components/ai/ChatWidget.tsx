@@ -100,6 +100,8 @@ export default function ChatWidget() {
     if (error || !session) { Sentry.captureException(error); return; }
     setSessionId(session.id); setLiveStatus('waiting'); setMode('live');
     await supabase.from('live_chat_messages').insert({ session_id: session.id, sender_type: 'system', content: 'You are now in the queue. An agent will be with you shortly.' });
+    // Notify staff via WhatsApp/email
+    fetch('/api/live-chat/notify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sessionId: session.id }) }).catch(() => {});
   }, []);
 
   const handleLiveSend = async () => {
