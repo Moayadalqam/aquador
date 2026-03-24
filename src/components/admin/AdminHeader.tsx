@@ -10,12 +10,12 @@ import type { AdminUser } from '@/lib/supabase/types';
 interface AdminHeaderProps {
   user: SupabaseUser;
   adminUser: AdminUser | null;
+  onMenuToggle: () => void;
 }
 
-export default function AdminHeader({ user, adminUser }: AdminHeaderProps) {
+export default function AdminHeader({ user, adminUser, onMenuToggle }: AdminHeaderProps) {
   const role = adminUser?.role || 'admin';
   const [showDropdown, setShowDropdown] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const router = useRouter();
 
   const handleSignOut = async () => {
@@ -30,13 +30,13 @@ export default function AdminHeader({ user, adminUser }: AdminHeaderProps) {
       <div className="flex items-center justify-between h-16 px-4 lg:px-6">
         {/* Mobile menu button */}
         <button
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="lg:hidden p-2 text-gray-400 hover:text-white"
+          onClick={onMenuToggle}
+          className="lg:hidden p-2 -ml-2 text-gray-400 hover:text-white rounded-lg hover:bg-gray-800 transition-colors"
         >
           <Menu className="h-6 w-6" />
         </button>
 
-        {/* Page Title - can be made dynamic */}
+        {/* Page Title */}
         <h1 className="text-lg font-semibold text-white lg:text-xl">
           Admin Panel
         </h1>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import AdminSidebar from './AdminSidebar';
@@ -21,6 +21,20 @@ export default function AdminShell({ children }: AdminShellProps) {
   const [user, setUser] = useState<User | null>(null);
   const [adminUser, setAdminUser] = useState<AdminUser | null>(null);
   const [loading, setLoading] = useState(!isLoginPage);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Close sidebar on route change
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [pathname]);
+
+  const toggleSidebar = useCallback(() => {
+    setSidebarOpen(prev => !prev);
+  }, []);
+
+  const closeSidebar = useCallback(() => {
+    setSidebarOpen(false);
+  }, []);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -101,10 +115,10 @@ export default function AdminShell({ children }: AdminShellProps) {
 
   return (
     <div className="min-h-screen bg-gray-950 text-white">
-      <AdminSidebar />
+      <AdminSidebar isOpen={sidebarOpen} onClose={closeSidebar} />
       <div className="lg:pl-64">
-        <AdminHeader user={user} adminUser={adminUser} />
-        <main className="p-6">
+        <AdminHeader user={user} adminUser={adminUser} onMenuToggle={toggleSidebar} />
+        <main className="p-4 sm:p-6">
           {children}
         </main>
       </div>
