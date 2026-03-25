@@ -71,7 +71,7 @@ export function ProductCard({
           </h3>
 
           {/* Price section */}
-          <div className="pt-3 border-t border-gray-100">
+          <div className="pt-3 border-t border-gray-300">
             <p className="label-micro mb-1">Price</p>
             <div className="flex items-end justify-between">
               <div className="flex items-baseline gap-2">

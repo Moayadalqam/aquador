@@ -12,7 +12,7 @@ export default function RelatedProducts({ products }: RelatedProductsProps) {
   if (products.length === 0) return null;
 
   return (
-    <section className="mt-20 pt-12 border-t border-gold-500/10">
+    <section className="mt-20 pt-12 border-t border-gray-300">
       <h2 className="text-[clamp(1.75rem,1.5rem+1.25vw,2.5rem)] font-playfair font-semibold tracking-tight text-black mb-8 text-center">
         You May Also Like
       </h2>

@@ -47,15 +47,15 @@ export default function ProductInfo({ product }: ProductInfoProps) {
 
       {/* Product Details */}
       <div className="flex flex-wrap gap-4 text-sm">
-        <div className="px-5 py-2.5 bg-white/80 backdrop-blur-sm rounded-full border border-gold-500/20">
+        <div className="px-5 py-2.5 bg-white/80 backdrop-blur-sm rounded-full border border-gray-800/20">
           <span className="text-gray-400">Type: </span>
           <span className="text-black">{productTypeLabels[product.productType]}</span>
         </div>
-        <div className="px-5 py-2.5 bg-white/80 backdrop-blur-sm rounded-full border border-gold-500/20">
+        <div className="px-5 py-2.5 bg-white/80 backdrop-blur-sm rounded-full border border-gray-800/20">
           <span className="text-gray-400">Size: </span>
           <span className="text-black">{product.size}</span>
         </div>
-        <div className="px-5 py-2.5 bg-white/80 backdrop-blur-sm rounded-full border border-gold-500/20">
+        <div className="px-5 py-2.5 bg-white/80 backdrop-blur-sm rounded-full border border-gray-800/20">
           <span className="text-gray-400">Status: </span>
           <span className={product.inStock ? 'text-green-400' : 'text-red-400'}>
             {product.inStock ? 'In Stock' : 'Coming Soon'}
@@ -64,7 +64,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
       </div>
 
       {/* Description */}
-      <div className="pt-6 border-t border-gold-500/10">
+      <div className="pt-6 border-t border-gray-300">
         <h3 className="text-[clamp(0.75rem,0.6875rem+0.3125vw,0.875rem)] text-gray-600 uppercase tracking-[0.1em] mb-3">
           Description
         </h3>
@@ -73,7 +73,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
 
       {/* Tags */}
       {product.tags && product.tags.length > 0 && (
-        <div className="pt-6 border-t border-gold-500/10">
+        <div className="pt-6 border-t border-gray-300">
           <h3 className="text-[clamp(0.75rem,0.6875rem+0.3125vw,0.875rem)] text-gray-600 uppercase tracking-[0.1em] mb-3">
             Tags
           </h3>

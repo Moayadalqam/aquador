@@ -33,7 +33,7 @@ export default function CartItem({ item }: CartItemProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, x: -100 }}
-      className="flex gap-4 py-4 border-b border-gold/10"
+      className="flex gap-4 py-4 border-b border-gray-300"
     >
       {/* Product Image */}
       <div className="relative w-20 h-20 bg-dark-lighter rounded-lg overflow-hidden flex-shrink-0">

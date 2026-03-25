@@ -19,7 +19,7 @@ export function ProductCardSkeleton() {
       <div className="p-5 space-y-3">
         <Skeleton className="h-3 w-16" />
         <Skeleton className="h-5 w-3/4" />
-        <div className="pt-3 border-t border-gray-100">
+        <div className="pt-3 border-t border-gray-300">
           <Skeleton className="h-3 w-12 mb-2" />
           <div className="flex justify-between">
             <Skeleton className="h-6 w-20" />

@@ -108,7 +108,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
       </div>
 
       {/* Description — below the fold */}
-      <div className="pt-6 border-t border-gray-100">
+      <div className="pt-6 border-t border-gray-300">
         <h3 className="text-[11px] text-gray-400 uppercase tracking-[0.12em] mb-3">
           About this fragrance
         </h3>
@@ -117,12 +117,12 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
 
       {/* Tags */}
       {product.tags && product.tags.length > 0 && (
-        <div className="pt-4 border-t border-gray-100">
+        <div className="pt-4 border-t border-gray-300">
           <div className="flex flex-wrap gap-2">
             {product.tags.map((tag) => (
               <span
                 key={tag}
-                className="px-3 py-1 text-xs text-gold bg-gold/5 border border-gold/10 rounded-full"
+                className="px-3 py-1 text-xs text-gold bg-gold/5 border border-gray-300 rounded-full"
               >
                 {tag}
               </span>

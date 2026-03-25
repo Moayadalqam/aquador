@@ -31,10 +31,10 @@ export default function CartDrawer() {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-            className="fixed right-0 top-0 h-full w-full max-w-md bg-white border-l border-gold/20 z-50 flex flex-col"
+            className="fixed right-0 top-0 h-full w-full max-w-md bg-white border-l border-gray-300 z-50 flex flex-col"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gold/20">
+            <div className="flex items-center justify-between p-6 border-b border-gray-300">
               <div className="flex items-center gap-3">
                 <ShoppingBag className="w-5 h-5 text-gold" />
                 <h2 className="text-lg font-playfair text-black">Your Cart</h2>
@@ -80,7 +80,7 @@ export default function CartDrawer() {
 
             {/* Footer */}
             {!isEmpty && (
-              <div className="border-t border-gold/20 p-6 space-y-4">
+              <div className="border-t border-gray-300 p-6 space-y-4">
                 {/* Subtotal */}
                 <div className="flex items-center justify-between">
                   <span className="text-gray-400">Subtotal</span>

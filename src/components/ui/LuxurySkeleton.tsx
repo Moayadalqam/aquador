@@ -28,7 +28,7 @@ export function LuxurySkeleton({ className = '' }: LuxurySkeletonProps) {
 
   return (
     <div
-      className={`bg-gray-100 border border-gold-500/5 rounded-2xl ${className}`}
+      className={`bg-gray-100 border border-gray-800/15 rounded-2xl ${className}`}
       style={{
         background: prefersReducedMotion
           ? 'oklch(0.94 0.005 85)' // Static light background with slight gold tint
@@ -59,7 +59,7 @@ export function LuxuryProductCardSkeleton() {
   }, []);
 
   return (
-    <div className="rounded-2xl overflow-hidden border border-gold-500/10 bg-gray-100">
+    <div className="rounded-2xl overflow-hidden border border-gray-800/15 bg-gray-100">
       {/* Image placeholder - aspect-[4/5] matching ProductImage card variant */}
       <div
         className="w-full aspect-[4/5]"
