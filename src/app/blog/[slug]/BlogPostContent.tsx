@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Calendar, Clock, User } from 'lucide-react';
@@ -20,20 +19,6 @@ export default function BlogPostContent({ post, relatedPosts }: BlogPostContentP
 
   return (
     <div className="min-h-screen bg-gold-ambient">
-      {/* Cover Image */}
-      {post.cover_image && (
-        <div className="relative w-full h-[50vh] md:h-[60vh]">
-          <Image
-            src={post.cover_image}
-            alt={post.title}
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-black/20" />
-        </div>
-      )}
-
       {/* Content */}
       <div className="px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="flex gap-8 max-w-7xl mx-auto">
@@ -41,7 +26,7 @@ export default function BlogPostContent({ post, relatedPosts }: BlogPostContentP
           {hasToC && (
             <aside
               className="hidden xl:block shrink-0 w-56"
-              style={{ marginTop: post.cover_image ? '2rem' : '10rem' }}
+              style={{ marginTop: '10rem' }}
             >
               <div className="sticky top-28">
                 <TableOfContents content={post.content} />
@@ -53,9 +38,7 @@ export default function BlogPostContent({ post, relatedPosts }: BlogPostContentP
           <div className="min-w-0 flex-1 max-w-3xl">
             {/* Breadcrumb */}
             <motion.nav
-              className={`flex items-center gap-2 text-xs text-gray-500 ${
-                post.cover_image ? '-mt-20 mb-8 relative z-10' : 'pt-32 md:pt-40 lg:pt-44 mb-8'
-              }`}
+              className="flex items-center gap-2 text-xs text-gray-500 pt-32 md:pt-40 lg:pt-44 mb-8"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
@@ -103,17 +86,7 @@ export default function BlogPostContent({ post, relatedPosts }: BlogPostContentP
               <div className="flex items-center pb-8 border-b border-gold/10">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center overflow-hidden">
-                    {post.author_avatar ? (
-                      <Image
-                        src={post.author_avatar}
-                        alt={post.author_name}
-                        width={40}
-                        height={40}
-                        className="object-cover"
-                      />
-                    ) : (
-                      <User className="w-4 h-4 text-gold" />
-                    )}
+                    <User className="w-4 h-4 text-gold" />
                   </div>
                   <div>
                     <p className="text-sm text-black">{post.author_name}</p>

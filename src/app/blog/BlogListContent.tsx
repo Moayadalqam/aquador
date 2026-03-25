@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import BlogHero from '@/components/blog/BlogHero';
 import BlogCard from '@/components/blog/BlogCard';
+import FeaturedPost from '@/components/blog/FeaturedPost';
 import CategoryFilter from '@/components/blog/CategoryFilter';
 import type { BlogPost, BlogCategory } from '@/lib/blog-types';
 
@@ -19,6 +20,7 @@ interface BlogListContentProps {
 export default function BlogListContent({
   posts,
   categories,
+  featuredPost,
   currentPage,
   totalPages,
   activeCategory,
@@ -60,11 +62,18 @@ export default function BlogListContent({
         />
       </section>
 
+      {/* Featured Post */}
+      {featuredPost && !activeCategory && currentPage === 1 && (
+        <section className="container-wide pb-8">
+          <FeaturedPost post={featuredPost} />
+        </section>
+      )}
+
       {/* Posts Grid */}
       <section className="section-sm">
         <div className="container-wide">
           {posts.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
               {posts.map((post, index) => (
                 <BlogCard key={post.id} post={post} index={index} />
               ))}
