@@ -189,7 +189,7 @@ export default function ChatWidget() {
                 <div className="border-t border-gold/20 p-2.5 bg-gray-50">
                   {liveStatus === 'closed' ? (<button onClick={() => { setSessionId(null); setLiveMessages([]); setLiveStatus('waiting'); startLiveChat(); }} className="w-full py-2 bg-gold text-dark text-sm font-medium rounded-xl hover:bg-gold-light transition-colors">Start New Chat</button>) : (
                     <div className="flex items-center gap-2">
-                      <input ref={liveInputRef} type="text" value={liveInput} onChange={(e) => setLiveInput(e.target.value)} onKeyPress={handleKeyPress} placeholder="Type a message..." className="flex-1 bg-white border border-gold/20 text-black placeholder-gray-500 px-3 py-2 text-sm rounded-xl focus:outline-none focus:border-gold transition-colors" />
+                      <input ref={liveInputRef} type="text" value={liveInput} onChange={(e) => setLiveInput(e.target.value)} onKeyPress={handleKeyPress} placeholder="Type a message..." maxLength={2000} className="flex-1 bg-white border border-gold/20 text-black placeholder-gray-500 px-3 py-2 text-sm rounded-xl focus:outline-none focus:border-gold transition-colors" />
                       <button onClick={handleLiveSend} disabled={!liveInput.trim()} className="bg-gold text-dark p-2 rounded-xl hover:bg-gold-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><Send className="w-4 h-4" /></button>
                     </div>
                   )}

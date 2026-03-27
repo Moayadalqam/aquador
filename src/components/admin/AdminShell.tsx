@@ -22,10 +22,31 @@ export default function AdminShell({ children }: AdminShellProps) {
   const [adminUser, setAdminUser] = useState<AdminUser | null>(null);
   const [loading, setLoading] = useState(!isLoginPage);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [liveChatCount, setLiveChatCount] = useState(0);
+  const supabaseRef = useRef(createClient());
 
   useEffect(() => {
     setSidebarOpen(false);
   }, [pathname]);
+
+  // Single live chat count subscription — shared by NavBar + Sidebar
+  useEffect(() => {
+    if (isLoginPage) return;
+    const supabase = supabaseRef.current;
+    const loadCount = async () => {
+      const { count } = await supabase
+        .from('live_chat_sessions')
+        .select('*', { count: 'exact', head: true })
+        .in('status', ['waiting', 'active']);
+      setLiveChatCount(count ?? 0);
+    };
+    loadCount();
+    const channel = supabase
+      .channel('admin-live-chat-count')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'live_chat_sessions' }, () => loadCount())
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [isLoginPage]);
 
   const toggleSidebar = useCallback(() => {
     setSidebarOpen(prev => !prev);
@@ -98,16 +119,17 @@ export default function AdminShell({ children }: AdminShellProps) {
   }
 
   return (
-    <div className="pt-[80px] md:pt-[90px]">
+    <div className="pt-[60px] md:pt-[70px]">
       {/* Admin Navigation Bar — horizontal on desktop, hamburger on mobile */}
       <AdminNavBar
         user={user}
         adminUser={adminUser}
         onMobileMenuToggle={toggleSidebar}
+        liveChatCount={liveChatCount}
       />
 
       {/* Mobile sidebar drawer */}
-      <AdminSidebar isOpen={sidebarOpen} onClose={closeSidebar} />
+      <AdminSidebar isOpen={sidebarOpen} onClose={closeSidebar} liveChatCount={liveChatCount} />
 
       {/* Admin content area — dark panel */}
       <div className="bg-gray-950 text-white min-h-[calc(100vh-160px)] rounded-t-2xl mx-2 sm:mx-4 md:mx-6 mb-0 overflow-hidden">

@@ -1,6 +1,5 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -8,7 +7,6 @@ import {
   LayoutDashboard, Package, Tags, Settings, Plus, FileText,
   ShoppingBag, Users, X, MessageCircle,
 } from 'lucide-react';
-import { createClient } from '@/lib/supabase/client';
 
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
@@ -23,29 +21,11 @@ const navigation = [
 interface AdminSidebarProps {
   isOpen: boolean;
   onClose: () => void;
+  liveChatCount: number;
 }
 
-export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
+export default function AdminSidebar({ isOpen, onClose, liveChatCount }: AdminSidebarProps) {
   const pathname = usePathname();
-  const [waitingCount, setWaitingCount] = useState(0);
-  const supabaseRef = useRef(createClient());
-
-  useEffect(() => {
-    const supabase = supabaseRef.current;
-    const loadCount = async () => {
-      const { count } = await supabase
-        .from('live_chat_sessions')
-        .select('*', { count: 'exact', head: true })
-        .in('status', ['waiting', 'active']);
-      setWaitingCount(count ?? 0);
-    };
-    loadCount();
-    const channel = supabase
-      .channel('sidebar-live-chat-count')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'live_chat_sessions' }, () => loadCount())
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
-  }, []);
 
   const isActive = (href: string) => {
     if (href === '/admin') return pathname === '/admin';
@@ -108,9 +88,9 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
             >
               <MessageCircle className="h-5 w-5" />
               Live Chat
-              {waitingCount > 0 && (
+              {liveChatCount > 0 && (
                 <span className="ml-auto bg-amber-500 text-black text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center animate-pulse">
-                  {waitingCount}
+                  {liveChatCount}
                 </span>
               )}
             </Link>

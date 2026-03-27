@@ -128,8 +128,9 @@ export default function AdminLiveChat() {
   }, [playNotificationSound, sendBrowserNotification]);
 
   // Load + subscribe to messages for active session
+  const activeSessionId = activeSession?.id ?? null;
   useEffect(() => {
-    if (!activeSession) {
+    if (!activeSessionId) {
       setMessages([]);
       return;
     }
@@ -140,7 +141,7 @@ export default function AdminLiveChat() {
       const { data } = await supabase
         .from('live_chat_messages')
         .select('*')
-        .eq('session_id', activeSession.id)
+        .eq('session_id', activeSessionId)
         .order('created_at', { ascending: true });
       if (data) setMessages(data as unknown as ChatMessage[]);
     };
@@ -148,14 +149,14 @@ export default function AdminLiveChat() {
     loadMessages();
 
     const channel = supabase
-      .channel(`admin-chat-msgs-${activeSession.id}`)
+      .channel(`admin-chat-msgs-${activeSessionId}`)
       .on(
         'postgres_changes',
         {
           event: 'INSERT',
           schema: 'public',
           table: 'live_chat_messages',
-          filter: `session_id=eq.${activeSession.id}`,
+          filter: `session_id=eq.${activeSessionId}`,
         },
         (payload) => {
           const msg = payload.new as ChatMessage;
@@ -173,7 +174,7 @@ export default function AdminLiveChat() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [activeSession, playNotificationSound]);
+  }, [activeSessionId, playNotificationSound]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -447,6 +448,7 @@ export default function AdminLiveChat() {
                       }
                     }}
                     placeholder="Type your reply..."
+                    maxLength={2000}
                     className="flex-1 bg-gray-800 border border-gray-700 text-white placeholder-gray-500 px-4 py-2.5 text-sm rounded-xl focus:outline-none focus:border-gold transition-colors"
                   />
                   <button

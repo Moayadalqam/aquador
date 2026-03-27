@@ -67,6 +67,16 @@ export const rateLimiters = {
         prefix: 'ratelimit:ai-assistant',
       })
     : null,
+
+  // Live chat notify: 3 requests per minute
+  'live-chat-notify': isConfigured && redis
+    ? new Ratelimit({
+        redis,
+        limiter: Ratelimit.slidingWindow(3, '1 m'),
+        analytics: true,
+        prefix: 'ratelimit:live-chat-notify',
+      })
+    : null,
 };
 
 export type RateLimiterKey = keyof typeof rateLimiters;

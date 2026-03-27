@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
@@ -36,32 +36,14 @@ interface AdminNavBarProps {
   user: SupabaseUser;
   adminUser: AdminUser | null;
   onMobileMenuToggle: () => void;
+  liveChatCount: number;
 }
 
-export default function AdminNavBar({ user, adminUser, onMobileMenuToggle }: AdminNavBarProps) {
+export default function AdminNavBar({ user, adminUser, onMobileMenuToggle, liveChatCount }: AdminNavBarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [showDropdown, setShowDropdown] = useState(false);
-  const [waitingCount, setWaitingCount] = useState(0);
-  const supabaseRef = useRef(createClient());
   const role = adminUser?.role || 'admin';
-
-  useEffect(() => {
-    const supabase = supabaseRef.current;
-    const loadCount = async () => {
-      const { count } = await supabase
-        .from('live_chat_sessions')
-        .select('*', { count: 'exact', head: true })
-        .in('status', ['waiting', 'active']);
-      setWaitingCount(count ?? 0);
-    };
-    loadCount();
-    const channel = supabase
-      .channel('navbar-live-chat-count')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'live_chat_sessions' }, () => loadCount())
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
-  }, []);
 
   const handleSignOut = async () => {
     const supabase = createClient();
@@ -103,9 +85,9 @@ export default function AdminNavBar({ user, adminUser, onMobileMenuToggle }: Adm
                 >
                   <item.icon className="h-3.5 w-3.5" />
                   {item.name}
-                  {item.name === 'Live Chat' && waitingCount > 0 && (
+                  {item.name === 'Live Chat' && liveChatCount > 0 && (
                     <span className="bg-amber-500 text-black text-[9px] font-bold px-1 py-px rounded-full min-w-[16px] text-center animate-pulse">
-                      {waitingCount}
+                      {liveChatCount}
                     </span>
                   )}
                   {active && (

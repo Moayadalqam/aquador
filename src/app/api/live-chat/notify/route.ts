@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import * as Sentry from '@sentry/nextjs';
+import { checkRateLimit } from '@/lib/rate-limit';
+import { createPublicClient } from '@/lib/supabase/public';
 
 export const maxDuration = 10;
 
@@ -80,11 +82,28 @@ async function sendEmailFallback(sessionId: string): Promise<boolean> {
 }
 
 export async function POST(request: NextRequest) {
+  // Rate limit: 3 requests per minute
+  const rateLimitResponse = await checkRateLimit(request, 'live-chat-notify');
+  if (rateLimitResponse) return rateLimitResponse;
+
   try {
     const { sessionId } = await request.json();
 
     if (!sessionId || typeof sessionId !== 'string') {
       return NextResponse.json({ error: 'sessionId required' }, { status: 400 });
+    }
+
+    // Validate session exists and is in 'waiting' state
+    const supabase = createPublicClient();
+    const { data: session } = await supabase
+      .from('live_chat_sessions')
+      .select('id, status')
+      .eq('id', sessionId)
+      .eq('status', 'waiting')
+      .single();
+
+    if (!session) {
+      return NextResponse.json({ error: 'Invalid session' }, { status: 400 });
     }
 
     const whatsappSent = await sendWhatsApp(sessionId);
