@@ -67,13 +67,31 @@ export default function ChatWidget() {
   useEffect(() => { messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages, liveMessages]);
   useEffect(() => { if (isOpen && mode === 'ai') inputRef.current?.focus(); if (isOpen && mode === 'live') liveInputRef.current?.focus(); }, [isOpen, mode]);
 
+  // Poll for messages + session status (Realtime is unreliable, polling guarantees delivery)
   useEffect(() => {
     if (!sessionId) return;
     const supabase = supabaseRef.current;
-    supabase.from('live_chat_messages').select('*').eq('session_id', sessionId).order('created_at', { ascending: true }).then(({ data }) => { if (data) setLiveMessages(data as unknown as LiveMessage[]); });
+
+    const fetchMessages = async () => {
+      const { data } = await supabase.from('live_chat_messages').select('*').eq('session_id', sessionId).order('created_at', { ascending: true });
+      if (data) setLiveMessages(data as unknown as LiveMessage[]);
+    };
+    const fetchSession = async () => {
+      const { data } = await supabase.from('live_chat_sessions').select('status').eq('id', sessionId).single();
+      if (data) setLiveStatus(data.status as 'waiting' | 'active' | 'closed');
+    };
+
+    fetchMessages();
+    fetchSession();
+
+    // Poll every 3 seconds
+    const interval = setInterval(() => { fetchMessages(); fetchSession(); }, 3000);
+
+    // Also try Realtime for instant delivery
     const msgChannel = supabase.channel(`live-chat-msgs-${sessionId}`).on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'live_chat_messages', filter: `session_id=eq.${sessionId}` }, (payload) => { const msg = payload.new as LiveMessage; setLiveMessages(prev => prev.some(m => m.id === msg.id) ? prev : [...prev, msg]); }).subscribe();
     const sessionChannel = supabase.channel(`live-chat-session-${sessionId}`).on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'live_chat_sessions', filter: `id=eq.${sessionId}` }, (payload) => { setLiveStatus((payload.new as { status: 'waiting' | 'active' | 'closed' }).status); }).subscribe();
-    return () => { supabase.removeChannel(msgChannel); supabase.removeChannel(sessionChannel); };
+
+    return () => { clearInterval(interval); supabase.removeChannel(msgChannel); supabase.removeChannel(sessionChannel); };
   }, [sessionId]);
 
   const handleSend = async () => {
@@ -107,6 +125,9 @@ export default function ChatWidget() {
   const handleLiveSend = async () => {
     if (!liveInput.trim() || !sessionId) return;
     const content = liveInput.trim(); setLiveInput('');
+    // Optimistic update — show message instantly
+    const optimisticMsg: LiveMessage = { id: `opt-${Date.now()}`, sender_type: 'visitor', content, created_at: new Date().toISOString() };
+    setLiveMessages(prev => [...prev, optimisticMsg]);
     await supabaseRef.current.from('live_chat_messages').insert({ session_id: sessionId, sender_type: 'visitor', content });
   };
 
@@ -162,7 +183,7 @@ export default function ChatWidget() {
                 {messages.length <= 2 && (<div className="px-2.5 pb-1.5"><div className="flex flex-wrap gap-1">{suggestions.map((s, i) => (<button key={i} onClick={() => { setInput(s); inputRef.current?.focus(); }} className="text-[10px] px-2 py-1 bg-gray-100 border border-gold/20 text-gray-700 rounded-full hover:border-gold hover:text-gold transition-all">{s}</button>))}</div></div>)}
                 <div className="border-t border-gold/20 p-2.5 bg-gray-50">
                   <div className="flex items-center gap-2">
-                    <input ref={inputRef} type="text" value={input} onChange={(e) => setInput(e.target.value)} onKeyPress={handleKeyPress} placeholder="Ask about fragrances..." disabled={isLoading} className="flex-1 bg-white border border-gold/20 text-black placeholder-gray-500 px-3 py-2 text-sm rounded-xl focus:outline-none focus:border-gold transition-colors disabled:opacity-50" />
+                    <input ref={inputRef} type="text" value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKeyPress} placeholder="Ask about fragrances..." disabled={isLoading} className="flex-1 bg-white border border-gold/20 text-black placeholder-gray-500 px-3 py-2 text-sm rounded-xl focus:outline-none focus:border-gold transition-colors disabled:opacity-50" />
                     <button onClick={handleSend} disabled={!input.trim() || isLoading} className="bg-gold text-dark p-2 rounded-xl hover:bg-gold-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><Send className="w-4 h-4" /></button>
                   </div>
                   <p className="text-[9px] text-gray-500 mt-1.5 text-center">Powered by{' '}<a href="https://qualiasolutions.net" target="_blank" rel="noopener noreferrer" className="text-gold/70 hover:text-gold transition-colors">Qualia Solutions</a></p>
@@ -189,7 +210,7 @@ export default function ChatWidget() {
                 <div className="border-t border-gold/20 p-2.5 bg-gray-50">
                   {liveStatus === 'closed' ? (<button onClick={() => { setSessionId(null); setLiveMessages([]); setLiveStatus('waiting'); startLiveChat(); }} className="w-full py-2 bg-gold text-dark text-sm font-medium rounded-xl hover:bg-gold-light transition-colors">Start New Chat</button>) : (
                     <div className="flex items-center gap-2">
-                      <input ref={liveInputRef} type="text" value={liveInput} onChange={(e) => setLiveInput(e.target.value)} onKeyPress={handleKeyPress} placeholder="Type a message..." maxLength={2000} className="flex-1 bg-white border border-gold/20 text-black placeholder-gray-500 px-3 py-2 text-sm rounded-xl focus:outline-none focus:border-gold transition-colors" />
+                      <input ref={liveInputRef} type="text" value={liveInput} onChange={(e) => setLiveInput(e.target.value)} onKeyDown={handleKeyPress} placeholder="Type a message..." maxLength={2000} className="flex-1 bg-white border border-gold/20 text-black placeholder-gray-500 px-3 py-2 text-sm rounded-xl focus:outline-none focus:border-gold transition-colors" />
                       <button onClick={handleLiveSend} disabled={!liveInput.trim()} className="bg-gold text-dark p-2 rounded-xl hover:bg-gold-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><Send className="w-4 h-4" /></button>
                     </div>
                   )}

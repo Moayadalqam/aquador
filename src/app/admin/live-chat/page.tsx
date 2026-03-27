@@ -78,7 +78,8 @@ export default function AdminLiveChat() {
     }
   }, []);
 
-  // Load sessions + subscribe
+  // Load sessions + poll every 3s (Realtime as bonus)
+  const prevSessionCountRef = useRef(0);
   useEffect(() => {
     const supabase = supabaseRef.current;
 
@@ -88,46 +89,31 @@ export default function AdminLiveChat() {
         .select('*')
         .in('status', ['waiting', 'active'])
         .order('created_at', { ascending: false });
-      if (data) setSessions(data as unknown as Session[]);
+      if (data) {
+        const newSessions = data as unknown as Session[];
+        // Notify if new sessions appeared
+        if (newSessions.length > prevSessionCountRef.current && prevSessionCountRef.current > 0) {
+          playNotificationSound();
+          sendBrowserNotification('New Live Chat', 'A customer is waiting to chat with you!');
+        }
+        prevSessionCountRef.current = newSessions.length;
+        setSessions(newSessions);
+      }
     };
 
     loadSessions();
+    const interval = setInterval(loadSessions, 3000);
 
+    // Also try Realtime for instant delivery
     const channel = supabase
       .channel('admin-live-chat-sessions')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'live_chat_sessions' },
-        (payload) => {
-          if (payload.eventType === 'INSERT') {
-            const newSession = payload.new as Session;
-            setSessions((prev) => [newSession, ...prev]);
-            playNotificationSound();
-            sendBrowserNotification(
-              'New Live Chat',
-              'A customer is waiting to chat with you!'
-            );
-          } else if (payload.eventType === 'UPDATE') {
-            const updated = payload.new as Session;
-            setSessions((prev) =>
-              prev
-                .map((s) => (s.id === updated.id ? updated : s))
-                .filter((s) => s.status !== 'closed')
-            );
-            setActiveSession((prev) =>
-              prev?.id === updated.id ? updated : prev
-            );
-          }
-        }
-      )
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'live_chat_sessions' }, () => loadSessions())
       .subscribe();
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    return () => { clearInterval(interval); supabase.removeChannel(channel); };
   }, [playNotificationSound, sendBrowserNotification]);
 
-  // Load + subscribe to messages for active session
+  // Load + poll messages for active session
   const activeSessionId = activeSession?.id ?? null;
   useEffect(() => {
     if (!activeSessionId) {
@@ -143,37 +129,29 @@ export default function AdminLiveChat() {
         .select('*')
         .eq('session_id', activeSessionId)
         .order('created_at', { ascending: true });
-      if (data) setMessages(data as unknown as ChatMessage[]);
+      if (data) {
+        const newMsgs = data as unknown as ChatMessage[];
+        setMessages(prev => {
+          // Check for new visitor messages for sound
+          if (newMsgs.length > prev.length) {
+            const latest = newMsgs[newMsgs.length - 1];
+            if (latest.sender_type === 'visitor') playNotificationSound();
+          }
+          return newMsgs;
+        });
+      }
     };
 
     loadMessages();
+    const interval = setInterval(loadMessages, 3000);
 
+    // Also try Realtime
     const channel = supabase
       .channel(`admin-chat-msgs-${activeSessionId}`)
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'live_chat_messages',
-          filter: `session_id=eq.${activeSessionId}`,
-        },
-        (payload) => {
-          const msg = payload.new as ChatMessage;
-          setMessages((prev) => {
-            if (prev.some((m) => m.id === msg.id)) return prev;
-            return [...prev, msg];
-          });
-          if (msg.sender_type === 'visitor') {
-            playNotificationSound();
-          }
-        }
-      )
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'live_chat_messages', filter: `session_id=eq.${activeSessionId}` }, () => loadMessages())
       .subscribe();
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    return () => { clearInterval(interval); supabase.removeChannel(channel); };
   }, [activeSessionId, playNotificationSound]);
 
   useEffect(() => {
@@ -211,6 +189,10 @@ export default function AdminLiveChat() {
     if (!reply.trim() || !activeSession) return;
     const content = reply.trim();
     setReply('');
+
+    // Optimistic update — show message instantly
+    const optimisticMsg: ChatMessage = { id: `opt-${Date.now()}`, session_id: activeSession.id, sender_type: 'admin', content, created_at: new Date().toISOString() };
+    setMessages(prev => [...prev, optimisticMsg]);
 
     await supabaseRef.current.from('live_chat_messages').insert({
       session_id: activeSession.id,
