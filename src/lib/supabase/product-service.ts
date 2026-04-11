@@ -1,7 +1,7 @@
 import { cache } from 'react';
 import * as Sentry from '@sentry/nextjs';
 import { createPublicClient } from './public';
-import type { Product, ProductCategory } from './types';
+import type { Product, ProductCategory, ProductGender } from './types';
 import { categories } from '../categories';
 
 // Re-export categories since they're static
@@ -168,6 +168,39 @@ export async function searchProducts(query: string): Promise<Product[]> {
   }
 
   return data || [];
+}
+
+// Get products by gender (filters inactive)
+export async function getProductsByGender(gender: ProductGender): Promise<Product[]> {
+  const supabase = createPublicClient();
+  const { data, error } = await supabase
+    .from('products')
+    .select(PRODUCT_COLUMNS)
+    .eq('gender', gender)
+    .eq('is_active', true)
+    .order('in_stock', { ascending: false })
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    Sentry.addBreadcrumb({ category: 'product-service', message: 'Error fetching products by gender', level: 'error', data: { error, gender } });
+    return [];
+  }
+
+  return data || [];
+}
+
+// Get human-readable label for a gender value
+export function getGenderLabel(gender: string): string {
+  switch (gender) {
+    case 'men':
+      return "Men's Fragrances";
+    case 'women':
+      return "Women's Fragrances";
+    case 'unisex':
+      return 'Unisex Fragrances';
+    default:
+      return 'Fragrances';
+  }
 }
 
 // Get category by slug
