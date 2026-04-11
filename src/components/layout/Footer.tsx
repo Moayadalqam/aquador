@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import AquadorLogo from '@/components/ui/AquadorLogo';
+import Image from 'next/image';
 import { Mail, Phone, MapPin, ArrowUpRight, Truck, ShieldCheck, Gem } from 'lucide-react';
 
 const shopLinks = [
@@ -33,15 +33,15 @@ export default function Footer() {
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
-        className="container-wide py-12 md:py-14"
+        className="container-wide py-16 md:py-20"
       >
         {/* Main grid — logo left, links right */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-6 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-8 items-start">
 
           {/* Logo + tagline + brand story — compact */}
           <div className="md:col-span-3 flex flex-col items-center md:items-start">
             <Link href="/" className="inline-block mb-3">
-              <AquadorLogo size="sm" className="h-10 md:h-12 w-auto" />
+              <Image src="/aquador.webp" alt="Aquad'or" width={160} height={48} className="h-10 md:h-12 w-auto" />
             </Link>
             <p className="text-white/40 text-xs font-playfair italic">
               Scent of Luxury
@@ -68,8 +68,8 @@ export default function Footer() {
 
           {/* Shop links */}
           <div className="md:col-span-2">
-            <h3 className="text-[9px] uppercase tracking-[0.25em] text-gold-on-dark mb-4">Shop</h3>
-            <ul className="space-y-2.5">
+            <h3 className="text-[11px] uppercase tracking-[0.25em] text-gold-on-dark mb-5">Shop</h3>
+            <ul className="space-y-3">
               {shopLinks.map((link) => (
                 <li key={link.href}>
                   <Link href={link.href} className="text-white/70 hover:text-white transition-colors text-[13px]">
@@ -82,8 +82,8 @@ export default function Footer() {
 
           {/* Company links */}
           <div className="md:col-span-2">
-            <h3 className="text-[9px] uppercase tracking-[0.25em] text-gold-on-dark mb-4">Company</h3>
-            <ul className="space-y-2.5">
+            <h3 className="text-[11px] uppercase tracking-[0.25em] text-gold-on-dark mb-5">Company</h3>
+            <ul className="space-y-3">
               {companyLinks.map((link) => (
                 <li key={link.href}>
                   <Link href={link.href} className="text-white/70 hover:text-white transition-colors text-[13px]">
@@ -96,8 +96,8 @@ export default function Footer() {
 
           {/* Contact — compact */}
           <div className="md:col-span-5 md:text-right">
-            <h3 className="text-[9px] uppercase tracking-[0.25em] text-gold-on-dark mb-4">Contact</h3>
-            <div className="space-y-2.5 text-[13px]">
+            <h3 className="text-[11px] uppercase tracking-[0.25em] text-gold-on-dark mb-5">Contact</h3>
+            <div className="space-y-3.5 text-[13px]">
               <div className="flex items-center md:justify-end gap-2 text-white/70">
                 <MapPin className="w-3 h-3 text-gold-on-dark flex-shrink-0" />
                 Ledra 145, Nicosia, Cyprus
@@ -116,8 +116,8 @@ export default function Footer() {
       </motion.div>
 
       {/* Trust badges row */}
-      <div className="py-6 border-t border-white/[0.06]">
-        <div className="container-wide flex items-center justify-center gap-4">
+      <div className="py-8 border-t border-white/[0.06]">
+        <div className="container-wide flex items-center justify-center gap-6">
           <span className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.15em] text-white/40">
             <Truck className="w-3.5 h-3.5" />
             Free Shipping
@@ -137,7 +137,7 @@ export default function Footer() {
 
       {/* Bottom bar — single row */}
       <div className="border-t border-white/[0.06]">
-        <div className="container-wide py-5 flex flex-col sm:flex-row justify-between items-center gap-2">
+        <div className="container-wide py-6 flex flex-col sm:flex-row justify-between items-center gap-2">
           <p className="text-white/50 text-[10px] tracking-[0.08em]">
             &copy; {new Date().getFullYear()} Aquad&apos;or Cyprus
           </p>
