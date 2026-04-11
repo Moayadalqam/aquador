@@ -8,27 +8,32 @@ import Button from '@/components/ui/Button';
 import { AnimatedSection } from '@/components/ui/AnimatedSection';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
-const stages = [
+const stages: {
+  title: string;
+  description: string;
+  image: string;
+  accent: string;
+}[] = [
   {
-    step: '01',
     title: 'Top Notes',
-    description: 'Citrus, fruity, or spicy opening notes that create the first impression.',
+    description:
+      'The first impression of a fragrance, top notes are light, volatile molecules that evaporate within 15-30 minutes. They create the opening burst \u2014 think citrus zest, fresh herbs, and crisp spices \u2014 drawing you into the scent before gracefully fading.',
     image: 'https://i.ibb.co/HfY2jbSH/1.jpg',
-    accent: 'Fresh & Bright',
+    accent: 'The Opening',
   },
   {
-    step: '02',
-    title: 'Heart Notes',
-    description: 'Floral, green, or woody middle notes that form the core of your fragrance.',
+    title: 'Middle Notes',
+    description:
+      'Emerging as top notes fade, the heart reveals itself over 1-4 hours. These balanced, rounded accords \u2014 florals, aromatics, soft spices \u2014 form the true character of the fragrance and define its personality.',
     image: 'https://i.ibb.co/xSqkdDL6/image-Cap-Cut-Commerce-Pro-202502202047.jpg',
-    accent: 'The Soul',
+    accent: 'The Character',
   },
   {
-    step: '03',
     title: 'Base Notes',
-    description: 'Warm, rich foundation notes that provide depth and longevity.',
+    description:
+      'The foundation that lingers for 6-24 hours, base notes are rich, heavy molecules that anchor everything above. Warm woods, deep musks, amber, and resins create the lasting memory others notice long after you have left.',
     image: 'https://i.ibb.co/M5PhxzZm/image-Cap-Cut-Commerce-Pro-202502202047-1.jpg',
-    accent: 'Lasting Depth',
+    accent: 'The Memory',
   },
 ];
 
@@ -78,7 +83,7 @@ export default function CreateSection() {
             </motion.h2>
             <div className="w-12 h-px bg-gold mb-5" />
             <motion.p
-              className="text-gray-500 text-base md:text-lg leading-relaxed"
+              className="text-gray-400 text-base md:text-lg leading-relaxed"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: false, amount: 0.5 }}
@@ -121,23 +126,6 @@ export default function CreateSection() {
                   {/* Gradient from bottom */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent group-hover:via-black/10 transition-all duration-700" />
 
-                  {/* Step number — cinematic large reveal */}
-                  <motion.div
-                    className="absolute top-6 right-6 z-10"
-                    initial={{ opacity: 0, scale: 2, y: -20 }}
-                    whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.3 }}
-                    transition={{
-                      duration: 0.8,
-                      delay: index * 0.3 + 0.4,
-                      ease: [0.16, 1, 0.3, 1],
-                    }}
-                  >
-                    <span className="font-playfair text-6xl md:text-7xl font-normal text-white/[0.07] leading-none">
-                      {stage.step}
-                    </span>
-                  </motion.div>
-
                   {/* Accent label — slide in */}
                   <motion.div
                     className="absolute top-6 left-6 z-10"
@@ -169,7 +157,7 @@ export default function CreateSection() {
                       {stage.title}
                     </motion.h3>
                     <motion.p
-                      className="text-gray-500 text-sm leading-relaxed transition-colors duration-500 group-hover:text-gray-400"
+                      className="text-gray-300 text-sm leading-relaxed transition-colors duration-500 group-hover:text-gray-200"
                       initial={{ opacity: 0, y: 15 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true, amount: 0.3 }}
