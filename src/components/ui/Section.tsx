@@ -102,7 +102,7 @@ export function SectionHeader({
     >
       {eyebrow && (
         <p className={cn(
-          'eyebrow text-gold/70 mb-4',
+          'eyebrow text-gold-accessible mb-4',
           align === 'center' && 'mx-auto'
         )}>
           {eyebrow}
@@ -129,7 +129,7 @@ export function SectionHeader({
       )}
       {subtitle && (
         <p className={cn(
-          'text-gray-500 text-base md:text-lg leading-relaxed',
+          'text-gray-400 text-base md:text-lg leading-relaxed',
           align === 'center' && 'max-w-2xl mx-auto'
         )}>
           {subtitle}
@@ -191,7 +191,7 @@ export function PageHero({
         >
           {eyebrow && (
             <motion.p
-              className="eyebrow text-gold/60 mb-6"
+              className="eyebrow text-gold-accessible mb-6"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2, duration: 0.6 }}

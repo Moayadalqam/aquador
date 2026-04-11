@@ -65,12 +65,12 @@ export default function Categories() {
                       src={feature.image}
                       alt={feature.name}
                       fill
-                      className={`transition-all duration-1000 group-hover:scale-105 filter grayscale-[15%] brightness-[0.65] group-hover:grayscale-0 group-hover:brightness-80 ${feature.contain ? 'object-contain p-10' : 'object-cover'}`}
+                      className={`transition-all duration-1000 group-hover:scale-105 filter grayscale-[15%] brightness-[0.75] group-hover:grayscale-0 group-hover:brightness-80 ${feature.contain ? 'object-contain p-10' : 'object-cover'}`}
                       sizes="(max-width: 1024px) 50vw, 50vw"
                       priority
                     />
                   </motion.div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent transition-all duration-700 group-hover:from-black/75" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent transition-all duration-700 group-hover:from-black/75" />
 
                   {/* Editorial label top */}
                   <div className="absolute top-6 left-6 z-10">
@@ -81,7 +81,7 @@ export default function Categories() {
                     <h3 className="font-playfair text-2xl md:text-3xl lg:text-4xl text-white mb-2 leading-tight">
                       {feature.name}
                     </h3>
-                    <p className="text-xs text-gray-400 tracking-wide mb-6 transition-colors duration-300 group-hover:text-gray-300">
+                    <p className="text-xs text-gray-300 tracking-wide mb-6 transition-colors duration-300 group-hover:text-gray-200">
                       {feature.description}
                     </p>
                     <span className="inline-flex items-center gap-2.5 text-gold text-[10px] uppercase tracking-[0.2em] border-b border-gold/0 group-hover:border-gold/40 pb-1 transition-all duration-500">
@@ -118,20 +118,20 @@ export default function Categories() {
                           src={category.image}
                           alt={category.name}
                           fill
-                          className={`transition-all duration-700 group-hover:scale-108 filter grayscale-[20%] brightness-[0.65] group-hover:grayscale-0 group-hover:brightness-80 ${category.contain ? 'object-contain p-6' : 'object-cover'}`}
+                          className={`transition-all duration-700 group-hover:scale-108 filter grayscale-[20%] brightness-[0.75] group-hover:grayscale-0 group-hover:brightness-80 ${category.contain ? 'object-contain p-6' : 'object-cover'}`}
                           sizes="(max-width: 1024px) 50vw, 25vw"
                         />
                       </motion.div>
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent transition-all duration-500 group-hover:from-black/75" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/35 to-transparent transition-all duration-500 group-hover:from-black/75" />
 
                       <div className="absolute bottom-0 left-0 right-0 p-5 md:p-6 z-10">
                         <h3 className="font-playfair text-lg md:text-xl text-white mb-1">
                           {category.name}
                         </h3>
-                        <p className="text-[11px] text-gray-400 tracking-wide mb-3 transition-colors duration-300 group-hover:text-gray-300 line-clamp-1">
+                        <p className="text-[11px] text-gray-300 tracking-wide mb-3 transition-colors duration-300 group-hover:text-gray-200 line-clamp-1">
                           {category.description}
                         </p>
-                        <span className="inline-flex items-center gap-2 text-gold text-[9px] uppercase tracking-[0.15em] opacity-50 md:opacity-0 md:-translate-x-1 transition-all duration-300 md:group-hover:opacity-100 md:group-hover:translate-x-0">
+                        <span className="inline-flex items-center gap-2 text-gold text-[11px] sm:text-xs uppercase tracking-[0.15em] opacity-70 md:opacity-0 md:-translate-x-1 transition-all duration-300 md:group-hover:opacity-100 md:group-hover:translate-x-0">
                           Explore
                           <ArrowRight className="w-3 h-3" />
                         </span>
@@ -158,16 +158,16 @@ export default function Categories() {
                         src={category.image}
                         alt={category.name}
                         fill
-                        className={`transition-all duration-700 group-hover:scale-110 filter grayscale-[20%] brightness-[0.65] group-hover:brightness-80 ${category.contain ? 'object-contain p-6' : 'object-cover'}`}
+                        className={`transition-all duration-700 group-hover:scale-110 filter grayscale-[20%] brightness-[0.75] group-hover:brightness-80 ${category.contain ? 'object-contain p-6' : 'object-cover'}`}
                         sizes="50vw"
                       />
                     </div>
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
                     <div className="absolute bottom-0 left-0 right-0 p-4 z-10">
                       <h3 className="font-playfair text-base text-white mb-0.5 line-clamp-1">
                         {category.name}
                       </h3>
-                      <p className="text-[10px] text-gray-400 tracking-wide line-clamp-1">
+                      <p className="text-[11px] sm:text-xs text-gray-300 tracking-wide line-clamp-1">
                         {category.description}
                       </p>
                     </div>

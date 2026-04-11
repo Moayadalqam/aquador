@@ -442,6 +442,9 @@ body {
   .stagger-delay-4 { transition-delay: 0.4s; }
   .stagger-delay-5 { transition-delay: 0.5s; }
 
+  .text-gold-accessible { color: oklch(72% 0.12 85); }
+  .text-gold-on-dark { color: oklch(82% 0.11 88); }
+
   .text-balance {
     text-wrap: balance;
   }

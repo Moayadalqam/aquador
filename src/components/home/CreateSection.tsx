@@ -64,7 +64,7 @@ export default function CreateSection() {
         <AnimatedSection variant="fadeInUp" className="mb-14 md:mb-20">
           <div className="max-w-2xl">
             <motion.p
-              className="eyebrow text-gold/50 mb-4"
+              className="eyebrow text-gold-on-dark mb-4"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: false, amount: 0.5 }}
@@ -119,7 +119,7 @@ export default function CreateSection() {
                       src={stage.image}
                       alt={stage.title}
                       fill
-                      className="object-cover transition-all duration-1000 group-hover:scale-105 filter brightness-[0.75] group-hover:brightness-[1]"
+                      className="object-cover transition-all duration-1000 group-hover:scale-105 filter brightness-[0.80] group-hover:brightness-[1]"
                       sizes="(max-width: 768px) 100vw, 33vw"
                     />
                   </motion.div>
@@ -138,7 +138,7 @@ export default function CreateSection() {
                       ease: [0.16, 1, 0.3, 1],
                     }}
                   >
-                    <span className="text-[9px] uppercase tracking-[0.2em] text-gold/50">{stage.accent}</span>
+                    <span className="text-[11px] sm:text-xs uppercase tracking-[0.2em] text-gold-on-dark">{stage.accent}</span>
                   </motion.div>
 
                   {/* Content — staggered bottom reveal */}

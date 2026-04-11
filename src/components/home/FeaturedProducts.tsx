@@ -89,7 +89,7 @@ export default function FeaturedProducts({
                   {/* Content — clean typographic hierarchy */}
                   <div className="space-y-1.5">
                     {product.brand && (
-                      <p className="eyebrow text-gold/60 text-[9px]">{product.brand}</p>
+                      <p className="eyebrow text-gold-accessible text-[10px]">{product.brand}</p>
                     )}
                     <h3 className="font-playfair text-sm md:text-[15px] text-gray-900 group-hover:text-gold-dark transition-colors duration-300 line-clamp-1 leading-snug">
                       {product.name}
