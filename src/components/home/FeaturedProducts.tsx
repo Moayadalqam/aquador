@@ -62,7 +62,7 @@ export default function FeaturedProducts({
               >
                 <Link href={`/products/${product.id}`} className="group block">
                   {/* Image — generous proportions */}
-                  <div className="relative aspect-[3/4] overflow-hidden bg-[#f0ede8] mb-4">
+                  <div className="relative aspect-square overflow-hidden bg-[#f0ede8] mb-4">
                     <Image
                       src={product.image || FALLBACK_IMAGE}
                       alt={product.name}

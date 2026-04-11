@@ -18,6 +18,10 @@ const ChatWidget = dynamic(() => import("@/components/ai/ChatWidget"), {
   ssr: false,
 });
 
+const LoadingScreen = dynamic(() => import("@/components/ui/LoadingScreen"), {
+  ssr: false,
+});
+
 const playfair = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-playfair",
@@ -111,6 +115,7 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://js.stripe.com" />
       </head>
       <body className={`${poppins.variable} ${playfair.variable} antialiased`}>
+        <LoadingScreen />
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-gold focus:text-black focus:text-sm focus:font-medium focus:rounded"

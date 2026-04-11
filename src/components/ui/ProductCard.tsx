@@ -87,7 +87,7 @@ export function ProductCard({ product, priority = false, variant = 'default' }: 
         }}
       >
       {/* Product Image */}
-      <div className="relative mb-3 md:mb-4 overflow-hidden rounded-xl aspect-[4/5]">
+      <div className="relative mb-3 md:mb-4 overflow-hidden rounded-xl aspect-square">
         <motion.div
           variants={reducedMotion ? {} : imageZoomVariants}
           initial="rest"
