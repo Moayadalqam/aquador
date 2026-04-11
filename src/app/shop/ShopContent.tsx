@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { trackFilterChange } from '@/lib/analytics/product-engagement';
 import { SearchBar } from '@/components/search';
@@ -24,7 +24,9 @@ interface ShopContentProps {
 
 export default function ShopContent({ products, categories }: ShopContentProps) {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const urlSearchQuery = searchParams.get('search') || '';
+  const brandFilter = searchParams.get('brand') || '';
 
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState(urlSearchQuery);
@@ -58,6 +60,14 @@ export default function ShopContent({ products, categories }: ShopContentProps) 
   const filteredProducts = useMemo(() => {
     let result = products;
 
+    // Brand filter from URL query param (e.g., ?brand=xerjoff)
+    if (brandFilter) {
+      const brandLower = brandFilter.toLowerCase();
+      result = result.filter(
+        (p) => p.brand?.toLowerCase() === brandLower
+      );
+    }
+
     if (searchQuery.trim().length >= 2) {
       const lowercaseQuery = searchQuery.toLowerCase();
       result = result.filter(
@@ -72,7 +82,7 @@ export default function ShopContent({ products, categories }: ShopContentProps) 
       if (selectedCategory && product.category !== selectedCategory) return false;
       return true;
     });
-  }, [products, searchQuery, selectedCategory]);
+  }, [products, searchQuery, selectedCategory, brandFilter]);
 
   // Track filter changes after state updates — guards against initial URL param load
   useEffect(() => {
@@ -87,7 +97,11 @@ export default function ShopContent({ products, categories }: ShopContentProps) 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery]);
 
-  const hasActiveFilters = selectedCategory || searchQuery.length >= 2;
+  const clearBrandFilter = useCallback(() => {
+    router.push('/shop');
+  }, [router]);
+
+  const hasActiveFilters = selectedCategory || searchQuery.length >= 2 || !!brandFilter;
 
   return (
     <div className="min-h-screen bg-gold-ambient">
@@ -133,6 +147,28 @@ export default function ShopContent({ products, categories }: ShopContentProps) 
 
         </motion.div>
 
+        {/* Active brand filter pill */}
+        {brandFilter && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="flex items-center justify-center mt-6"
+          >
+            <span className="inline-flex items-center gap-2 bg-gold/10 text-gold border border-gold/20 px-3 py-1 rounded-full text-sm">
+              <span>Showing: {brandFilter.charAt(0).toUpperCase() + brandFilter.slice(1)}</span>
+              <button
+                onClick={clearBrandFilter}
+                className="ml-1 hover:text-gold/80 transition-colors cursor-pointer"
+                aria-label={`Clear ${brandFilter} brand filter`}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4" aria-hidden="true">
+                  <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                </svg>
+              </button>
+            </span>
+          </motion.div>
+        )}
+
         {/* Results count */}
         {hasActiveFilters && (
           <motion.div
@@ -159,7 +195,7 @@ export default function ShopContent({ products, categories }: ShopContentProps) 
         {hasActiveFilters ? (
           <AnimatePresence mode="popLayout">
             <motion.div
-              key={`${selectedCategory}-${searchQuery}`}
+              key={`${selectedCategory}-${searchQuery}-${brandFilter}`}
               initial="hidden"
               animate="visible"
               exit="exit"
