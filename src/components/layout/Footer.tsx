@@ -46,10 +46,19 @@ export default function Footer() {
               Scent of Luxury
             </p>
             {/* Social */}
-            <div className="flex gap-3 mt-4">
-              <a href="https://instagram.com/aquadorcy" target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-gold text-xs uppercase tracking-wider transition-colors" aria-label="Instagram">IG</a>
-              <span className="text-white/15">|</span>
-              <a href="https://facebook.com/aquadorcy" target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-gold text-xs uppercase tracking-wider transition-colors" aria-label="Facebook">FB</a>
+            <div className="flex gap-4 mt-4">
+              <a href="https://instagram.com/aquadorcy" target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-gold transition-colors duration-200" aria-label="Instagram">
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="2" width="20" height="20" rx="5"/>
+                  <circle cx="12" cy="12" r="5"/>
+                  <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/>
+                </svg>
+              </a>
+              <a href="https://facebook.com/aquadorcy" target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-gold transition-colors duration-200" aria-label="Facebook">
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+                </svg>
+              </a>
             </div>
           </div>
 

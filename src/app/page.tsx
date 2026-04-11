@@ -4,7 +4,7 @@ import { getFeaturedProducts } from '@/lib/supabase/product-service';
 import Hero from '@/components/home/Hero';
 import Categories from '@/components/home/Categories';
 import CreateSection from '@/components/home/CreateSection';
-import CTASection from '@/components/home/CTASection';
+
 
 export const metadata: Metadata = {
   title: "Aquad'or | Luxury Perfumes & Niche Fragrances Cyprus",
@@ -141,7 +141,6 @@ export default async function Home() {
       <Categories />
       <CreateSection />
       <FeaturedProducts products={featuredProducts} />
-      <CTASection />
     </>
   );
 }
