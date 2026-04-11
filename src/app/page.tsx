@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 import { getFeaturedAquadorProducts, getFeaturedLattafaProducts } from '@/lib/supabase/product-service';
 import Hero from '@/components/home/Hero';
+import TrustBar from '@/components/home/TrustBar';
 import Categories from '@/components/home/Categories';
 import CreateSection from '@/components/home/CreateSection';
 
@@ -145,6 +146,7 @@ export default async function Home() {
         dangerouslySetInnerHTML={{ __html: safeStringify(localBusinessSchema) }}
       />
       <Hero />
+      <TrustBar />
       <Categories />
       <CreateSection />
       <FeaturedProducts
