@@ -6,7 +6,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X } from 'lucide-react';
-import { createClient } from '@/lib/supabase/client';
 import { formatPrice } from '@/lib/utils';
 import type { Product } from '@/lib/supabase/types';
 
@@ -38,21 +37,27 @@ export default function SearchBar({
       return;
     }
 
-    const timer = setTimeout(async () => {
-      const supabase = createClient();
-      const { data } = await supabase
-        .from('products')
-        .select('*')
-        .eq('is_active', true)
-        .or(`name.ilike.%${query}%,description.ilike.%${query}%,brand.ilike.%${query}%`)
-        .order('created_at', { ascending: false })
-        .limit(6);
-
-      setResults(data || []);
-
-      // If onSearch callback provided (shop page), call it
-      if (onSearch) {
+    // For shop variant, only trigger the onSearch callback (client-side filtering)
+    if (onSearch) {
+      const timer = setTimeout(() => {
         onSearch(query);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+
+    // For navbar variant, use the server-side search API
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+        if (!res.ok) {
+          setResults([]);
+          return;
+        }
+        const data = await res.json();
+        setResults(data.results || []);
+      } catch (error) {
+        console.error('Search failed:', error);
+        setResults([]);
       }
     }, 300);
 

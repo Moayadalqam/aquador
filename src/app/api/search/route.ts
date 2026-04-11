@@ -1,0 +1,37 @@
+import { NextRequest, NextResponse } from 'next/server';
+import * as Sentry from '@sentry/nextjs';
+import { searchProducts } from '@/lib/supabase/product-service';
+
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = request.nextUrl;
+    const query = searchParams.get('q');
+
+    if (!query || query.trim().length < 2) {
+      return NextResponse.json(
+        { error: 'Query parameter "q" is required and must be at least 2 characters' },
+        { status: 400 }
+      );
+    }
+
+    const products = await searchProducts(query.trim());
+    const results = products.slice(0, 8);
+
+    return NextResponse.json(
+      { results },
+      {
+        headers: {
+          'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120',
+        },
+      }
+    );
+  } catch (error) {
+    console.error('Search API error:', error);
+    Sentry.captureException(error);
+
+    return NextResponse.json(
+      { error: 'Failed to search products' },
+      { status: 500 }
+    );
+  }
+}
