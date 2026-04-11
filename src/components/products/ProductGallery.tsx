@@ -58,7 +58,7 @@ export default function ProductGallery({ mainImage, images, name, inStock }: Pro
     }
   }, [selectedIndex]);
 
-  const handleImageClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+  const _handleImageClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = ((e.clientX - rect.left) / rect.width) * 100;
     const y = ((e.clientY - rect.top) / rect.height) * 100;
@@ -66,7 +66,7 @@ export default function ProductGallery({ mainImage, images, name, inStock }: Pro
     setIsZoomed(!isZoomed);
   }, [isZoomed]);
 
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+  const _handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     if (!isZoomed) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const x = ((e.clientX - rect.left) / rect.width) * 100;

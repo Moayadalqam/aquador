@@ -188,10 +188,10 @@ export default function Navbar() {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="overflow-hidden border-t border-gold/10"
+              className="overflow-visible border-t border-gold/10"
               style={{ background: 'rgba(250, 250, 248, 0.97)', backdropFilter: 'blur(24px)' }}
             >
-              <div className="container-wide py-5">
+              <div className="container-wide py-5 relative z-[60]">
                 <div className="max-w-lg mx-auto">
                   <SearchBar variant="navbar" placeholder="Search our collection..." />
                 </div>

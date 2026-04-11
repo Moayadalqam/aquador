@@ -158,7 +158,7 @@ export default function SearchBar({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
-              className="absolute top-full left-0 right-0 mt-1 bg-white/95 backdrop-blur-xl border border-gold/20 shadow-xl overflow-hidden z-50"
+              className="absolute top-full left-0 right-0 mt-1 bg-white/95 backdrop-blur-xl border border-gold/20 shadow-xl overflow-hidden z-[70]"
             >
               <div className="max-h-[400px] overflow-y-auto">
                 {results.map((product) => (
@@ -206,7 +206,7 @@ export default function SearchBar({
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="absolute top-full left-0 right-0 mt-1 bg-white/95 backdrop-blur-xl border border-gold/20 shadow-xl p-4 z-50"
+              className="absolute top-full left-0 right-0 mt-1 bg-white/95 backdrop-blur-xl border border-gold/20 shadow-xl p-4 z-[70]"
             >
               <p className="text-gray-600 text-sm text-center">No products found for &quot;{query}&quot;</p>
             </motion.div>
