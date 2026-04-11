@@ -125,9 +125,7 @@ export default function CTASection() {
             {/* Refined separator */}
             <div className="flex items-center justify-center gap-3 mb-7">
               <div className="w-8 h-px bg-gold/30" />
-              <div className="w-1 h-1 rounded-full bg-gold/60" />
-              <div className="w-16 h-px bg-gold/50" />
-              <div className="w-1 h-1 rounded-full bg-gold/60" />
+              <div className="w-1.5 h-1.5 rounded-full bg-gold/60" />
               <div className="w-8 h-px bg-gold/30" />
             </div>
 

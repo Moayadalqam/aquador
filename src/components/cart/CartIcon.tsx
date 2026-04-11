@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { ShoppingBag } from 'lucide-react';
 import { useCart } from './CartProvider';
 
 export default function CartIcon({ className }: { className?: string }) {
@@ -14,27 +15,7 @@ export default function CartIcon({ className }: { className?: string }) {
       className={`relative min-h-[44px] min-w-[44px] flex items-center justify-center hover:text-gold transition-colors duration-300 ${className || 'text-black/80'}`}
       aria-label={`Shopping cart with ${itemCount} items`}
     >
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="w-[22px] h-[22px]"
-      >
-        {/* Perfume bottle body */}
-        <rect x="7" y="10" width="10" height="11" rx="1" />
-        {/* Neck */}
-        <rect x="9.5" y="7" width="5" height="3" />
-        {/* Cap */}
-        <rect x="9" y="4.5" width="6" height="2.5" rx="0.5" />
-        {/* Spray nozzle */}
-        <line x1="12" y1="4.5" x2="12" y2="3" />
-        <line x1="10.5" y1="3" x2="13.5" y2="3" />
-        {/* Decorative line on bottle */}
-        <line x1="8.5" y1="14" x2="15.5" y2="14" />
-      </svg>
+      <ShoppingBag className="w-[20px] h-[20px]" strokeWidth={1.5} />
       {itemCount > 0 && (
         <motion.span
           key={itemCount}
