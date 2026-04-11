@@ -34,7 +34,7 @@ export default function ProductGallery({ mainImage, images, name, inStock }: Pro
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [direction, setDirection] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
-  const [zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 }); // percentage
+  const [_zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 }); // percentage
   const [show3D, setShow3D] = useState(false);
   const touchStartX = useRef(0);
   const initialPinchDistance = useRef<number | null>(null);
