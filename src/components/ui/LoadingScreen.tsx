@@ -41,7 +41,8 @@ export default function LoadingScreen() {
       <div className="loading-logo mb-8">
         <Image
           src="/aquador.webp"
-          alt=""
+          alt="Aquad'or"
+          role="presentation"
           width={160}
           height={120}
           className="max-w-[160px] h-auto"

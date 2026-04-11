@@ -109,7 +109,7 @@ export default function ContactPage() {
               variants={fadeInLeft}
             >
               <div className="bg-white border border-gold/10 p-8 md:p-10 lg:p-12">
-                <p className="eyebrow text-gold/60 mb-3">Send a Message</p>
+                <p className="eyebrow text-gold-accessible mb-3">Send a Message</p>
                 <h2 className="font-playfair text-2xl md:text-3xl text-black mb-8">How Can We Help?</h2>
 
                 {isSubmitted ? (
@@ -233,7 +233,7 @@ export default function ContactPage() {
               variants={fadeInRight}
             >
               <div>
-                <p className="eyebrow text-gold/60 mb-3">Details</p>
+                <p className="eyebrow text-gold-accessible mb-3">Details</p>
                 <h2 className="font-playfair text-2xl md:text-3xl text-black mb-7">Get in Touch</h2>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">

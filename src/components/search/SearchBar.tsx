@@ -116,7 +116,7 @@ export default function SearchBar({
         className={`
           relative flex items-center transition-all duration-300
           ${isNavbar
-            ? `${isFocused ? 'w-[420px]' : 'w-[356px]'} bg-white/5 border border-gold-500/20 hover:border-gold-500/40 focus-within:border-gold-500 rounded-none`
+            ? `w-full max-w-[420px] bg-white/5 border border-gold-500/20 hover:border-gold-500/40 focus-within:border-gold-500 rounded-none`
             : 'w-full bg-white/5 border border-gold-500/20 focus-within:border-gold-500 rounded-none'
           }
         `}
