@@ -38,8 +38,8 @@ export default function AboutPage() {
       <PageHero
         title="Our Story"
         subtitle="Aquad'or was born from a deep passion for the art of perfumery and a desire to bring the world's finest fragrances to Cyprus."
-        backgroundImage="https://images.unsplash.com/photo-1541643600914-78b084683601?w=1920&q=80"
-        eyebrow="Est. 2024 — Nicosia, Cyprus"
+        backgroundImage="https://i.ibb.co/xSqkdDL6/image-Cap-Cut-Commerce-Pro-202502202047.jpg"
+        eyebrow="Est. 2018 — Nicosia, Cyprus"
       />
 
       {/* Story Section — editorial asymmetric layout */}
@@ -54,10 +54,10 @@ export default function AboutPage() {
               viewport={{ once: true, margin: '-50px' }}
               variants={fadeInLeft}
             >
-              <p className="eyebrow text-gold/60 mb-5">Who We Are</p>
+              <p className="eyebrow text-gold-accessible mb-5">Who We Are</p>
               <h2 className="font-playfair text-3xl md:text-4xl text-black mb-6 leading-tight">
-                Where Luxury Meets{' '}
-                <span className="text-gradient-gold">Distinction</span>
+                Scent of{' '}
+                <span className="text-gradient-gold">Luxury</span>
               </h2>
               <div className="w-10 h-px bg-gold mb-8" />
               <div className="space-y-5 text-gray-600 text-[15px] leading-[1.85]">
@@ -123,7 +123,7 @@ export default function AboutPage() {
 
         <div className="container-wide">
           <AnimatedSection variant="fadeInUp" className="text-center mb-14 md:mb-20">
-            <p className="eyebrow text-gold/60 mb-4">What Drives Us</p>
+            <p className="eyebrow text-gold-accessible mb-4">What Drives Us</p>
             <h2 className="font-playfair text-3xl md:text-4xl text-black mb-5 leading-tight">Our Values</h2>
             <div className="flex items-center justify-center gap-3">
               <div className="w-8 h-px bg-gold/30" />
@@ -162,7 +162,7 @@ export default function AboutPage() {
             viewport={{ once: true }}
             variants={fadeInUp}
           >
-            <p className="eyebrow text-gold/60 mb-4">Visit Us</p>
+            <p className="eyebrow text-gold-accessible mb-4">Visit Us</p>
             <h2 className="font-playfair text-3xl md:text-4xl text-black mb-5 leading-tight">
               Experience the Difference
             </h2>
