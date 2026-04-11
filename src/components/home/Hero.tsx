@@ -84,7 +84,7 @@ export default function Hero() {
         >
           {/* Eyebrow label */}
           <motion.p
-            className="text-[9px] sm:text-[10px] uppercase tracking-[0.35em] text-gold/50 mb-8 font-light"
+            className="text-[11px] sm:text-xs uppercase tracking-[0.35em] text-gold-on-dark mb-8 font-light"
             variants={revealVariants.fadeInSequence}
           >
             Cyprus &nbsp;&bull;&nbsp; Since May 2018
@@ -121,10 +121,18 @@ export default function Hero() {
 
           {/* Tagline — refined hierarchy */}
           <motion.p
-            className="text-[11px] sm:text-xs md:text-sm text-white/50 tracking-[0.28em] uppercase font-light mb-14 md:mb-20"
+            className="text-[11px] sm:text-xs md:text-sm text-white/70 tracking-[0.28em] uppercase font-light mb-6 md:mb-8"
             variants={revealVariants.fadeInSequence}
           >
             Scent of Luxury
+          </motion.p>
+
+          {/* Value proposition */}
+          <motion.p
+            className="text-sm md:text-base text-white/60 tracking-wide mb-10"
+            variants={revealVariants.fadeInSequence}
+          >
+            Premium &amp; Niche Fragrances in Cyprus | Free Shipping
           </motion.p>
 
           {/* CTA Buttons */}
@@ -134,12 +142,12 @@ export default function Hero() {
           >
             <Link href="/shop">
               <Button size="lg" className="min-w-[200px]">
-                Explore Collection
+                Shop Now
               </Button>
             </Link>
             <Link href="/create-perfume">
               <Button variant="outline" size="lg" className="min-w-[200px]">
-                Create Your Own
+                Design Your Fragrance
               </Button>
             </Link>
           </motion.div>

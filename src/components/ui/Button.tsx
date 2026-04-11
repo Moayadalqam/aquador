@@ -26,8 +26,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       primary: cn(
         'bg-gold text-black',
         'hover:bg-gold-light',
-        'shadow-[0_4px_20px_rgba(212,175,55,0.2)]',
-        'hover:shadow-[0_6px_35px_rgba(212,175,55,0.4)]'
+        'shadow-[0_4px_24px_rgba(212,175,55,0.25)]',
+        'hover:shadow-[0_8px_40px_rgba(212,175,55,0.45)]'
       ),
       secondary: cn(
         'bg-white text-black',
@@ -48,7 +48,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const sizes = {
       sm: 'px-5 py-2.5 text-xs min-h-[40px]',
       md: 'px-7 py-3 text-sm min-h-[44px]',
-      lg: 'px-9 py-4 text-sm min-h-[52px]',
+      lg: 'px-10 py-4 text-sm min-h-[56px]',
       icon: 'p-2 min-h-[44px] min-w-[44px]',
     };
 

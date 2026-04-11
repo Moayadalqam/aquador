@@ -34,7 +34,7 @@ export default function Categories() {
   const [feature, ...rest] = categories;
 
   return (
-    <section ref={sectionRef} className="bg-gold-ambient-subtle overflow-hidden py-1">
+    <section ref={sectionRef} className="bg-gold-ambient-subtle overflow-hidden py-0">
       <div>
         <AnimatedSection variant="stagger" staggerDelay={0.08}>
           {/* Desktop: feature left + 2x2 right grid, capped at 90vh */}
@@ -74,7 +74,7 @@ export default function Categories() {
 
                   {/* Editorial label top */}
                   <div className="absolute top-6 left-6 z-10">
-                    <span className="text-[9px] uppercase tracking-[0.25em] text-gold/60 font-light">Featured</span>
+                    <span className="text-[11px] sm:text-xs uppercase tracking-[0.25em] text-gold-on-dark font-light">Featured</span>
                   </div>
 
                   <div className="absolute bottom-0 left-0 right-0 p-7 md:p-8 z-10">

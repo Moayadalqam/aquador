@@ -136,7 +136,7 @@ export default function FeaturedProducts({
           <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent hidden sm:block" />
           <Link
             href={viewAllHref}
-            className="inline-flex items-center gap-3 text-black hover:text-gold transition-colors duration-300 text-[11px] uppercase tracking-[0.22em] group flex-shrink-0"
+            className="inline-flex items-center gap-3 text-black hover:text-gold transition-colors duration-300 text-xs uppercase tracking-[0.22em] group flex-shrink-0"
           >
             {viewAllLabel}
             <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1.5" />
