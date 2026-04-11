@@ -166,14 +166,6 @@ export default function ProductGallery({ mainImage, images, name, inStock }: Pro
         </button>
       </div>
 
-      {/* Zoom backdrop */}
-      {isZoomed && (
-        <div
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
-          onClick={() => setIsZoomed(false)}
-        />
-      )}
-
       {/* Conditional rendering: 3D viewer or 2D gallery */}
       {show3D ? (
         <ProductViewer
@@ -198,20 +190,7 @@ export default function ProductGallery({ mainImage, images, name, inStock }: Pro
             animate="center"
             exit="exit"
             transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
-            className={`absolute inset-0 flex items-center justify-center transition-all duration-300 ease-out ${
-              isZoomed ? 'cursor-zoom-out z-50' : 'cursor-zoom-in'
-            }`}
-            onClick={handleImageClick}
-            onMouseMove={handleMouseMove}
-            style={
-              isZoomed
-                ? {
-                    transform: `scale(${ZOOM_CONFIG.defaultZoom})`,
-                    transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`,
-                    transition: 'transform 0.3s ease-out',
-                  }
-                : undefined
-            }
+            className="absolute inset-0 flex items-center justify-center transition-all duration-300 ease-out cursor-pointer"
           >
             <OptimizedImage
               src={allImages[selectedIndex] || FALLBACK_IMAGE}

@@ -17,7 +17,7 @@ export default function RelatedProducts({ products }: RelatedProductsProps) {
         You May Also Like
       </h2>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-[var(--spacing-md)] md:gap-[var(--spacing-lg)]">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
         {products.map((product, index) => (
           <motion.div
             key={product.id}
