@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, X, Send, Loader2, User, Bot, ArrowLeft } from 'lucide-react';
+import { X, Send, Loader2, User, Bot, ArrowLeft } from 'lucide-react';
 import * as Sentry from '@sentry/nextjs';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -47,6 +47,33 @@ function getVisitorId(): string {
   let id = localStorage.getItem('aquador_visitor_id');
   if (!id) { id = crypto.randomUUID(); localStorage.setItem('aquador_visitor_id', id); }
   return id;
+}
+
+function AquadorBottleIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <rect x="9" y="1" width="6" height="2" rx="0.5" />
+      <rect x="10" y="3" width="4" height="3" rx="0.5" />
+      <rect x="7" y="6" width="10" height="15" rx="2" />
+      <text
+        x="12"
+        y="16"
+        fontSize="8"
+        fontWeight="bold"
+        textAnchor="middle"
+        fill="currentColor"
+        stroke="none"
+      >
+        ?
+      </text>
+    </svg>
+  );
 }
 
 export default function ChatWidget() {
@@ -139,7 +166,7 @@ export default function ChatWidget() {
     <>
       <motion.button onClick={handleToggle} className="fixed bottom-4 right-4 z-50 w-14 h-14 bg-gradient-to-br from-gold to-gold-light rounded-full shadow-xl flex items-center justify-center" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} animate={{ boxShadow: isOpen ? '0 4px 20px rgba(212, 175, 55, 0.3)' : ['0 4px 20px rgba(212, 175, 55, 0.3)', '0 4px 30px rgba(212, 175, 55, 0.5)', '0 4px 20px rgba(212, 175, 55, 0.3)'] }} transition={{ boxShadow: { repeat: Infinity, duration: 2 } }}>
         <AnimatePresence mode="wait">
-          {isOpen ? (<motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }}><X className="w-6 h-6 text-dark" /></motion.div>) : (<motion.div key="open" initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0, opacity: 0 }} className="relative"><MessageCircle className="w-6 h-6 text-dark" /><span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full border border-gold" /></motion.div>)}
+          {isOpen ? (<motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }}><X className="w-6 h-6 text-dark" /></motion.div>) : (<motion.div key="open" initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0, opacity: 0 }} className="relative"><AquadorBottleIcon className="w-6 h-6 text-dark" /><span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full border border-gold" /></motion.div>)}
         </AnimatePresence>
       </motion.button>
 
