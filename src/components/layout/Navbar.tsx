@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X, ChevronDown } from 'lucide-react';
 import { CartIcon } from '@/components/cart';
 import { SearchBar } from '@/components/search';
-import AquadorLogo from '@/components/ui/AquadorLogo';
+import Image from 'next/image';
 import type { NavItem } from '@/types';
 
 const navLinks: NavItem[] = [
@@ -142,7 +142,7 @@ export default function Navbar() {
               href="/"
               className="absolute left-1/2 -translate-x-1/2 z-10"
             >
-              <AquadorLogo size="lg" className="h-[40px] sm:h-[48px] xl:h-[44px] 2xl:h-[52px] w-auto" />
+              <Image src="/aquador.webp" alt="Aquad'or" width={180} height={60} className="h-[40px] sm:h-[48px] xl:h-[44px] 2xl:h-[52px] w-auto" priority />
             </Link>
 
             {/* Right: Right nav links (desktop) + Icons */}
