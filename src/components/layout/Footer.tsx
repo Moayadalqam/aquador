@@ -1,8 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { motion } from 'framer-motion';
+import AquadorLogo from '@/components/ui/AquadorLogo';
 import { Mail, Phone, MapPin, ArrowUpRight } from 'lucide-react';
 
 const shopLinks = [
@@ -40,16 +40,10 @@ export default function Footer() {
           {/* Logo + tagline — compact */}
           <div className="md:col-span-3 flex flex-col items-center md:items-start">
             <Link href="/" className="inline-block mb-3">
-              <Image
-                src="/aquador.webp"
-                alt="Aquad'or"
-                width={400}
-                height={120}
-                className="h-16 md:h-20 w-auto object-contain"
-              />
+              <AquadorLogo size="sm" className="h-10 md:h-12 w-auto" />
             </Link>
             <p className="text-white/40 text-xs font-playfair italic">
-              Where Luxury Meets Distinction
+              Scent of Luxury
             </p>
             {/* Social */}
             <div className="flex gap-3 mt-4">

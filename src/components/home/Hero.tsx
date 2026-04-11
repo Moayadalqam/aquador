@@ -87,7 +87,7 @@ export default function Hero() {
             className="text-[9px] sm:text-[10px] uppercase tracking-[0.35em] text-gold/50 mb-8 font-light"
             variants={revealVariants.fadeInSequence}
           >
-            Cyprus &nbsp;&bull;&nbsp; Since 2024
+            Cyprus &nbsp;&bull;&nbsp; Since May 2018
           </motion.p>
 
           {/* Brand name — cinematic scale */}
@@ -115,9 +115,7 @@ export default function Hero() {
             variants={revealVariants.fadeInSequence}
           >
             <div className="w-12 h-px bg-gradient-to-r from-transparent to-gold/40" />
-            <div className="w-1 h-1 rounded-full bg-gold/60" />
-            <div className="w-24 h-px bg-gradient-to-r from-gold/40 via-gold/70 to-gold/40" />
-            <div className="w-1 h-1 rounded-full bg-gold/60" />
+            <div className="w-1.5 h-1.5 rounded-full bg-gold/60" />
             <div className="w-12 h-px bg-gradient-to-l from-transparent to-gold/40" />
           </motion.div>
 
@@ -126,7 +124,7 @@ export default function Hero() {
             className="text-[11px] sm:text-xs md:text-sm text-white/50 tracking-[0.28em] uppercase font-light mb-14 md:mb-20"
             variants={revealVariants.fadeInSequence}
           >
-            Where Luxury Meets Distinction
+            Scent of Luxury
           </motion.p>
 
           {/* CTA Buttons */}

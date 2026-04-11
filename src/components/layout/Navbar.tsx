@@ -2,12 +2,12 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X } from 'lucide-react';
 import { CartIcon } from '@/components/cart';
 import { SearchBar } from '@/components/search';
+import AquadorLogo from '@/components/ui/AquadorLogo';
 
 const navLinks = [
   { label: 'Dubai Shop', href: '/shop' },
@@ -119,14 +119,7 @@ export default function Navbar() {
               href="/"
               className="absolute left-1/2 -translate-x-1/2 z-10"
             >
-              <Image
-                src="/aquador.webp"
-                alt="Aquad'or"
-                width={400}
-                height={120}
-                className="h-[120px] sm:h-[144px] xl:h-[132px] 2xl:h-[156px] w-auto object-contain transition-opacity duration-300"
-                priority
-              />
+              <AquadorLogo size="lg" className="h-[40px] sm:h-[48px] xl:h-[44px] 2xl:h-[52px] w-auto" />
             </Link>
 
             {/* Right: Right nav links (desktop) + Icons */}
@@ -254,7 +247,7 @@ export default function Navbar() {
                 transition={{ delay: 0.55, duration: 0.4 }}
                 className="mt-auto pt-7 text-[8px] uppercase tracking-[0.35em] text-gray-400 font-light"
               >
-                Where Luxury Meets Distinction
+                Scent of Luxury
               </motion.p>
             </div>
           </motion.div>

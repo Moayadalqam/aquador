@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     default: "Aquad'or | Luxury Perfumes & Niche Fragrances Cyprus",
     template: "%s | Aquad'or Cyprus",
   },
-  description: "Where Luxury Meets Distinction. Discover our curated collection of high-end and niche perfumes, or create your own signature fragrance at Aquad'or Cyprus.",
+  description: "Scent of Luxury. Discover our curated collection of high-end and niche perfumes, or create your own signature fragrance at Aquad'or Cyprus.",
   keywords: ["perfume", "luxury fragrance", "Cyprus", "Nicosia", "custom perfume", "niche perfume", "Aquador"],
   authors: [{ name: "Aquad'or" }],
   icons: {
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Aquad'or | Luxury Perfumes & Niche Fragrances Cyprus",
-    description: "Where Luxury Meets Distinction. Discover our curated collection of high-end and niche perfumes.",
+    description: "Scent of Luxury. Discover our curated collection of high-end and niche perfumes.",
     type: "website",
     locale: "en_US",
     siteName: "Aquad'or",
@@ -70,7 +70,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Aquad'or | Luxury Perfumes & Niche Fragrances Cyprus",
-    description: "Where Luxury Meets Distinction. Discover our curated collection of high-end and niche perfumes.",
+    description: "Scent of Luxury. Discover our curated collection of high-end and niche perfumes.",
     images: ["/aquador.webp"],
   },
   robots: {

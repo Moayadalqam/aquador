@@ -8,7 +8,7 @@ import CTASection from '@/components/home/CTASection';
 
 export const metadata: Metadata = {
   title: "Aquad'or | Luxury Perfumes & Niche Fragrances Cyprus",
-  description: "Where Luxury Meets Distinction. Discover our curated collection of high-end and niche perfumes, or create your own signature fragrance at Aquad'or Cyprus, Nicosia.",
+  description: "Scent of Luxury. Discover our curated collection of high-end and niche perfumes, or create your own signature fragrance at Aquad'or Cyprus, Nicosia.",
   alternates: {
     canonical: 'https://aquadorcy.com',
   },

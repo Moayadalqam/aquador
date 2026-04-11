@@ -180,7 +180,7 @@ async function sendOrderConfirmationEmail(
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #fff;">
             <div style="background: #0a0a0a; padding: 30px; text-align: center;">
               <h1 style="color: #D4AF37; margin: 0; font-family: Georgia, serif;">Aquad'or</h1>
-              <p style="color: #888; margin: 10px 0 0;">Where Luxury Meets Distinction</p>
+              <p style="color: #888; margin: 10px 0 0;">Scent of Luxury</p>
             </div>
 
             <div style="padding: 30px;">
