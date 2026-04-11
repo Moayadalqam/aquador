@@ -3,18 +3,19 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import AquadorLogo from '@/components/ui/AquadorLogo';
-import { Mail, Phone, MapPin, ArrowUpRight } from 'lucide-react';
+import { Mail, Phone, MapPin, ArrowUpRight, Truck, ShieldCheck, Gem } from 'lucide-react';
 
 const shopLinks = [
-  { label: "Women's", href: '/shop/women' },
-  { label: "Men's", href: '/shop/men' },
-  { label: 'Niche', href: '/shop/niche' },
-  { label: 'Create Your Own', href: '/create-perfume' },
+  { label: 'Women', href: '/shop/gender/women' },
+  { label: 'Men', href: '/shop/gender/men' },
+  { label: 'Unisex', href: '/shop/gender/unisex' },
+  { label: 'Lattafa Originals', href: '/shop/lattafa' },
+  { label: 'Dubai Shop', href: '/shop' },
+  { label: 'Create Your Fragrance', href: '/create-perfume' },
 ];
 
 const companyLinks = [
   { label: 'About', href: '/about' },
-  { label: 'Blog', href: '/blog' },
   { label: 'Contact', href: '/contact' },
   { label: 'Shipping', href: '/shipping' },
   { label: 'Terms', href: '/terms' },
@@ -37,13 +38,16 @@ export default function Footer() {
         {/* Main grid — logo left, links right */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-6 items-start">
 
-          {/* Logo + tagline — compact */}
+          {/* Logo + tagline + brand story — compact */}
           <div className="md:col-span-3 flex flex-col items-center md:items-start">
             <Link href="/" className="inline-block mb-3">
               <AquadorLogo size="sm" className="h-10 md:h-12 w-auto" />
             </Link>
             <p className="text-white/40 text-xs font-playfair italic">
               Scent of Luxury
+            </p>
+            <p className="text-white/50 text-[13px] leading-relaxed mt-3 max-w-[240px] text-center md:text-left">
+              Premium &amp; niche fragrances curated in Nicosia, Cyprus since 2018. Every scent tells a story.
             </p>
             {/* Social */}
             <div className="flex gap-4 mt-4">
@@ -64,11 +68,11 @@ export default function Footer() {
 
           {/* Shop links */}
           <div className="md:col-span-2">
-            <h3 className="text-[9px] uppercase tracking-[0.25em] text-gold/50 mb-4">Shop</h3>
+            <h3 className="text-[9px] uppercase tracking-[0.25em] text-gold-on-dark mb-4">Shop</h3>
             <ul className="space-y-2.5">
               {shopLinks.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-white/60 hover:text-white transition-colors text-[13px]">
+                  <Link href={link.href} className="text-white/70 hover:text-white transition-colors text-[13px]">
                     {link.label}
                   </Link>
                 </li>
@@ -78,11 +82,11 @@ export default function Footer() {
 
           {/* Company links */}
           <div className="md:col-span-2">
-            <h3 className="text-[9px] uppercase tracking-[0.25em] text-gold/50 mb-4">Company</h3>
+            <h3 className="text-[9px] uppercase tracking-[0.25em] text-gold-on-dark mb-4">Company</h3>
             <ul className="space-y-2.5">
               {companyLinks.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-white/60 hover:text-white transition-colors text-[13px]">
+                  <Link href={link.href} className="text-white/70 hover:text-white transition-colors text-[13px]">
                     {link.label}
                   </Link>
                 </li>
@@ -92,18 +96,18 @@ export default function Footer() {
 
           {/* Contact — compact */}
           <div className="md:col-span-5 md:text-right">
-            <h3 className="text-[9px] uppercase tracking-[0.25em] text-gold/50 mb-4">Contact</h3>
+            <h3 className="text-[9px] uppercase tracking-[0.25em] text-gold-on-dark mb-4">Contact</h3>
             <div className="space-y-2.5 text-[13px]">
-              <div className="flex items-center md:justify-end gap-2 text-white/60">
-                <MapPin className="w-3 h-3 text-gold/40 flex-shrink-0" />
+              <div className="flex items-center md:justify-end gap-2 text-white/70">
+                <MapPin className="w-3 h-3 text-gold-on-dark flex-shrink-0" />
                 Ledra 145, Nicosia, Cyprus
               </div>
-              <a href="tel:99980809" className="flex items-center md:justify-end gap-2 text-white/60 hover:text-white transition-colors">
-                <Phone className="w-3 h-3 text-gold/40 flex-shrink-0" />
+              <a href="tel:99980809" className="flex items-center md:justify-end gap-2 text-white/70 hover:text-white transition-colors">
+                <Phone className="w-3 h-3 text-gold-on-dark flex-shrink-0" />
                 +357 99 980809
               </a>
-              <a href="mailto:info@aquadorcy.com" className="flex items-center md:justify-end gap-2 text-white/60 hover:text-white transition-colors">
-                <Mail className="w-3 h-3 text-gold/40 flex-shrink-0" />
+              <a href="mailto:info@aquadorcy.com" className="flex items-center md:justify-end gap-2 text-white/70 hover:text-white transition-colors">
+                <Mail className="w-3 h-3 text-gold-on-dark flex-shrink-0" />
                 info@aquadorcy.com
               </a>
             </div>
@@ -111,19 +115,39 @@ export default function Footer() {
         </div>
       </motion.div>
 
+      {/* Trust badges row */}
+      <div className="py-6 border-t border-white/[0.06]">
+        <div className="container-wide flex items-center justify-center gap-4">
+          <span className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.15em] text-white/40">
+            <Truck className="w-3.5 h-3.5" />
+            Free Shipping
+          </span>
+          <span className="text-white/20" aria-hidden="true">&middot;</span>
+          <span className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.15em] text-white/40">
+            <ShieldCheck className="w-3.5 h-3.5" />
+            Secure Payment
+          </span>
+          <span className="text-white/20" aria-hidden="true">&middot;</span>
+          <span className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.15em] text-white/40">
+            <Gem className="w-3.5 h-3.5" />
+            Premium Quality
+          </span>
+        </div>
+      </div>
+
       {/* Bottom bar — single row */}
       <div className="border-t border-white/[0.06]">
         <div className="container-wide py-5 flex flex-col sm:flex-row justify-between items-center gap-2">
-          <p className="text-white/30 text-[10px] tracking-[0.08em]">
+          <p className="text-white/50 text-[10px] tracking-[0.08em]">
             &copy; {new Date().getFullYear()} Aquad&apos;or Cyprus
           </p>
-          <p className="text-white/30 text-[10px] tracking-[0.08em]">
+          <p className="text-white/40 text-[10px] tracking-[0.08em]">
             Designed and Developed by{' '}
             <a
               href="https://qualiasolutions.net"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gold/50 hover:text-gold transition-colors inline-flex items-center gap-0.5"
+              className="text-gold-on-dark hover:text-gold transition-colors inline-flex items-center gap-0.5"
             >
               Qualia Solutions
               <ArrowUpRight className="w-2.5 h-2.5" />
