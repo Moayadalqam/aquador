@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import dynamic from 'next/dynamic';
-import { getFeaturedProducts } from '@/lib/supabase/product-service';
+import { getFeaturedAquadorProducts, getFeaturedLattafaProducts } from '@/lib/supabase/product-service';
 import Hero from '@/components/home/Hero';
 import Categories from '@/components/home/Categories';
 import CreateSection from '@/components/home/CreateSection';
@@ -21,24 +21,31 @@ const FeaturedProducts = dynamic(() => import('@/components/home/FeaturedProduct
 export const revalidate = 600;
 
 export default async function Home() {
-  const featuredProductsData = await getFeaturedProducts(6);
+  const [aquadorData, lattafaData] = await Promise.all([
+    getFeaturedAquadorProducts(6),
+    getFeaturedLattafaProducts(6),
+  ]);
 
   // Transform Supabase products to match expected interface
-  const featuredProducts = featuredProductsData.map(p => ({
-    id: p.id,
-    name: p.name,
-    description: p.description,
-    price: Number(p.price),
-    salePrice: p.sale_price ? Number(p.sale_price) : undefined,
-    category: p.category,
-    productType: p.product_type,
-    size: p.size,
-    image: p.image,
-    inStock: p.in_stock ?? true,
-    brand: p.brand ?? undefined,
-    gender: p.gender ?? undefined,
-    tags: p.tags ?? undefined,
-  }));
+  const transformProducts = (data: typeof aquadorData) =>
+    data.map(p => ({
+      id: p.id,
+      name: p.name,
+      description: p.description,
+      price: Number(p.price),
+      salePrice: p.sale_price ? Number(p.sale_price) : undefined,
+      category: p.category,
+      productType: p.product_type,
+      size: p.size,
+      image: p.image,
+      inStock: p.in_stock ?? true,
+      brand: p.brand ?? undefined,
+      gender: p.gender ?? undefined,
+      tags: p.tags ?? undefined,
+    }));
+
+  const aquadorProducts = transformProducts(aquadorData);
+  const lattafaProducts = transformProducts(lattafaData);
 
   const organizationSchema = {
     '@context': 'https://schema.org',
@@ -140,7 +147,22 @@ export default async function Home() {
       <Hero />
       <Categories />
       <CreateSection />
-      <FeaturedProducts products={featuredProducts} />
+      <FeaturedProducts
+        products={aquadorProducts}
+        title="Featured Aquad'or Perfumes"
+        subtitle="Our signature collection, crafted exclusively for Aquad'or."
+        eyebrow="House Collection"
+        viewAllHref="/shop"
+        viewAllLabel="View All Aquad'or"
+      />
+      <FeaturedProducts
+        products={lattafaProducts}
+        title="Best-Selling Lattafa Originals"
+        subtitle="Authentic Lattafa perfumes, curated and imported directly."
+        eyebrow="Lattafa Collection"
+        viewAllHref="/shop/lattafa"
+        viewAllLabel="View All Lattafa"
+      />
     </>
   );
 }

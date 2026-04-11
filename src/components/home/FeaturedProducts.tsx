@@ -16,9 +16,21 @@ const FALLBACK_IMAGE = '/placeholder-product.svg';
 
 interface FeaturedProductsProps {
   products: LegacyProduct[];
+  title?: string;
+  subtitle?: string;
+  eyebrow?: string;
+  viewAllHref?: string;
+  viewAllLabel?: string;
 }
 
-export default function FeaturedProducts({ products }: FeaturedProductsProps) {
+export default function FeaturedProducts({
+  products,
+  title = 'Featured Collections',
+  subtitle = 'Discover our most beloved fragrances, crafted with the finest ingredients from around the world.',
+  eyebrow = 'Our Selection',
+  viewAllHref = '/shop',
+  viewAllLabel = 'View All Products',
+}: FeaturedProductsProps) {
   const sectionRef = useRef(null);
   const reducedMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({
@@ -27,14 +39,16 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
   });
   const headerY = useTransform(scrollYProgress, [0, 1], ['20px', '-20px']);
 
+  if (products.length === 0) return null;
+
   return (
     <section ref={sectionRef} className="section-lg bg-gold-ambient">
       <div className="container-wide">
         <motion.div style={{ y: reducedMotion ? 0 : headerY }}>
           <SectionHeader
-            title="Featured Collections"
-            subtitle="Discover our most beloved fragrances, crafted with the finest ingredients from around the world."
-            eyebrow="Our Selection"
+            title={title}
+            subtitle={subtitle}
+            eyebrow={eyebrow}
           />
         </motion.div>
 
@@ -121,10 +135,10 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
         >
           <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent hidden sm:block" />
           <Link
-            href="/shop"
+            href={viewAllHref}
             className="inline-flex items-center gap-3 text-black hover:text-gold transition-colors duration-300 text-[11px] uppercase tracking-[0.22em] group flex-shrink-0"
           >
-            View All Products
+            {viewAllLabel}
             <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1.5" />
           </Link>
           <div className="flex-1 h-px bg-gradient-to-l from-transparent via-gold/20 to-transparent hidden sm:block" />

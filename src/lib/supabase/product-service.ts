@@ -112,6 +112,46 @@ export async function getFeaturedProducts(count: number = 6): Promise<Product[]>
   return data || [];
 }
 
+// Get featured Aquad'or house products (brand is null or matches "Aquad'or", active + in stock)
+export async function getFeaturedAquadorProducts(count: number = 6): Promise<Product[]> {
+  const supabase = createPublicClient();
+  const { data, error } = await supabase
+    .from('products')
+    .select(PRODUCT_COLUMNS)
+    .eq('is_active', true)
+    .eq('in_stock', true)
+    .or('brand.is.null,brand.ilike.%aquad%')
+    .order('created_at', { ascending: false })
+    .limit(count);
+
+  if (error) {
+    Sentry.addBreadcrumb({ category: 'product-service', message: 'Error fetching featured Aquador products', level: 'error', data: { error } });
+    return [];
+  }
+
+  return data || [];
+}
+
+// Get featured Lattafa original products (category = lattafa-original, active + in stock)
+export async function getFeaturedLattafaProducts(count: number = 6): Promise<Product[]> {
+  const supabase = createPublicClient();
+  const { data, error } = await supabase
+    .from('products')
+    .select(PRODUCT_COLUMNS)
+    .eq('category', 'lattafa-original')
+    .eq('is_active', true)
+    .eq('in_stock', true)
+    .order('created_at', { ascending: false })
+    .limit(count);
+
+  if (error) {
+    Sentry.addBreadcrumb({ category: 'product-service', message: 'Error fetching featured Lattafa products', level: 'error', data: { error } });
+    return [];
+  }
+
+  return data || [];
+}
+
 // Get all product slugs for static generation
 export async function getAllProductSlugs(): Promise<string[]> {
   const supabase = createPublicClient();
