@@ -5,6 +5,7 @@ import { formatApiError } from '@/lib/api-utils';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { getStripe } from '@/lib/stripe';
 import { SHIPPING_COUNTRIES } from '@/lib/constants';
+import { calculatePrice, type PerfumeVolume } from '@/lib/perfume/pricing';
 
 export const maxDuration = 10;
 
@@ -38,8 +39,8 @@ export async function POST(request: NextRequest) {
     }
     const { perfumeName, composition, volume, specialRequests } = result.data;
 
-    // Calculate price in cents
-    const amount = volume === '100ml' ? 4999 : 2999;
+    // Calculate price in cents from single source of truth
+    const amount = Math.round(calculatePrice(volume as PerfumeVolume) * 100);
 
     // Create Stripe Checkout Session (same as regular checkout)
     const session = await stripe.checkout.sessions.create({

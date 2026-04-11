@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import DOMPurify from 'dompurify';
 
 interface RichDescriptionProps {
   description: string;
@@ -8,15 +9,11 @@ interface RichDescriptionProps {
 
 export default function RichDescription({ description }: RichDescriptionProps) {
   const isHTML = /<[a-z][\s\S]*>/i.test(description);
-  const [sanitizedHTML, setSanitizedHTML] = useState('');
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    if (isHTML) {
-      import('dompurify').then(mod => {
-        setSanitizedHTML(mod.default.sanitize(description));
-      });
-    }
-  }, [description, isHTML]);
+    setIsClient(true);
+  }, []);
 
   if (!isHTML) {
     return (
@@ -30,7 +27,7 @@ export default function RichDescription({ description }: RichDescriptionProps) {
     );
   }
 
-  if (!sanitizedHTML) {
+  if (!isClient) {
     return (
       <div className="space-y-2">
         {description.replace(/<[^>]*>/g, '').split('\n').filter(Boolean).map((para, i) => (
@@ -41,6 +38,8 @@ export default function RichDescription({ description }: RichDescriptionProps) {
       </div>
     );
   }
+
+  const sanitizedHTML = DOMPurify.sanitize(description);
 
   return (
     <div

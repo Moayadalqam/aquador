@@ -1,21 +1,20 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import DOMPurify from 'dompurify';
 
 interface BlogContentProps {
   content: string;
 }
 
 export default function BlogContent({ content }: BlogContentProps) {
-  const [sanitizedHTML, setSanitizedHTML] = useState('');
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    import('dompurify').then(mod => {
-      setSanitizedHTML(mod.default.sanitize(content));
-    });
-  }, [content]);
+    setIsClient(true);
+  }, []);
 
-  if (!sanitizedHTML) {
+  if (!isClient) {
     return (
       <div className="blog-content prose prose-invert prose-gold max-w-none animate-pulse">
         <div className="h-4 bg-gold/5 rounded w-full mb-3" />
@@ -24,6 +23,8 @@ export default function BlogContent({ content }: BlogContentProps) {
       </div>
     );
   }
+
+  const sanitizedHTML = DOMPurify.sanitize(content);
 
   return (
     <div
