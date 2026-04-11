@@ -98,17 +98,23 @@ A customer completes a purchase and knows it worked — they see their order det
 - Framer Motion replacement — 53 files, too broad for current scope
 - Admin dashboard redesign — functional, not UX overhaul
 
-## Current Milestone: v2.0 Immersive Luxury Experience
+## Current Milestone: v3.0 Client Feedback Round
+
+**Goal:** Address all client-reported issues across branding, navigation, content, search, product data, and design polish. Ensure Aquad'or brand identity is consistent and prominent throughout the site.
+
+**Source:** Issue list from client Moayad Alqam (2026-04-11) — 10 categories, ~40+ individual items.
+
+**Target fixes:**
+- Brand identity corrections (logo, tagline, year, cart icon)
+- Navigation restructure (Men/Women/Unisex categories, remove Blog, fix Dubai Shop)
+- Homepage content overhaul (fragrance education, featured collections, remove boutique section)
+- Search functionality repair (non-functional search bar, broken filtering)
+- Product data restoration (missing fragrance notes, incorrect compositions, misspellings)
+- Design polish (typography, contrast, CTAs, spacing, trust elements, footer)
+
+## Previous Milestone: v2.0 Immersive Luxury Experience (COMPLETE)
 
 **Goal:** Transform Aquador into an exceptional luxury perfume destination with cutting-edge visual effects, 3D showcases, and immersive interactions that create customer amazement and engagement.
-
-**Target features:**
-- Complete site transformation with smooth parallax scrolling throughout
-- 3D product showcases with interactive capabilities
-- Cinematic animations and page transitions
-- Immersive product discovery and browsing experience
-- Middle East luxury retail inspired design language
-- Customer engagement focused interactions and micro-animations
 
 ## Context
 

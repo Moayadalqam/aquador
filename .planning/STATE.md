@@ -2,20 +2,20 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-09)
+See: .planning/PROJECT.md (updated 2026-04-11)
 
 **Core value:** A customer completes a purchase and knows it worked — they see their order details on screen, receive a confirmation email, and the store is notified. No silent failures, no misleading messages, no security holes.
 
-**Current focus:** v2.0 Immersive Luxury Experience - COMPLETE (Phase 17 done)
+**Current focus:** v3.0 Client Feedback Round — Brand corrections, navigation restructure, content fixes, search repair, design polish
 
 ## Current Position
 
-Phase: 17 of 17 (Accessibility & Polish) — Complete
-Plan: 3 of 3 complete
-Status: Phase complete — v2.0 all phases done
-Last activity: 2026-03-11 - Completed quick task 7: Modern high-end responsive design redesign
+Phase: 18 of 22 (Brand Identity & Header) — Not Started
+Plan: 0 of 0
+Status: Starting v3.0 — client feedback from Moayad
+Last activity: 2026-04-11 - Set up v3.0 milestone from client issue list
 
-Progress: [████████████████████] 100% (47/47 total plans complete)
+Progress: [░░░░░░░░░░░░░░░░░░░░] 0% (0/5 phases complete)
 
 ## Milestones
 
@@ -23,6 +23,58 @@ Progress: [████████████████████] 100% (4
 - ✅ **v1.1** Security Audit Remediation — shipped 2026-03-03
 - ✅ **v1.2** Design Overhaul & Premium UX — shipped 2026-03-04
 - ✅ **v2.0** Immersive Luxury Experience — COMPLETE (Phases 13-17, 2026-03-09)
+- 🔄 **v3.0** Client Feedback Round — started 2026-04-11
+
+## v3.0 Phases
+
+| Phase | Name | Status |
+|-------|------|--------|
+| 18 | Brand Identity & Header | ⬚ Not Started |
+| 19 | Navigation & Menu Structure | ⬚ Not Started |
+| 20 | Homepage Content Sections | ⬚ Not Started |
+| 21 | Search & Product Data | ⬚ Not Started |
+| 22 | Design Polish & Trust | ⬚ Not Started |
+
+### Phase 18 — Brand Identity & Header
+- Replace logo with icon-only version (gold, high contrast) on mobile + desktop
+- Fix year: "Since May 2018" (was incorrectly "Since 2024")
+- Replace tagline: "Scent of Luxury" (was "Where Luxury Meets Distinction")
+- Replace cart icon with shopping bag or 50ml bottle silhouette
+- Fix decorative element: single centered dot (was two dots)
+
+### Phase 19 — Navigation & Menu Structure
+- Remove "Blog" from navigation entirely
+- Add main categories: Men, Women, Unisex
+- Move "Lattafa Originals" to own top-level category (not under Dubai Shop)
+- Dubai Shop → brand-based subcategories (Al Haramain, Xerjoff, etc.)
+
+### Phase 20 — Homepage Content Sections
+- Rewrite fragrance education: explain evaporation timeline + role in fragrance evolution
+- Remove numbering (01, 02, 03), fix order: Top → Middle (Heart) → Base
+- Increase subtitle contrast and readability
+- Featured collections: split into "Featured Aquad'or Perfumes" + "Best-Selling Lattafa Originals"
+- Remove "Our Boutique" section entirely
+- Replace "IG | FB" text with proper Instagram/Facebook icons
+- Custom chat widget icon: 50ml Aquad'or bottle with question mark
+
+### Phase 21 — Search & Product Data
+- Fix non-functional main search bar
+- Fix filtering system
+- Restore missing fragrance notes on Aquad'or products
+- Fix incorrect compositions (e.g., Althair description)
+- Fix spelling: "Althar" → "Althair"
+
+### Phase 22 — Design Polish & Trust
+- Typography hierarchy consistency across sections
+- Gold color contrast improvements (too low in multiple areas)
+- CTA buttons: urgency and conversion focus
+- Mobile spacing consistency between sections
+- Product image style/lighting consistency
+- Add trust elements: reviews, ratings, testimonials
+- Clear value proposition above the fold
+- Footer: brand-driven, not generic
+- Visual emphasis on Aquad'or as primary brand
+- Reduce dark overlay overuse (improves product visibility)
 
 ## Accumulated Context
 
@@ -109,12 +161,10 @@ All v1.0 + v1.1 + v1.2 decisions logged in PROJECT.md Key Decisions table.
 
 ## Session Continuity
 
-Last session: 2026-03-11
-Completed: Quick task 7 — Modern high-end responsive design redesign
-Commits: 71aee7c (globals.css + Section), e49f530 (homepage components), a065e9d (Navbar + Footer + About + Contact)
-Phase 17 Status: COMPLETE — all 3 plans done
-v2.0 Status: COMPLETE — all 17 phases done
-Next: Deploy to production, Lighthouse audit, real-device mobile testing
+Last session: 2026-04-11
+Started: v3.0 Client Feedback Round — 5 phases (18-22)
+Source: Client issue list from Moayad Alqam (10 categories, ~40+ items)
+Next: /qualia-plan 18
 
 ---
-*Last updated: 2026-03-09 after Phase 17-03 completion (v2.0 fully complete)*
+*Last updated: 2026-04-11 — v3.0 milestone created from client feedback*
