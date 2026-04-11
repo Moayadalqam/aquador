@@ -4,29 +4,37 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, X } from 'lucide-react';
+import { Search, X, ChevronDown } from 'lucide-react';
 import { CartIcon } from '@/components/cart';
 import { SearchBar } from '@/components/search';
 import AquadorLogo from '@/components/ui/AquadorLogo';
+import type { NavItem } from '@/types';
 
-const navLinks = [
-  { label: 'Dubai Shop', href: '/shop' },
+const navLinks: NavItem[] = [
+  { label: 'Men', href: '/shop/gender/men' },
+  { label: 'Women', href: '/shop/gender/women' },
+  { label: 'Unisex', href: '/shop/gender/unisex' },
   { label: 'Lattafa Originals', href: '/shop/lattafa' },
+  { label: 'Dubai Shop', href: '/shop', children: [
+    { label: 'All Dubai Fragrances', href: '/shop' },
+    { label: 'Al Haramain', href: '/shop/al-haramain-originals' },
+    { label: 'Xerjoff', href: '/shop?brand=xerjoff' },
+    { label: 'Niche Collection', href: '/shop/niche' },
+  ]},
   { label: 'Create Your Own', href: '/create-perfume' },
-  { label: 'Re-Order', href: '/reorder' },
   { label: 'About', href: '/about' },
-  { label: 'Blog', href: '/blog' },
   { label: 'Contact', href: '/contact' },
 ];
 
-const leftLinks = navLinks.slice(0, 3);
-const rightLinks = navLinks.slice(3);
+const leftLinks = navLinks.slice(0, 4);
+const rightLinks = navLinks.slice(4);
 
 export default function Navbar() {
   const pathname = usePathname();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [scrollY, setScrollY] = useState(0);
+  const [expandedMobile, setExpandedMobile] = useState<string | null>(null);
   const ticking = useRef(false);
 
   const isScrolled = scrollY > 60;
@@ -55,13 +63,28 @@ export default function Navbar() {
   useEffect(() => {
     setIsMobileOpen(false);
     setIsSearchOpen(false);
+    setExpandedMobile(null);
   }, [pathname]);
 
   const isHome = pathname === '/';
   const useLightText = isHome && !isScrolled;
 
   const checkActive = (href: string) => {
-    if (href === '/shop') return pathname === '/shop' || (pathname.startsWith('/shop/') && pathname !== '/shop/lattafa' && !pathname.startsWith('/shop/lattafa/'));
+    // Gender-specific routes
+    if (href === '/shop/gender/men') return pathname.startsWith('/shop/gender/men');
+    if (href === '/shop/gender/women') return pathname.startsWith('/shop/gender/women');
+    if (href === '/shop/gender/unisex') return pathname.startsWith('/shop/gender/unisex');
+    // Lattafa Originals
+    if (href === '/shop/lattafa') return pathname === '/shop/lattafa' || pathname.startsWith('/shop/lattafa/');
+    // Dubai Shop: activate when /shop or /shop/* but NOT /shop/gender/* or /shop/lattafa*
+    if (href === '/shop') {
+      return (pathname === '/shop' || pathname.startsWith('/shop/'))
+        && !pathname.startsWith('/shop/gender/')
+        && !pathname.startsWith('/shop/lattafa');
+    }
+    // Create Your Own
+    if (href === '/create-perfume') return pathname.startsWith('/create-perfume');
+    // Default
     return pathname === href || (href !== '/' && pathname.startsWith(href));
   };
 
@@ -109,7 +132,7 @@ export default function Navbar() {
 
               <div className="hidden xl:flex items-center h-full">
                 {leftLinks.map((link) => (
-                  <NavLink key={link.href} {...link} active={checkActive(link.href)} lightText={useLightText} />
+                  <DesktopNavLink key={link.label} item={link} active={checkActive(link.href)} lightText={useLightText} />
                 ))}
               </div>
             </div>
@@ -126,7 +149,7 @@ export default function Navbar() {
             <div className="flex items-center h-full">
               <div className="hidden xl:flex items-center h-full">
                 {rightLinks.map((link) => (
-                  <NavLink key={link.href} {...link} active={checkActive(link.href)} lightText={useLightText} />
+                  <DesktopNavLink key={link.label} item={link} active={checkActive(link.href)} lightText={useLightText} />
                 ))}
               </div>
 
@@ -220,22 +243,75 @@ export default function Navbar() {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.1 + i * 0.04, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                     >
-                      <Link
-                        href={link.href}
-                        onClick={() => setIsMobileOpen(false)}
-                        className={`flex items-center gap-4 py-3.5 border-b border-black/[0.04] transition-colors duration-300 ${
-                          checkActive(link.href) ? 'text-gold' : 'text-black/60 active:text-gold'
-                        }`}
-                      >
-                        {checkActive(link.href) ? (
-                          <span className="w-6 h-px bg-gold flex-shrink-0" />
-                        ) : (
-                          <span className="w-6 h-px flex-shrink-0" />
-                        )}
-                        <span className="font-playfair text-[21px] sm:text-2xl tracking-wide">
-                          {link.label}
-                        </span>
-                      </Link>
+                      {link.children ? (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => setExpandedMobile(expandedMobile === link.label ? null : link.label)}
+                            className={`flex items-center gap-4 py-3.5 w-full border-b border-black/[0.04] transition-colors duration-300 cursor-pointer ${
+                              checkActive(link.href) ? 'text-gold' : 'text-black/60 active:text-gold'
+                            }`}
+                          >
+                            {checkActive(link.href) ? (
+                              <span className="w-6 h-px bg-gold flex-shrink-0" />
+                            ) : (
+                              <span className="w-6 h-px flex-shrink-0" />
+                            )}
+                            <span className="font-playfair text-[21px] sm:text-2xl tracking-wide">
+                              {link.label}
+                            </span>
+                            <ChevronDown
+                              className={`w-4 h-4 ml-auto mr-2 transition-transform duration-200 ${
+                                expandedMobile === link.label ? 'rotate-180' : ''
+                              }`}
+                            />
+                          </button>
+                          <AnimatePresence>
+                            {expandedMobile === link.label && (
+                              <motion.ul
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: 'auto', opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                                className="overflow-hidden"
+                              >
+                                {link.children.map((child) => (
+                                  <li key={child.href}>
+                                    <Link
+                                      href={child.href}
+                                      onClick={() => setIsMobileOpen(false)}
+                                      className={`flex items-center gap-4 py-2.5 pl-10 border-b border-black/[0.02] transition-colors duration-300 ${
+                                        pathname === child.href ? 'text-gold' : 'text-black/50 active:text-gold'
+                                      }`}
+                                    >
+                                      <span className="font-playfair text-[18px] sm:text-xl tracking-wide">
+                                        {child.label}
+                                      </span>
+                                    </Link>
+                                  </li>
+                                ))}
+                              </motion.ul>
+                            )}
+                          </AnimatePresence>
+                        </>
+                      ) : (
+                        <Link
+                          href={link.href}
+                          onClick={() => setIsMobileOpen(false)}
+                          className={`flex items-center gap-4 py-3.5 border-b border-black/[0.04] transition-colors duration-300 ${
+                            checkActive(link.href) ? 'text-gold' : 'text-black/60 active:text-gold'
+                          }`}
+                        >
+                          {checkActive(link.href) ? (
+                            <span className="w-6 h-px bg-gold flex-shrink-0" />
+                          ) : (
+                            <span className="w-6 h-px flex-shrink-0" />
+                          )}
+                          <span className="font-playfair text-[21px] sm:text-2xl tracking-wide">
+                            {link.label}
+                          </span>
+                        </Link>
+                      )}
                     </motion.li>
                   ))}
                 </ul>
@@ -257,13 +333,49 @@ export default function Navbar() {
   );
 }
 
-function NavLink({ label, href, active, lightText }: { label: string; href: string; active: boolean; lightText: boolean }) {
+function DesktopNavLink({ item, active, lightText }: { item: NavItem; active: boolean; lightText: boolean }) {
+  if (item.children) {
+    return (
+      <div className="relative group h-full">
+        <Link href={item.href} className="relative h-full flex items-center justify-center px-4 xl:px-5">
+          <span className={`text-[10.5px] xl:text-[11px] uppercase tracking-[0.16em] font-light transition-colors duration-300 whitespace-nowrap leading-none flex items-center gap-1 ${
+            active ? 'text-gold' : lightText ? 'text-white/75 group-hover:text-white' : 'text-black/65 group-hover:text-black'
+          }`}>
+            {item.label}
+            <ChevronDown className="w-3 h-3" />
+          </span>
+          {active ? (
+            <motion.span
+              layoutId="navActive"
+              className="absolute bottom-0 left-4 right-4 xl:left-5 xl:right-5 h-px bg-gold"
+              transition={{ type: 'spring', stiffness: 350, damping: 28 }}
+            />
+          ) : (
+            <span className="absolute bottom-0 left-4 right-4 xl:left-5 xl:right-5 h-px bg-gold/40 scale-x-0 group-hover:scale-x-100 transition-transform duration-400 origin-left" />
+          )}
+        </Link>
+        {/* Dropdown */}
+        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 min-w-[200px] py-3 px-1 bg-white/[0.98] backdrop-blur-sm shadow-lg border border-gold/10 rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+          {item.children.map((child) => (
+            <Link
+              key={child.href}
+              href={child.href}
+              className="block px-4 py-2 text-[11px] uppercase tracking-[0.14em] text-neutral-700 hover:text-gold transition-colors cursor-pointer"
+            >
+              {child.label}
+            </Link>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <Link href={href} className="relative h-full flex items-center justify-center px-4 xl:px-5 group">
+    <Link href={item.href} className="relative h-full flex items-center justify-center px-4 xl:px-5 group">
       <span className={`text-[10.5px] xl:text-[11px] uppercase tracking-[0.16em] font-light transition-colors duration-300 whitespace-nowrap leading-none ${
         active ? 'text-gold' : lightText ? 'text-white/75 group-hover:text-white' : 'text-black/65 group-hover:text-black'
       }`}>
-        {label}
+        {item.label}
       </span>
       {active ? (
         <motion.span
