@@ -142,7 +142,7 @@ export default function Navbar() {
               href="/"
               className="absolute left-1/2 -translate-x-1/2 z-10"
             >
-              <Image src="/aquador.webp" alt="Aquad'or" width={180} height={60} className="h-[40px] sm:h-[48px] xl:h-[44px] 2xl:h-[52px] w-auto" priority />
+              <Image src="/aquador.webp" alt="Aquad'or" width={160} height={48} className="h-[40px] sm:h-[48px] xl:h-[44px] 2xl:h-[52px] w-auto" priority />
             </Link>
 
             {/* Right: Right nav links (desktop) + Icons */}
