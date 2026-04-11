@@ -20,9 +20,10 @@ import type { Category } from '@/types';
 interface ShopContentProps {
   products: Product[];
   categories: Category[];
+  isSearchMode?: boolean;
 }
 
-export default function ShopContent({ products, categories }: ShopContentProps) {
+export default function ShopContent({ products, categories, isSearchMode = false }: ShopContentProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const urlSearchQuery = searchParams.get('search') || '';
@@ -107,8 +108,12 @@ export default function ShopContent({ products, categories }: ShopContentProps) 
     <div className="min-h-screen bg-gold-ambient">
       {/* Hero */}
       <PageHero
-        title="Dubai Shop"
-        subtitle="Curated luxury fragrances from Dubai's finest houses"
+        title={isSearchMode && urlSearchQuery ? 'Search Results' : 'Dubai Shop'}
+        subtitle={
+          isSearchMode && urlSearchQuery
+            ? `Showing results for '${urlSearchQuery}'`
+            : 'Curated luxury fragrances from Dubai\'s finest houses'
+        }
         titleVariant="white"
       />
 
@@ -135,15 +140,17 @@ export default function ShopContent({ products, categories }: ShopContentProps) 
           transition={{ delay: 0.15 }}
           className="flex flex-col items-center gap-[var(--spacing-md)]"
         >
-          {/* Category filters */}
-          <AnimatedFilterBar
-            filters={categories.map((cat) => ({
-              id: cat.id,
-              label: cat.name.replace("'s Collection", ''),
-            }))}
-            activeFilter={selectedCategory}
-            onFilterChange={handleCategoryChange}
-          />
+          {/* Category filters — hidden in search mode since results span all categories */}
+          {!isSearchMode && (
+            <AnimatedFilterBar
+              filters={categories.map((cat) => ({
+                id: cat.id,
+                label: cat.name.replace("'s Collection", ''),
+              }))}
+              activeFilter={selectedCategory}
+              onFilterChange={handleCategoryChange}
+            />
+          )}
 
         </motion.div>
 

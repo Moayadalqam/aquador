@@ -25,15 +25,25 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function ShopPage() {
+interface ShopPageProps {
+  searchParams: { search?: string; brand?: string };
+}
+
+export default async function ShopPage({ searchParams }: ShopPageProps) {
   const allProducts = await getAllProducts();
 
-  // Dubai Shop: exclude Lattafa (own page) and non-perfume types (oils/lotions are variants, not separate listings)
-  const products = allProducts.filter(p => p.category !== 'lattafa-original' && p.product_type === 'perfume');
+  const searchQuery = searchParams.search?.trim() || '';
+  const isSearchMode = searchQuery.length > 0;
+
+  // Search mode: show all active perfume products (cross-category) so Lattafa etc. appear in results
+  // Normal mode: Dubai Shop only — exclude Lattafa (own page) and non-perfume types
+  const products = isSearchMode
+    ? allProducts.filter(p => p.product_type === 'perfume')
+    : allProducts.filter(p => p.category !== 'lattafa-original' && p.product_type === 'perfume');
 
   return (
     <Suspense fallback={<div className="pt-32 md:pt-40 lg:pt-44 pb-20 bg-white min-h-screen" />}>
-      <ShopContent products={products} categories={categories} />
+      <ShopContent products={products} categories={categories} isSearchMode={isSearchMode} />
     </Suspense>
   );
 }
