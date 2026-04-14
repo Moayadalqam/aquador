@@ -1,0 +1,27 @@
+{
+  "project": "aquador",
+  "client": "",
+  "type": "",
+  "assigned_to": "",
+  "milestone": 1,
+  "phase": 1,
+  "phase_name": "Project monitoring dashboard with 3D blocks",
+  "total_phases": 6,
+  "status": "setup",
+  "wave": 0,
+  "tasks_done": 0,
+  "tasks_total": 0,
+  "verification": "pending",
+  "gap_cycles": {},
+  "blockers": [],
+  "last_updated": "2026-04-14T01:22:04.752Z",
+  "last_commit": "",
+  "deployed_url": "",
+  "notes": "",
+  "lifetime": {
+    "tasks_completed": 0,
+    "phases_completed": 0,
+    "milestones_completed": 0,
+    "total_phases": 0
+  }
+}
