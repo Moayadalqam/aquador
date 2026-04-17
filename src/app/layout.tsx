@@ -65,6 +65,12 @@ export const metadata: Metadata = {
     url: "https://aquadorcy.com",
     images: [
       {
+        url: "/api/og",
+        width: 1200,
+        height: 630,
+        alt: "Aquad'or — Luxury Perfumes Cyprus",
+      },
+      {
         url: "/aquador.webp",
         width: 800,
         height: 600,
@@ -76,7 +82,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Aquad'or | Luxury Perfumes & Niche Fragrances Cyprus",
     description: "Scent of Luxury. Discover our curated collection of high-end and niche perfumes.",
-    images: ["/aquador.webp"],
+    images: ["/api/og"],
   },
   robots: {
     index: true,

@@ -41,6 +41,12 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
       url: `https://aquadorcy.com/products/${slug}`,
       images: [
         {
+          url: `/api/og/product/${slug}`,
+          width: 1200,
+          height: 630,
+          alt: product.name,
+        },
+        {
           url: product.image,
           width: 800,
           height: 800,
@@ -59,7 +65,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
       card: 'summary_large_image',
       title: `${product.name} | Aquad'or`,
       description: product.description,
-      images: [product.image],
+      images: [`/api/og/product/${slug}`, product.image],
     },
     alternates: {
       canonical: `https://aquadorcy.com/products/${slug}`,
