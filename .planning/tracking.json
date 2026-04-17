@@ -14,8 +14,8 @@
   "verification": "pass",
   "gap_cycles": {},
   "blockers": [],
-  "last_updated": "2026-04-17T14:34:39Z",
-  "last_commit": "488649c",
+  "last_updated": "2026-04-17T14:36:10Z",
+  "last_commit": "1af8f67",
   "deployed_url": "https://www.aquadorcy.com",
   "notes": "v3.2 shipped 2026-04-17 (phases 27-29): 31 OPTIMIZE.md findings fixed — security, performance, a11y, responsive. Deploy dpl_6f4nfFpgYgRwNP39ZU92nfPnGmYb. 3 Supabase migrations applied (RLS live chat, upsert_customer_on_order RPC, pg_trgm index).",
   "lifetime": {
@@ -102,5 +102,5 @@
       }
     ]
   },
-  "last_pushed_at": "2026-04-17T14:34:39Z"
+  "last_pushed_at": "2026-04-17T14:36:10Z"
 }
