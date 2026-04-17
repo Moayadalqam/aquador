@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import { motion, useScroll } from 'framer-motion';
 import { useDeviceCapabilities } from '@/hooks/useDeviceCapabilities';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { Canvas3DBoundary } from '@/components/3d/Canvas3DBoundary';
 
 const Hero3DScene = dynamic(() => import('./Hero3DScene'), {
   ssr: false,
@@ -107,9 +108,11 @@ export default function Hero3DScroll() {
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
       <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
 
-      {/* 3D Scene or CSS fallback */}
+      {/* 3D Scene or CSS fallback — Canvas3DBoundary catches runtime R3F errors */}
       {show3D ? (
-        <Hero3DScene scrollYProgress={scrollYProgress} />
+        <Canvas3DBoundary label="Hero3DScene" fallback={<Hero3DFallback />}>
+          <Hero3DScene scrollYProgress={scrollYProgress} />
+        </Canvas3DBoundary>
       ) : (
         <Hero3DFallback />
       )}
