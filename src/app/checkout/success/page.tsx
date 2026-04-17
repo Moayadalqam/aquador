@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { CheckCircle, Package, ArrowRight, XCircle } from 'lucide-react';
+import { CheckCircle, Package, ArrowRight, XCircle, Loader2 } from 'lucide-react';
 import * as Sentry from '@sentry/nextjs';
 import { useCart } from '@/components/cart';
 import { formatPrice } from '@/lib/utils';
@@ -22,9 +22,12 @@ export default function CheckoutSuccessPage() {
   const [loading, setLoading] = useState(true);
   const [orderData, setOrderData] = useState<OrderData | null>(null);
   const [error, setError] = useState(false);
+  const hasClearedRef = useRef(false);
 
   // Fetch order details from session
   useEffect(() => {
+    if (hasClearedRef.current) return;
+
     const sessionId = searchParams.get('session_id');
 
     if (!sessionId) {
@@ -47,6 +50,7 @@ export default function CheckoutSuccessPage() {
           total: data.total / 100, // Convert cents to euros
           currency: data.currency,
         });
+        hasClearedRef.current = true;
         clearCart();
         setLoading(false);
       })
@@ -60,7 +64,8 @@ export default function CheckoutSuccessPage() {
         setError(true);
         setLoading(false);
       });
-  }, [searchParams, clearCart]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   // Loading state
   if (loading) {
@@ -71,9 +76,9 @@ export default function CheckoutSuccessPage() {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: 'spring', damping: 15, stiffness: 200 }}
-            className="w-24 h-24 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-8"
+            className="w-24 h-24 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-8"
           >
-            <CheckCircle className="w-12 h-12 text-green-500" />
+            <Loader2 className="w-12 h-12 text-gold animate-spin" />
           </motion.div>
           <p className="text-xl text-gray-400">Processing your order...</p>
         </div>

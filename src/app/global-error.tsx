@@ -16,7 +16,13 @@ export default function GlobalError({
 
   return (
     <html lang="en">
-      <body style={{ margin: 0, padding: 0, backgroundColor: '#0a0a0a', color: '#fff', fontFamily: 'system-ui, sans-serif' }}>
+      <head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body style={{ margin: 0, padding: 0, backgroundColor: '#0a0a0a', color: '#fff', fontFamily: "'Poppins', sans-serif" }}>
         <div style={{
           minHeight: '100vh',
           display: 'flex',
@@ -38,6 +44,7 @@ export default function GlobalError({
               <span style={{ fontSize: '48px' }}>!</span>
             </div>
             <h1 style={{
+              fontFamily: "'Playfair Display', Georgia, serif",
               fontSize: '2rem',
               fontWeight: 'normal',
               marginBottom: '1rem',
