@@ -6,14 +6,14 @@ See: .planning/PROJECT.md
 **Core value:** A customer completes a purchase and knows it worked — they see their order details on screen, receive a confirmation email, and the store is notified. No silent failures, no misleading messages, no security holes.
 
 ## Current Position
-Phase: 30 of 30 — v3.3 Optimize Pass 2
+Phase: 31 of 31 — v3.4 Cinematic Scroll
 Status: shipped
 Assigned to: OWNER (Fawzi Goussous)
-Last activity: 2026-04-17 — v3.3 milestone SHIPPED (33 findings fixed)
+Last activity: 2026-04-17 — v3.4 milestone SHIPPED (3D scroll + welcome splash + progress bar)
 
 Progress: [██████████] 100%
 
-Deployed: https://www.aquadorcy.com (deploy dpl_HauBmZYsUGEo3Lkz1KUrkoapYH4B)
+Deployed: https://www.aquadorcy.com (v3.4 latest deploy)
 
 ## Roadmap
 | # | Phase | Goal | Status |
@@ -57,6 +57,7 @@ Deployed: https://www.aquadorcy.com (deploy dpl_HauBmZYsUGEo3Lkz1KUrkoapYH4B)
 - ✅ **v3.1** Quality & SEO Polish — 2026-04-17 (phases 23-26)
 - ✅ **v3.2** Optimize All — 2026-04-17 (phases 27-29, 31/31 findings fixed)
 - ✅ **v3.3** Optimize Pass 2 — 2026-04-17 (phase 30, 33/33 findings fixed, 3 migrations applied)
+- ✅ **v3.4** Cinematic Scroll — 2026-04-17 (phase 31, WelcomeSplash + ScrollProgress + R3F Hero3DScroll)
 
 ## v3.2 Highlights
 - 39+ commits across 3 phases, 31 OPTIMIZE.md findings fixed
