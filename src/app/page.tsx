@@ -4,6 +4,7 @@ import TrustBar from '@/components/home/TrustBar';
 import Categories from '@/components/home/Categories';
 import CreateSection from '@/components/home/CreateSection';
 import FeaturedProducts from '@/components/home/FeaturedProducts';
+import { AnimationBudgetProvider } from '@/lib/performance/animation-budget';
 
 export const revalidate = 600;
 
@@ -118,7 +119,7 @@ export default async function Home() {
     JSON.stringify(obj).replace(/<\/script>/gi, '<\\/script>');
 
   return (
-    <>
+    <AnimationBudgetProvider>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: safeStringify(organizationSchema) }}
@@ -151,6 +152,6 @@ export default async function Home() {
         viewAllHref="/shop/lattafa"
         viewAllLabel="View All Lattafa"
       />
-    </>
+    </AnimationBudgetProvider>
   );
 }
