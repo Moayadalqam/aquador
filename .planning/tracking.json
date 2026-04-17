@@ -3,27 +3,27 @@
   "client": "Moayad Alqam",
   "type": "e-commerce",
   "assigned_to": "",
-  "milestone": 3,
-  "phase": 29,
-  "phase_name": "Conventions + A11y + Responsive",
-  "total_phases": 29,
+  "milestone": 4,
+  "phase": 30,
+  "phase_name": "v3.3 Optimize Pass 2",
+  "total_phases": 30,
   "status": "shipped",
   "wave": 0,
-  "tasks_done": 31,
-  "tasks_total": 31,
+  "tasks_done": 33,
+  "tasks_total": 33,
   "verification": "pass",
   "gap_cycles": {},
   "blockers": [],
-  "last_updated": "2026-04-17T14:50:51Z",
-  "last_commit": "e290841",
+  "last_updated": "2026-04-17T14:51:14Z",
+  "last_commit": "6c10a0c",
   "deployed_url": "https://www.aquadorcy.com",
-  "notes": "v3.2 shipped 2026-04-17 (phases 27-29): 31 OPTIMIZE.md findings fixed — security, performance, a11y, responsive. Deploy dpl_6f4nfFpgYgRwNP39ZU92nfPnGmYb. 3 Supabase migrations applied (RLS live chat, upsert_customer_on_order RPC, pg_trgm index).",
+  "notes": "v3.3 shipped 2026-04-17: 33 OPTIMIZE.md post-v3.2 findings fixed. Admin user creation moved server-side (privilege escalation fix). LoadingScreen overlay removed (-800ms LCP). Middleware narrowed to /admin only. React.memo on ProductCard/CartItem. 3 Supabase migrations applied. Deploy dpl_HauBmZYsUGEo3Lkz1KUrkoapYH4B.",
   "lifetime": {
-    "tasks_completed": 52,
-    "phases_completed": 29,
-    "milestones_completed": 6,
-    "total_phases": 29,
-    "last_closed_milestone": 2,
+    "tasks_completed": 85,
+    "phases_completed": 30,
+    "milestones_completed": 7,
+    "total_phases": 30,
+    "last_closed_milestone": 3,
     "milestones": [
       {
         "id": "v1.0",
@@ -99,8 +99,16 @@
           28,
           29
         ]
+      },
+      {
+        "id": "v3.3",
+        "name": "Optimize Pass 2",
+        "shipped": "2026-04-17",
+        "phases": [
+          30
+        ]
       }
     ]
   },
-  "last_pushed_at": "2026-04-17T14:50:51Z"
+  "last_pushed_at": "2026-04-17T14:51:14Z"
 }
