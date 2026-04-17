@@ -67,7 +67,7 @@ export default function CreateSection() {
               className="eyebrow text-gold-on-dark mb-4"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
-              viewport={{ once: false, amount: 0.5 }}
+              viewport={{ once: true, amount: 0.4 }}
               transition={{ duration: 0.6 }}
             >
               Bespoke Perfumery
@@ -76,7 +76,7 @@ export default function CreateSection() {
               className="font-playfair text-3xl md:text-4xl lg:text-5xl text-gradient-gold mb-5 leading-tight"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: false, amount: 0.5 }}
+              viewport={{ once: true, amount: 0.4 }}
               transition={{ duration: 0.7, delay: 0.1 }}
             >
               Create Your Signature
@@ -86,7 +86,7 @@ export default function CreateSection() {
               className="text-gray-400 text-base md:text-lg leading-relaxed"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
-              viewport={{ once: false, amount: 0.5 }}
+              viewport={{ once: true, amount: 0.4 }}
               transition={{ duration: 0.7, delay: 0.2 }}
             >
               Design a perfume that&apos;s uniquely yours. Select from our premium notes and craft your personal masterpiece.

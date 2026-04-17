@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { Mail, Phone, MapPin, ArrowUpRight, Truck, ShieldCheck, Gem } from 'lucide-react';
+import { AnimatedSection } from '@/components/ui/AnimatedSection';
+import { fadeInUp } from '@/lib/animations/scroll-animations';
 
 const shopLinks = [
   { label: 'Women', href: '/shop/gender/women' },
@@ -28,18 +30,20 @@ export default function Footer() {
       {/* Top gold line */}
       <div className="h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
+      <AnimatedSection
+        variant="stagger"
+        staggerDelay={0.08}
+        threshold={0.2}
         className="container-wide py-16 md:py-20"
       >
         {/* Main grid — logo left, links right */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-8 items-start">
 
           {/* Logo + tagline + brand story — compact */}
-          <div className="md:col-span-3 flex flex-col items-center md:items-start">
+          <motion.div
+            variants={fadeInUp}
+            className="md:col-span-3 flex flex-col items-center md:items-start"
+          >
             <Link href="/" className="inline-block mb-3">
               <Image src="/aquador.webp" alt="Aquad'or" width={160} height={48} className="h-10 md:h-12 w-auto" />
             </Link>
@@ -64,11 +68,11 @@ export default function Footer() {
                 </svg>
               </a>
             </div>
-          </div>
+          </motion.div>
 
           <nav aria-label="Footer" style={{ display: 'contents' }}>
             {/* Shop links */}
-            <div className="md:col-span-2">
+            <motion.div variants={fadeInUp} className="md:col-span-2">
               <h3 className="text-[11px] uppercase tracking-[0.25em] text-gold-on-dark mb-5">Shop</h3>
               <ul className="space-y-3">
                 {shopLinks.map((link) => (
@@ -79,10 +83,10 @@ export default function Footer() {
                   </li>
                 ))}
               </ul>
-            </div>
+            </motion.div>
 
             {/* Company links */}
-            <div className="md:col-span-2">
+            <motion.div variants={fadeInUp} className="md:col-span-2">
               <h3 className="text-[11px] uppercase tracking-[0.25em] text-gold-on-dark mb-5">Company</h3>
               <ul className="space-y-3">
                 {companyLinks.map((link) => (
@@ -93,11 +97,11 @@ export default function Footer() {
                   </li>
                 ))}
               </ul>
-            </div>
+            </motion.div>
           </nav>
 
           {/* Contact — compact */}
-          <div className="md:col-span-5 md:text-right">
+          <motion.div variants={fadeInUp} className="md:col-span-5 md:text-right">
             <h3 className="text-[11px] uppercase tracking-[0.25em] text-gold-on-dark mb-5">Contact</h3>
             <div className="space-y-3.5 text-[13px]">
               <div className="flex items-center md:justify-end gap-2 text-white/70">
@@ -113,9 +117,9 @@ export default function Footer() {
                 info@aquadorcy.com
               </a>
             </div>
-          </div>
+          </motion.div>
         </div>
-      </motion.div>
+      </AnimatedSection>
 
       {/* Trust badges row */}
       <div className="py-8 border-t border-white/[0.06]">
