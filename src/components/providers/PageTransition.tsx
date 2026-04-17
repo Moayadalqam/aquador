@@ -17,7 +17,7 @@ import { trackCinematicEngagement } from '@/lib/analytics/performance-monitor'
  *
  * Implementation notes:
  * - Uses usePathname() to detect route changes
- * - AnimatePresence with mode="wait" prevents transition overlap
+ * - AnimatePresence with mode="popLayout" allows new page to render immediately while old page exits
  * - initial={false} prevents animation on first load (faster perceived performance)
  * - Detects prefers-reduced-motion and switches to faster variants
  *
@@ -59,7 +59,7 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <AnimatePresence mode="wait" initial={false}>
+    <AnimatePresence mode="popLayout" initial={false}>
       <motion.div
         key={pathname}
         variants={variants}
