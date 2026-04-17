@@ -59,7 +59,8 @@ export const metadata: Metadata = {
     title: "Aquad'or | Luxury Perfumes & Niche Fragrances Cyprus",
     description: "Scent of Luxury. Discover our curated collection of high-end and niche perfumes.",
     type: "website",
-    locale: "en_US",
+    locale: "en_CY",
+    alternateLocale: ['en_GB'],
     siteName: "Aquad'or",
     url: "https://aquadorcy.com",
     images: [
@@ -90,13 +91,23 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: 'https://aquadorcy.com',
+    languages: {
+      'en-CY': 'https://aquadorcy.com',
+      'en-GB': 'https://aquadorcy.com',
+      'x-default': 'https://aquadorcy.com',
+    },
   },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || '',
+  },
+  category: 'shopping',
 };
 
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
+  themeColor: '#D4AF37',
 };
 
 export default function RootLayout({
