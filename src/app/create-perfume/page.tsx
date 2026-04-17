@@ -9,6 +9,12 @@ import { validatePerfumeForm } from '@/lib/perfume/validation'
 import { calculatePrice } from '@/lib/perfume/pricing'
 import { AnimationBudgetProvider } from '@/lib/performance/animation-budget'
 import { ChevronLeft, Sparkles, Check, Loader2, ArrowRight, RotateCcw } from 'lucide-react'
+import dynamic from 'next/dynamic'
+
+const CreatePerfumeBottleWrapper = dynamic(
+  () => import('@/components/create-perfume/CreatePerfumeBottleWrapper'),
+  { ssr: false }
+)
 
 type NoteLayer = 'top' | 'heart' | 'base'
 type Step = 'intro' | 'base' | 'heart' | 'top' | 'checkout'
@@ -633,10 +639,17 @@ export default function CreatePerfumePage() {
                     transition={{ delay: 0.2, duration: 0.6 }}
                     className="flex flex-col items-center lg:sticky lg:top-28"
                   >
-                    <CinematicBottle
+                    <CreatePerfumeBottleWrapper
                       composition={composition}
                       activeLayer={activeLayer}
-                      className="w-full max-w-[200px] lg:max-w-[240px] mb-8"
+                      className="w-full max-w-[240px] lg:max-w-[280px] aspect-[3/5] mb-8"
+                      fallback={
+                        <CinematicBottle
+                          composition={composition}
+                          activeLayer={activeLayer}
+                          className="w-full max-w-[200px] lg:max-w-[240px]"
+                        />
+                      }
                     />
 
                     {/* Current layer info */}
