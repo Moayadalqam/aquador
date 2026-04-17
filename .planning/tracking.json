@@ -14,8 +14,8 @@
   "verification": "pass",
   "gap_cycles": {},
   "blockers": [],
-  "last_updated": "2026-04-17T15:13:17Z",
-  "last_commit": "e2ddbd8",
+  "last_updated": "2026-04-17T15:17:08Z",
+  "last_commit": "ea17691",
   "deployed_url": "https://www.aquadorcy.com",
   "notes": "v3.3 shipped 2026-04-17: 33 OPTIMIZE.md post-v3.2 findings fixed. Admin user creation moved server-side (privilege escalation fix). LoadingScreen overlay removed (-800ms LCP). Middleware narrowed to /admin only. React.memo on ProductCard/CartItem. 3 Supabase migrations applied. Deploy dpl_HauBmZYsUGEo3Lkz1KUrkoapYH4B.",
   "lifetime": {
@@ -110,5 +110,5 @@
       }
     ]
   },
-  "last_pushed_at": "2026-04-17T15:13:17Z"
+  "last_pushed_at": "2026-04-17T15:17:08Z"
 }
