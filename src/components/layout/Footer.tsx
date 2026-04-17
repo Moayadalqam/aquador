@@ -55,14 +55,14 @@ export default function Footer() {
             </p>
             {/* Social */}
             <div className="flex gap-4 mt-4">
-              <a href="https://instagram.com/aquadorcy" target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-gold transition-colors duration-200" aria-label="Instagram">
+              <a href="https://instagram.com/aquadorcy" target="_blank" rel="noopener noreferrer" className="min-h-[44px] min-w-[44px] flex items-center justify-center text-white/40 hover:text-gold transition-colors duration-200" aria-label="Instagram">
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="2" y="2" width="20" height="20" rx="5"/>
                   <circle cx="12" cy="12" r="5"/>
                   <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/>
                 </svg>
               </a>
-              <a href="https://facebook.com/aquadorcy" target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-gold transition-colors duration-200" aria-label="Facebook">
+              <a href="https://facebook.com/aquadorcy" target="_blank" rel="noopener noreferrer" className="min-h-[44px] min-w-[44px] flex items-center justify-center text-white/40 hover:text-gold transition-colors duration-200" aria-label="Facebook">
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
                 </svg>
@@ -77,7 +77,7 @@ export default function Footer() {
               <ul className="space-y-3">
                 {shopLinks.map((link) => (
                   <li key={link.href}>
-                    <Link href={link.href} className="text-white/70 hover:text-white transition-colors text-[13px]">
+                    <Link href={link.href} className="text-white/70 hover:text-white transition-colors text-[13px] inline-block py-0.5">
                       {link.label}
                     </Link>
                   </li>
@@ -91,7 +91,7 @@ export default function Footer() {
               <ul className="space-y-3">
                 {companyLinks.map((link) => (
                   <li key={link.href}>
-                    <Link href={link.href} className="text-white/70 hover:text-white transition-colors text-[13px]">
+                    <Link href={link.href} className="text-white/70 hover:text-white transition-colors text-[13px] inline-block py-0.5">
                       {link.label}
                     </Link>
                   </li>
@@ -123,7 +123,7 @@ export default function Footer() {
 
       {/* Trust badges row */}
       <div className="py-8 border-t border-white/[0.06]">
-        <div className="container-wide flex items-center justify-center gap-6">
+        <div className="container-wide flex flex-wrap items-center justify-center gap-3 sm:gap-6">
           <span className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.15em] text-white/40">
             <Truck className="w-3.5 h-3.5" />
             Free Shipping

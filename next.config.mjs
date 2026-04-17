@@ -37,6 +37,13 @@ const nextConfig = {
         hostname: '**.supabase.co',
         pathname: '/storage/v1/object/public/**',
       },
+      // NOTE: Kept for ~100 product images stored in Supabase DB that reference Squarespace CDN.
+      // Hero video + Lattafa category image migrated off Squarespace in v3.2 (P29 T4).
+      // Full product image migration tracked as future work.
+      {
+        protocol: 'https',
+        hostname: 'images.squarespace-cdn.com',
+      },
     ],
   },
   async headers() {

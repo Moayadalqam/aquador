@@ -133,6 +133,7 @@ export default function SearchBar({
           }}
           onBlur={() => setIsFocused(false)}
           onKeyDown={handleKeyDown}
+          aria-label="Search fragrances"
           placeholder={placeholder}
           className={`
             w-full bg-transparent border-none outline-none text-black placeholder-gray-400/70 focus-visible:ring-2 focus-visible:ring-gold-500
