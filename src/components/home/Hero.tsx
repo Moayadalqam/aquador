@@ -62,6 +62,7 @@ export default function Hero() {
             style={{
               background: 'radial-gradient(ellipse at center, rgba(212,175,55,0.04) 0%, transparent 70%)',
               filter: 'blur(40px)',
+              willChange: isInView ? 'transform, opacity' : 'auto',
             }}
             animate={isInView ? {
               scale: [1, 1.08, 1],

@@ -113,7 +113,7 @@ export default function CreateSection() {
                 <div className="relative aspect-[3/4] md:aspect-[4/5] overflow-hidden">
                   <motion.div
                     className="absolute inset-0"
-                    style={{ y: reducedMotion ? 0 : bgY, scale: 1.15 }}
+                    style={{ y: reducedMotion ? 0 : bgY, scale: 1.15, willChange: reducedMotion ? 'auto' : 'transform' }}
                   >
                     <Image
                       src={stage.image}
