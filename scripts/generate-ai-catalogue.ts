@@ -77,18 +77,81 @@ export interface CatalogueProduct {
 
 export const catalogueProducts: CatalogueProduct[] = ${JSON.stringify(catalogueProducts, null, 2)};
 
+/** Map-based keyword index for O(1) lookup — built once at module load */
+const keywordIndex: Map<string, CatalogueProduct[]> = new Map();
+
+function buildKeywordIndex() {
+  for (const product of catalogueProducts) {
+    const terms = new Set<string>();
+    if (product.brand && product.brand !== '-') {
+      product.brand.toLowerCase().split(/\\s+/).forEach(w => terms.add(w));
+    }
+    product.name.toLowerCase().split(/\\s+/).forEach(w => terms.add(w));
+    terms.add(product.gender.toLowerCase());
+    terms.add(product.type);
+    (product.searchTerms || []).forEach(t => terms.add(t.toLowerCase()));
+
+    terms.forEach(term => {
+      if (term.length < 2) return;
+      const existing = keywordIndex.get(term) || [];
+      existing.push(product);
+      keywordIndex.set(term, existing);
+    });
+  }
+}
+buildKeywordIndex();
+
+/** Fast keyword lookup — returns products matching any of the given keywords */
+export function searchByKeywords(keywords: string[]): CatalogueProduct[] {
+  const seen = new Set<string>();
+  const results: CatalogueProduct[] = [];
+  for (const kw of keywords) {
+    const matches = keywordIndex.get(kw.toLowerCase()) || [];
+    for (const p of matches) {
+      if (!seen.has(p.number)) {
+        seen.add(p.number);
+        results.push(p);
+      }
+    }
+  }
+  return results;
+}
+
+/** Get all unique brand names from catalogue */
+export function getAllBrands(): string[] {
+  const brands = new Set(catalogueProducts.map(p => p.brand).filter(b => b !== '-'));
+  return Array.from(brands).sort();
+}
+
+/** Get all unique category keywords (brand names + genders) for matching */
+export function getCatalogueKeywords(): string[] {
+  return Array.from(keywordIndex.keys());
+}
+
 /**
- * Search catalogue by keyword
- * Used for AI product matching
+ * Search products by note, name, brand, or gender (linear scan fallback)
  */
-export function searchCatalogue(keyword: string): CatalogueProduct[] {
-  const lowerKeyword = keyword.toLowerCase();
-  return catalogueProducts.filter(
-    (p) =>
-      p.name.toLowerCase().includes(lowerKeyword) ||
-      p.brand.toLowerCase().includes(lowerKeyword) ||
-      p.searchTerms?.some((term) => term.toLowerCase().includes(lowerKeyword))
-  );
+export function searchCatalogue(query: string): CatalogueProduct[] {
+  const lowercaseQuery = query.toLowerCase().trim();
+  return catalogueProducts.filter(product => {
+    const searchableText = [
+      product.name,
+      product.brand,
+      product.gender,
+      ...(product.searchTerms || [])
+    ].join(' ').toLowerCase();
+    return searchableText.includes(lowercaseQuery);
+  });
+}
+
+/** Get products by gender */
+export function getProductsByGender(gender: 'Men' | 'Women' | 'Unisex'): CatalogueProduct[] {
+  return catalogueProducts.filter(p => p.gender === gender);
+}
+
+/** Get products by type */
+export function getProductsByType(type: 'perfume' | 'essence-oil'): CatalogueProduct[] {
+  return catalogueProducts.filter(p => p.type === type);
 }
 `;
 
