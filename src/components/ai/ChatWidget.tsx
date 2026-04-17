@@ -238,7 +238,7 @@ export default function ChatWidget() {
                   <div className="flex-1"><h3 className="text-black font-semibold text-sm flex items-center gap-1.5">Aquad{"'"}or<span className="w-1.5 h-1.5 bg-green-500 rounded-full" /></h3><p className="text-[10px] text-gray-400">AI Fragrance Expert</p></div>
                   <button onClick={() => setIsOpen(false)} className="p-1 hover:bg-white/10 rounded-full transition-colors min-[481px]:hidden"><X className="w-5 h-5 text-gray-400" /></button>
                 </div>
-                <div className="flex-1 overflow-y-auto p-2.5 space-y-2.5">
+                <div className="flex-1 overflow-y-auto p-2.5 space-y-2.5" role="log" aria-live="polite">
                   {messages.map((message, index) => (<motion.div key={index} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}><div className={`max-w-[88%] rounded-2xl px-3 py-2 ${message.role === 'user' ? 'bg-gold text-dark' : 'bg-gray-100 text-black border border-gold/10'}`}><p className="text-[13px] whitespace-pre-wrap leading-relaxed">{message.role === 'assistant' ? renderMarkdown(message.content) : message.content}</p></div></motion.div>))}
                   {isLoading && (<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start"><div className="bg-gray-100 border border-gold/10 rounded-2xl px-3 py-2 flex items-center gap-2"><Loader2 className="w-3.5 h-3.5 text-gold animate-spin" /><span className="text-xs text-gray-400">Thinking...</span></div></motion.div>)}
                   <div ref={messagesEndRef} />
@@ -246,8 +246,8 @@ export default function ChatWidget() {
                 {messages.length <= 2 && (<div className="px-2.5 pb-1.5"><div className="flex flex-wrap gap-1">{suggestions.map((s, i) => (<button key={i} onClick={() => { setInput(s); inputRef.current?.focus(); }} className="text-[10px] px-2 py-1 bg-gray-100 border border-gold/20 text-gray-700 rounded-full hover:border-gold hover:text-gold transition-all">{s}</button>))}</div></div>)}
                 <div className="border-t border-gold/20 p-2.5 bg-gray-50">
                   <div className="flex items-center gap-2">
-                    <input ref={inputRef} type="text" value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKeyPress} placeholder="Ask about fragrances..." disabled={isLoading} className="flex-1 bg-white border border-gold/20 text-black placeholder-gray-500 px-3 py-2 text-sm rounded-xl focus:outline-none focus:border-gold transition-colors disabled:opacity-50" />
-                    <button onClick={handleSend} disabled={!input.trim() || isLoading} className="bg-gold text-dark p-2 rounded-xl hover:bg-gold-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><Send className="w-4 h-4" /></button>
+                    <input ref={inputRef} type="text" value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKeyPress} placeholder="Ask about fragrances..." aria-label="Ask about fragrances" disabled={isLoading} className="flex-1 bg-white border border-gold/20 text-black placeholder-gray-500 px-3 py-2 text-sm rounded-xl focus:outline-none focus:border-gold transition-colors disabled:opacity-50" />
+                    <button onClick={handleSend} disabled={!input.trim() || isLoading} aria-label="Send message" className="bg-gold text-dark p-2 rounded-xl hover:bg-gold-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><Send className="w-4 h-4" /></button>
                   </div>
                   <p className="text-[9px] text-gray-500 mt-1.5 text-center">Powered by{' '}<a href="https://qualiasolutions.net" target="_blank" rel="noopener noreferrer" className="text-gold/70 hover:text-gold transition-colors">Qualia Solutions</a></p>
                 </div>
@@ -265,7 +265,7 @@ export default function ChatWidget() {
                   </div>
                   <button onClick={() => setIsOpen(false)} className="p-1 hover:bg-white/10 rounded-full transition-colors min-[481px]:hidden"><X className="w-5 h-5 text-gray-400" /></button>
                 </div>
-                <div className="flex-1 overflow-y-auto p-2.5 space-y-2.5">
+                <div className="flex-1 overflow-y-auto p-2.5 space-y-2.5" role="log" aria-live="polite">
                   {liveMessages.map((msg) => (<motion.div key={msg.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className={`flex ${msg.sender_type === 'visitor' ? 'justify-end' : msg.sender_type === 'system' ? 'justify-center' : 'justify-start'}`}>{msg.sender_type === 'system' ? (<p className="text-[11px] text-gray-400 italic bg-gray-50 px-3 py-1 rounded-full">{msg.content}</p>) : (<div className={`max-w-[88%] rounded-2xl px-3 py-2 ${msg.sender_type === 'visitor' ? 'bg-gold text-dark' : 'bg-gray-100 text-black border border-gold/10'}`}><p className="text-[13px] whitespace-pre-wrap leading-relaxed">{msg.content}</p></div>)}</motion.div>))}
                   {liveStatus === 'waiting' && liveMessages.length <= 1 && (<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-center pt-4"><div className="flex items-center gap-2 text-gray-400"><Loader2 className="w-4 h-4 animate-spin text-gold" /><span className="text-xs">Connecting you to an agent...</span></div></motion.div>)}
                   <div ref={messagesEndRef} />
@@ -273,8 +273,8 @@ export default function ChatWidget() {
                 <div className="border-t border-gold/20 p-2.5 bg-gray-50">
                   {liveStatus === 'closed' ? (<button onClick={() => { setSessionId(null); setLiveMessages([]); setLiveStatus('waiting'); startLiveChat(); }} className="w-full py-2 bg-gold text-dark text-sm font-medium rounded-xl hover:bg-gold-light transition-colors">Start New Chat</button>) : (
                     <div className="flex items-center gap-2">
-                      <input ref={liveInputRef} type="text" value={liveInput} onChange={(e) => setLiveInput(e.target.value)} onKeyDown={handleKeyPress} placeholder="Type a message..." maxLength={2000} className="flex-1 bg-white border border-gold/20 text-black placeholder-gray-500 px-3 py-2 text-sm rounded-xl focus:outline-none focus:border-gold transition-colors" />
-                      <button onClick={handleLiveSend} disabled={!liveInput.trim()} className="bg-gold text-dark p-2 rounded-xl hover:bg-gold-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><Send className="w-4 h-4" /></button>
+                      <input ref={liveInputRef} type="text" value={liveInput} onChange={(e) => setLiveInput(e.target.value)} onKeyDown={handleKeyPress} placeholder="Type a message..." aria-label="Type a message" maxLength={2000} className="flex-1 bg-white border border-gold/20 text-black placeholder-gray-500 px-3 py-2 text-sm rounded-xl focus:outline-none focus:border-gold transition-colors" />
+                      <button onClick={handleLiveSend} disabled={!liveInput.trim()} aria-label="Send message" className="bg-gold text-dark p-2 rounded-xl hover:bg-gold-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><Send className="w-4 h-4" /></button>
                     </div>
                   )}
                   <p className="text-[9px] text-gray-500 mt-1.5 text-center">Powered by{' '}<a href="https://qualiasolutions.net" target="_blank" rel="noopener noreferrer" className="text-gold/70 hover:text-gold transition-colors">Qualia Solutions</a></p>

@@ -120,10 +120,11 @@ export function CheckoutForm({
             initial={reducedMotion ? undefined : 'initial'}
             animate={reducedMotion ? undefined : 'animate'}
           >
-            <label className="mb-2 block text-xs text-gray-400 tracking-[0.15em] uppercase">
+            <label htmlFor="checkout-perfume-name" className="mb-2 block text-xs text-gray-400 tracking-[0.15em] uppercase">
               Perfume Name *
             </label>
             <input
+              id="checkout-perfume-name"
               type="text"
               value={perfumeName}
               onChange={(e) => onPerfumeNameChange(e.target.value)}
@@ -145,35 +146,38 @@ export function CheckoutForm({
             initial={reducedMotion ? undefined : 'initial'}
             animate={reducedMotion ? undefined : 'animate'}
           >
-            <label className="mb-3 block text-xs text-gray-400 tracking-[0.15em] uppercase">
-              Select Volume *
-            </label>
-            <div className="grid grid-cols-2 gap-4">
-              {volumes.map((vol) => (
-                <motion.button
-                  key={vol}
-                  type="button"
-                  whileHover={reducedMotion ? undefined : { scale: 1.02 }}
-                  whileTap={reducedMotion ? undefined : { scale: 0.98 }}
-                  onClick={() => onVolumeChange(vol)}
-                  className={`
-                    relative rounded-xl border p-5 transition-all duration-300 overflow-hidden
-                    focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400
-                    ${selectedVolume === vol
-                      ? 'border-amber-400 bg-amber-500/20 text-amber-400'
-                      : 'border-amber-900/30 bg-white/5 text-gray-400 hover:border-amber-400/50 hover:bg-white/10'
-                    }
-                  `}
-                >
-                  {/* Selected glow effect */}
-                  {selectedVolume === vol && (
-                    <div className="absolute inset-0 -z-10 bg-gradient-to-br from-amber-400/10 to-transparent" />
-                  )}
-                  <div className="text-3xl font-light">{vol}</div>
-                  <div className="mt-2 text-sm font-medium">€{calculatePrice(vol).toFixed(2)}</div>
-                </motion.button>
-              ))}
-            </div>
+            <fieldset role="radiogroup" aria-label="Volume">
+              <legend className="mb-3 block text-xs text-gray-400 tracking-[0.15em] uppercase">
+                Select Volume *
+              </legend>
+              <div className="grid grid-cols-2 gap-4">
+                {volumes.map((vol) => (
+                  <motion.button
+                    key={vol}
+                    type="button"
+                    whileHover={reducedMotion ? undefined : { scale: 1.02 }}
+                    whileTap={reducedMotion ? undefined : { scale: 0.98 }}
+                    onClick={() => onVolumeChange(vol)}
+                    aria-pressed={selectedVolume === vol}
+                    className={`
+                      relative rounded-xl border p-5 transition-all duration-300 overflow-hidden
+                      focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400
+                      ${selectedVolume === vol
+                        ? 'border-amber-400 bg-amber-500/20 text-amber-400'
+                        : 'border-amber-900/30 bg-white/5 text-gray-400 hover:border-amber-400/50 hover:bg-white/10'
+                      }
+                    `}
+                  >
+                    {/* Selected glow effect */}
+                    {selectedVolume === vol && (
+                      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-amber-400/10 to-transparent" />
+                    )}
+                    <div className="text-3xl font-light">{vol}</div>
+                    <div className="mt-2 text-sm font-medium">€{calculatePrice(vol).toFixed(2)}</div>
+                  </motion.button>
+                ))}
+              </div>
+            </fieldset>
           </motion.div>
 
           {/* Special Requests */}
@@ -182,10 +186,11 @@ export function CheckoutForm({
             initial={reducedMotion ? undefined : 'initial'}
             animate={reducedMotion ? undefined : 'animate'}
           >
-            <label className="mb-2 block text-xs text-gray-400 tracking-[0.15em] uppercase">
+            <label htmlFor="checkout-special-requests" className="mb-2 block text-xs text-gray-400 tracking-[0.15em] uppercase">
               Special Requests
             </label>
             <textarea
+              id="checkout-special-requests"
               value={specialRequests}
               onChange={(e) => onSpecialRequestsChange(e.target.value)}
               placeholder="Any special requests for your fragrance..."
