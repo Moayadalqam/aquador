@@ -86,7 +86,7 @@ export default function AdminLiveChat() {
     const loadSessions = async () => {
       const { data } = await supabase
         .from('live_chat_sessions')
-        .select('*')
+        .select('id, visitor_id, visitor_name, status, created_at, updated_at, admin_id')
         .in('status', ['waiting', 'active'])
         .order('created_at', { ascending: false });
       if (data) {
@@ -126,7 +126,7 @@ export default function AdminLiveChat() {
     const loadMessages = async () => {
       const { data } = await supabase
         .from('live_chat_messages')
-        .select('*')
+        .select('id, session_id, sender_type, content, created_at')
         .eq('session_id', activeSessionId)
         .order('created_at', { ascending: true });
       if (data) {

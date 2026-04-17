@@ -180,8 +180,6 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
     setError('');
 
     try {
-      const supabase = createClient();
-
       const productData: ProductInsert | ProductUpdate = {
         name: formData.name,
         description: formData.description,
@@ -199,25 +197,20 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
         tags: formData.tags ? formData.tags.split(',').map(t => t.trim()).filter(Boolean) : null,
       };
 
-      if (mode === 'create') {
-        const { error } = await supabase
-          .from('products')
-          .insert(productData as ProductInsert);
+      const endpoint = '/api/admin/products';
+      const method = mode === 'create' ? 'POST' : 'PUT';
+      const payload = mode === 'edit' ? { ...productData, id: product!.id } : productData;
 
-        if (error) {
-          setError('Failed to create product: ' + error.message);
-          return;
-        }
-      } else {
-        const { error } = await supabase
-          .from('products')
-          .update(productData)
-          .eq('id', product!.id);
+      const res = await fetch(endpoint, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
 
-        if (error) {
-          setError('Failed to update product: ' + error.message);
-          return;
-        }
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({ error: 'Unknown error' }));
+        setError(data.error || `Failed to ${mode === 'create' ? 'create' : 'update'} product`);
+        return;
       }
 
       router.push('/admin/products');

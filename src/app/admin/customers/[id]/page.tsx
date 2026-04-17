@@ -30,10 +30,10 @@ export default function CustomerDetailPage() {
       const supabase = createClient();
 
       const [customerRes, ordersRes] = await Promise.all([
-        supabase.from('customers').select('*').eq('id', id).single(),
+        supabase.from('customers').select('id, email, name, phone, total_orders, total_spent, first_order_at, last_order_at, shipping_addresses, created_at').eq('id', id).single(),
         supabase
           .from('orders')
-          .select('*')
+          .select('id, stripe_session_id, status, total, customer_email, customer_name, items, created_at')
           .eq('customer_email', '') // placeholder — will be set after customer loads
           .order('created_at', { ascending: false }),
       ]);
@@ -43,7 +43,7 @@ export default function CustomerDetailPage() {
         // Now fetch orders by email
         const { data: orderData } = await supabase
           .from('orders')
-          .select('*')
+          .select('id, stripe_session_id, status, total, customer_email, customer_name, items, created_at')
           .eq('customer_email', customerRes.data.email)
           .order('created_at', { ascending: false });
         setOrders((orderData || []) as Order[]);

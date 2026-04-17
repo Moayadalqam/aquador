@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import * as Sentry from '@sentry/nextjs';
-import type { ProductCategoryRow, ProductCategoryInsert, ProductCategoryUpdate } from '@/lib/supabase/types';
+import type { ProductCategoryRow } from '@/lib/supabase/types';
 import {
   AlertCircle,
   Plus,
@@ -48,7 +48,7 @@ export default function CategoriesPage() {
       // Fetch categories
       const { data: cats, error: catError } = await supabase
         .from('product_categories')
-        .select('*')
+        .select('id, name, slug, description, image_url, display_order, is_active, created_at, updated_at')
         .order('display_order', { ascending: true });
 
       if (catError) throw catError;
@@ -136,35 +136,40 @@ export default function CategoriesPage() {
     setError(null);
 
     try {
+      const endpoint = '/api/admin/categories';
+
       if (modalMode === 'create') {
-        const newCategory: ProductCategoryInsert = {
-          name: formData.name.trim(),
-          slug: formData.slug.trim(),
-          description: formData.description.trim() || null,
-          is_active: formData.is_active,
-          display_order: categories.length + 1,
-        };
-
-        const { error: insertError } = await supabase
-          .from('product_categories')
-          .insert(newCategory);
-
-        if (insertError) throw insertError;
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: formData.name.trim(),
+            slug: formData.slug.trim(),
+            description: formData.description.trim() || null,
+            is_active: formData.is_active,
+            display_order: categories.length + 1,
+          }),
+        });
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({ error: 'Unknown error' }));
+          throw new Error(data.error || 'Failed to create category');
+        }
       } else if (modalMode === 'edit' && editingCategory) {
-        const updates: ProductCategoryUpdate = {
-          name: formData.name.trim(),
-          slug: formData.slug.trim(),
-          description: formData.description.trim() || null,
-          is_active: formData.is_active,
-          updated_at: new Date().toISOString(),
-        };
-
-        const { error: updateError } = await supabase
-          .from('product_categories')
-          .update(updates)
-          .eq('id', editingCategory.id);
-
-        if (updateError) throw updateError;
+        const res = await fetch(endpoint, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: editingCategory.id,
+            name: formData.name.trim(),
+            slug: formData.slug.trim(),
+            description: formData.description.trim() || null,
+            is_active: formData.is_active,
+          }),
+        });
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({ error: 'Unknown error' }));
+          throw new Error(data.error || 'Failed to update category');
+        }
       }
 
       closeModal();
@@ -187,12 +192,15 @@ export default function CategoriesPage() {
     setDeleting(true);
 
     try {
-      const { error: deleteError } = await supabase
-        .from('product_categories')
-        .delete()
-        .eq('id', deleteId);
-
-      if (deleteError) throw deleteError;
+      const res = await fetch('/api/admin/categories', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: deleteId }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({ error: 'Unknown error' }));
+        throw new Error(data.error || 'Failed to delete category');
+      }
 
       setDeleteId(null);
       await fetchCategories();
@@ -211,12 +219,21 @@ export default function CategoriesPage() {
 
   const toggleActive = async (category: CategoryWithCount) => {
     try {
-      const { error: updateError } = await supabase
-        .from('product_categories')
-        .update({ is_active: !category.is_active, updated_at: new Date().toISOString() })
-        .eq('id', category.id);
-
-      if (updateError) throw updateError;
+      const res = await fetch('/api/admin/categories', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: category.id,
+          name: category.name,
+          slug: category.slug,
+          description: category.description,
+          is_active: !category.is_active,
+        }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({ error: 'Unknown error' }));
+        throw new Error(data.error || 'Failed to update category');
+      }
       await fetchCategories();
     } catch (e) {
       Sentry.addBreadcrumb({
