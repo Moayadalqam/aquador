@@ -109,15 +109,19 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       sessionId: session.id,
       url: session.url,
     });
+    response.headers.set('Cache-Control', 'no-store, no-cache');
+    return response;
   } catch (error) {
     Sentry.captureException(error);
 
     const errorResponse = formatApiError(error, 'Failed to create checkout session');
 
-    return NextResponse.json(errorResponse, { status: 500 });
+    const response = NextResponse.json(errorResponse, { status: 500 });
+    response.headers.set('Cache-Control', 'no-store, no-cache');
+    return response;
   }
 }
