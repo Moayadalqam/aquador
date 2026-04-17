@@ -1,7 +1,7 @@
 'use client';
 
 import { Canvas, useFrame } from '@react-three/fiber';
-import { PerspectiveCamera, Environment } from '@react-three/drei';
+import { PerspectiveCamera } from '@react-three/drei';
 import { Suspense, useRef, useMemo } from 'react';
 import { useTransform } from 'framer-motion';
 import type { MotionValue } from 'framer-motion';
@@ -195,24 +195,29 @@ export default function Hero3DScene({ scrollYProgress }: Props) {
       >
         <PerspectiveCamera makeDefault position={[0, 0.2, 5]} fov={35} />
 
-        {/* Lighting rig for luxury gold look */}
-        <ambientLight intensity={0.25} />
+        {/* Lighting rig for luxury gold look — self-contained, no external HDRI */}
+        <ambientLight intensity={0.55} color="#FFF0D0" />
         <directionalLight
           position={[5, 5, 5]}
-          intensity={1.3}
+          intensity={2.0}
           color="#FFE1A8"
           castShadow
         />
         <directionalLight
           position={[-4, -2, 3]}
-          intensity={0.5}
+          intensity={0.9}
           color="#FFB347"
         />
-        <pointLight position={[0, 2, 3]} intensity={0.7} color="#D4AF37" />
-        <pointLight position={[-2, -1, 2]} intensity={0.3} color="#FFD700" />
+        <directionalLight
+          position={[0, -4, 2]}
+          intensity={0.4}
+          color="#FFD700"
+        />
+        <pointLight position={[0, 2, 3]} intensity={1.2} color="#D4AF37" />
+        <pointLight position={[-2, -1, 2]} intensity={0.6} color="#FFD700" />
+        <pointLight position={[3, 0, -2]} intensity={0.5} color="#FFF8DC" />
 
         <Suspense fallback={null}>
-          <Environment preset="sunset" />
           <Bottle scrollYProgress={scrollYProgress} />
           <GoldParticles scrollYProgress={scrollYProgress} />
         </Suspense>
