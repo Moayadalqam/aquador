@@ -150,11 +150,13 @@ export default function ContactPage() {
                           id="contact-name"
                           type="text"
                           autoComplete="name"
+                          aria-invalid={!!errors.name}
+                          aria-describedby={errors.name ? 'contact-name-error' : undefined}
                           className={`input-base py-3.5 ${errors.name ? 'border-red-400' : ''}`}
                           placeholder="Your name"
                         />
                         {errors.name && (
-                          <p className="text-red-500 text-xs mt-1.5">{errors.name.message}</p>
+                          <p id="contact-name-error" role="alert" className="text-red-500 text-xs mt-1.5">{errors.name.message}</p>
                         )}
                       </div>
                       <div>
@@ -165,11 +167,13 @@ export default function ContactPage() {
                           type="email"
                           autoComplete="email"
                           inputMode="email"
+                          aria-invalid={!!errors.email}
+                          aria-describedby={errors.email ? 'contact-email-error' : undefined}
                           className={`input-base py-3.5 ${errors.email ? 'border-red-400' : ''}`}
                           placeholder="your@email.com"
                         />
                         {errors.email && (
-                          <p className="text-red-500 text-xs mt-1.5">{errors.email.message}</p>
+                          <p id="contact-email-error" role="alert" className="text-red-500 text-xs mt-1.5">{errors.email.message}</p>
                         )}
                       </div>
                     </div>
@@ -193,11 +197,13 @@ export default function ContactPage() {
                         {...register('subject')}
                         id="contact-subject"
                         type="text"
+                        aria-invalid={!!errors.subject}
+                        aria-describedby={errors.subject ? 'contact-subject-error' : undefined}
                         className={`input-base py-3.5 ${errors.subject ? 'border-red-400' : ''}`}
                         placeholder="How can we help?"
                       />
                       {errors.subject && (
-                        <p className="text-red-500 text-xs mt-1.5">{errors.subject.message}</p>
+                        <p id="contact-subject-error" role="alert" className="text-red-500 text-xs mt-1.5">{errors.subject.message}</p>
                       )}
                     </div>
 
@@ -207,11 +213,13 @@ export default function ContactPage() {
                         {...register('message')}
                         id="contact-message"
                         rows={6}
+                        aria-invalid={!!errors.message}
+                        aria-describedby={errors.message ? 'contact-message-error' : undefined}
                         className={`input-base resize-none py-3.5 ${errors.message ? 'border-red-400' : ''}`}
                         placeholder="Tell us more about what you're looking for..."
                       />
                       {errors.message && (
-                        <p className="text-red-500 text-xs mt-1.5">{errors.message.message}</p>
+                        <p id="contact-message-error" role="alert" className="text-red-500 text-xs mt-1.5">{errors.message.message}</p>
                       )}
                     </div>
 
