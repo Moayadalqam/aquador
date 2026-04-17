@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import * as Sentry from '@sentry/nextjs';
 import { searchProducts } from '@/lib/supabase/product-service';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 export async function GET(request: NextRequest) {
   try {
+    const rateLimitResponse = await checkRateLimit(request, 'search');
+    if (rateLimitResponse) return rateLimitResponse;
+
     const { searchParams } = request.nextUrl;
     const query = searchParams.get('q');
 
