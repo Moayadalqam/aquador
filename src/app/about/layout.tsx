@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
-import { aboutPageSchema, jsonLdString } from '@/lib/seo/page-schemas';
+import { aboutPageSchema } from '@/lib/seo/page-schemas';
+import JsonLd from '@/components/seo/JsonLd';
 
 export const metadata: Metadata = {
   title: "About Us | Aquad'or - Luxury Perfume House in Cyprus",
@@ -24,10 +25,7 @@ export const metadata: Metadata = {
 export default function AboutLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: jsonLdString(aboutPageSchema) }}
-      />
+      <JsonLd schema={aboutPageSchema} />
       {children}
     </>
   );

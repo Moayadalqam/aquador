@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { getBlogPosts, getBlogCategories, getFeaturedPost } from '@/lib/blog';
-import { buildBlogSchema, buildBreadcrumbList, jsonLdScript } from '@/lib/seo/listing-schema';
+import { buildBlogSchema, buildBreadcrumbList } from '@/lib/seo/listing-schema';
+import JsonLd from '@/components/seo/JsonLd';
 import BlogListContent from './BlogListContent';
 
 export const revalidate = 300; // Revalidate every 5 minutes (ISR)
@@ -55,14 +56,8 @@ export default async function BlogPage({
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: jsonLdScript(breadcrumbSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: jsonLdScript(blogSchema) }}
-      />
+      <JsonLd schema={breadcrumbSchema} />
+      <JsonLd schema={blogSchema} />
       <BlogListContent
         posts={posts}
         categories={categories}

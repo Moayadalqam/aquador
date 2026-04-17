@@ -66,6 +66,3 @@ export const createPerfumeServiceSchema = {
   description: 'Design your own custom perfume from floral, fruity, woody, oriental, and gourmand notes.',
 };
 
-export function jsonLdString(schema: unknown) {
-  return JSON.stringify(schema).replace(/</g, '\\u003c');
-}

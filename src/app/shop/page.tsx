@@ -1,7 +1,8 @@
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { getAllProducts, categories } from '@/lib/supabase/product-service';
-import { buildCollectionPage, buildBreadcrumbList, jsonLdScript } from '@/lib/seo/listing-schema';
+import { buildCollectionPage, buildBreadcrumbList } from '@/lib/seo/listing-schema';
+import JsonLd from '@/components/seo/JsonLd';
 import ShopContent from './ShopContent';
 
 export const revalidate = 1800;
@@ -48,14 +49,8 @@ export default async function ShopPage() {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: jsonLdScript(breadcrumbSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: jsonLdScript(collectionSchema) }}
-      />
+      <JsonLd schema={breadcrumbSchema} />
+      <JsonLd schema={collectionSchema} />
       <Suspense fallback={<div className="pt-32 md:pt-40 lg:pt-44 pb-20 bg-white min-h-screen" />}>
         <ShopContent products={products} categories={categories} />
       </Suspense>

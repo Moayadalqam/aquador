@@ -11,6 +11,7 @@ import RelatedProductsSkeleton from '@/components/products/RelatedProductsSkelet
 import ParallaxWrapper from './ParallaxWrapper';
 import { ProductViewTracker } from '@/components/products/ProductViewTracker';
 import { buildProductSchema, buildProductBreadcrumb } from '@/lib/seo/product-schema';
+import JsonLd from '@/components/seo/JsonLd';
 
 export const revalidate = 3600;
 
@@ -119,14 +120,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
       <ProductViewTracker productSlug={slug} productName={product.name} />
 
       {/* Structured Data */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema).replace(/</g, '\\u003c') }}
-      />
+      <JsonLd schema={jsonLd} />
+      <JsonLd schema={breadcrumbSchema} />
 
       <main className="min-h-screen bg-gold-ambient pt-24 md:pt-28 lg:pt-32 pb-20">
         <div className="content-container">

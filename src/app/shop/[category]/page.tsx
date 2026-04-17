@@ -1,7 +1,8 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getProductsByCategory, categories, getCategoryBySlug } from '@/lib/supabase/product-service';
-import { buildCollectionPage, jsonLdScript } from '@/lib/seo/listing-schema';
+import { buildCollectionPage } from '@/lib/seo/listing-schema';
+import JsonLd from '@/components/seo/JsonLd';
 import CategoryContent from './CategoryContent';
 
 export const revalidate = 1800;
@@ -108,14 +109,8 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema).replace(/</g, '\\u003c') }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: jsonLdScript(collectionSchema) }}
-      />
+      <JsonLd schema={breadcrumbSchema} />
+      <JsonLd schema={collectionSchema} />
       <CategoryContent category={category} products={products} />
     </>
   );
