@@ -2,12 +2,13 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
-import { getProductBySlug, getRelatedProducts, getAllProductSlugs } from '@/lib/supabase/product-service';
+import { getProductBySlug, getRelatedProducts, getAllProductSlugs, getCategoryBySlug } from '@/lib/supabase/product-service';
 import ProductDetails from '@/components/products/ProductDetails';
 import RelatedProducts from '@/components/products/RelatedProducts';
 import ProductGallery from '@/components/products/ProductGallery';
 import ParallaxWrapper from './ParallaxWrapper';
 import { ProductViewTracker } from '@/components/products/ProductViewTracker';
+import { buildProductSchema, buildProductBreadcrumb } from '@/lib/seo/product-schema';
 
 export const revalidate = 3600;
 
@@ -110,56 +111,17 @@ export default async function ProductPage({ params }: ProductPageProps) {
     tags: p.tags ?? undefined,
   }));
 
-  // JSON-LD structured data for SEO
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Product',
-    name: transformedProduct.name,
-    description: transformedProduct.description,
-    image: [transformedProduct.image, ...transformedProduct.images],
-    brand: transformedProduct.brand ? {
-      '@type': 'Brand',
-      name: transformedProduct.brand,
-    } : undefined,
-    offers: {
-      '@type': 'Offer',
-      url: `https://aquadorcy.com/products/${slug}`,
-      priceCurrency: 'EUR',
-      price: transformedProduct.price,
-      availability: transformedProduct.inStock
-        ? 'https://schema.org/InStock'
-        : 'https://schema.org/OutOfStock',
-      seller: {
-        '@type': 'Organization',
-        name: 'Aquad\'or',
-      },
-    },
-  };
+  // JSON-LD structured data for SEO (Merchant-grade Product schema)
+  const allImages = [product.image, ...(product.images ?? [])].filter(Boolean);
+  const jsonLd = buildProductSchema(product, slug, allImages);
 
-  const breadcrumbSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      {
-        '@type': 'ListItem',
-        position: 1,
-        name: 'Home',
-        item: 'https://aquadorcy.com',
-      },
-      {
-        '@type': 'ListItem',
-        position: 2,
-        name: 'Dubai Shop',
-        item: 'https://aquadorcy.com/shop',
-      },
-      {
-        '@type': 'ListItem',
-        position: 3,
-        name: transformedProduct.name,
-        item: `https://aquadorcy.com/products/${slug}`,
-      },
-    ],
-  };
+  const categoryMeta = getCategoryBySlug(product.category);
+  const breadcrumbSchema = buildProductBreadcrumb(
+    product.name,
+    slug,
+    categoryMeta?.name,
+    categoryMeta?.slug
+  );
 
   return (
     <>
@@ -185,7 +147,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               className="inline-flex items-center gap-2 text-sm text-gold/70 tracking-normal hover:text-gold-500 transition-colors duration-200"
             >
               <ArrowLeft className="w-4 h-4" />
-              Back to Dubai Shop
+              Back to Shop
             </Link>
           </nav>
 
