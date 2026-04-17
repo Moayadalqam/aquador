@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { getAllProducts, categories } from '@/lib/supabase/product-service';
+import { buildCollectionPage, buildBreadcrumbList, jsonLdScript } from '@/lib/seo/listing-schema';
 import ShopContent from './ShopContent';
 
 export const revalidate = 1800;
@@ -41,9 +42,36 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
     ? allProducts.filter(p => p.product_type === 'perfume')
     : allProducts.filter(p => p.category !== 'lattafa-original' && p.product_type === 'perfume');
 
+  const breadcrumbSchema = buildBreadcrumbList([
+    { name: 'Home', url: 'https://aquadorcy.com' },
+    { name: 'Shop', url: 'https://aquadorcy.com/shop' },
+  ]);
+
+  const collectionSchema = buildCollectionPage({
+    name: 'Dubai Shop',
+    description: "Curated Dubai fragrances — Al Haramain, Xerjoff, and niche scents. Free shipping in Cyprus over €50.",
+    url: 'https://aquadorcy.com/shop',
+    items: products.map(p => ({
+      name: p.name,
+      slug: p.id,
+      image: p.image,
+    })),
+    itemUrlPrefix: '/products',
+  });
+
   return (
-    <Suspense fallback={<div className="pt-32 md:pt-40 lg:pt-44 pb-20 bg-white min-h-screen" />}>
-      <ShopContent products={products} categories={categories} isSearchMode={isSearchMode} />
-    </Suspense>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(breadcrumbSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(collectionSchema) }}
+      />
+      <Suspense fallback={<div className="pt-32 md:pt-40 lg:pt-44 pb-20 bg-white min-h-screen" />}>
+        <ShopContent products={products} categories={categories} isSearchMode={isSearchMode} />
+      </Suspense>
+    </>
   );
 }

@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getProductsByCategory, categories, getCategoryBySlug } from '@/lib/supabase/product-service';
+import { buildCollectionPage, jsonLdScript } from '@/lib/seo/listing-schema';
 import CategoryContent from './CategoryContent';
 
 export const revalidate = 1800;
@@ -93,11 +94,27 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
     ],
   };
 
+  const collectionSchema = buildCollectionPage({
+    name: `${category.name} Perfumes`,
+    description: category.description,
+    url: `https://aquadorcy.com/shop/${categorySlug}`,
+    items: products.map(p => ({
+      name: p.name,
+      slug: p.id,
+      image: p.image,
+    })),
+    itemUrlPrefix: '/products',
+  });
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema).replace(/</g, '\\u003c') }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(collectionSchema) }}
       />
       <CategoryContent category={category} products={products} />
     </>

@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getProductsByGender, getGenderLabel } from '@/lib/supabase/product-service';
 import type { ProductGender } from '@/lib/supabase/types';
+import { buildCollectionPage, jsonLdScript } from '@/lib/seo/listing-schema';
 import GenderContent from './GenderContent';
 
 export const revalidate = 1800;
@@ -89,11 +90,27 @@ export default async function GenderPage({ params }: GenderPageProps) {
     ],
   };
 
+  const collectionSchema = buildCollectionPage({
+    name: `${genderLabel}`,
+    description: `Curated collection of ${genderLabel.toLowerCase()} — luxury perfumes from Dubai, delivered across Cyprus.`,
+    url: `https://aquadorcy.com/shop/gender/${gender}`,
+    items: products.map(p => ({
+      name: p.name,
+      slug: p.id,
+      image: p.image,
+    })),
+    itemUrlPrefix: '/products',
+  });
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema).replace(/</g, '\\u003c') }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(collectionSchema) }}
       />
       <GenderContent gender={gender} genderLabel={genderLabel} products={products} />
     </>
