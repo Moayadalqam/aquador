@@ -499,14 +499,7 @@ export default function CreatePerfumePage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5, duration: 0.8 }}
-                  className="font-playfair text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-6"
-                  style={{
-                    background: 'linear-gradient(180deg, #FFF8DC 0%, #FFD700 35%, #D4AF37 65%, #B8960C 100%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text',
-                    filter: 'drop-shadow(0 2px 40px rgba(212,175,55,0.2))',
-                  }}
+                  className="font-playfair text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-6 text-gold-gradient-hero"
                 >
                   Create Your<br />Signature Scent
                 </motion.h1>
@@ -811,13 +804,7 @@ export default function CreatePerfumePage() {
                 >
                   <div className="text-center mb-8">
                     <p className="text-[9px] uppercase tracking-[0.3em] text-gold/40 mb-3">Your Creation</p>
-                    <h2 className="font-playfair text-3xl md:text-4xl"
-                      style={{
-                        background: 'linear-gradient(180deg, #FFF8DC 0%, #D4AF37 100%)',
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        backgroundClip: 'text',
-                      }}
+                    <h2 className="font-playfair text-3xl md:text-4xl text-gold-gradient-soft"
                     >
                       Finalize Your Masterpiece
                     </h2>

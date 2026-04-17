@@ -1,5 +1,6 @@
 import { ImageResponse } from 'next/og';
 import { getProductBySlug } from '@/lib/supabase/product-service';
+import { OG_COLORS } from '@/lib/og-colors';
 
 export const runtime = 'nodejs';
 
@@ -21,8 +22,8 @@ export async function GET(
           width: '100%',
           height: '100%',
           display: 'flex',
-          background: '#0a0a0a',
-          color: '#D4AF37',
+          background: OG_COLORS.bg,
+          color: OG_COLORS.gold,
         }}
       >
         <div
@@ -50,13 +51,13 @@ export async function GET(
             padding: 60,
           }}
         >
-          <div style={{ fontSize: 24, color: '#888', textTransform: 'uppercase', letterSpacing: 4 }}>
+          <div style={{ fontSize: 24, color: OG_COLORS.textMuted, textTransform: 'uppercase', letterSpacing: 4 }}>
             {product.brand || "Aquad'or"}
           </div>
           <div style={{ fontSize: 64, fontWeight: 700, marginTop: 12, lineHeight: 1.1 }}>
             {product.name}
           </div>
-          <div style={{ fontSize: 40, color: '#FFD700', marginTop: 24 }}>
+          <div style={{ fontSize: 40, color: OG_COLORS.goldLight, marginTop: 24 }}>
             €{Number(product.price).toFixed(2)}
           </div>
         </div>

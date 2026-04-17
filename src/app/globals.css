@@ -554,6 +554,22 @@ body {
   .gold-underline:hover::after {
     @apply scale-x-100;
   }
+
+  /* Gold text gradient utilities — replaces hardcoded hex in inline styles */
+  .text-gold-gradient-hero {
+    background: linear-gradient(180deg, #FFF8DC 0%, #FFD700 35%, #D4AF37 65%, #B8960C 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 2px 40px rgba(212,175,55,0.2));
+  }
+
+  .text-gold-gradient-soft {
+    background: linear-gradient(180deg, #FFF8DC 0%, #D4AF37 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 }
 
 /* ==========================================================================
