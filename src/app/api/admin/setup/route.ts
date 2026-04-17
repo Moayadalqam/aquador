@@ -1,7 +1,8 @@
 import { createClient } from '@supabase/supabase-js';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { timingSafeEqual } from 'crypto';
 import { z } from 'zod';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 const SetupSchema = z.object({
   email: z.string().email(),
@@ -34,7 +35,10 @@ function validateSetupKey(providedKey: string): boolean {
 }
 
 // POST: Create initial admin user
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  const rateLimitResponse = await checkRateLimit(request, 'checkout');
+  if (rateLimitResponse) return rateLimitResponse;
+
   try {
     if (process.env.ADMIN_SETUP_COMPLETE === 'true') {
       return NextResponse.json({ error: 'Setup already completed' }, { status: 403 });
@@ -106,7 +110,10 @@ export async function POST(request: Request) {
 }
 
 // PUT: Update existing admin password
-export async function PUT(request: Request) {
+export async function PUT(request: NextRequest) {
+  const rateLimitResponse = await checkRateLimit(request, 'checkout');
+  if (rateLimitResponse) return rateLimitResponse;
+
   try {
     if (process.env.ADMIN_SETUP_COMPLETE === 'true') {
       return NextResponse.json({ error: 'Setup already completed' }, { status: 403 });
