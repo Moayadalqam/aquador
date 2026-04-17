@@ -212,12 +212,17 @@ export async function searchProducts(query: string): Promise<Product[]> {
 }
 
 // Get products by gender (filters inactive)
+// Men and Women pages include unisex products (common e-commerce pattern — "products a man/woman can wear").
+// Unisex page shows only gender='unisex' for a focused browse.
 export async function getProductsByGender(gender: ProductGender): Promise<Product[]> {
   const supabase = createPublicClient();
+  const genderFilter: ProductGender[] =
+    gender === 'unisex' ? ['unisex'] : [gender, 'unisex'];
+
   const { data, error } = await supabase
     .from('products')
     .select(PRODUCT_COLUMNS)
-    .eq('gender', gender)
+    .in('gender', genderFilter)
     .eq('is_active', true)
     .order('in_stock', { ascending: false })
     .order('created_at', { ascending: false });

@@ -5,7 +5,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRef, useState } from 'react';
 import { formatPrice } from '@/lib/utils';
-import { ArrowRight } from 'lucide-react';
 import { SectionHeader } from '@/components/ui/Section';
 import { AnimatedSection } from '@/components/ui/AnimatedSection';
 import { fadeInUp } from '@/lib/animations/scroll-animations';
@@ -19,7 +18,9 @@ interface FeaturedProductsProps {
   title?: string;
   subtitle?: string;
   eyebrow?: string;
+  /** @deprecated Kept for backwards compatibility with callers; View All link removed per client request. */
   viewAllHref?: string;
+  /** @deprecated Kept for backwards compatibility with callers. */
   viewAllLabel?: string;
 }
 
@@ -28,8 +29,6 @@ export default function FeaturedProducts({
   title = 'Featured Collections',
   subtitle = 'Discover our most beloved fragrances, crafted with the finest ingredients from around the world.',
   eyebrow = 'Our Selection',
-  viewAllHref = '/shop',
-  viewAllLabel = 'View All Products',
 }: FeaturedProductsProps) {
   const sectionRef = useRef(null);
   const [failedImages, setFailedImages] = useState<Set<string>>(new Set());
@@ -127,24 +126,6 @@ export default function FeaturedProducts({
           </div>
         </AnimatedSection>
 
-        {/* View all — more editorial link style */}
-        <motion.div
-          className="mt-16 md:mt-20 flex flex-col sm:flex-row items-center justify-between gap-6"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ delay: 0.3 }}
-        >
-          <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent hidden sm:block" />
-          <Link
-            href={viewAllHref}
-            className="inline-flex items-center gap-3 text-black hover:text-gold transition-colors duration-300 text-xs uppercase tracking-[0.22em] group flex-shrink-0"
-          >
-            {viewAllLabel}
-            <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1.5" />
-          </Link>
-          <div className="flex-1 h-px bg-gradient-to-l from-transparent via-gold/20 to-transparent hidden sm:block" />
-        </motion.div>
       </div>
     </section>
   );
