@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import * as Sentry from '@sentry/nextjs';
 import { z } from 'zod';
-import { formatApiError } from '@/lib/api-utils';
+import { formatApiError, fetchWithTimeout } from '@/lib/api-utils';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { catalogueProducts, searchCatalogue } from '@/lib/ai/catalogue-data';
 
@@ -110,8 +110,9 @@ export async function POST(request: NextRequest) {
     ];
 
     // Call AI API (OpenRouter-compatible format)
-    const response = await fetch(API_ENDPOINT, {
+    const response = await fetchWithTimeout(API_ENDPOINT, {
       method: 'POST',
+      timeout: 15000,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${API_KEY}`,
@@ -139,15 +140,19 @@ export async function POST(request: NextRequest) {
       throw new Error('No response from AI');
     }
 
-    return NextResponse.json({
+    const jsonResponse = NextResponse.json({
       message: assistantMessage,
       conversationId: data.id,
     });
+    jsonResponse.headers.set('Cache-Control', 'no-store, no-cache');
+    return jsonResponse;
 
   } catch (error) {
     Sentry.captureException(error);
 
     const errorResponse = formatApiError(error, 'Failed to get AI response');
-    return NextResponse.json(errorResponse, { status: 500 });
+    const jsonResponse = NextResponse.json(errorResponse, { status: 500 });
+    jsonResponse.headers.set('Cache-Control', 'no-store, no-cache');
+    return jsonResponse;
   }
 }
