@@ -1,6 +1,6 @@
 'use client';
 
-import { RoundedBox, Text } from '@react-three/drei';
+import { RoundedBox } from '@react-three/drei';
 import type { ReactNode } from 'react';
 
 interface AquadorBottleGeometryProps {
@@ -105,17 +105,15 @@ export function AquadorBottleGeometry({
               emissiveIntensity={0.2}
             />
           </mesh>
-          {/* Brand text on label */}
-          <Text
-            position={[0, 0, 0.28]}
-            fontSize={0.1}
-            color="#1a1400"
-            anchorX="center"
-            anchorY="middle"
-            letterSpacing={0.18}
-          >
-            {"AQUAD'OR"}
-          </Text>
+          {/* Engraved-style decorative ridge on front label */}
+          <mesh position={[0, 0, 0.27]}>
+            <boxGeometry args={[0.9, 0.02, 0.004]} />
+            <meshStandardMaterial color="#1a1400" metalness={0.3} roughness={0.6} />
+          </mesh>
+          <mesh position={[0, -0.08, 0.27]}>
+            <boxGeometry args={[0.6, 0.015, 0.004]} />
+            <meshStandardMaterial color="#1a1400" metalness={0.3} roughness={0.6} />
+          </mesh>
           {/* Gold label backing (rear face, for when bottle is rotated) */}
           <mesh position={[0, 0, -0.26]} rotation={[0, Math.PI, 0]}>
             <boxGeometry args={[1.1, 0.35, 0.02]} />
