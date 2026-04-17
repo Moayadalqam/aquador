@@ -7,11 +7,14 @@ import {
   ContactShadows,
   RoundedBox,
 } from '@react-three/drei';
-import { Suspense, useRef, useMemo } from 'react';
+import { Suspense, useRef, useMemo, type ReactNode } from 'react';
 import * as THREE from 'three';
 import type { Group, Mesh } from 'three';
 import type { PerfumeComposition, FragranceCategory } from '@/lib/perfume/types';
 import { AquadorBottleGeometry } from '@/components/3d/AquadorBottleGeometry';
+import { Canvas3DBoundary } from '@/components/3d/Canvas3DBoundary';
+import { useDeviceCapabilities } from '@/hooks/useDeviceCapabilities';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 type NoteLayer = 'top' | 'heart' | 'base';
 
@@ -19,6 +22,11 @@ interface PerfumeBottle3DProps {
   composition: PerfumeComposition;
   activeLayer: NoteLayer;
   className?: string;
+  /**
+   * Rendered when the device can't run the 3D scene (low-end, mobile, `prefers-reduced-motion`)
+   * OR when the Canvas throws at runtime. Typically an SVG bottle.
+   */
+  fallback: ReactNode;
 }
 
 // Category-to-color mapping for orbiting note particles
@@ -201,7 +209,6 @@ function BottleScene({
         clearcoatRoughness={0.1}
         metalness={0}
         color={new THREE.Color('#fef8e0')}
-        envMapIntensity={0.3}
       />
     ),
     []
@@ -233,10 +240,20 @@ export default function PerfumeBottle3D({
   composition,
   activeLayer,
   className = '',
+  fallback,
 }: PerfumeBottle3DProps) {
+  const { supports3D } = useDeviceCapabilities();
+  const reducedMotion = useReducedMotion();
+
+  // Device/motion gate — low-end devices, mobile, or reduced-motion users get the SVG fallback
+  if (!supports3D || reducedMotion) {
+    return <>{fallback}</>;
+  }
+
   return (
-    <div className={`relative ${className}`} style={{ minHeight: 320 }}>
-      <Canvas
+    <Canvas3DBoundary label="PerfumeBottle3D" fallback={fallback}>
+      <div className={`relative min-h-[320px] ${className}`}>
+        <Canvas
         shadows
         gl={{
           antialias: true,
@@ -295,6 +312,7 @@ export default function PerfumeBottle3D({
           />
         </Suspense>
       </Canvas>
-    </div>
+      </div>
+    </Canvas3DBoundary>
   );
 }

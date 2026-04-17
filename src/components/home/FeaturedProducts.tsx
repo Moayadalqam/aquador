@@ -18,10 +18,6 @@ interface FeaturedProductsProps {
   title?: string;
   subtitle?: string;
   eyebrow?: string;
-  /** @deprecated Kept for backwards compatibility with callers; View All link removed per client request. */
-  viewAllHref?: string;
-  /** @deprecated Kept for backwards compatibility with callers. */
-  viewAllLabel?: string;
 }
 
 export default function FeaturedProducts({

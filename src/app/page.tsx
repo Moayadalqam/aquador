@@ -135,16 +135,12 @@ export default async function Home() {
         title="Featured Aquad'or Perfumes"
         subtitle="Our signature collection, crafted exclusively for Aquad'or."
         eyebrow="House Collection"
-        viewAllHref="/shop"
-        viewAllLabel="View All Aquad'or"
       />
       <FeaturedProducts
         products={lattafaProducts}
         title="Best-Selling Lattafa Originals"
         subtitle="Authentic Lattafa perfumes, curated and imported directly."
         eyebrow="Lattafa Collection"
-        viewAllHref="/shop/lattafa"
-        viewAllLabel="View All Lattafa"
       />
     </AnimationBudgetProvider>
   );
