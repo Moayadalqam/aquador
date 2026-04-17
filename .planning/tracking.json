@@ -3,27 +3,27 @@
   "client": "Moayad Alqam",
   "type": "e-commerce",
   "assigned_to": "",
-  "milestone": 4,
-  "phase": 30,
-  "phase_name": "v3.3 Optimize Pass 2",
-  "total_phases": 30,
+  "milestone": 5,
+  "phase": 31,
+  "phase_name": "v3.4 Cinematic Scroll",
+  "total_phases": 31,
   "status": "shipped",
   "wave": 0,
-  "tasks_done": 33,
-  "tasks_total": 33,
+  "tasks_done": 3,
+  "tasks_total": 3,
   "verification": "pass",
   "gap_cycles": {},
   "blockers": [],
-  "last_updated": "2026-04-17T15:17:08Z",
-  "last_commit": "ea17691",
+  "last_updated": "2026-04-17T15:17:24Z",
+  "last_commit": "691622f",
   "deployed_url": "https://www.aquadorcy.com",
-  "notes": "v3.3 shipped 2026-04-17: 33 OPTIMIZE.md post-v3.2 findings fixed. Admin user creation moved server-side (privilege escalation fix). LoadingScreen overlay removed (-800ms LCP). Middleware narrowed to /admin only. React.memo on ProductCard/CartItem. 3 Supabase migrations applied. Deploy dpl_HauBmZYsUGEo3Lkz1KUrkoapYH4B.",
+  "notes": "v3.4 shipped 2026-04-17: WelcomeSplash (first-visit-only, 400ms), ScrollProgress (gold gradient bar), Hero3DScroll (scroll-driven R3F bottle rotating/scaling/floating on scroll, CSS fallback on mobile/reduced-motion). Bundle unchanged at 88.4KB.",
   "lifetime": {
-    "tasks_completed": 85,
-    "phases_completed": 30,
-    "milestones_completed": 7,
-    "total_phases": 30,
-    "last_closed_milestone": 3,
+    "tasks_completed": 88,
+    "phases_completed": 31,
+    "milestones_completed": 8,
+    "total_phases": 31,
+    "last_closed_milestone": 4,
     "milestones": [
       {
         "id": "v1.0",
@@ -107,8 +107,16 @@
         "phases": [
           30
         ]
+      },
+      {
+        "id": "v3.4",
+        "name": "Cinematic Scroll",
+        "shipped": "2026-04-17",
+        "phases": [
+          31
+        ]
       }
     ]
   },
-  "last_pushed_at": "2026-04-17T15:17:08Z"
+  "last_pushed_at": "2026-04-17T15:17:24Z"
 }
