@@ -78,6 +78,7 @@ export default function MaintenanceClient() {
         src="/images/aquadour1.jpg"
         alt=""
         fill
+        sizes="100vw"
         className="object-cover opacity-[0.07] pointer-events-none select-none"
         priority
       />

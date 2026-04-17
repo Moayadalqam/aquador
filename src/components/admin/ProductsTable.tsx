@@ -75,6 +75,7 @@ export default function ProductsTable({ products }: ProductsTableProps) {
                           src={product.image}
                           alt={product.name}
                           fill
+                          sizes="48px"
                           className="rounded-lg object-cover bg-gray-800"
                           unoptimized
                         />

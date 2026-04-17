@@ -230,7 +230,7 @@ export default function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
             />
             {coverImage && (
               <div className="relative aspect-video rounded-lg overflow-hidden bg-gray-800">
-                <Image src={coverImage} alt="Cover" fill className="object-cover" unoptimized />
+                <Image src={coverImage} alt="Cover" fill sizes="(max-width: 1024px) 100vw, 400px" className="object-cover" unoptimized />
               </div>
             )}
           </div>
