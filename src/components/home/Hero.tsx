@@ -86,14 +86,6 @@ export default function Hero() {
           initial="initial"
           animate="animate"
         >
-          {/* Eyebrow label */}
-          <motion.p
-            className="text-[11px] sm:text-xs uppercase tracking-[0.35em] text-gold-on-dark mb-8 font-light"
-            variants={revealVariants.fadeInSequence}
-          >
-            Cyprus &nbsp;&bull;&nbsp; Since May 2018
-          </motion.p>
-
           {/* Brand name — cinematic scale */}
           <motion.h1
             className="font-playfair font-normal mb-0 tracking-[0.18em] sm:tracking-[0.22em] py-2"
@@ -136,7 +128,7 @@ export default function Hero() {
             className="text-sm md:text-base text-white/60 tracking-wide mb-10"
             variants={revealVariants.fadeInSequence}
           >
-            Premium &amp; Niche Fragrances in Cyprus | Free Shipping
+            Premium &amp; Niche Fragrances in Cyprus
           </motion.p>
 
           {/* CTA Buttons */}

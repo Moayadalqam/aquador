@@ -24,7 +24,7 @@ export default function WelcomeSplash() {
     sessionStorage.setItem('aquador_visited', '1');
     setShow(true);
 
-    const timer = setTimeout(() => setShow(false), 400);
+    const timer = setTimeout(() => setShow(false), 3000);
     return () => clearTimeout(timer);
   }, []);
 

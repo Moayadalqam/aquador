@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { Mail, Phone, MapPin, ArrowUpRight, Truck, ShieldCheck, Gem } from 'lucide-react';
+import { Mail, Phone, MapPin, ArrowUpRight, ShieldCheck, Gem } from 'lucide-react';
 import { AnimatedSection } from '@/components/ui/AnimatedSection';
 import { fadeInUp } from '@/lib/animations/scroll-animations';
 
@@ -124,11 +124,6 @@ export default function Footer() {
       {/* Trust badges row */}
       <div className="py-8 border-t border-white/[0.06]">
         <div className="container-wide flex flex-wrap items-center justify-center gap-3 sm:gap-6">
-          <span className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.15em] text-white/40">
-            <Truck className="w-3.5 h-3.5" />
-            Free Shipping
-          </span>
-          <span className="text-white/20" aria-hidden="true">&middot;</span>
           <span className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.15em] text-white/40">
             <ShieldCheck className="w-3.5 h-3.5" />
             Secure Payment
