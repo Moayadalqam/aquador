@@ -6,14 +6,14 @@ See: .planning/PROJECT.md
 **Core value:** A customer completes a purchase and knows it worked — they see their order details on screen, receive a confirmation email, and the store is notified. No silent failures, no misleading messages, no security holes.
 
 ## Current Position
-Phase: 29 of 29 — Conventions + A11y + Responsive
+Phase: 30 of 30 — v3.3 Optimize Pass 2
 Status: shipped
 Assigned to: OWNER (Fawzi Goussous)
-Last activity: 2026-04-17 — v3.2 milestone SHIPPED and verified live
+Last activity: 2026-04-17 — v3.3 milestone SHIPPED (33 findings fixed)
 
 Progress: [██████████] 100%
 
-Deployed: https://www.aquadorcy.com (deploy dpl_6f4nfFpgYgRwNP39ZU92nfPnGmYb)
+Deployed: https://www.aquadorcy.com (deploy dpl_HauBmZYsUGEo3Lkz1KUrkoapYH4B)
 
 ## Roadmap
 | # | Phase | Goal | Status |
@@ -56,6 +56,7 @@ Deployed: https://www.aquadorcy.com (deploy dpl_6f4nfFpgYgRwNP39ZU92nfPnGmYb)
 - ✅ **v3.0** Client Feedback Round — 2026-04-11 (phases 18-22)
 - ✅ **v3.1** Quality & SEO Polish — 2026-04-17 (phases 23-26)
 - ✅ **v3.2** Optimize All — 2026-04-17 (phases 27-29, 31/31 findings fixed)
+- ✅ **v3.3** Optimize Pass 2 — 2026-04-17 (phase 30, 33/33 findings fixed, 3 migrations applied)
 
 ## v3.2 Highlights
 - 39+ commits across 3 phases, 31 OPTIMIZE.md findings fixed
