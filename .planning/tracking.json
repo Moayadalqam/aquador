@@ -14,8 +14,8 @@
   "verification": "pass",
   "gap_cycles": {},
   "blockers": [],
-  "last_updated": "2026-04-17T12:47:31Z",
-  "last_commit": "2704bd1",
+  "last_updated": "2026-04-17T13:04:05Z",
+  "last_commit": "0610281",
   "deployed_url": "https://www.aquadorcy.com",
   "notes": "v3.1 shipped 2026-04-17 (phases 23-26): perf/a11y, Dubai rebrand, motion polish, merchant-grade SEO. Deploy dpl_EPnM4MNPorDQNYLsJ2tz4H22RhXa.",
   "lifetime": {
@@ -92,5 +92,5 @@
       }
     ]
   },
-  "last_pushed_at": "2026-04-17T12:47:31Z"
+  "last_pushed_at": "2026-04-17T13:04:05Z"
 }
