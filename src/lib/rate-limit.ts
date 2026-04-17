@@ -87,6 +87,16 @@ export const rateLimiters = {
         prefix: 'ratelimit:search',
       })
     : null,
+
+  // Admin user management: 5 requests per minute
+  admin: isConfigured && redis
+    ? new Ratelimit({
+        redis,
+        limiter: Ratelimit.slidingWindow(5, '1 m'),
+        analytics: true,
+        prefix: 'ratelimit:admin',
+      })
+    : null,
 };
 
 export type RateLimiterKey = keyof typeof rateLimiters;
