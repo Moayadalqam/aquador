@@ -10,10 +10,10 @@ See: .planning/PROJECT.md (updated 2026-04-11)
 
 ## Current Position
 
-Phase: 26 of 26 (SEO Hardening) — Built
+Phase: 26 of 26 (SEO Hardening) — SHIPPED
 Plan: v3.1 all 4 phases complete
-Status: v3.1 shipped — perf/a11y, Dubai rebrand, motion polish, SEO hardening
-Last activity: 2026-04-17 - v3.1 built + verified
+Status: v3.1 LIVE on https://www.aquadorcy.com — post-deploy verified
+Last activity: 2026-04-17 - v3.1 shipped + verified live
 
 Progress: [████████████████████] 100% (4/4 phases built)
 
@@ -24,7 +24,7 @@ Progress: [████████████████████] 100% (4
 - ✅ **v1.2** Design Overhaul & Premium UX — shipped 2026-03-04
 - ✅ **v2.0** Immersive Luxury Experience — COMPLETE (Phases 13-17, 2026-03-09)
 - ✅ **v3.0** Client Feedback Round — shipped 2026-04-11 (Phases 18-22)
-- 🔄 **v3.1** Quality & SEO Polish — built 2026-04-17 (Phases 23-26)
+- ✅ **v3.1** Quality & SEO Polish — SHIPPED 2026-04-17 (Phases 23-26, 21 commits, deploy dpl_EPnM4MNPorDQNYLsJ2tz4H22RhXa)
 
 ## v3.1 Phases
 
