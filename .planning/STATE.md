@@ -6,14 +6,14 @@ See: .planning/PROJECT.md
 **Core value:** A customer completes a purchase and knows it worked — they see their order details on screen, receive a confirmation email, and the store is notified. No silent failures, no misleading messages, no security holes.
 
 ## Current Position
-Phase: 26 of 26 — SEO Hardening
+Phase: 29 of 29 — Conventions + A11y + Responsive
 Status: shipped
 Assigned to: OWNER (Fawzi Goussous)
-Last activity: 2026-04-17 — v3.1 milestone SHIPPED and verified live
+Last activity: 2026-04-17 — v3.2 milestone SHIPPED and verified live
 
 Progress: [██████████] 100%
 
-Deployed: https://www.aquadorcy.com (deploy dpl_EPnM4MNPorDQNYLsJ2tz4H22RhXa)
+Deployed: https://www.aquadorcy.com (deploy dpl_6f4nfFpgYgRwNP39ZU92nfPnGmYb)
 
 ## Roadmap
 | # | Phase | Goal | Status |
@@ -44,6 +44,9 @@ Deployed: https://www.aquadorcy.com (deploy dpl_EPnM4MNPorDQNYLsJ2tz4H22RhXa)
 | 24 | Dubai Shop Rebrand + Variant Selector | Arabian hero + €199 variant price fix | shipped |
 | 25 | Motion & UX Polish | Scroll reveals, willChange hints, loading states | shipped |
 | 26 | SEO Hardening | Merchant schema + dynamic OG + hreflang | shipped |
+| 27 | Security + Reliability | is_active block, draft leak fix, RLS, upsert RPC, Sentry unify | shipped |
+| 28 | Performance + Bundle + Architecture | Suspense stream, /shop static, dead code, 3D gate | shipped |
+| 29 | Conventions + A11y + Responsive | loading/error routes, JsonLd, CDN migration, 27/27 responsive | shipped |
 
 ## Milestones (history)
 - ✅ **v1.0** Order/Payment System Fix — 2026-03-02 (phases 1-4)
@@ -52,6 +55,31 @@ Deployed: https://www.aquadorcy.com (deploy dpl_EPnM4MNPorDQNYLsJ2tz4H22RhXa)
 - ✅ **v2.0** Immersive Luxury Experience — 2026-03-09 (phases 13-17)
 - ✅ **v3.0** Client Feedback Round — 2026-04-11 (phases 18-22)
 - ✅ **v3.1** Quality & SEO Polish — 2026-04-17 (phases 23-26)
+- ✅ **v3.2** Optimize All — 2026-04-17 (phases 27-29, 31/31 findings fixed)
+
+## v3.2 Highlights
+- 39+ commits across 3 phases, 31 OPTIMIZE.md findings fixed
+- **CRITICAL security:** `is_active` filter in cart validation (block deactivated checkout)
+- **CRITICAL security:** Blog draft leak gated to admin auth
+- Live chat RLS migration + atomic customer upsert RPC (race condition fix)
+- AI fetch 15s timeout, unified Sentry error logging across 8 API routes
+- Rate-limit /api/search + /api/admin/setup
+- revalidatePath on blog mutations, Cache-Control no-store on POST
+- **/shop now Static** (was Dynamic — searchParams moved to client)
+- Suspense-stream RelatedProducts on product page
+- AnimationBudgetProvider scoped out of root (perpetual RAF fixed)
+- pg_trgm search index, PageTransition popLayout (200-400ms faster nav)
+- ChatWidget singleton + Realtime-primary polling (~6 queries/min vs 40)
+- AI catalogue Map-based keyword index + expanded brand matching
+- Dead code: variants.ts (413 lines), CustomPerfumeBottle.tsx deleted
+- Uninstalled @stripe/stripe-js + @react-three/gltfjsx
+- 3D viewer gated on device support BEFORE dynamic import (~600KB saved)
+- loading.tsx on /blog/[slug] + /shop/gender/[gender]
+- error.tsx on 4 dynamic segments with Sentry integration
+- Unified `<JsonLd>` component replaces 3 emission patterns
+- CDN migration hero video + Lattafa image → self-hosted (public/)
+- Responsive audit 9 pages × 3 viewports: 27/27 PASS
+- 6 direct responsive fixes (Footer flex-wrap, 44px touch, cart a11y)
 
 ## v3.1 Highlights
 - 21 feature commits, 54 files changed (+3273 / -352)
