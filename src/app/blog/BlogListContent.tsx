@@ -100,6 +100,7 @@ export default function BlogListContent({
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   className="btn-filter btn-filter-inactive"
+                  aria-label="Previous page"
                 >
                   Previous
                 </button>
@@ -108,6 +109,7 @@ export default function BlogListContent({
                 <button
                   key={page}
                   onClick={() => handlePageChange(page)}
+                  aria-current={page === currentPage ? 'page' : undefined}
                   className={`btn-filter ${
                     page === currentPage ? 'btn-filter-active' : 'btn-filter-inactive'
                   }`}
@@ -119,6 +121,7 @@ export default function BlogListContent({
                 <button
                   onClick={() => handlePageChange(currentPage + 1)}
                   className="btn-filter btn-filter-inactive"
+                  aria-label="Next page"
                 >
                   Next
                 </button>
