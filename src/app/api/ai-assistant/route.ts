@@ -3,7 +3,7 @@ import * as Sentry from '@sentry/nextjs';
 import { z } from 'zod';
 import { formatApiError, fetchWithTimeout } from '@/lib/api-utils';
 import { checkRateLimit } from '@/lib/rate-limit';
-import { catalogueProducts, searchCatalogue } from '@/lib/ai/catalogue-data';
+import { catalogueProducts, searchByKeywords, getAllBrands } from '@/lib/ai/catalogue-data';
 
 export const maxDuration = 30;
 
@@ -29,7 +29,7 @@ const aiAssistantSchema = z.object({
   message: 'Messages or query required',
 });
 
-const SYSTEM_PROMPT = `You are a concise fragrance consultant for Aquad'or Cyprus. You know our ${catalogueProducts.length} products.
+const SYSTEM_PROMPT = `You are a concise fragrance consultant for Aquad'or Cyprus. You know our ${catalogueProducts.length} products from ${getAllBrands().length} brands.
 
 **Response Rules:**
 - Keep answers SHORT (2-4 sentences max + bullet list)
@@ -89,14 +89,16 @@ export async function POST(request: NextRequest) {
     let catalogueContext = '';
     const userMessage = conversationMessages[conversationMessages.length - 1].content.toLowerCase();
 
-    // Common fragrance notes to search for
-    const noteKeywords = ['jasmine', 'rose', 'vanilla', 'oud', 'musk', 'leather', 'amber', 'sandalwood', 'tobacco', 'cherry', 'floral', 'fruity', 'woody'];
-    const mentionedNotes = noteKeywords.filter(note => userMessage.includes(note));
+    // Expanded keyword matching: fragrance notes + all brand name words
+    const baseNotes = ['jasmine', 'rose', 'vanilla', 'oud', 'musk', 'leather', 'amber', 'sandalwood', 'tobacco', 'cherry', 'floral', 'fruity', 'woody'];
+    const brandKeywords = getAllBrands().flatMap(b => b.toLowerCase().split(/\s+/)).filter(w => w.length > 2);
+    const allKeywords = Array.from(new Set([...baseNotes, ...brandKeywords]));
+    const mentionedKeywords = allKeywords.filter(kw => userMessage.includes(kw));
 
-    if (mentionedNotes.length > 0) {
-      const relevantProducts = searchCatalogue(mentionedNotes[0]);
+    if (mentionedKeywords.length > 0) {
+      const relevantProducts = searchByKeywords(mentionedKeywords);
       if (relevantProducts.length > 0) {
-        catalogueContext = `\n\n**Relevant Products for "${mentionedNotes[0]}":**\n` +
+        catalogueContext = `\n\n**Relevant Products for "${mentionedKeywords.join(', ')}":**\n` +
           relevantProducts.slice(0, 10).map(p =>
             `- ${p.name} (${p.number}) by ${p.brand} - ${p.gender}${p.type === 'essence-oil' ? ' [Essence Oil]' : ''}`
           ).join('\n');
