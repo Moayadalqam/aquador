@@ -6,7 +6,7 @@
 
 'use client';
 
-import { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { formatPrice } from '@/lib/currency';
@@ -25,7 +25,7 @@ interface ProductCardProps {
   variant?: 'default' | 'compact';
 }
 
-export function ProductCard({ product, priority = false, variant = 'default' }: ProductCardProps) {
+function ProductCardImpl({ product, priority = false, variant = 'default' }: ProductCardProps) {
   const reducedMotion = useReducedMotion();
   const [isHovered, setIsHovered] = useState(false);
   const [isTapRevealed, setIsTapRevealed] = useState(false);
@@ -173,3 +173,6 @@ export function ProductCard({ product, priority = false, variant = 'default' }: 
     </motion.div>
   );
 }
+
+export const ProductCard = React.memo(ProductCardImpl);
+ProductCard.displayName = 'ProductCard';

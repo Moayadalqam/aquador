@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { Minus, Plus, X } from 'lucide-react';
@@ -12,7 +13,7 @@ interface CartItemProps {
   item: CartItemType;
 }
 
-export default function CartItem({ item }: CartItemProps) {
+function CartItemImpl({ item }: CartItemProps) {
   const { removeItem, updateQuantity } = useCart();
 
   const handleDecrease = () => {
@@ -96,3 +97,7 @@ export default function CartItem({ item }: CartItemProps) {
     </motion.div>
   );
 }
+
+const CartItem = React.memo(CartItemImpl);
+CartItem.displayName = 'CartItem';
+export default CartItem;
