@@ -39,8 +39,8 @@ export async function POST(request: NextRequest) {
     const userAgent = request.headers.get('user-agent')?.slice(0, 256) || null;
     const country = request.headers.get('x-vercel-ip-country') || null;
 
-    // Upsert visitor
-    await supabase.from('site_visitors').upsert(
+    // Upsert visitor + probabilistic cleanup (~1% of requests)
+    const upsertPromise = supabase.from('site_visitors').upsert(
       {
         session_id: sessionId,
         page: page || null,
@@ -52,9 +52,15 @@ export async function POST(request: NextRequest) {
       { onConflict: 'session_id' }
     );
 
-    // Cleanup stale records (>24h old) — piggyback on heartbeat
-    const cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-    await supabase.from('site_visitors').delete().lt('last_seen', cutoff);
+    const tasks: PromiseLike<unknown>[] = [upsertPromise];
+
+    // Cleanup stale records (>24h old) — runs on ~1% of heartbeats
+    if (Math.random() < 0.01) {
+      const cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+      tasks.push(supabase.from('site_visitors').delete().lt('last_seen', cutoff));
+    }
+
+    await Promise.all(tasks);
 
     return NextResponse.json({ ok: true });
   } catch (error) {
