@@ -28,18 +28,37 @@ export async function GET(
     const { slug } = await params;
     const supabase = await createClient();
 
-    const { data, error } = await supabase
+    // Check if requester is an admin (admins can view drafts)
+    const { data: { user } } = await supabase.auth.getUser();
+    let isAdmin = false;
+    if (user) {
+      const { data: adminUser } = await supabase
+        .from('admin_users')
+        .select('id')
+        .eq('id', user.id)
+        .single();
+      isAdmin = !!adminUser;
+    }
+
+    let query = supabase
       .from('blog_posts')
       .select('*')
-      .eq('slug', slug)
-      .single();
+      .eq('slug', slug);
+
+    if (!isAdmin) {
+      query = query.eq('status', 'published');
+    }
+
+    const { data, error } = await query.single();
 
     if (error || !data) {
       return NextResponse.json({ error: 'Post not found' }, { status: 404 });
     }
 
     const response = NextResponse.json(data);
-    response.headers.set('Cache-Control', 'public, s-maxage=600, stale-while-revalidate=86400');
+    if (!isAdmin) {
+      response.headers.set('Cache-Control', 'public, s-maxage=600, stale-while-revalidate=86400');
+    }
     return response;
   } catch (error) {
     console.error('Blog slug GET error:', error);
