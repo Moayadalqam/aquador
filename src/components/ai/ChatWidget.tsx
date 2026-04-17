@@ -8,6 +8,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 
+// Module-scope singleton — created once, reused across all mounts
+const supabaseClient = createClient();
+
 type ChatMode = 'ai' | 'live' | 'menu';
 
 interface Message {
@@ -89,36 +92,70 @@ export default function ChatWidget() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const liveInputRef = useRef<HTMLInputElement>(null);
-  const supabaseRef = useRef(createClient());
 
   useEffect(() => { messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages, liveMessages]);
   useEffect(() => { if (isOpen && mode === 'ai') inputRef.current?.focus(); if (isOpen && mode === 'live') liveInputRef.current?.focus(); }, [isOpen, mode]);
 
-  // Poll for messages + session status (Realtime is unreliable, polling guarantees delivery)
+  // Realtime-primary message delivery with polling fallback
   useEffect(() => {
     if (!sessionId) return;
-    const supabase = supabaseRef.current;
+    let pollInterval: ReturnType<typeof setInterval> | null = null;
+    let realtimeConnected = false;
 
     const fetchMessages = async () => {
-      const { data } = await supabase.from('live_chat_messages').select('*').eq('session_id', sessionId).order('created_at', { ascending: true });
+      const { data } = await supabaseClient.from('live_chat_messages').select('*').eq('session_id', sessionId).order('created_at', { ascending: true });
       if (data) setLiveMessages(data as unknown as LiveMessage[]);
     };
     const fetchSession = async () => {
-      const { data } = await supabase.from('live_chat_sessions').select('status').eq('id', sessionId).single();
+      const { data } = await supabaseClient.from('live_chat_sessions').select('status').eq('id', sessionId).single();
       if (data) setLiveStatus(data.status as 'waiting' | 'active' | 'closed');
     };
 
+    // Initial fetch
     fetchMessages();
     fetchSession();
 
-    // Poll every 3 seconds
-    const interval = setInterval(() => { fetchMessages(); fetchSession(); }, 3000);
+    const startFallbackPolling = () => {
+      if (pollInterval) return; // already polling
+      pollInterval = setInterval(() => { fetchMessages(); fetchSession(); }, 10000);
+    };
 
-    // Also try Realtime for instant delivery
-    const msgChannel = supabase.channel(`live-chat-msgs-${sessionId}`).on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'live_chat_messages', filter: `session_id=eq.${sessionId}` }, (payload) => { const msg = payload.new as LiveMessage; setLiveMessages(prev => prev.some(m => m.id === msg.id) ? prev : [...prev, msg]); }).subscribe();
-    const sessionChannel = supabase.channel(`live-chat-session-${sessionId}`).on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'live_chat_sessions', filter: `id=eq.${sessionId}` }, (payload) => { setLiveStatus((payload.new as { status: 'waiting' | 'active' | 'closed' }).status); }).subscribe();
+    // Realtime subscriptions — primary delivery mechanism
+    const msgChannel = supabaseClient.channel(`live-chat-msgs-${sessionId}`)
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'live_chat_messages', filter: `session_id=eq.${sessionId}` }, (payload) => {
+        const msg = payload.new as LiveMessage;
+        setLiveMessages(prev => prev.some(m => m.id === msg.id) ? prev : [...prev, msg]);
+      })
+      .subscribe((status) => {
+        if (status === 'SUBSCRIBED') {
+          realtimeConnected = true;
+        } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+          realtimeConnected = false;
+          startFallbackPolling();
+        }
+      });
 
-    return () => { clearInterval(interval); supabase.removeChannel(msgChannel); supabase.removeChannel(sessionChannel); };
+    const sessionChannel = supabaseClient.channel(`live-chat-session-${sessionId}`)
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'live_chat_sessions', filter: `id=eq.${sessionId}` }, (payload) => {
+        setLiveStatus((payload.new as { status: 'waiting' | 'active' | 'closed' }).status);
+      })
+      .subscribe((status) => {
+        if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+          startFallbackPolling();
+        }
+      });
+
+    // Safety net: start fallback polling after 5s if Realtime hasn't connected
+    const safetyTimeout = setTimeout(() => {
+      if (!realtimeConnected) startFallbackPolling();
+    }, 5000);
+
+    return () => {
+      clearTimeout(safetyTimeout);
+      if (pollInterval) clearInterval(pollInterval);
+      supabaseClient.removeChannel(msgChannel);
+      supabaseClient.removeChannel(sessionChannel);
+    };
   }, [sessionId]);
 
   const handleSend = async () => {
@@ -138,13 +175,12 @@ export default function ChatWidget() {
 
   const startLiveChat = useCallback(async () => {
     const visitorId = getVisitorId();
-    const supabase = supabaseRef.current;
-    const { data: existing } = await supabase.from('live_chat_sessions').select('id, status').eq('visitor_id', visitorId).in('status', ['waiting', 'active']).order('created_at', { ascending: false }).limit(1);
+    const { data: existing } = await supabaseClient.from('live_chat_sessions').select('id, status').eq('visitor_id', visitorId).in('status', ['waiting', 'active']).order('created_at', { ascending: false }).limit(1);
     if (existing && existing.length > 0) { setSessionId(existing[0].id); setLiveStatus(existing[0].status as 'waiting' | 'active'); setMode('live'); return; }
-    const { data: session, error } = await supabase.from('live_chat_sessions').insert({ visitor_id: visitorId }).select('id').single();
+    const { data: session, error } = await supabaseClient.from('live_chat_sessions').insert({ visitor_id: visitorId }).select('id').single();
     if (error || !session) { Sentry.captureException(error); return; }
     setSessionId(session.id); setLiveStatus('waiting'); setMode('live');
-    await supabase.from('live_chat_messages').insert({ session_id: session.id, sender_type: 'system', content: 'You are now in the queue. An agent will be with you shortly.' });
+    await supabaseClient.from('live_chat_messages').insert({ session_id: session.id, sender_type: 'system', content: 'You are now in the queue. An agent will be with you shortly.' });
     // Notify staff via WhatsApp/email
     fetch('/api/live-chat/notify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sessionId: session.id }) }).catch(() => {});
   }, []);
@@ -155,7 +191,7 @@ export default function ChatWidget() {
     // Optimistic update — show message instantly
     const optimisticMsg: LiveMessage = { id: `opt-${Date.now()}`, sender_type: 'visitor', content, created_at: new Date().toISOString() };
     setLiveMessages(prev => [...prev, optimisticMsg]);
-    await supabaseRef.current.from('live_chat_messages').insert({ session_id: sessionId, sender_type: 'visitor', content });
+    await supabaseClient.from('live_chat_messages').insert({ session_id: sessionId, sender_type: 'visitor', content });
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (mode === 'ai') handleSend(); else if (mode === 'live') handleLiveSend(); } };
