@@ -14,6 +14,8 @@ import {
   FILTER_TIMING,
 } from '@/lib/animations/filter-transitions';
 import { DiscoveryGrid } from '@/components/shop/DiscoveryGrid';
+import DubaiShopHero from '@/components/shop/DubaiShopHero';
+import CuratedHousesStrip from '@/components/shop/CuratedHousesStrip';
 import type { Product } from '@/lib/supabase/types';
 import type { Category } from '@/types';
 
@@ -107,15 +109,22 @@ export default function ShopContent({ products, categories, isSearchMode = false
   return (
     <div className="min-h-screen bg-gold-ambient">
       {/* Hero */}
-      <PageHero
-        title={isSearchMode && urlSearchQuery ? 'Search Results' : 'Dubai Shop'}
-        subtitle={
-          isSearchMode && urlSearchQuery
-            ? `Showing results for '${urlSearchQuery}'`
-            : 'Curated luxury fragrances from Dubai\'s finest houses'
-        }
-        titleVariant="white"
-      />
+      {isSearchMode && urlSearchQuery ? (
+        <PageHero
+          title="Search Results"
+          subtitle={`Showing results for '${urlSearchQuery}'`}
+          titleVariant="white"
+        />
+      ) : (
+        <DubaiShopHero
+          title="Dubai Shop"
+          subtitle="A curated selection of fragrances from Al Haramain, Xerjoff and the niche houses defining contemporary Middle Eastern perfumery."
+          eyebrow="From Dubai, with luxury"
+        />
+      )}
+
+      {/* Curated houses strip — only on the default Dubai Shop view */}
+      {!isSearchMode && !hasActiveFilters && <CuratedHousesStrip />}
 
       {/* Search and Filters */}
       <section className="container-wide pb-8 md:pb-10">

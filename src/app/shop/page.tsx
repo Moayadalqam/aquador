@@ -7,7 +7,7 @@ export const revalidate = 1800;
 
 export const metadata: Metadata = {
   title: "Dubai Shop | Aquad'or Cyprus — Luxury Fragrances",
-  description: "Browse our curated Dubai collection of luxury perfumes, niche fragrances, and exclusive scents. Free shipping on orders over €50 in Cyprus.",
+  description: "Dubai's finest fragrance houses — Al Haramain, Xerjoff, and curated niche scents. Free shipping in Cyprus over €50.",
   openGraph: {
     title: "Dubai Shop | Aquad'or Cyprus",
     description: "Browse our curated Dubai collection of luxury perfumes and niche fragrances.",
