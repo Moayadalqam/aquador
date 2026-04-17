@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import { getBlogPosts, getBlogCategories, getFeaturedPost } from '@/lib/blog';
 import BlogListContent from './BlogListContent';
 
-export const revalidate = 60; // Revalidate every 60 seconds (ISR)
+export const revalidate = 300; // Revalidate every 5 minutes (ISR)
 
 export const metadata: Metadata = {
   title: 'Blog | The Art of Scent',
