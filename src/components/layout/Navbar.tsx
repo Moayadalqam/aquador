@@ -105,7 +105,7 @@ export default function Navbar() {
           transition: 'background 0.5s ease, box-shadow 0.5s ease',
         }}
       >
-        <nav className="container-wide">
+        <nav className="container-wide" aria-label="Primary">
           {/* Taller nav for more spacious feel */}
           <div className="relative flex items-center justify-between h-[60px] md:h-[70px]">
 
@@ -298,6 +298,7 @@ export default function Navbar() {
                         <Link
                           href={link.href}
                           onClick={() => setIsMobileOpen(false)}
+                          aria-current={checkActive(link.href) ? 'page' : undefined}
                           className={`flex items-center gap-4 py-3.5 border-b border-black/[0.04] transition-colors duration-300 ${
                             checkActive(link.href) ? 'text-gold' : 'text-black/60 active:text-gold'
                           }`}
@@ -337,7 +338,7 @@ function DesktopNavLink({ item, active, lightText }: { item: NavItem; active: bo
   if (item.children) {
     return (
       <div className="relative group h-full">
-        <Link href={item.href} className="relative h-full flex items-center justify-center px-4 xl:px-5">
+        <Link href={item.href} aria-current={active ? 'page' : undefined} className="relative h-full flex items-center justify-center px-4 xl:px-5">
           <span className={`text-[10.5px] xl:text-[11px] uppercase tracking-[0.16em] font-light transition-colors duration-300 whitespace-nowrap leading-none flex items-center gap-1 ${
             active ? 'text-gold' : lightText ? 'text-white/75 group-hover:text-white' : 'text-black/65 group-hover:text-black'
           }`}>
@@ -371,7 +372,7 @@ function DesktopNavLink({ item, active, lightText }: { item: NavItem; active: bo
   }
 
   return (
-    <Link href={item.href} className="relative h-full flex items-center justify-center px-4 xl:px-5 group">
+    <Link href={item.href} aria-current={active ? 'page' : undefined} className="relative h-full flex items-center justify-center px-4 xl:px-5 group">
       <span className={`text-[10.5px] xl:text-[11px] uppercase tracking-[0.16em] font-light transition-colors duration-300 whitespace-nowrap leading-none ${
         active ? 'text-gold' : lightText ? 'text-white/75 group-hover:text-white' : 'text-black/65 group-hover:text-black'
       }`}>

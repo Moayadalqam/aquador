@@ -930,6 +930,19 @@ body {
   outline-offset: 2px;
 }
 
+/* Global focus-visible ring — applies to all interactive elements not explicitly styled */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid oklch(75% 0.12 85);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
 /* Skip to content link (screen reader) */
 .sr-skip-link {
   @apply absolute -top-10 left-0 bg-gold text-black px-4 py-2 z-[100] transition-all;

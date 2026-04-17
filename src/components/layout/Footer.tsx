@@ -66,33 +66,35 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Shop links */}
-          <div className="md:col-span-2">
-            <h3 className="text-[11px] uppercase tracking-[0.25em] text-gold-on-dark mb-5">Shop</h3>
-            <ul className="space-y-3">
-              {shopLinks.map((link) => (
-                <li key={link.href}>
-                  <Link href={link.href} className="text-white/70 hover:text-white transition-colors text-[13px]">
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <nav aria-label="Footer" style={{ display: 'contents' }}>
+            {/* Shop links */}
+            <div className="md:col-span-2">
+              <h3 className="text-[11px] uppercase tracking-[0.25em] text-gold-on-dark mb-5">Shop</h3>
+              <ul className="space-y-3">
+                {shopLinks.map((link) => (
+                  <li key={link.href}>
+                    <Link href={link.href} className="text-white/70 hover:text-white transition-colors text-[13px]">
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          {/* Company links */}
-          <div className="md:col-span-2">
-            <h3 className="text-[11px] uppercase tracking-[0.25em] text-gold-on-dark mb-5">Company</h3>
-            <ul className="space-y-3">
-              {companyLinks.map((link) => (
-                <li key={link.href}>
-                  <Link href={link.href} className="text-white/70 hover:text-white transition-colors text-[13px]">
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+            {/* Company links */}
+            <div className="md:col-span-2">
+              <h3 className="text-[11px] uppercase tracking-[0.25em] text-gold-on-dark mb-5">Company</h3>
+              <ul className="space-y-3">
+                {companyLinks.map((link) => (
+                  <li key={link.href}>
+                    <Link href={link.href} className="text-white/70 hover:text-white transition-colors text-[13px]">
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </nav>
 
           {/* Contact — compact */}
           <div className="md:col-span-5 md:text-right">
