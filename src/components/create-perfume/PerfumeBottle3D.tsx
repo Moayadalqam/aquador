@@ -1,11 +1,17 @@
 'use client';
 
 import { Canvas, useFrame } from '@react-three/fiber';
-import { PerspectiveCamera } from '@react-three/drei';
+import {
+  PerspectiveCamera,
+  OrbitControls,
+  ContactShadows,
+  RoundedBox,
+} from '@react-three/drei';
 import { Suspense, useRef, useMemo } from 'react';
 import * as THREE from 'three';
 import type { Group, Mesh } from 'three';
 import type { PerfumeComposition, FragranceCategory } from '@/lib/perfume/types';
+import { AquadorBottleGeometry } from '@/components/3d/AquadorBottleGeometry';
 
 type NoteLayer = 'top' | 'heart' | 'base';
 
@@ -47,6 +53,7 @@ function getSelectedNotes(composition: PerfumeComposition) {
 /**
  * Orbiting particles that represent each selected note.
  * Distributed evenly around the bottle, color-coded by category.
+ * These orbit in world space — OrbitControls moves the camera, not the scene.
  */
 function NoteParticles({ composition }: { composition: PerfumeComposition }) {
   const groupRef = useRef<Group>(null);
@@ -64,7 +71,7 @@ function NoteParticles({ composition }: { composition: PerfumeComposition }) {
       const speed = 0.35;
       const angle = baseAngle + t * speed;
       const orbitRadius = 1.3;
-      const yBase = 0.6 - note.index * 0.5; // vertical spread
+      const yBase = 0.6 - note.index * 0.5;
       child.position.x = Math.cos(angle) * orbitRadius;
       child.position.z = Math.sin(angle) * orbitRadius;
       child.position.y = yBase + Math.sin(t * 0.8 + note.index * 1.5) * 0.15;
@@ -96,8 +103,13 @@ function NoteParticles({ composition }: { composition: PerfumeComposition }) {
 }
 
 /**
- * The liquid inside the bottle.
+ * The liquid inside the glass bottle.
+ * Reshaped to a flattened RoundedBox matching the rectangular body.
  * Color morphs based on activeLayer; height grows with total notes selected.
+ *
+ * Body inner dimensions: width ~1.1, depth ~0.42 (slightly inset from body).
+ * Liquid fills from bottom of body (y ~ -1.0) up to y ~ 0.75 (max fill 90%).
+ * Full body interior height is ~1.7 units.
  */
 function Liquid({
   composition,
@@ -108,7 +120,11 @@ function Liquid({
 }) {
   const meshRef = useRef<Mesh>(null);
   const currentColor = useRef(new THREE.Color(LAYER_COLORS[activeLayer]));
-  const currentScale = useRef(0.15);
+  const currentFill = useRef(0.15);
+
+  // Body interior constants
+  const bodyInnerHeight = 1.7;
+  const bodyBottomY = -1.0; // bottom of the body interior
 
   useFrame((_state, delta) => {
     if (!meshRef.current) return;
@@ -118,9 +134,9 @@ function Liquid({
     // Map 0 notes -> 10% fill, 3 notes -> 90%
     const targetFill = 0.10 + (count / 3) * 0.80;
 
-    // Lerp scale toward target
-    currentScale.current = THREE.MathUtils.lerp(
-      currentScale.current,
+    // Lerp fill toward target
+    currentFill.current = THREE.MathUtils.lerp(
+      currentFill.current,
       targetFill,
       1 - Math.pow(0.05, delta)
     );
@@ -129,10 +145,10 @@ function Liquid({
     const targetColor = LAYER_COLORS[activeLayer];
     currentColor.current.lerp(targetColor, 1 - Math.pow(0.04, delta));
 
-    // Apply: liquid cylinder is scaled on Y. Position it so it sits at the bottom of the bottle.
-    const fillHeight = currentScale.current * 1.8; // max cylinder height ~1.8
-    meshRef.current.scale.y = currentScale.current;
-    meshRef.current.position.y = -0.9 + fillHeight * 0.5;
+    // Apply: scale the liquid height and position it at the bottom of the body
+    const fillHeight = currentFill.current * bodyInnerHeight;
+    meshRef.current.scale.y = currentFill.current;
+    meshRef.current.position.y = bodyBottomY + fillHeight * 0.5;
 
     const mat = meshRef.current.material as THREE.MeshStandardMaterial;
     mat.color.copy(currentColor.current);
@@ -140,24 +156,29 @@ function Liquid({
   });
 
   return (
-    <mesh ref={meshRef}>
-      <cylinderGeometry args={[0.42, 0.42, 1.8, 24]} />
+    <RoundedBox
+      ref={meshRef}
+      args={[1.1, bodyInnerHeight, 0.42]}
+      radius={0.08}
+      smoothness={4}
+    >
       <meshStandardMaterial
         color={LAYER_COLORS[activeLayer]}
         emissive={LAYER_COLORS[activeLayer]}
-        emissiveIntensity={0.25}
+        emissiveIntensity={0.4}
         transparent
-        opacity={0.75}
-        roughness={0.3}
+        opacity={0.85}
+        roughness={0.15}
         metalness={0.1}
       />
-    </mesh>
+    </RoundedBox>
   );
 }
 
 /**
- * Glass bottle body + gold cap + liquid + particles.
- * Auto-rotates slowly and has a subtle breathing scale.
+ * Glass bottle body + liquid + note particles.
+ * No auto-rotation via useFrame — OrbitControls handles camera orbiting.
+ * Subtle breathing scale remains.
  */
 function BottleScene({
   composition,
@@ -168,114 +189,41 @@ function BottleScene({
 }) {
   const groupRef = useRef<Group>(null);
 
-  // Shared materials (memoized so they aren't recreated each frame)
-  const glassMaterial = useMemo(
-    () =>
-      new THREE.MeshPhysicalMaterial({
-        transmission: 0.9,
-        thickness: 0.5,
-        roughness: 0.05,
-        ior: 1.5,
-        metalness: 0,
-        color: new THREE.Color('#ffffff'),
-        transparent: true,
-        opacity: 0.35,
-        clearcoat: 1,
-        clearcoatRoughness: 0.1,
-        envMapIntensity: 0.3,
-      }),
+  // Clear glass body material for the create-perfume builder
+  const glassBodyMaterial = useMemo(
+    () => (
+      <meshPhysicalMaterial
+        transmission={0.92}
+        ior={1.5}
+        roughness={0.05}
+        thickness={0.4}
+        clearcoat={1}
+        clearcoatRoughness={0.1}
+        metalness={0}
+        color={new THREE.Color('#fef8e0')}
+        envMapIntensity={0.3}
+      />
+    ),
     []
   );
 
-  const capMaterial = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: new THREE.Color('#1a1a1a'),
-        metalness: 0.85,
-        roughness: 0.25,
-      }),
-    []
-  );
-
-  const goldAccentMaterial = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: new THREE.Color('#FFD700'),
-        metalness: 1,
-        roughness: 0.05,
-        emissive: new THREE.Color('#D4AF37'),
-        emissiveIntensity: 0.3,
-      }),
-    []
-  );
-
-  const neckMaterial = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: new THREE.Color('#B8860B'),
-        metalness: 0.95,
-        roughness: 0.08,
-      }),
-    []
-  );
-
-  // Subtle auto-rotation + breathing scale
+  // Subtle breathing scale only (no Y rotation — OrbitControls handles it)
   useFrame(({ clock }) => {
     if (!groupRef.current) return;
     const t = clock.getElapsedTime();
-    groupRef.current.rotation.y = t * 0.2;
-    const breathe = 1.0 + Math.sin(t * Math.PI) * 0.02; // 0.98-1.02 over ~2s
+    const breathe = 1.0 + Math.sin(t * Math.PI) * 0.02;
     groupRef.current.scale.set(breathe, breathe, breathe);
   });
 
   return (
     <group ref={groupRef}>
-      {/* Glass bottle body - capsule shape */}
-      <mesh castShadow receiveShadow>
-        <capsuleGeometry args={[0.55, 1.5, 8, 24]} />
-        <primitive object={glassMaterial} attach="material" />
-      </mesh>
+      {/* Realistic bottle geometry with clear glass body */}
+      <AquadorBottleGeometry bodyMaterial={glassBodyMaterial} showLabel />
 
-      {/* Shoulder taper */}
-      <mesh position={[0, 1.0, 0]}>
-        <cylinderGeometry args={[0.3, 0.48, 0.25, 24]} />
-        <primitive object={neckMaterial} attach="material" />
-      </mesh>
-
-      {/* Neck */}
-      <mesh position={[0, 1.25, 0]}>
-        <cylinderGeometry args={[0.18, 0.22, 0.3, 24]} />
-        <primitive object={neckMaterial} attach="material" />
-      </mesh>
-
-      {/* Cap (black) */}
-      <mesh position={[0, 1.52, 0]} castShadow>
-        <cylinderGeometry args={[0.26, 0.24, 0.3, 24]} />
-        <primitive object={capMaterial} attach="material" />
-      </mesh>
-
-      {/* Cap gold ring accent */}
-      <mesh position={[0, 1.68, 0]}>
-        <cylinderGeometry args={[0.22, 0.22, 0.04, 24]} />
-        <primitive object={goldAccentMaterial} attach="material" />
-      </mesh>
-
-      {/* Body gold band detail */}
-      <mesh position={[0, -0.2, 0]}>
-        <torusGeometry args={[0.56, 0.02, 8, 32]} />
-        <primitive object={goldAccentMaterial} attach="material" />
-      </mesh>
-
-      {/* Base ring */}
-      <mesh position={[0, -0.98, 0]}>
-        <torusGeometry args={[0.48, 0.02, 8, 32]} />
-        <primitive object={goldAccentMaterial} attach="material" />
-      </mesh>
-
-      {/* Liquid inside */}
+      {/* Liquid inside the glass body */}
       <Liquid composition={composition} activeLayer={activeLayer} />
 
-      {/* Orbiting note particles */}
+      {/* Orbiting note particles — orbit in world space around stationary bottle */}
       <NoteParticles composition={composition} />
     </group>
   );
@@ -289,15 +237,29 @@ export default function PerfumeBottle3D({
   return (
     <div className={`relative ${className}`} style={{ minHeight: 320 }}>
       <Canvas
+        shadows
         gl={{
           antialias: true,
           alpha: true,
           powerPreference: 'high-performance',
         }}
-        dpr={[1, 1.5]}
+        dpr={[1, 1.75]}
         style={{ width: '100%', height: '100%' }}
       >
         <PerspectiveCamera makeDefault position={[0, 0.3, 4.5]} fov={35} />
+
+        {/* Interactive drag rotation — zoom and pan disabled */}
+        <OrbitControls
+          enableZoom={false}
+          enablePan={false}
+          enableDamping
+          dampingFactor={0.1}
+          rotateSpeed={0.6}
+          autoRotate
+          autoRotateSpeed={0.4}
+          minPolarAngle={Math.PI * 0.2}
+          maxPolarAngle={Math.PI * 0.8}
+        />
 
         {/* Lighting rig — self-contained, no external HDRI */}
         <ambientLight intensity={0.55} color="#FFF0D0" />
@@ -323,6 +285,14 @@ export default function PerfumeBottle3D({
 
         <Suspense fallback={null}>
           <BottleScene composition={composition} activeLayer={activeLayer} />
+          {/* Contact shadow beneath the bottle for grounding */}
+          <ContactShadows
+            position={[0, -1.5, 0]}
+            opacity={0.5}
+            scale={6}
+            blur={2}
+            far={2}
+          />
         </Suspense>
       </Canvas>
     </div>

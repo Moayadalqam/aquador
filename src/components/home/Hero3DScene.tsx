@@ -1,12 +1,13 @@
 'use client';
 
 import { Canvas, useFrame } from '@react-three/fiber';
-import { PerspectiveCamera } from '@react-three/drei';
+import { PerspectiveCamera, OrbitControls, ContactShadows } from '@react-three/drei';
 import { Suspense, useRef, useMemo } from 'react';
 import { useTransform } from 'framer-motion';
 import type { MotionValue } from 'framer-motion';
 import type { Group } from 'three';
 import * as THREE from 'three';
+import { AquadorBottleGeometry } from '@/components/3d/AquadorBottleGeometry';
 
 interface Props {
   scrollYProgress: MotionValue<number>;
@@ -22,7 +23,13 @@ function GoldParticles({ scrollYProgress }: Props) {
 
   // Generate particle positions once
   const particles = useMemo(() => {
-    const items: Array<{ position: [number, number, number]; scale: number; orbitSpeed: number; orbitRadius: number; phase: number }> = [];
+    const items: Array<{
+      position: [number, number, number];
+      scale: number;
+      orbitSpeed: number;
+      orbitRadius: number;
+      phase: number;
+    }> = [];
     for (let i = 0; i < 24; i++) {
       const angle = (i / 24) * Math.PI * 2;
       const radius = 1.8 + Math.random() * 1.5;
@@ -72,112 +79,47 @@ function GoldParticles({ scrollYProgress }: Props) {
 }
 
 /**
- * Scroll-driven perfume bottle with gold metallic materials.
- * Rotates, scales, and translates based on scroll progress.
+ * Scroll-driven perfume bottle with gold metallic body.
+ *
+ * Scroll controls: scale, Y position, and X tilt.
+ * Y rotation is handled by OrbitControls autoRotate (no conflict).
  */
 function Bottle({ scrollYProgress }: Props) {
   const groupRef = useRef<Group>(null);
 
-  // Map scroll progress to bottle transforms
-  const rotationY = useTransform(scrollYProgress, [0, 1], [0, Math.PI * 2]);
+  // Map scroll progress to bottle transforms (no Y rotation — OrbitControls handles that)
   const rotationX = useTransform(scrollYProgress, [0, 0.5, 1], [0.15, 0, -0.15]);
   const scale = useTransform(scrollYProgress, [0, 0.3, 0.6, 1], [0.75, 1.05, 1.1, 0.85]);
   const positionY = useTransform(scrollYProgress, [0, 0.5, 1], [-0.3, 0.15, 0.5]);
 
-  // Subtle continuous idle float
+  // Apply scroll-driven scale, position, and tilt (not Y rotation)
   useFrame(({ clock }) => {
     if (!groupRef.current) return;
     const t = clock.getElapsedTime();
 
-    groupRef.current.rotation.y = rotationY.get() + Math.sin(t * 0.3) * 0.05;
     groupRef.current.rotation.x = rotationX.get();
     const s = scale.get();
     groupRef.current.scale.set(s, s, s);
     groupRef.current.position.y = positionY.get() + Math.sin(t * 0.6) * 0.04;
   });
 
-  // Shared gold material instances
-  const bodyMaterial = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: new THREE.Color('#D4AF37'),
-        metalness: 0.92,
-        roughness: 0.12,
-        emissive: new THREE.Color('#3a2a00'),
-        emissiveIntensity: 0.35,
-      }),
-    []
-  );
-
-  const darkGoldMaterial = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: new THREE.Color('#B8860B'),
-        metalness: 0.95,
-        roughness: 0.08,
-      }),
-    []
-  );
-
-  const capMaterial = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: new THREE.Color('#1a1a1a'),
-        metalness: 0.85,
-        roughness: 0.25,
-      }),
-    []
-  );
-
-  const accentMaterial = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: new THREE.Color('#FFD700'),
-        metalness: 1,
-        roughness: 0.05,
-        emissive: new THREE.Color('#D4AF37'),
-        emissiveIntensity: 0.2,
-      }),
+  // Gold metallic body material for the homepage bottle
+  const goldBodyMaterial = useMemo(
+    () => (
+      <meshStandardMaterial
+        color={new THREE.Color('#D4AF37')}
+        metalness={0.92}
+        roughness={0.15}
+        emissive={new THREE.Color('#3a2a00')}
+        emissiveIntensity={0.3}
+      />
+    ),
     []
   );
 
   return (
     <group ref={groupRef}>
-      {/* Body - elongated capsule shape */}
-      <mesh castShadow>
-        <capsuleGeometry args={[0.65, 1.5, 8, 16]} />
-        <primitive object={bodyMaterial} attach="material" />
-      </mesh>
-
-      {/* Shoulder taper */}
-      <mesh position={[0, 1.05, 0]}>
-        <cylinderGeometry args={[0.35, 0.55, 0.25, 16]} />
-        <primitive object={darkGoldMaterial} attach="material" />
-      </mesh>
-
-      {/* Neck */}
-      <mesh position={[0, 1.32, 0]}>
-        <cylinderGeometry args={[0.2, 0.26, 0.35, 16]} />
-        <primitive object={darkGoldMaterial} attach="material" />
-      </mesh>
-
-      {/* Cap */}
-      <mesh position={[0, 1.62, 0]} castShadow>
-        <cylinderGeometry args={[0.3, 0.28, 0.3, 16]} />
-        <primitive object={capMaterial} attach="material" />
-      </mesh>
-
-      {/* Cap top gold ring */}
-      <mesh position={[0, 1.78, 0]}>
-        <cylinderGeometry args={[0.26, 0.26, 0.04, 16]} />
-        <primitive object={accentMaterial} attach="material" />
-      </mesh>
-
-      {/* Body gold band detail */}
-      <mesh position={[0, -0.2, 0]}>
-        <torusGeometry args={[0.66, 0.025, 8, 32]} />
-        <primitive object={accentMaterial} attach="material" />
-      </mesh>
+      <AquadorBottleGeometry bodyMaterial={goldBodyMaterial} showLabel />
     </group>
   );
 }
@@ -186,14 +128,28 @@ export default function Hero3DScene({ scrollYProgress }: Props) {
   return (
     <div className="absolute inset-0" aria-hidden="true">
       <Canvas
+        shadows
         gl={{
           antialias: true,
           alpha: true,
           powerPreference: 'high-performance',
         }}
-        dpr={[1, 1.5]}
+        dpr={[1, 1.75]}
       >
         <PerspectiveCamera makeDefault position={[0, 0.2, 5]} fov={35} />
+
+        {/* Interactive drag rotation — zoom and pan disabled for simplicity */}
+        <OrbitControls
+          enableZoom={false}
+          enablePan={false}
+          enableDamping
+          dampingFactor={0.1}
+          rotateSpeed={0.6}
+          autoRotate
+          autoRotateSpeed={0.4}
+          minPolarAngle={Math.PI * 0.2}
+          maxPolarAngle={Math.PI * 0.8}
+        />
 
         {/* Lighting rig for luxury gold look — self-contained, no external HDRI */}
         <ambientLight intensity={0.55} color="#FFF0D0" />
@@ -220,6 +176,14 @@ export default function Hero3DScene({ scrollYProgress }: Props) {
         <Suspense fallback={null}>
           <Bottle scrollYProgress={scrollYProgress} />
           <GoldParticles scrollYProgress={scrollYProgress} />
+          {/* Contact shadow beneath the bottle for grounding */}
+          <ContactShadows
+            position={[0, -1.5, 0]}
+            opacity={0.5}
+            scale={6}
+            blur={2}
+            far={2}
+          />
         </Suspense>
       </Canvas>
     </div>
