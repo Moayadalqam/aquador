@@ -2,8 +2,7 @@ import { MetadataRoute } from 'next';
 import { createClient } from '@supabase/supabase-js';
 import { getAllProductSlugs } from '@/lib/supabase/product-service';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://aquadorcy.com';
@@ -16,6 +15,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { route: '/shop/men', priority: 0.8, changeFrequency: 'daily' as const },
     { route: '/shop/niche', priority: 0.8, changeFrequency: 'daily' as const },
     { route: '/shop/lattafa', priority: 0.8, changeFrequency: 'daily' as const },
+    { route: '/shop/al-haramain-originals', priority: 0.8, changeFrequency: 'daily' as const },
+    { route: '/shop/gender/women', priority: 0.8, changeFrequency: 'daily' as const },
+    { route: '/shop/gender/men', priority: 0.8, changeFrequency: 'daily' as const },
+    { route: '/shop/gender/unisex', priority: 0.7, changeFrequency: 'daily' as const },
     { route: '/create-perfume', priority: 0.8, changeFrequency: 'weekly' as const },
     { route: '/reorder', priority: 0.7, changeFrequency: 'monthly' as const },
     { route: '/blog', priority: 0.8, changeFrequency: 'daily' as const },

@@ -43,6 +43,18 @@ export async function getBlogPosts(params: BlogListParams = {}) {
   };
 }
 
+// Get all published blog slugs for static generation
+export async function getAllBlogSlugs(): Promise<string[]> {
+  const supabase = createPublicClient();
+  const { data, error } = await supabase
+    .from('blog_posts')
+    .select('slug')
+    .eq('status', 'published');
+
+  if (error || !data) return [];
+  return data.map((row) => row.slug);
+}
+
 export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> {
   const supabase = createPublicClient();
 

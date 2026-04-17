@@ -6,16 +6,16 @@ See: .planning/PROJECT.md (updated 2026-04-11)
 
 **Core value:** A customer completes a purchase and knows it worked — they see their order details on screen, receive a confirmation email, and the store is notified. No silent failures, no misleading messages, no security holes.
 
-**Current focus:** v3.0 Client Feedback Round — Brand corrections, navigation restructure, content fixes, search repair, design polish
+**Current focus:** v3.1 Quality & SEO Polish — Performance, a11y, Dubai Shop rebrand, motion polish, merchant-grade SEO
 
 ## Current Position
 
-Phase: 22 of 22 (Design Polish & Trust) — Built
-Plan: All phases complete
-Status: v3.0 all 5 phases built — merging to main and deploying
-Last activity: 2026-04-11 - All phases built (18-22)
+Phase: 26 of 26 (SEO Hardening) — Built
+Plan: v3.1 all 4 phases complete
+Status: v3.1 shipped — perf/a11y, Dubai rebrand, motion polish, SEO hardening
+Last activity: 2026-04-17 - v3.1 built + verified
 
-Progress: [████████████████████] 100% (5/5 phases built)
+Progress: [████████████████████] 100% (4/4 phases built)
 
 ## Milestones
 
@@ -23,17 +23,65 @@ Progress: [████████████████████] 100% (5
 - ✅ **v1.1** Security Audit Remediation — shipped 2026-03-03
 - ✅ **v1.2** Design Overhaul & Premium UX — shipped 2026-03-04
 - ✅ **v2.0** Immersive Luxury Experience — COMPLETE (Phases 13-17, 2026-03-09)
-- 🔄 **v3.0** Client Feedback Round — started 2026-04-11
+- ✅ **v3.0** Client Feedback Round — shipped 2026-04-11 (Phases 18-22)
+- 🔄 **v3.1** Quality & SEO Polish — built 2026-04-17 (Phases 23-26)
 
-## v3.0 Phases
+## v3.1 Phases
 
 | Phase | Name | Status |
 |-------|------|--------|
-| 18 | Brand Identity & Header | ✅ Built |
-| 19 | Navigation & Menu Structure | ✅ Built |
-| 20 | Homepage Content Sections | ✅ Built |
-| 21 | Search & Product Data | ✅ Built |
-| 22 | Design Polish & Trust | ✅ Built |
+| 23 | Performance & A11y Quick Wins | ✅ Built |
+| 24 | Dubai Shop Rebrand + Variant Selector | ✅ Built |
+| 25 | Motion & UX Polish | ✅ Built |
+| 26 | SEO Hardening | ✅ Built |
+
+### Phase 23 — Performance & A11y
+- Blog SSG via generateStaticParams + 300s revalidate
+- Removed duplicate homepage metadata (single canonical)
+- Deleted orphaned CTASection
+- aria-current on nav, Footer nav landmark, global focus-visible ring
+- sizes prop on all `<Image fill />` usages
+- Font-weight audit (kept — all weights in use)
+
+### Phase 24 — Dubai Shop + Variants
+- CRITICAL: 100ml variant €49.99 → €199.00 + PRICE constant
+- Branded-product "Volume:" pill for visual consistency
+- Cart quantity buttons 28px → 44px (WCAG AA touch target)
+- Variant selector: radiogroup + aria-pressed + aria-label
+- NEW: ArabianPattern SVG (girih tessellation)
+- NEW: DubaiShopHero (dark gold-on-black, full-bleed pattern)
+- NEW: CuratedHousesStrip (Al Haramain / Xerjoff / Niche)
+
+### Phase 25 — Motion Polish
+- Fixed `once: false` re-trigger jank in CreateSection
+- Added `amount` threshold on FeaturedProducts viewport
+- Footer cascade reveal (stagger across 4 columns)
+- willChange GPU hints on parallax motion elements
+- CheckoutButton loading: AnimatePresence + loadingVariants
+- NEW: /create-perfume/success/loading.tsx skeleton
+- NEW: AnimatedLink primitive (underline-draw hover)
+- Reduced-motion guards in CreateSection + audit report
+
+### Phase 26 — SEO Hardening
+- Robots: +checkout, +maintenance, +monitoring, +AI crawlers (GPTBot/CCBot/Google-Extended)
+- Sitemap: +gender routes, +al-haramain-originals, hourly ISR
+- Noindex on /admin, /checkout, /maintenance
+- NEW: Merchant-grade Product schema (priceValidUntil, hasMerchantReturnPolicy, shippingDetails, itemCondition)
+- NEW: CollectionPage + ItemList on shop/category/gender/lattafa/blog
+- NEW: AboutPage / ContactPage / WebPage+Speakable / Service schemas
+- Locale en_US → en_CY + hreflang (en-CY, en-GB, x-default) + theme-color
+- NEW: Dynamic OG routes /api/og + /api/og/product/[slug]
+- Breadcrumb fix: "Dubai Shop" → "Shop" (UI + JSON-LD alignment)
+
+## v3.0 Phases (shipped 2026-04-11)
+
+| Phase | Name | Status |
+|-------|------|--------|
+| 18 | Brand Identity & Header | ✅ Shipped |
+| 19 | Navigation & Menu Structure | ✅ Shipped |
+| 20 | Homepage Content Sections | ✅ Shipped |
+| 21 | Search & Product Data | ✅ Shipped |
+| 22 | Design Polish & Trust | ✅ Shipped |
 
 ### Phase 18 — Brand Identity & Header
 - Replace logo with icon-only version (gold, high contrast) on mobile + desktop

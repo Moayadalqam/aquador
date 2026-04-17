@@ -1,12 +1,17 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getBlogPostBySlug, getRelatedPosts } from '@/lib/blog';
+import { getAllBlogSlugs, getBlogPostBySlug, getRelatedPosts } from '@/lib/blog';
 import BlogPostContent from './BlogPostContent';
 
-export const revalidate = 60; // Revalidate every 60 seconds (ISR)
+export const revalidate = 300; // Revalidate every 5 minutes (ISR)
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
+}
+
+export async function generateStaticParams() {
+  const slugs = await getAllBlogSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {

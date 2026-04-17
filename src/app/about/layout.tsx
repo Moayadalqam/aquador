@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { aboutPageSchema, jsonLdString } from '@/lib/seo/page-schemas';
 
 export const metadata: Metadata = {
   title: "About Us | Aquad'or - Luxury Perfume House in Cyprus",
@@ -21,5 +22,13 @@ export const metadata: Metadata = {
 };
 
 export default function AboutLayout({ children }: { children: React.ReactNode }) {
-  return children;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdString(aboutPageSchema) }}
+      />
+      {children}
+    </>
+  );
 }

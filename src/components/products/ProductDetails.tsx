@@ -59,10 +59,16 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
         {isAquador ? (
           <span className="text-sm text-gray-400">{variant.label} · {variant.size}</span>
         ) : (
-          <span className="text-sm text-gray-400">
-            {productTypeLabel(product.productType)} · {product.size}
+          <span className="inline-flex items-center gap-2 text-sm text-gray-400">
+            <span>{productTypeLabel(product.productType)}</span>
+            <span
+              className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full border border-gold/20 bg-gold/5 text-[11px] uppercase tracking-[0.12em] text-gold-600"
+            >
+              <span className="text-gray-400 normal-case tracking-normal">Volume:</span>
+              <span className="font-medium">{product.size}</span>
+            </span>
             {product.salePrice && product.salePrice < product.price && (
-              <span className="ml-2 line-through text-gray-300">{formatPrice(product.price)}</span>
+              <span className="line-through text-gray-300">{formatPrice(product.price)}</span>
             )}
           </span>
         )}

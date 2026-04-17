@@ -59,7 +59,7 @@ export default function Categories() {
                 >
                   <motion.div
                     className={`absolute inset-0 ${feature.contain ? 'bg-[#1a1a1a]' : ''}`}
-                    style={{ y: reducedMotion ? 0 : y1 }}
+                    style={{ y: reducedMotion ? 0 : y1, willChange: reducedMotion ? 'auto' : 'transform' }}
                   >
                     <Image
                       src={feature.image}
@@ -112,7 +112,7 @@ export default function Categories() {
                     >
                       <motion.div
                         className={`absolute inset-0 ${category.contain ? 'bg-[#1a1a1a]' : ''}`}
-                        style={{ y: reducedMotion ? 0 : y2 }}
+                        style={{ y: reducedMotion ? 0 : y2, willChange: reducedMotion ? 'auto' : 'transform' }}
                       >
                         <Image
                           src={category.image}

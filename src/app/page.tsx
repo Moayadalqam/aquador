@@ -1,19 +1,9 @@
-import { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 import { getFeaturedAquadorProducts, getFeaturedLattafaProducts } from '@/lib/supabase/product-service';
 import Hero from '@/components/home/Hero';
 import TrustBar from '@/components/home/TrustBar';
 import Categories from '@/components/home/Categories';
 import CreateSection from '@/components/home/CreateSection';
-
-
-export const metadata: Metadata = {
-  title: "Aquad'or | Luxury Perfumes & Niche Fragrances Cyprus",
-  description: "Scent of Luxury. Discover our curated collection of high-end and niche perfumes, or create your own signature fragrance at Aquad'or Cyprus, Nicosia.",
-  alternates: {
-    canonical: 'https://aquadorcy.com',
-  },
-};
 
 const FeaturedProducts = dynamic(() => import('@/components/home/FeaturedProducts'), {
   ssr: true,

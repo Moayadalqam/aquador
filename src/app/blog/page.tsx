@@ -1,8 +1,9 @@
 import { Metadata } from 'next';
 import { getBlogPosts, getBlogCategories, getFeaturedPost } from '@/lib/blog';
+import { buildBlogSchema, buildBreadcrumbList, jsonLdScript } from '@/lib/seo/listing-schema';
 import BlogListContent from './BlogListContent';
 
-export const revalidate = 60; // Revalidate every 60 seconds (ISR)
+export const revalidate = 300; // Revalidate every 5 minutes (ISR)
 
 export const metadata: Metadata = {
   title: 'Blog | The Art of Scent',
@@ -39,14 +40,37 @@ export default async function BlogPage({
     !category && page === 1 ? getFeaturedPost() : Promise.resolve(null),
   ]);
 
+  const breadcrumbSchema = buildBreadcrumbList([
+    { name: 'Home', url: 'https://aquadorcy.com' },
+    { name: 'Blog', url: 'https://aquadorcy.com/blog' },
+  ]);
+
+  const blogSchema = buildBlogSchema(
+    posts.map(p => ({
+      title: p.title,
+      slug: p.slug,
+      cover_image: p.cover_image,
+    }))
+  );
+
   return (
-    <BlogListContent
-      posts={posts}
-      categories={categories}
-      featuredPost={featuredPost}
-      currentPage={page}
-      totalPages={totalPages}
-      activeCategory={category || null}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(breadcrumbSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(blogSchema) }}
+      />
+      <BlogListContent
+        posts={posts}
+        categories={categories}
+        featuredPost={featuredPost}
+        currentPage={page}
+        totalPages={totalPages}
+        activeCategory={category || null}
+      />
+    </>
   );
 }

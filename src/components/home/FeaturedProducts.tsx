@@ -130,7 +130,7 @@ export default function FeaturedProducts({
           className="mt-16 md:mt-20 flex flex-col sm:flex-row items-center justify-between gap-6"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, amount: 0.3 }}
           transition={{ delay: 0.3 }}
         >
           <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent hidden sm:block" />

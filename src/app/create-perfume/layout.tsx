@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { createPerfumeServiceSchema, jsonLdString } from '@/lib/seo/page-schemas';
 
 export const metadata: Metadata = {
   title: "Create Your Own Perfume | Aquad'or Bespoke Fragrance Atelier",
@@ -21,5 +22,13 @@ export const metadata: Metadata = {
 };
 
 export default function CreatePerfumeLayout({ children }: { children: React.ReactNode }) {
-  return children;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdString(createPerfumeServiceSchema) }}
+      />
+      {children}
+    </>
+  );
 }

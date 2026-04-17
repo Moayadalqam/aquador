@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { contactPageSchema, jsonLdString } from '@/lib/seo/page-schemas';
 
 export const metadata: Metadata = {
   title: "Contact Us | Aquad'or - Visit Our Nicosia Boutique",
@@ -21,5 +22,13 @@ export const metadata: Metadata = {
 };
 
 export default function ContactLayout({ children }: { children: React.ReactNode }) {
-  return children;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdString(contactPageSchema) }}
+      />
+      {children}
+    </>
+  );
 }

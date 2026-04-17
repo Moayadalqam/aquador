@@ -344,6 +344,7 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
                   src={formData.image}
                   alt="Product"
                   fill
+                  sizes="(max-width: 1024px) 100vw, 400px"
                   className="object-cover rounded-lg"
                   unoptimized
                 />

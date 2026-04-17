@@ -65,18 +65,18 @@ export default function CreateSection() {
           <div className="max-w-2xl">
             <motion.p
               className="eyebrow text-gold-on-dark mb-4"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: false, amount: 0.5 }}
+              initial={reducedMotion ? { opacity: 1 } : { opacity: 0 }}
+              whileInView={reducedMotion ? { opacity: 1 } : { opacity: 1 }}
+              viewport={{ once: true, amount: 0.4 }}
               transition={{ duration: 0.6 }}
             >
               Bespoke Perfumery
             </motion.p>
             <motion.h2
               className="font-playfair text-3xl md:text-4xl lg:text-5xl text-gradient-gold mb-5 leading-tight"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: false, amount: 0.5 }}
+              initial={reducedMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
+              whileInView={reducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.4 }}
               transition={{ duration: 0.7, delay: 0.1 }}
             >
               Create Your Signature
@@ -84,9 +84,9 @@ export default function CreateSection() {
             <div className="w-12 h-px bg-gold mb-5" />
             <motion.p
               className="text-gray-400 text-base md:text-lg leading-relaxed"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: false, amount: 0.5 }}
+              initial={reducedMotion ? { opacity: 1 } : { opacity: 0 }}
+              whileInView={reducedMotion ? { opacity: 1 } : { opacity: 1 }}
+              viewport={{ once: true, amount: 0.4 }}
               transition={{ duration: 0.7, delay: 0.2 }}
             >
               Design a perfume that&apos;s uniquely yours. Select from our premium notes and craft your personal masterpiece.
@@ -99,8 +99,8 @@ export default function CreateSection() {
           {stages.map((stage, index) => (
             <motion.div
               key={stage.title}
-              initial={{ opacity: 0, clipPath: 'inset(100% 0 0 0)' }}
-              whileInView={{ opacity: 1, clipPath: 'inset(0% 0 0 0)' }}
+              initial={reducedMotion ? { opacity: 1 } : { opacity: 0, clipPath: 'inset(100% 0 0 0)' }}
+              whileInView={reducedMotion ? { opacity: 1 } : { opacity: 1, clipPath: 'inset(0% 0 0 0)' }}
               viewport={{ once: true, amount: 0.15 }}
               transition={{
                 duration: 1,
@@ -113,7 +113,7 @@ export default function CreateSection() {
                 <div className="relative aspect-[3/4] md:aspect-[4/5] overflow-hidden">
                   <motion.div
                     className="absolute inset-0"
-                    style={{ y: reducedMotion ? 0 : bgY, scale: 1.15 }}
+                    style={{ y: reducedMotion ? 0 : bgY, scale: 1.15, willChange: reducedMotion ? 'auto' : 'transform' }}
                   >
                     <Image
                       src={stage.image}

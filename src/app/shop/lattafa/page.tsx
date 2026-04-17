@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { getProductsByCategory } from '@/lib/supabase/product-service';
+import { buildCollectionPage, buildBreadcrumbList, jsonLdScript } from '@/lib/seo/listing-schema';
 import LattafaContent from './LattafaContent';
 
 export const revalidate = 1800;
@@ -57,5 +58,35 @@ export default async function LattafaPage() {
     );
   }
 
-  return <LattafaContent products={products} />;
+  const breadcrumbSchema = buildBreadcrumbList([
+    { name: 'Home', url: 'https://aquadorcy.com' },
+    { name: 'Shop', url: 'https://aquadorcy.com/shop' },
+    { name: 'Lattafa Originals', url: 'https://aquadorcy.com/shop/lattafa' },
+  ]);
+
+  const collectionSchema = buildCollectionPage({
+    name: 'Lattafa Originals Perfumes',
+    description: "Authentic Arabian fragrances crafted with the finest ingredients. Original Lattafa Perfumes collection at Aquad'or Cyprus.",
+    url: 'https://aquadorcy.com/shop/lattafa',
+    items: products.map(p => ({
+      name: p.name,
+      slug: p.id,
+      image: p.image,
+    })),
+    itemUrlPrefix: '/products',
+  });
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(breadcrumbSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(collectionSchema) }}
+      />
+      <LattafaContent products={products} />
+    </>
+  );
 }

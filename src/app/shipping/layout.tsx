@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { shippingPageSchema, jsonLdString } from '@/lib/seo/page-schemas';
 
 export const metadata: Metadata = {
   title: "Shipping & Returns",
@@ -14,5 +15,13 @@ export const metadata: Metadata = {
 };
 
 export default function ShippingLayout({ children }: { children: React.ReactNode }) {
-  return children;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdString(shippingPageSchema) }}
+      />
+      {children}
+    </>
+  );
 }
