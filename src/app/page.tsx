@@ -1,13 +1,9 @@
-import dynamic from 'next/dynamic';
 import { getFeaturedAquadorProducts, getFeaturedLattafaProducts } from '@/lib/supabase/product-service';
 import Hero from '@/components/home/Hero';
 import TrustBar from '@/components/home/TrustBar';
 import Categories from '@/components/home/Categories';
 import CreateSection from '@/components/home/CreateSection';
-
-const FeaturedProducts = dynamic(() => import('@/components/home/FeaturedProducts'), {
-  ssr: true,
-});
+import FeaturedProducts from '@/components/home/FeaturedProducts';
 
 export const revalidate = 600;
 

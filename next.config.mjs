@@ -15,7 +15,7 @@ const nextConfig = {
   // - Page transitions: < 300ms total duration
 
   experimental: {
-    optimizePackageImports: ['framer-motion', 'lucide-react'],
+    optimizePackageImports: ['framer-motion', 'lucide-react', 'three', '@react-three/drei'],
   },
 
   images: {
