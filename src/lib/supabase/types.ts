@@ -443,6 +443,16 @@ export type Database = {
         }
         Returns: boolean
       }
+      upsert_customer_on_order: {
+        Args: {
+          p_email: string
+          p_name?: string | null
+          p_phone?: string | null
+          p_order_total?: number
+          p_shipping?: Json | null
+        }
+        Returns: string
+      }
     }
     Enums: {
       admin_role: "admin" | "super_admin"

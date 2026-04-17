@@ -100,47 +100,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Upsert customer
-    const now = new Date().toISOString();
+    // Atomic customer upsert via RPC (eliminates race condition)
     const email = orderData.customerEmail.trim().toLowerCase();
+    const { error: customerError } = await supabase.rpc('upsert_customer_on_order', {
+      p_email: email,
+      p_name: orderData.customerName?.trim() || null,
+      p_phone: orderData.customerPhone?.trim() || null,
+      p_order_total: Math.round(orderData.total * 100),
+      p_shipping: orderData.shippingAddress
+        ? JSON.parse(JSON.stringify(orderData.shippingAddress))
+        : null,
+    });
 
-    const { data: existing } = await supabase
-      .from('customers')
-      .select('id, total_orders, total_spent, shipping_addresses')
-      .eq('email', email)
-      .single();
-
-    if (existing) {
-      const addresses = (existing.shipping_addresses as unknown[]) || [];
-      if (orderData.shippingAddress?.address) {
-        const addrStr = JSON.stringify(orderData.shippingAddress);
-        const alreadyStored = addresses.some(a => JSON.stringify(a) === addrStr);
-        if (!alreadyStored) addresses.push(orderData.shippingAddress);
-      }
-
-      await supabase
-        .from('customers')
-        .update({
-          name: orderData.customerName?.trim() || undefined,
-          ...(orderData.customerPhone ? { phone: orderData.customerPhone.trim() } : {}),
-          total_orders: existing.total_orders + 1,
-          total_spent: existing.total_spent + Math.round(orderData.total * 100),
-          last_order_at: now,
-          shipping_addresses: JSON.parse(JSON.stringify(addresses)),
-        })
-        .eq('id', existing.id);
-    } else {
-      await supabase.from('customers').insert({
-        email,
-        name: orderData.customerName?.trim() || null,
-        phone: orderData.customerPhone?.trim() || null,
-        total_orders: 1,
-        total_spent: Math.round(orderData.total * 100),
-        first_order_at: now,
-        last_order_at: now,
-        shipping_addresses: orderData.shippingAddress
-          ? JSON.parse(JSON.stringify([orderData.shippingAddress]))
-          : [],
+    if (customerError) {
+      Sentry.captureMessage('Customer upsert RPC failed', {
+        level: 'warning',
+        extra: { customerError, email },
       });
     }
 

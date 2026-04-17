@@ -72,45 +72,19 @@ async function persistOrder(
       return { isNewOrder: false };
     }
 
-    // Upsert customer
-    const now = new Date().toISOString();
-    const { data: existing } = await supabase
-      .from('customers')
-      .select('id, total_orders, total_spent, shipping_addresses')
-      .eq('email', customerEmail)
-      .single();
+    // Atomic customer upsert via RPC (eliminates race condition)
+    const { error: customerError } = await supabase.rpc('upsert_customer_on_order', {
+      p_email: customerEmail,
+      p_name: customerName || null,
+      p_phone: customerPhone || null,
+      p_order_total: session.amount_total || 0,
+      p_shipping: shippingAddress ? JSON.parse(JSON.stringify(shippingAddress)) : null,
+    });
 
-    if (existing) {
-      const addresses = (existing.shipping_addresses as ShippingAddress[]) || [];
-      if (shippingAddress?.address) {
-        const addrStr = JSON.stringify(shippingAddress);
-        const alreadyStored = addresses.some(a => JSON.stringify(a) === addrStr);
-        if (!alreadyStored) addresses.push(shippingAddress);
-      }
-
-      await supabase
-        .from('customers')
-        .update({
-          name: customerName || undefined,
-          total_orders: existing.total_orders + 1,
-          total_spent: existing.total_spent + (session.amount_total || 0),
-          last_order_at: now,
-          shipping_addresses: JSON.parse(JSON.stringify(addresses)),
-          ...(customerPhone ? { phone: customerPhone } : {}),
-        })
-        .eq('id', existing.id);
-    } else {
-      await supabase.from('customers').insert({
-        email: customerEmail,
-        name: customerName || null,
-        phone: customerPhone,
-        total_orders: 1,
-        total_spent: session.amount_total || 0,
-        first_order_at: now,
-        last_order_at: now,
-        shipping_addresses: shippingAddress
-          ? JSON.parse(JSON.stringify([shippingAddress]))
-          : [],
+    if (customerError) {
+      Sentry.captureMessage('Customer upsert RPC failed', {
+        level: 'warning',
+        extra: { customerError, email: customerEmail, sessionId: session.id },
       });
     }
 
