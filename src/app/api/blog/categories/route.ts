@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
+import * as Sentry from '@sentry/nextjs';
 import { getBlogCategories } from '@/lib/blog';
+import { formatApiError } from '@/lib/api-utils';
 
 export async function GET() {
   try {
@@ -8,9 +10,9 @@ export async function GET() {
     response.headers.set('Cache-Control', 'public, s-maxage=600, stale-while-revalidate=86400');
     return response;
   } catch (error) {
-    console.error('Blog categories GET error:', error);
+    Sentry.captureException(error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Internal server error' },
+      formatApiError(error, 'Failed to fetch blog categories'),
       { status: 500 }
     );
   }

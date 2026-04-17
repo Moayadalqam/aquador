@@ -1,8 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
+import * as Sentry from '@sentry/nextjs';
 import { timingSafeEqual } from 'crypto';
 import { z } from 'zod';
 import { checkRateLimit } from '@/lib/rate-limit';
+import { formatApiError } from '@/lib/api-utils';
 
 const SetupSchema = z.object({
   email: z.string().email(),
@@ -101,9 +103,9 @@ export async function POST(request: NextRequest) {
       email
     });
   } catch (error) {
-    console.error('Admin setup error:', error);
+    Sentry.captureException(error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Internal server error' },
+      formatApiError(error, 'Admin setup failed'),
       { status: 500 }
     );
   }
@@ -159,9 +161,9 @@ export async function PUT(request: NextRequest) {
       email
     });
   } catch (error) {
-    console.error('Admin password update error:', error);
+    Sentry.captureException(error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Internal server error' },
+      formatApiError(error, 'Password update failed'),
       { status: 500 }
     );
   }

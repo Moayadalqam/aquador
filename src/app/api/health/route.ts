@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+import * as Sentry from '@sentry/nextjs';
+import { formatApiError } from '@/lib/api-utils';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'edge';
@@ -18,9 +20,9 @@ export async function GET() {
       },
     });
   } catch (error) {
-    console.error('Health check error:', error);
+    Sentry.captureException(error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Internal server error' },
+      formatApiError(error, 'Health check failed'),
       { status: 500 }
     );
   }

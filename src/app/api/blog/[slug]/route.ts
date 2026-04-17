@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
+import * as Sentry from '@sentry/nextjs';
 import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
 import { estimateReadTime } from '@/lib/blog';
+import { formatApiError } from '@/lib/api-utils';
 import { z } from 'zod';
 
 export const maxDuration = 10;
@@ -62,9 +64,9 @@ export async function GET(
     }
     return response;
   } catch (error) {
-    console.error('Blog slug GET error:', error);
+    Sentry.captureException(error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Internal server error' },
+      formatApiError(error, 'Failed to fetch blog post'),
       { status: 500 }
     );
   }
@@ -128,9 +130,9 @@ export async function PUT(
 
     return NextResponse.json(data);
   } catch (error) {
-    console.error('Blog slug PUT error:', error);
+    Sentry.captureException(error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Internal server error' },
+      formatApiError(error, 'Failed to update blog post'),
       { status: 500 }
     );
   }
@@ -173,9 +175,9 @@ export async function DELETE(
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Blog slug DELETE error:', error);
+    Sentry.captureException(error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Internal server error' },
+      formatApiError(error, 'Failed to delete blog post'),
       { status: 500 }
     );
   }
