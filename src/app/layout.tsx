@@ -12,8 +12,13 @@ import { ErrorBoundary, AbortErrorSuppressor } from "@/components/providers/Erro
 import VisitorTracker from "@/components/VisitorTracker";
 import { PageTransition } from "@/components/providers/PageTransition";
 import { ScrollDepthTracker } from "@/components/analytics/ScrollDepthTracker";
+import ScrollProgress from "@/components/ui/ScrollProgress";
 
 const ChatWidget = dynamic(() => import("@/components/ai/ChatWidget"), {
+  ssr: false,
+});
+
+const WelcomeSplash = dynamic(() => import("@/components/ui/WelcomeSplash"), {
   ssr: false,
 });
 
@@ -134,6 +139,8 @@ export default function RootLayout({
         >
           Skip to content
         </a>
+        <ScrollProgress />
+        <WelcomeSplash />
         <AbortErrorSuppressor />
         <ErrorBoundary>
           <CartProvider>

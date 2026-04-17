@@ -1,4 +1,5 @@
 import { getFeaturedAquadorProducts, getFeaturedLattafaProducts } from '@/lib/supabase/product-service';
+import dynamic from 'next/dynamic';
 import Hero from '@/components/home/Hero';
 import TrustBar from '@/components/home/TrustBar';
 import Categories from '@/components/home/Categories';
@@ -6,6 +7,10 @@ import CreateSection from '@/components/home/CreateSection';
 import FeaturedProducts from '@/components/home/FeaturedProducts';
 import { AnimationBudgetProvider } from '@/lib/performance/animation-budget';
 import JsonLd from '@/components/seo/JsonLd';
+
+const Hero3DScroll = dynamic(() => import('@/components/home/Hero3DScroll'), {
+  ssr: false,
+});
 
 export const revalidate = 600;
 
@@ -121,6 +126,7 @@ export default async function Home() {
       <JsonLd schema={websiteSchema} />
       <JsonLd schema={localBusinessSchema} />
       <Hero />
+      <Hero3DScroll />
       <TrustBar />
       <Categories />
       <CreateSection />

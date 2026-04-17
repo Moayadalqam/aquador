@@ -6,6 +6,7 @@ import Button from '@/components/ui/Button';
 import { ParallaxSection } from '@/components/ui/ParallaxSection';
 import { cinematicVariants, revealVariants } from '@/lib/animations/cinematic';
 import { useAnimationBudget } from '@/lib/performance/animation-budget';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useState, useRef } from 'react';
 
 export default function Hero() {
@@ -13,6 +14,7 @@ export default function Hero() {
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { amount: 0.1 });
   const { shouldUseSimplifiedAnimations } = useAnimationBudget();
+  const reducedMotion = useReducedMotion();
 
   return (
     <motion.section
@@ -65,11 +67,11 @@ export default function Hero() {
               filter: 'blur(40px)',
               willChange: isInView ? 'transform, opacity' : 'auto',
             }}
-            animate={isInView ? {
+            animate={isInView && !reducedMotion ? {
               scale: [1, 1.08, 1],
               opacity: [0.6, 1, 0.6],
-            } : { scale: 1, opacity: 0.6 }}
-            transition={isInView ? {
+            } : { scale: 1, opacity: 0.8 }}
+            transition={isInView && !reducedMotion ? {
               duration: 8,
               repeat: Infinity,
               ease: 'easeInOut',
