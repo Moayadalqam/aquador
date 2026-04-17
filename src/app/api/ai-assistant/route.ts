@@ -29,6 +29,13 @@ const aiAssistantSchema = z.object({
   message: 'Messages or query required',
 });
 
+// Pre-compute keyword list at module scope (avoids recomputing on every request)
+const ALL_KEYWORDS = (() => {
+  const baseNotes = ['jasmine', 'rose', 'vanilla', 'oud', 'musk', 'leather', 'amber', 'sandalwood', 'tobacco', 'cherry', 'floral', 'fruity', 'woody'];
+  const brandKeywords = getAllBrands().flatMap(b => b.toLowerCase().split(/\s+/)).filter(w => w.length > 2);
+  return Array.from(new Set([...baseNotes, ...brandKeywords]));
+})();
+
 const SYSTEM_PROMPT = `You are a concise fragrance consultant for Aquad'or Cyprus. You know our ${catalogueProducts.length} products from ${getAllBrands().length} brands.
 
 **Response Rules:**
@@ -90,10 +97,7 @@ export async function POST(request: NextRequest) {
     const userMessage = conversationMessages[conversationMessages.length - 1].content.toLowerCase();
 
     // Expanded keyword matching: fragrance notes + all brand name words
-    const baseNotes = ['jasmine', 'rose', 'vanilla', 'oud', 'musk', 'leather', 'amber', 'sandalwood', 'tobacco', 'cherry', 'floral', 'fruity', 'woody'];
-    const brandKeywords = getAllBrands().flatMap(b => b.toLowerCase().split(/\s+/)).filter(w => w.length > 2);
-    const allKeywords = Array.from(new Set([...baseNotes, ...brandKeywords]));
-    const mentionedKeywords = allKeywords.filter(kw => userMessage.includes(kw));
+    const mentionedKeywords = ALL_KEYWORDS.filter(kw => userMessage.includes(kw));
 
     if (mentionedKeywords.length > 0) {
       const relevantProducts = searchByKeywords(mentionedKeywords);

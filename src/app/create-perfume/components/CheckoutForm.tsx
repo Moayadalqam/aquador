@@ -130,6 +130,8 @@ export function CheckoutForm({
               onChange={(e) => onPerfumeNameChange(e.target.value)}
               placeholder="Name your creation..."
               maxLength={30}
+              aria-invalid={!!error && !perfumeName}
+              aria-describedby={error && !perfumeName ? 'checkout-error' : undefined}
               className="w-full rounded-lg border border-amber-900/30 bg-white/5 px-4 py-3.5 text-white placeholder-gray-600
                          transition-all duration-300
                          focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-400/50
@@ -146,7 +148,12 @@ export function CheckoutForm({
             initial={reducedMotion ? undefined : 'initial'}
             animate={reducedMotion ? undefined : 'animate'}
           >
-            <fieldset role="radiogroup" aria-label="Volume">
+            <fieldset
+              role="radiogroup"
+              aria-label="Volume"
+              aria-invalid={!!error && !selectedVolume}
+              aria-describedby={error && !selectedVolume ? 'checkout-error' : undefined}
+            >
               <legend className="mb-3 block text-xs text-gray-400 tracking-[0.15em] uppercase">
                 Select Volume *
               </legend>
@@ -196,6 +203,7 @@ export function CheckoutForm({
               placeholder="Any special requests for your fragrance..."
               maxLength={500}
               rows={4}
+              aria-describedby={error ? 'checkout-error' : undefined}
               className="w-full rounded-lg border border-amber-900/30 bg-white/5 px-4 py-3.5 text-white placeholder-gray-600
                          transition-all duration-300 resize-none
                          focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-400/50
@@ -209,6 +217,8 @@ export function CheckoutForm({
           {/* Error message */}
           {error && (
             <motion.div
+              id="checkout-error"
+              role="alert"
               initial={reducedMotion ? undefined : { opacity: 0, y: -10 }}
               animate={reducedMotion ? undefined : { opacity: 1, y: 0 }}
               className="rounded-lg bg-red-900/20 border border-red-900/50 px-4 py-3 text-red-400 text-sm"

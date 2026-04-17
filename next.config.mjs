@@ -30,10 +30,6 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'i.ibb.co',
-      },
-      {
-        protocol: 'https',
         hostname: '**.supabase.co',
         pathname: '/storage/v1/object/public/**',
       },
@@ -46,6 +42,11 @@ const nextConfig = {
       },
     ],
   },
+  // CSP connect-src notes:
+  // - openrouter.ai: AI fragrance assistant proxy (added v3.2 — allows future client-side move)
+  // Server-side only (no CSP entry needed, documented for reference):
+  // - api.resend.com: transactional email via Resend (contact form, order confirmations)
+  // - graph.facebook.com: WhatsApp notifications via Meta Cloud API
   async headers() {
     return [
       {

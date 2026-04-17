@@ -1,5 +1,6 @@
 'use client';
 
+import { useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingBag } from 'lucide-react';
 import Link from 'next/link';
@@ -8,9 +9,59 @@ import CartItem from './CartItem';
 import CheckoutButton from './CheckoutButton';
 import { formatPrice } from '@/lib/currency';
 
+const FOCUSABLE_SELECTOR =
+  'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
 export default function CartDrawer() {
   const { cart, isCartOpen, closeCart, subtotal, clearCart } = useCart();
   const isEmpty = cart.items.length === 0;
+
+  const drawerRef = useRef<HTMLDivElement>(null);
+  const previouslyFocused = useRef<HTMLElement | null>(null);
+
+  const stableCloseCart = useCallback(closeCart, [closeCart]);
+
+  useEffect(() => {
+    if (!isCartOpen) return;
+
+    previouslyFocused.current = document.activeElement as HTMLElement;
+
+    // Small delay to let framer-motion render the drawer before querying focusables
+    const rafId = requestAnimationFrame(() => {
+      const focusables = drawerRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
+      focusables?.[0]?.focus();
+    });
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        stableCloseCart();
+        return;
+      }
+
+      if (e.key === 'Tab') {
+        const focusables = drawerRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
+        if (!focusables || focusables.length === 0) return;
+
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+
+        if (e.shiftKey && document.activeElement === first) {
+          last.focus();
+          e.preventDefault();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          first.focus();
+          e.preventDefault();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      cancelAnimationFrame(rafId);
+      document.removeEventListener('keydown', onKeyDown);
+      previouslyFocused.current?.focus();
+    };
+  }, [isCartOpen, stableCloseCart]);
 
   return (
     <AnimatePresence>
@@ -27,6 +78,7 @@ export default function CartDrawer() {
 
           {/* Drawer */}
           <motion.div
+            ref={drawerRef}
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}

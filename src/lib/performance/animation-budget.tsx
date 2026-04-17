@@ -141,12 +141,15 @@ export function AnimationBudgetProvider({ children }: { children: ReactNode }) {
     let lastTime = performance.now();
     let frameId: number;
     let isActive = true;
+    const measurementStart = Date.now();
+    const MEASUREMENT_DURATION = 5000; // Stop RAF after 5 seconds
 
     const measureFPS = () => {
       if (!isActive) return;
 
       const currentTime = performance.now();
       const delta = currentTime - lastTime;
+      const elapsed = Date.now() - measurementStart;
 
       frameCount++;
 
@@ -170,6 +173,14 @@ export function AnimationBudgetProvider({ children }: { children: ReactNode }) {
         // Reset counters
         frameCount = 0;
         lastTime = currentTime;
+      }
+
+      // Stop the RAF loop after the measurement window — keep budget static
+      if (elapsed >= MEASUREMENT_DURATION) {
+        if (process.env.NODE_ENV === 'development') {
+          console.log('[AnimationBudget] Measurement complete, RAF loop stopped');
+        }
+        return;
       }
 
       frameId = requestAnimationFrame(measureFPS);

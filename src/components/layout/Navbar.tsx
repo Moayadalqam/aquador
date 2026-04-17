@@ -66,6 +66,18 @@ export default function Navbar() {
     setExpandedMobile(null);
   }, [pathname]);
 
+  // Dismiss mobile menu on Escape key
+  useEffect(() => {
+    if (!isMobileOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsMobileOpen(false);
+      }
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [isMobileOpen]);
+
   const isHome = pathname === '/';
   const useLightText = isHome && !isScrolled;
 
@@ -338,7 +350,7 @@ function DesktopNavLink({ item, active, lightText }: { item: NavItem; active: bo
   if (item.children) {
     return (
       <div className="relative group h-full">
-        <Link href={item.href} aria-current={active ? 'page' : undefined} className="relative h-full flex items-center justify-center px-4 xl:px-5">
+        <Link href={item.href} aria-current={active ? 'page' : undefined} aria-haspopup="true" aria-expanded={false} className="relative h-full flex items-center justify-center px-4 xl:px-5">
           <span className={`text-[10.5px] xl:text-[11px] uppercase tracking-[0.16em] font-light transition-colors duration-300 whitespace-nowrap leading-none flex items-center gap-1 ${
             active ? 'text-gold' : lightText ? 'text-white/75 group-hover:text-white' : 'text-black/65 group-hover:text-black'
           }`}>
@@ -356,7 +368,7 @@ function DesktopNavLink({ item, active, lightText }: { item: NavItem; active: bo
           )}
         </Link>
         {/* Dropdown */}
-        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 min-w-[200px] py-3 px-1 bg-white/[0.98] backdrop-blur-sm shadow-lg border border-gold/10 rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 min-w-[200px] py-3 px-1 bg-white/[0.98] backdrop-blur-sm shadow-lg border border-gold/10 rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all duration-200">
           {item.children.map((child) => (
             <Link
               key={child.href}

@@ -23,7 +23,7 @@ export default function SettingsPage() {
     const supabase = createClient();
     const { data } = await supabase
       .from('admin_users')
-      .select('*')
+      .select('id, email, role, created_at')
       .order('created_at', { ascending: true });
 
     setAdminUsers(data || []);
@@ -36,47 +36,40 @@ export default function SettingsPage() {
     setError('');
     setSuccess('');
 
-    const supabase = createClient();
-
-    // Create auth user
-    const { data: authData, error: authError } = await supabase.auth.signUp({
-      email: newEmail,
-      password: newPassword,
-    });
-
-    if (authError) {
-      setError('Failed to create user: ' + authError.message);
-      setCreating(false);
-      return;
-    }
-
-    if (!authData.user) {
-      setError('Failed to create user');
-      setCreating(false);
-      return;
-    }
-
-    // Add to admin_users table
-    const { error: insertError } = await supabase
-      .from('admin_users')
-      .insert({
-        id: authData.user.id,
-        email: newEmail,
-        role: newRole,
+    try {
+      const response = await fetch('/api/admin/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: newEmail,
+          password: newPassword,
+          name: newEmail.split('@')[0],
+          role: newRole,
+        }),
       });
 
-    if (insertError) {
-      setError('Failed to add admin role: ' + insertError.message);
-      setCreating(false);
-      return;
-    }
+      const data = await response.json();
 
-    setSuccess('Admin user created successfully! They can now log in.');
-    setNewEmail('');
-    setNewPassword('');
-    setNewRole('admin');
-    loadAdminUsers();
-    setCreating(false);
+      if (!response.ok) {
+        const message = data.details
+          ? Object.values(data.details).flat().join(', ')
+          : data.error || 'Failed to create admin user';
+        setError(message);
+        setCreating(false);
+        return;
+      }
+
+      setSuccess('Admin user created successfully! They can now log in.');
+      setNewEmail('');
+      setNewPassword('');
+      setNewRole('admin');
+      loadAdminUsers();
+    } catch (err) {
+      console.error('Failed to create admin user:', err);
+      setError('Network error. Please try again.');
+    } finally {
+      setCreating(false);
+    }
   };
 
   return (
@@ -129,7 +122,7 @@ export default function SettingsPage() {
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 required
-                minLength={6}
+                minLength={8}
                 className="w-full px-4 py-2.5 bg-black/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gold transition-colors"
                 placeholder="••••••••"
               />

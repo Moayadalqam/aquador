@@ -3,7 +3,7 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { formatPrice } from '@/lib/utils';
 import { ArrowRight } from 'lucide-react';
 import { SectionHeader } from '@/components/ui/Section';
@@ -32,6 +32,7 @@ export default function FeaturedProducts({
   viewAllLabel = 'View All Products',
 }: FeaturedProductsProps) {
   const sectionRef = useRef(null);
+  const [failedImages, setFailedImages] = useState<Set<string>>(new Set());
   const reducedMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -55,7 +56,7 @@ export default function FeaturedProducts({
         {/* Products grid — wider spacing, more breathing room */}
         <AnimatedSection variant="stagger" staggerDelay={0.08}>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
-            {products.map((product) => (
+            {products.map((product, index) => (
               <motion.div
                 key={product.id}
                 variants={fadeInUp}
@@ -64,12 +65,13 @@ export default function FeaturedProducts({
                   {/* Image — generous proportions */}
                   <div className="relative aspect-square overflow-hidden bg-[#f0ede8] mb-4">
                     <Image
-                      src={product.image || FALLBACK_IMAGE}
+                      src={failedImages.has(product.id) ? FALLBACK_IMAGE : (product.image || FALLBACK_IMAGE)}
                       alt={product.name}
                       fill
+                      priority={index < 3}
                       className="object-cover transition-transform duration-700 group-hover:scale-105"
                       sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 33vw"
-                      onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_IMAGE; }}
+                      onError={() => { setFailedImages(prev => { const next = new Set(prev); next.add(product.id); return next; }); }}
                     />
 
                     {/* Sale badge */}

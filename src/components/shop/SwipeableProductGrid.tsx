@@ -97,33 +97,39 @@ export function SwipeableProductGrid({
         )}
       </AnimatePresence>
 
-      {/* Category hints */}
-      {isMobile && (
-        <>
-          {hasPrevious && previousCategory && (
-            <div className="fixed left-2 top-1/2 -translate-y-1/2 z-40 pointer-events-none">
-              <motion.div
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: isSwiping && swipeDirection === 'right' ? 0.6 : 0.3, x: 0 }}
-                className="text-[9px] uppercase tracking-[0.15em] text-gold/60 whitespace-nowrap"
-              >
-                &larr; {previousCategory.name.replace("'s Collection", '')}
-              </motion.div>
-            </div>
-          )}
-          {hasNext && nextCategory && (
-            <div className="fixed right-2 top-1/2 -translate-y-1/2 z-40 pointer-events-none">
-              <motion.div
-                initial={{ opacity: 0, x: 10 }}
-                animate={{ opacity: isSwiping && swipeDirection === 'left' ? 0.6 : 0.3, x: 0 }}
-                className="text-[9px] uppercase tracking-[0.15em] text-gold/60 whitespace-nowrap"
-              >
-                {nextCategory.name.replace("'s Collection", '')} &rarr;
-              </motion.div>
-            </div>
-          )}
-        </>
-      )}
+      {/* Category hints — only visible during active swipe */}
+      <AnimatePresence>
+        {isMobile && isSwiping && (
+          <>
+            {hasPrevious && previousCategory && swipeDirection === 'right' && (
+              <div className="fixed left-2 top-1/2 -translate-y-1/2 z-40 pointer-events-none">
+                <motion.div
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 0.6, x: 0 }}
+                  exit={{ opacity: 0, x: -10 }}
+                  transition={{ duration: 0.15 }}
+                  className="text-[9px] uppercase tracking-[0.15em] text-gold/60 whitespace-nowrap"
+                >
+                  &larr; {previousCategory.name.replace("'s Collection", '')}
+                </motion.div>
+              </div>
+            )}
+            {hasNext && nextCategory && swipeDirection === 'left' && (
+              <div className="fixed right-2 top-1/2 -translate-y-1/2 z-40 pointer-events-none">
+                <motion.div
+                  initial={{ opacity: 0, x: 10 }}
+                  animate={{ opacity: 0.6, x: 0 }}
+                  exit={{ opacity: 0, x: 10 }}
+                  transition={{ duration: 0.15 }}
+                  className="text-[9px] uppercase tracking-[0.15em] text-gold/60 whitespace-nowrap"
+                >
+                  {nextCategory.name.replace("'s Collection", '')} &rarr;
+                </motion.div>
+              </div>
+            )}
+          </>
+        )}
+      </AnimatePresence>
 
       {/* Content with swipe translation */}
       <motion.div

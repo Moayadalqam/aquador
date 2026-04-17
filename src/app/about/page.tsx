@@ -38,7 +38,7 @@ export default function AboutPage() {
       <PageHero
         title="Our Story"
         subtitle="Aquad'or was born from a deep passion for the art of perfumery and a desire to bring the world's finest fragrances to Cyprus."
-        backgroundImage="https://i.ibb.co/xSqkdDL6/image-Cap-Cut-Commerce-Pro-202502202047.jpg"
+        backgroundImage="/images/about/about-1.jpg"
         eyebrow="Est. 2018 — Nicosia, Cyprus"
       />
 
@@ -91,7 +91,7 @@ export default function AboutPage() {
             >
               <div className="relative aspect-[4/3] lg:aspect-[16/11] overflow-hidden">
                 <Image
-                  src="https://i.ibb.co/xSqkdDL6/image-Cap-Cut-Commerce-Pro-202502202047.jpg"
+                  src="/images/about/about-1.jpg"
                   alt="Aquad'or luxury perfumes"
                   fill
                   className="object-cover"

@@ -200,7 +200,8 @@ export async function searchProducts(query: string): Promise<Product[]> {
     .select(PRODUCT_COLUMNS)
     .eq('is_active', true)
     .or(`name.ilike.%${escaped}%,description.ilike.%${escaped}%,brand.ilike.%${escaped}%`)
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .limit(20);
 
   if (error) {
     Sentry.addBreadcrumb({ category: 'product-service', message: 'Error searching products', level: 'error', data: { error, query } });

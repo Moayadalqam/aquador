@@ -103,7 +103,7 @@ export default function ChatWidget() {
     let realtimeConnected = false;
 
     const fetchMessages = async () => {
-      const { data } = await supabaseClient.from('live_chat_messages').select('*').eq('session_id', sessionId).order('created_at', { ascending: true });
+      const { data } = await supabaseClient.from('live_chat_messages').select('id, session_id, sender_type, content, created_at').eq('session_id', sessionId).order('created_at', { ascending: true });
       if (data) setLiveMessages(data as unknown as LiveMessage[]);
     };
     const fetchSession = async () => {

@@ -30,7 +30,7 @@ export default function EditProductPage() {
       try {
         const { data, error: queryError } = await supabase
           .from('products')
-          .select('*')
+          .select('id, name, description, price, sale_price, image, images, category, product_type, gender, brand, size, tags, in_stock, is_active, created_at, updated_at')
           .eq('id', id)
           .maybeSingle();
 

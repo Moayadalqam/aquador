@@ -238,18 +238,25 @@ export default function ShopContent({ products, categories, isSearchMode = false
 
           {filteredProducts.length === 0 && (
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-center py-20"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="max-w-lg mx-auto text-center py-20"
             >
-              <p className="text-gray-500 text-sm mb-4">
-                No products found.
+              <div className="w-16 h-16 rounded-full border border-gold/30 bg-gold/5 flex items-center justify-center mx-auto mb-6">
+                <svg className="w-7 h-7 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-playfair text-black mb-3">No Results Found</h2>
+              <p className="text-gray-600 text-sm mb-8">
+                We couldn&apos;t find any fragrances matching your filters. Try adjusting your search or browse our full collection.
               </p>
               <button
                 onClick={clearFilters}
-                className="text-gold text-sm hover:text-gold/80 transition-colors"
+                className="inline-flex items-center gap-2 text-gold text-xs uppercase tracking-[0.2em] hover:text-gold-light transition-colors cursor-pointer"
               >
-                Clear all filters
+                &larr; Clear All Filters
               </button>
             </motion.div>
           )}

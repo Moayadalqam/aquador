@@ -51,11 +51,11 @@ export default function AdminDashboard() {
           // Query 1: Get all products for stats aggregation
           supabase.from('products').select('in_stock, category'),
           // Query 2: Recent products for display
-          supabase.from('products').select('*').order('created_at', { ascending: false }).limit(5),
+          supabase.from('products').select('id, name, image, price, category, product_type, in_stock, created_at').order('created_at', { ascending: false }).limit(5),
           // Query 3: Get all orders for stats and recent orders
-          supabase.from('orders').select('*').order('created_at', { ascending: false }),
+          supabase.from('orders').select('id, stripe_session_id, status, total, customer_email, customer_name, created_at').order('created_at', { ascending: false }),
           // Query 4: Customer count
-          supabase.from('customers').select('*', { count: 'exact', head: true }),
+          supabase.from('customers').select('id', { count: 'exact', head: true }),
           // Query 5: Live visitors
           supabase.from('site_visitors').select('id').gte('last_seen', new Date(Date.now() - 2 * 60 * 1000).toISOString()),
         ]);

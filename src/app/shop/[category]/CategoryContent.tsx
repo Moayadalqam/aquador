@@ -24,6 +24,7 @@ interface CategoryContentProps {
 
 export default function CategoryContent({ category, products }: CategoryContentProps) {
   const [searchQuery, setSearchQuery] = useState('');
+  const [failedImages, setFailedImages] = useState<Set<string>>(new Set());
 
   // Prevents tracking on SSR initial hydration — only fires on client-side navigation
   const isInitializedRef = useRef(false);
@@ -169,12 +170,12 @@ export default function CategoryContent({ category, products }: CategoryContentP
                       {/* Image */}
                       <div className="relative aspect-[3/4] overflow-hidden">
                         <Image
-                          src={product.image || FALLBACK_IMAGE}
+                          src={failedImages.has(String(product.id)) ? FALLBACK_IMAGE : (product.image || FALLBACK_IMAGE)}
                           alt={product.name}
                           fill
                           className={`object-cover transition-transform duration-700 group-hover:scale-105 ${!(product.in_stock ?? true) ? 'opacity-60' : ''}`}
                           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                          onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_IMAGE; }}
+                          onError={() => { setFailedImages(prev => { const next = new Set(prev); next.add(String(product.id)); return next; }); }}
                         />
                         {product.sale_price && product.sale_price < product.price && (product.in_stock ?? true) && (
                           <span className="absolute top-3 left-3 bg-gold text-black text-[9px] uppercase tracking-wider px-2 py-1 font-medium">

@@ -267,7 +267,13 @@ export default function ReorderPage() {
           <label className="eyebrow text-gold/50 block mb-4">
             Select Product Type
           </label>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div
+            role="group"
+            aria-label="Product type"
+            aria-invalid={!!submitError && !selectedProduct}
+            aria-describedby={submitError && !selectedProduct ? 'reorder-error' : undefined}
+            className="grid grid-cols-1 sm:grid-cols-3 gap-3"
+          >
             {(Object.keys(productConfigs) as ProductType[]).map((type) => {
               const config = productConfigs[type]
               const isSelected = selectedProduct === type
@@ -360,6 +366,8 @@ export default function ReorderPage() {
                       value={row.code}
                       onChange={(e) => updateRow(row.id, 'code', e.target.value)}
                       placeholder={`e.g., ${42 + i * 7}`}
+                      aria-invalid={!!submitError && !row.code}
+                      aria-describedby={submitError && !row.code ? 'reorder-error' : undefined}
                       className="w-full rounded-lg border border-black/[0.08] bg-[#FAFAF8] px-3.5 py-2.5 text-black placeholder-gray-300
                                  focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all text-sm"
                     />
@@ -373,6 +381,8 @@ export default function ReorderPage() {
                     <select
                       value={row.category}
                       onChange={(e) => updateRow(row.id, 'category', e.target.value as 'N' | 'W' | 'M' | '')}
+                      aria-invalid={!!submitError && !row.category}
+                      aria-describedby={submitError && !row.category ? 'reorder-error' : undefined}
                       className="w-full rounded-lg border border-black/[0.08] bg-[#FAFAF8] px-3 py-2.5 text-black
                                  focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all text-sm
                                  appearance-none cursor-pointer"
@@ -402,6 +412,8 @@ export default function ReorderPage() {
                       placeholder="0"
                       min="0"
                       step="0.5"
+                      aria-invalid={!!submitError && !row.amount}
+                      aria-describedby={submitError && !row.amount ? 'reorder-error' : undefined}
                       className="w-full rounded-lg border border-black/[0.08] bg-[#FAFAF8] px-3.5 py-2.5 text-black placeholder-gray-300
                                  focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all text-sm
                                  [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
@@ -556,6 +568,8 @@ export default function ReorderPage() {
         <AnimatePresence>
           {submitError && (
             <motion.div
+              id="reorder-error"
+              role="alert"
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
@@ -576,6 +590,7 @@ export default function ReorderPage() {
           <button
             type="submit"
             disabled={isSubmitting}
+            aria-describedby={submitError ? 'reorder-error' : undefined}
             className={`
               relative w-full rounded-full py-4 text-sm tracking-wider uppercase font-medium transition-all duration-500 overflow-hidden
               ${isSubmitting
