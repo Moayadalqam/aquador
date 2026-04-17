@@ -18,21 +18,21 @@ const stages: {
     title: 'Top Notes',
     description:
       'The first impression of a fragrance, top notes are light, volatile molecules that evaporate within 15-30 minutes. They create the opening burst \u2014 think citrus zest, fresh herbs, and crisp spices \u2014 drawing you into the scent before gracefully fading.',
-    image: 'https://i.ibb.co/HfY2jbSH/1.jpg',
+    image: '/images/notes/top-notes.jpg',
     accent: 'The Opening',
   },
   {
     title: 'Middle Notes',
     description:
       'Emerging as top notes fade, the heart reveals itself over 1-4 hours. These balanced, rounded accords \u2014 florals, aromatics, soft spices \u2014 form the true character of the fragrance and define its personality.',
-    image: 'https://i.ibb.co/xSqkdDL6/image-Cap-Cut-Commerce-Pro-202502202047.jpg',
+    image: '/images/notes/middle-notes.jpg',
     accent: 'The Character',
   },
   {
     title: 'Base Notes',
     description:
       'The foundation that lingers for 6-24 hours, base notes are rich, heavy molecules that anchor everything above. Warm woods, deep musks, amber, and resins create the lasting memory others notice long after you have left.',
-    image: 'https://i.ibb.co/M5PhxzZm/image-Cap-Cut-Commerce-Pro-202502202047-1.jpg',
+    image: '/images/notes/base-notes.jpg',
     accent: 'The Memory',
   },
 ];

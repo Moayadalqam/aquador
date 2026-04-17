@@ -74,6 +74,15 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // SECURITY: Reject sessions older than 24 hours to prevent indefinite data exposure
+    const sessionAge = Date.now() / 1000 - session.created;
+    if (sessionAge > 24 * 60 * 60) {
+      return NextResponse.json(
+        { error: 'Session details no longer available.' },
+        { status: 410, headers: { 'Cache-Control': 'no-store' } }
+      );
+    }
+
     // SECURITY: Only return data for completed sessions
     if (session.payment_status !== 'paid') {
       return NextResponse.json(
