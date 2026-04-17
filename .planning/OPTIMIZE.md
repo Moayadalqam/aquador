@@ -1,110 +1,135 @@
 ---
-date: 2026-04-17 02:05
+date: 2026-04-17 14:00
 mode: full
-critical: 2
+critical: 0
 high: 10
-medium: 11
+medium: 15
 low: 8
 status: needs_attention
 ---
 
-# Optimization Report
+# Optimization Report (post-v3.2)
 
 **Project:** aquador | **Mode:** full | **Date:** 2026-04-17
-**Scope:** post-v3.1 optimization sweep across frontend, backend, performance, architecture
+**Baseline:** v3.2 just shipped (phases 27-29, 31 findings fixed)
 
 ## Summary
 
-Three parallel specialist agents (frontend, backend, performance) plus an architecture synthesizer analyzed the codebase against the v3.1 baseline. Two true **CRITICAL** issues surface — both security-shaped: one allows checkout of deactivated products, the other leaks unpublished blog drafts. Ten **HIGH** findings cluster around five root causes (incomplete App Router conventions, live-chat feature hygiene, AI assistant gaps, dead-code bloat, and AnimationBudgetProvider scope). The codebase is structurally sound post-v3.1 — most issues are cleanups and edge-case hardening, not architectural debt.
+Three parallel specialist agents (frontend, backend, performance) analyzed the codebase after the v3.2 ship. **Zero CRITICAL** — the most severe issues have been resolved. The remaining 33 findings cluster around four themes: **keyboard accessibility gaps** (modals without Escape/focus trap, hover-only dropdowns), **admin security** (client-side user creation with no super_admin gate — privilege escalation risk), **perceived performance** (LoadingScreen overlay adds 800ms+ to every page load, middleware UUID+auth per request), and **render efficiency** (no React.memo on ProductCard in 100-item grids).
 
-## Critical Issues
-
-| # | Dimension | Finding | Location | Fix |
-|---|-----------|---------|----------|-----|
-| 1 | Backend Security | `getProductsByIds` lacks `is_active` filter → checkout can purchase deactivated products | `src/lib/supabase/product-service.ts:55-70` used by `src/lib/validation/cart.ts:64` | Add `is_active` check in `validateCartPrices` (not in the helper — webhook legitimately needs inactive lookup). Reject inactive items with clear error. |
-| 2 | Backend Security | `/api/blog/[slug]` GET has no `status = 'published'` filter or auth gate → draft posts readable by slug | `src/app/api/blog/[slug]/route.ts:30-35` | Default to `.eq('status', 'published')` for anon requests; allow drafts only for authenticated admin via existing `admin_users` check. |
+Key wins since v3.2: service_role clean, XSS clean, PostgREST injection protection active, Sentry coverage complete, rate-limits everywhere public, all POST routes no-store.
 
 ## High Priority
 
 | # | Dimension | Finding | Location | Fix |
 |---|-----------|---------|----------|-----|
-| 3 | Backend Security | `/api/admin/setup` relies solely on env flag + timing-safe secret, no rate limiting, not behind middleware auth | `src/app/api/admin/setup/route.ts:39`, `src/middleware.ts:21-67` | Add `checkRateLimit(request, 'checkout')` at top of POST + PUT handlers. Verify `ADMIN_SETUP_COMPLETE=true` in Vercel env. |
-| 4 | Backend Security | `live_chat_sessions` + `live_chat_messages` tables have no RLS migration but are client-queried | tables missing from `supabase/migrations/20260302_enable_rls_all_tables.sql` | New migration: enable RLS; visitor-owned sessions readable/writable by `visitor_id`; admin reads all via `is_admin()`. |
-| 5 | Performance | Product page sequential data fetch (`getProductBySlug` → `getRelatedProducts`) blocks TTFB | `src/app/products/[slug]/page.tsx:77-84` | Wrap `RelatedProducts` in `<Suspense>` so main product renders immediately, related streams in after. |
-| 6 | Performance | `/shop` forced dynamic by server-side `searchParams` access — defeats `revalidate = 1800` | `src/app/shop/page.tsx:30-36` | Remove `searchParams` server-side; move filtering entirely to `ShopContent` (client) which already uses `useSearchParams()`. Server fetches `getAllProducts()` only. |
-| 7 | Performance | `AnimationBudgetProvider` runs `requestAnimationFrame` continuously on every page (mounted in root layout) | `src/lib/performance/animation-budget.tsx:145-176`, `src/app/layout.tsx:144` | Scope provider to pages with heavy animation (home, `/create-perfume`, shop) OR stop RAF after initial 3-5s measurement + restart on navigation. |
-| 8 | Performance | No `pg_trgm` index for product ILIKE search on `name`/`description`/`brand` | `src/lib/supabase/product-service.ts:196-211` vs `supabase/migrations/20260303_add_performance_indexes.sql` | New migration: `CREATE EXTENSION pg_trgm; CREATE INDEX idx_products_search_trgm ON products USING GIN ((name \|\| ' ' \|\| COALESCE(brand, '')) gin_trgm_ops);` |
-| 9 | Frontend | Missing `loading.tsx` on `/blog/[slug]` and `/shop/gender/[gender]` — blank flash on ISR cache miss | route dirs | Create route-segment loading files using existing `LuxurySkeleton` pattern. |
-| 10 | Frontend / Bundle | Dead code: `src/lib/animations/variants.ts` (413 lines, 0 imports) + `src/components/3d/CustomPerfumeBottle.tsx` (orphan) + unused `@stripe/stripe-js` package | package.json, two orphan files | Delete both files, `npm uninstall @stripe/stripe-js @react-three/gltfjsx`, re-run tsc + build to verify. |
-| 11 | Backend Reliability | AI assistant fetch to OpenRouter has no timeout — can hang 30s | `src/app/api/ai-assistant/route.ts:113-127` | Replace raw `fetch` with existing `fetchWithTimeout({ timeout: 15000 })` from `@/lib/api-utils`. |
-| 12 | Architecture | 3D subsystem loads full Three.js + R3F + drei (~600KB) even on unsupported devices — `supports3D` check runs after dynamic import | `src/components/3d/ProductViewer.tsx:8`, `src/components/products/ProductGallery.tsx:12-22` | Move `useDeviceCapabilities` up to `ProductGallery`; only render `<ProductViewer>` when `show3D && supports3D`. |
+| 1 | Backend Security | Admin settings page creates users via client `signUp` with no `super_admin` check → any admin can promote anyone to super_admin | `src/app/admin/settings/page.tsx:33-79` | Move to server API route; gate on `super_admin` role; use `createAdminClient()` for auth + admin_users insert; Zod validate server-side |
+| 2 | Performance | `LoadingScreen` overlay adds 800-1300ms to every page load | `src/components/ui/LoadingScreen.tsx`, `src/app/layout.tsx:20-22` | Remove or reduce to 300ms cold-first-visit only (sessionStorage flag). SSR content is already visible; overlay is legacy SPA pattern. |
+| 3 | Performance | Heartbeat DELETE runs on every request, no index on `last_seen`, sequential with UPSERT | `src/app/api/heartbeat/route.ts:43-57` | Move cleanup to pg_cron; OR gate probabilistically (`Math.random() < 0.01`) + add index on `site_visitors(last_seen)`; OR `Promise.all` the UPSERT+DELETE |
+| 4 | Performance | No `React.memo` on `ProductCard` (100+ re-renders in shop grid) or `CartItem` | `src/components/ui/ProductCard.tsx:28`, `src/components/cart/CartItem.tsx:15` | `export default React.memo(...)` on both. Saves 8-15ms reconciliation per filter interaction. |
+| 5 | Frontend A11y | `CartDrawer` has `role="dialog"` but no Escape handler and no focus trap → keyboard users trapped, modal not dismissible via keyboard | `src/components/cart/CartDrawer.tsx` | Add `useEffect` keydown Escape → `closeCart`; implement focus trap with ref; restore focus to trigger on close |
+| 6 | Frontend A11y | Desktop "Dubai Shop" dropdown uses `group-hover:*` only — no `group-focus-within:*` → keyboard-invisible | `src/components/layout/Navbar.tsx:359` | Add `group-focus-within:opacity-100 group-focus-within:visible` alongside hover classes. Add `aria-haspopup`, `aria-expanded`. |
+| 7 | Frontend A11y | Mobile menu overlay no Escape key dismiss | `src/components/layout/Navbar.tsx:214-331` | Add `useEffect` listener for Escape while `isMobileOpen` → `setIsMobileOpen(false)` |
+| 8 | Frontend A11y | Form errors never linked to inputs via `aria-describedby` → screen readers don't announce errors on focus | `src/app/contact/page.tsx:156-213`, `src/app/create-perfume/components/CheckoutForm.tsx:126-141`, `src/app/reorder/page.tsx:358-407` | On each input: `aria-invalid={!!errors.X}` + `aria-describedby="X-error"`. On error `<p>`: `id="X-error" role="alert"` |
+| 9 | Performance | Middleware runs `crypto.randomUUID()` + header clone on EVERY `/api/*` request; admin path does 2 sequential Supabase calls per nav | `src/middleware.ts:5-77` | Narrow matcher to `/api/admin/:path*` (drop full `/api/:path*` — api-utils already sets request id where needed); combine admin auth calls into single RLS-gated query |
+| 10 | Backend Security | Missing RLS DELETE policy on `site_visitors` — heartbeat cleanup only works via service_role (fragile if refactored) | `supabase/migrations/20260302_enable_rls_all_tables.sql` | Add policy: `CREATE POLICY "..." ON site_visitors FOR DELETE TO authenticated, service_role USING (public.is_admin() OR auth.role() = 'service_role')` |
 
 ## Medium Priority
 
 | # | Dimension | Finding | Location | Fix |
 |---|-----------|---------|----------|-----|
-| 13 | Backend Reliability | No `revalidatePath`/`revalidateTag` anywhere in codebase after mutations | all `/api/blog/*` POST/PUT/DELETE, `/api/admin/orders` | Add `revalidatePath('/blog')` + `revalidatePath('/blog/${slug}')` after blog writes; same pattern for product/order mutations. |
-| 14 | Backend Reliability | Customer upsert race condition on concurrent orders (read-then-write pattern) | `src/app/api/webhooks/stripe/route.ts:76-115`, `src/app/api/admin/orders/route.ts:107-145` | Use Supabase `upsert` with `onConflict: 'email'` OR RPC for atomic increment of `total_orders`/`total_spent`. |
-| 15 | Backend Security | `/api/search` has no rate limiting — scraping + DB stress vector | `src/app/api/search/route.ts:5-37` | Add `search` limiter to `rate-limit.ts` (sliding window 20/min); `checkRateLimit(request, 'search')` at top of handler. |
-| 16 | Backend Info Disclosure | `/api/health` leaks which 3rd-party services are configured (Stripe/Resend/Sentry booleans) | `src/app/api/health/route.ts:13-17` | Return only `{status, timestamp, version}` publicly. Gate the `checks` object behind admin auth if still needed. |
-| 17 | Frontend A11y | `CheckoutForm` labels lack `htmlFor`/`id` linkage + `ChatWidget` inputs have no `aria-label` | `src/app/create-perfume/components/CheckoutForm.tsx:123-199`, `src/components/ai/ChatWidget.tsx:213,240` | Add matching `id`/`htmlFor` pairs in CheckoutForm. Add `aria-label` on ChatWidget inputs + send buttons. Messages container: `role="log"` + `aria-live="polite"`. |
-| 18 | Frontend Reliability | Hero video + 1 category image load from Squarespace CDN (external dependency) | `src/components/home/Hero.tsx:40-41`, `src/lib/categories.ts:65` | Download both, upload to Supabase Storage or Vercel Blob, update URLs. Tighten `media-src` in CSP after migration. |
-| 19 | Frontend | Missing `error.tsx` on dynamic route segments (`/blog/[slug]`, `/shop/[category]`, `/products/[slug]`, `/shop/gender/[gender]`) | missing files | Add contextual error pages with "Back to X" action. Highest priority: products + blog (highest traffic). |
-| 20 | Performance | `PageTransition` `mode="wait"` adds 200-400ms per client-side navigation | `src/components/providers/PageTransition.tsx:62-74` | Switch to `mode="popLayout"` OR reduce exit duration to <100ms OR remove exit animation entirely (entrance-only). |
-| 21 | Performance | `ChatWidget` creates Supabase client per mount + runs both polling (3s) AND Realtime subscriptions simultaneously (~40 queries/min) | `src/components/ai/ChatWidget.tsx:92, 98-121` | Lift Supabase client to shared singleton/context. Use Realtime as primary, polling only as fallback on Realtime error. Raise polling interval to 5-10s. |
-| 22 | Architecture | 3 distinct JSON-LD serialization patterns coexist (`jsonLdScript()`, `safeStringify()`, raw `JSON.stringify().replace()`) | `src/lib/seo/listing-schema.ts`, `src/app/page.tsx`, `src/app/products/[slug]/page.tsx` et al | Consolidate to a single `<JsonLd schema={x}/>` server component or one unified helper. |
-| 23 | Performance / AI | AI catalogue: 295 products inlined (~15KB), linear scan per request, only 13 hardcoded note keywords triggers catalogue context | `src/lib/ai/catalogue-data.ts`, `src/app/api/ai-assistant/route.ts:32, 93, 300-312` | Pre-build Map for O(1) keyword lookups. Expand keyword list OR pass catalogue summary (brands, price ranges) in SYSTEM_PROMPT so AI can recommend without keyword match. |
+| 11 | Backend | Live chat anon SELECT policy `USING (true)` → any anon can read ALL sessions (including visitor_name) | `supabase/migrations/20260417_enable_rls_live_chat.sql:32-36` | Either accept (low-sensitivity metadata) OR add `session_secret` col required on query OR signed token from API route |
+| 12 | Backend | No `revalidatePath` for product/category CRUD → storefront stale for up to 30min | `src/components/admin/ProductForm.tsx:202-224`, `src/app/admin/categories/page.tsx:149-167` | Move mutations to server action/API route; call `revalidatePath('/shop')` + `revalidatePath('/')` post-write |
+| 13 | Backend | `getProductsByIds` serves deactivated product data via `session-details` endpoint (any session_id → price/name visible) | `src/lib/supabase/product-service.ts:55-70`, `src/app/api/checkout/session-details/route.ts:99` | Accept for order reconstruction OR add session TTL (24h check against `session.created`) |
+| 14 | Backend | `searchProducts` unbounded — fetches entire catalog for broad terms | `src/lib/supabase/product-service.ts:195-211` | Add `.limit(20)` |
+| 15 | Backend | Admin pages `select('*')` in 7 files → over-fetching | admin page.tsx (products/orders), settings, categories, customers/[id], live-chat, ChatWidget | Apply `PRODUCT_COLUMNS`-style named-column constants |
+| 16 | Frontend | `global-error.tsx` uses `system-ui, sans-serif` — breaks brand on critical errors | `src/app/global-error.tsx:19` | Inject Google Fonts link + set `fontFamily: 'Playfair Display'` heading + `'Poppins'` body |
+| 17 | Frontend | 6 homepage/about images hosted on `i.ibb.co` (ephemeral free host, no SLA) | `src/components/home/CreateSection.tsx:21,28,35`, `src/lib/categories.ts:44,51,58`, `src/app/about/page.tsx:41,94` | Upload to Supabase Storage or `/public/images/`; remove `i.ibb.co` from `next.config.mjs` remotePatterns |
+| 18 | Frontend | `checkout/success` `clearCart` in useEffect deps → fragile (depends on stable useCallback in CartProvider) | `src/app/checkout/success/page.tsx:63` | Add `hasClearedRef = useRef(false)` guard; remove `clearCart` from deps |
+| 19 | Frontend | `/shop` empty state is 1 line + link — inconsistent vs `/shop/[category]` which has icon + heading + subtitle | `src/app/shop/ShopContent.tsx:239-254` | Match category empty state pattern: icon, heading, subtitle, clear-filters button |
+| 20 | Frontend | `onError` directly mutates `.src` on `next/image` — bypasses optimization | `src/components/home/FeaturedProducts.tsx:72`, `src/app/shop/[category]/CategoryContent.tsx:177` | Track failed IDs in `useState<Set<string>>`; conditionally render `src={failed.has(id) ? FALLBACK : product.image}` |
+| 21 | Performance | `createPublicClient()` called per-function — 387+ client instances at build time | `src/lib/supabase/public.ts:6-12` | Cache at module scope with let singleton |
+| 22 | Performance | Homepage LCP images (Hero video poster, FeaturedProducts first 3) lack `priority` | `src/components/home/Hero.tsx:29-43`, `src/components/home/FeaturedProducts.tsx:67-73` | Add `priority` to first 2-3 FeaturedProducts images; `<link rel="preload" as="image">` for hero poster |
+| 23 | Performance | `AnimationBudgetProvider` RAF loop runs perpetually on homepage (scoped out of root in v3.2, but still 60Hz on homepage) | `src/lib/performance/animation-budget.tsx:145-176` | Stop RAF after initial 3-5s measurement window; use `requestIdleCallback` for sampling |
+| 24 | Performance | AI assistant `allKeywords` Set rebuilt on every POST request | `src/app/api/ai-assistant/route.ts:93-95` | Hoist to module scope via IIFE |
+| 25 | Backend | Supabase types may drift after v3.2 migrations (RLS, RPC, pg_trgm) | `src/lib/supabase/types.ts` | Run `supabase gen types typescript --linked > src/lib/supabase/types.ts`; commit |
 
 ## Low Priority
 
 | # | Dimension | Finding | Location | Fix |
 |---|-----------|---------|----------|-----|
-| 24 | Frontend | ~40 hardcoded hex colors (`#D4AF37`, `#FFD700`, `#0a0a0a`) in create-perfume + 3D + OG components | `src/app/create-perfume/page.tsx:25-29,100-110,502,814`, `src/components/3d/PerfumeBottle.tsx:33,44,54`, `src/app/api/og/route.tsx:16-25` | Inline `style` gradient blocks → CSS custom properties from globals.css. Keep OG/SVG hex (no Tailwind in ImageResponse). |
-| 25 | Frontend / Bundle | `optimizePackageImports` in `next.config.mjs` misses `three` + `@react-three/drei` | `next.config.mjs:18` | Add both to the array. |
-| 26 | Backend Observability | Inconsistent error logging: 12 `console.error` calls without `Sentry.captureException` or `formatApiError` | `search/route.ts:29`, `heartbeat/route.ts:59`, `health/route.ts:27`, `blog/*`, `admin/setup/route.ts:100,155` | Replace raw `console.error` + error-message response with `Sentry.captureException(error)` + `formatApiError(error, '...')` pattern used in checkout/webhook. |
-| 27 | Backend Security | CSP `connect-src` missing `https://openrouter.ai` — latent misconfiguration if AI moves client-side | `next.config.mjs:85` | Add `https://openrouter.ai` to connect-src. No immediate impact (server-side call). |
-| 28 | Performance | `FeaturedProducts` dynamic(ssr:true) is a no-op — same effect as static import | `src/app/page.tsx:8-10` | Change to static import OR flip to `ssr: false` + loading skeleton if deferred render was intended. |
-| 29 | Performance | `itemCount` + `subtotal` in `CartProvider` not memoized (correctness, not perf) | `src/components/cart/CartProvider.tsx:187-188` | Wrap with `useMemo(..., [cart.items])`. |
-| 30 | Backend Security | POST API routes missing `Cache-Control: no-store` (checkout, AI assistant) | `src/app/api/checkout/route.ts:112-114`, `src/app/api/ai-assistant/route.ts:142-144` | Set `Cache-Control: no-store, no-cache` on response headers. |
-| 31 | Performance | No `LazyMotion` at root — would save ~15KB shared bundle but requires migrating 77 `motion.*` → `m.*` | `src/app/layout.tsx` (missing `LazyMotion`) | Future refactor. Wrap layout with `<LazyMotion features={domAnimation} strict>`. Migrate components gradually. |
+| 26 | Frontend | Checkout success loading shows green CheckCircle BEFORE order confirmed → jarring if fetch fails | `src/app/checkout/success/page.tsx:66-81` | Replace with neutral spinner/skeleton during loading; reserve green check for confirmed state |
+| 27 | Frontend | Blog pagination buttons lack `aria-current="page"` on active page; Prev/Next lack `aria-label` | `src/app/blog/BlogListContent.tsx:108-116` | Add `aria-current={page === currentPage ? 'page' : undefined}` + aria-labels |
+| 28 | Frontend | `SwipeableProductGrid` category hints rendered at opacity 0.3 always, not just during swipe | `src/components/shop/SwipeableProductGrid.tsx:101-126` | Conditional render on `isSwiping` or animate in from 0 |
+| 29 | Backend | `formatApiError` leaks `error.type` when `NODE_ENV === 'development'` (Vercel prod is safe) | `src/lib/api-utils.ts:66-85` | No action — guard is sufficient; document |
+| 30 | Backend | Webhook email failures log to Sentry but no retry → lost confirmation on Resend outage | `src/app/api/webhooks/stripe/route.ts:456-459` | Future: dead-letter queue OR Resend webhook-based retry |
+| 31 | Backend | CSP `connect-src` missing `api.resend.com`, `graph.facebook.com` (server-side only today) | `next.config.mjs:84` | No action — server-side bypasses CSP; add code comment documenting external services |
+| 32 | Performance | `src/lib/supabase/index.ts` barrel with `export *` can defeat tree-shake for runtime re-exports | `src/lib/supabase/index.ts:3` | Import directly from `@/lib/supabase/client` etc (most code already does) |
+| 33 | Performance | `Playfair Display` swap can cause FOUT → small CLS from glyph width differences | `src/app/layout.tsx:24-36` | Verify `adjustFontFallback` is active; consider `display: "optional"` for Poppins body |
 
-## Dead Code Sweep (delete outright)
+## Clean Dimensions (explicitly verified)
 
-- `src/lib/animations/variants.ts` — 413 lines, zero imports
-- `src/components/3d/CustomPerfumeBottle.tsx` — orphan, never imported
-- `@stripe/stripe-js` in `package.json` dependencies — zero `loadStripe` / import references
-- `@react-three/gltfjsx` in devDependencies — no GLTF files in repo, no usage found
+- service_role key usage — ZERO client-side leakage, confined to `admin.ts` + `api/admin/setup`
+- XSS via `dangerouslySetInnerHTML` — all 3 usages safe (JsonLd escapes `<`, BlogContent + RichDescription use DOMPurify)
+- SQL injection via PostgREST — `searchProducts` + admin search both escape `%`/`_`
+- Admin auth on `/admin/*` routes — middleware enforces via `admin_users` table check
+- Stripe webhook signature verification — intact, 21 tests passing
+- Sentry coverage — all 16 API routes use `captureException` in catch blocks
+- Rate limit coverage — all public POSTs covered (checkout, AI, contact, heartbeat, search, admin/setup)
+- Native `<img>` usage — zero; all use `next/image`
+- Hardcoded `max-width` caps — none; uses `--content-max-width` CSS var
+- Blue-purple gradients — none; consistent gold/dark palette
+- Tiptap dynamic import — correctly gated in ProductForm (admin-only)
+- Skeleton vs spinner consistency — content skeletons + action spinners
+- Homepage parallel data fetch — `Promise.all` used
+- Product page dedup — `cache()` wrapping + Suspense stream
+- 3D viewer — gated on device support before dynamic import
+- Database indexes — composite indexes on products, blog_posts, pg_trgm search index applied
+- Supabase client separation — public/server/admin/browser properly scoped
+- ChatWidget — singleton + realtime-first + 10s polling fallback
+- PageTransition — `mode="popLayout"` active
+- Parallax on mobile — disabled by default per v1.2 decision
 
-## Severity Re-ranking Notes
+## Severity Summary
 
-- **Perf C1 → MEDIUM** (product page waterfall): `getProductBySlug` is `cache()`-wrapped; `generateMetadata` and page component deduplicate. Only `getRelatedProducts` is on the critical path.
-- **Backend C2 → HIGH** (admin setup): Three defense layers exist (timing-safe secret, env flag, existing-admin check). Still HIGH due to stateless env gating + missing rate limit.
-- **Backend H5 → CRITICAL** (`getProductsByIds` no is_active): Checkout security gate. Single-line fix, maximum impact — this is the real critical.
+| Severity | Count |
+|----------|-------|
+| CRITICAL | 0 |
+| HIGH | 10 |
+| MEDIUM | 15 |
+| LOW | 8 |
+| **Total** | **33** |
 
-## Recommended Fix Ordering
+## Recommended Fix Ordering (by impact / effort)
 
-### Quick wins (< 30 min each)
-1. `is_active` filter in `validateCartPrices` (CRITICAL #1) — close checkout hole
-2. `status='published'` filter on blog GET (CRITICAL #2) — close draft leak
-3. Delete `variants.ts`, `CustomPerfumeBottle.tsx`, uninstall `@stripe/stripe-js` + `@react-three/gltfjsx` (HIGH #10)
-4. Add `'three'`, `'@react-three/drei'` to `optimizePackageImports` + `openrouter.ai` to CSP (#25, #27)
-5. `fetchWithTimeout` on AI assistant (HIGH #11)
-6. Rate-limit `/api/admin/setup` + `/api/search` (#3, #15)
-7. Strip `/api/health` service flags (#16)
+### Quick wins (<30 min each, 🎯 high ROI)
+1. **#2 LoadingScreen removal** — 15 min, -800ms perceived LCP on every visit
+2. **#4 React.memo on ProductCard + CartItem** — 10 min, prevent 100+ re-renders per filter interaction
+3. **#21 Supabase public client singleton** — 5 min, faster build + minor runtime
+4. **#24 AI keywords IIFE** — 5 min, minor but clean
+5. **#14 searchProducts `.limit(20)`** — 2 min, scalability guard
+6. **#25 Regenerate Supabase types** — 5 min, type drift fix
+7. **#27 Blog pagination aria-current** — 10 min, a11y
+8. **#31 CSP comment** — 2 min, informational
 
-### Medium effort (1–2h each)
-8. Add `loading.tsx` + `error.tsx` to dynamic route segments (HIGH #9, MED #19)
-9. Scope `AnimationBudgetProvider` or add idle detection (HIGH #7)
-10. Move `/shop` `searchParams` to client — convert to static (HIGH #6)
-11. Suspense-stream `RelatedProducts` (HIGH #5)
-12. Consolidate JSON-LD emission pattern (MED #22)
-13. Unify error logging (Sentry + formatApiError) across all API routes (LOW #26)
+### Medium effort (1-2h each)
+9. **#1 Admin user creation server-side** — HIGH priority security fix, ~1h
+10. **#5 CartDrawer Escape + focus trap** — 1h, WCAG compliance
+11. **#6 Desktop dropdown keyboard access** — 30min, 1-line CSS fix + ARIA
+12. **#7 Mobile menu Escape** — 30min
+13. **#8 Form aria-describedby sweep** — 1-2h across 3 files
+14. **#9 Middleware narrowing** — 30min, -2-5ms per API call
+15. **#3 Heartbeat probabilistic cleanup + index** — 30min + migration
+16. **#12 Product/category revalidatePath** — 1h, move to server action
+17. **#10 site_visitors DELETE RLS** — 15min migration
+18. **#22 LCP image priority** — 30min
+19. **#23 AnimationBudget auto-stop** — 45min
+20. **#17 i.ibb.co migration** — 1h (6 images to Supabase Storage or public/)
 
 ### Needs planning (half-day+)
-14. Live chat hygiene bundle: RLS migration + single Supabase client + polling-as-fallback + a11y labels (HIGH #4 + MED #17, #21)
-15. `revalidatePath`/`revalidateTag` sweep across all mutation endpoints (MED #13)
-16. Customer upsert race condition fix (RPC or atomic upsert) (MED #14)
-17. Gate 3D viewer on device capability before dynamic import (HIGH #12)
-18. Migrate Hero video + category image off Squarespace CDN (MED #18)
-19. `pg_trgm` search index migration (HIGH #8)
-20. Expand AI assistant keyword map + build O(1) lookup (MED #23)
+21. **#11 Live chat session secret tightening** — needs design decision on auth model
+22. **#15 Admin select('*') → named columns** — 2-3h across 7 files, low-risk refactor
+
+---
+
+*Report written 2026-04-17 after v3.2 ship. 33 findings, 0 critical — project is in genuinely good shape.*
