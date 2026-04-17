@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
 import { estimateReadTime } from '@/lib/blog';
 import { z } from 'zod';
@@ -119,6 +120,12 @@ export async function PUT(
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
+    revalidatePath('/blog');
+    revalidatePath(`/blog/${slug}`);
+    if (data?.slug && data.slug !== slug) {
+      revalidatePath(`/blog/${data.slug}`);
+    }
+
     return NextResponse.json(data);
   } catch (error) {
     console.error('Blog slug PUT error:', error);
@@ -160,6 +167,9 @@ export async function DELETE(
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
+
+    revalidatePath('/blog');
+    revalidatePath(`/blog/${slug}`);
 
     return NextResponse.json({ success: true });
   } catch (error) {
