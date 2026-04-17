@@ -1,7 +1,8 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { getProductsByCategory } from '@/lib/supabase/product-service';
-import { buildCollectionPage, buildBreadcrumbList, jsonLdScript } from '@/lib/seo/listing-schema';
+import { buildCollectionPage, buildBreadcrumbList } from '@/lib/seo/listing-schema';
+import JsonLd from '@/components/seo/JsonLd';
 import LattafaContent from './LattafaContent';
 
 export const revalidate = 1800;
@@ -78,14 +79,8 @@ export default async function LattafaPage() {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: jsonLdScript(breadcrumbSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: jsonLdScript(collectionSchema) }}
-      />
+      <JsonLd schema={breadcrumbSchema} />
+      <JsonLd schema={collectionSchema} />
       <LattafaContent products={products} />
     </>
   );

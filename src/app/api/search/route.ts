@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import * as Sentry from '@sentry/nextjs';
 import { searchProducts } from '@/lib/supabase/product-service';
+import { checkRateLimit } from '@/lib/rate-limit';
+import { formatApiError } from '@/lib/api-utils';
 
 export async function GET(request: NextRequest) {
   try {
+    const rateLimitResponse = await checkRateLimit(request, 'search');
+    if (rateLimitResponse) return rateLimitResponse;
+
     const { searchParams } = request.nextUrl;
     const query = searchParams.get('q');
 
@@ -26,11 +31,9 @@ export async function GET(request: NextRequest) {
       }
     );
   } catch (error) {
-    console.error('Search API error:', error);
     Sentry.captureException(error);
-
     return NextResponse.json(
-      { error: 'Failed to search products' },
+      formatApiError(error, 'Failed to search products'),
       { status: 500 }
     );
   }

@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useReducer, useEffect, useState, useCallback, useRef, type ReactNode } from 'react';
+import { createContext, useContext, useReducer, useEffect, useState, useCallback, useMemo, useRef, type ReactNode } from 'react';
 import { z } from 'zod';
 import * as Sentry from '@sentry/nextjs';
 import type { Cart, CartItem, CartAction, CartContextType } from '@/types/cart';
@@ -184,8 +184,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const openCart = useCallback(() => setIsCartOpen(true), []);
   const closeCart = useCallback(() => setIsCartOpen(false), []);
 
-  const itemCount = cart.items.reduce((sum, item) => sum + item.quantity, 0);
-  const subtotal = calculateSubtotal(cart.items);
+  const itemCount = useMemo(() => cart.items.reduce((sum, item) => sum + item.quantity, 0), [cart.items]);
+  const subtotal = useMemo(() => calculateSubtotal(cart.items), [cart.items]);
 
   return (
     <CartContext.Provider

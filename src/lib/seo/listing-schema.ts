@@ -72,6 +72,3 @@ export function buildBlogSchema(posts: Array<{ title: string; slug: string; cove
   };
 }
 
-export function jsonLdScript(schema: Record<string, unknown> | Array<Record<string, unknown>>) {
-  return JSON.stringify(schema).replace(/</g, '\\u003c');
-}

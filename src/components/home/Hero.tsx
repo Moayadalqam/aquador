@@ -36,8 +36,9 @@ export default function Hero() {
               style={{ filter: 'brightness(0.25) saturate(0.7) contrast(1.1)' }}
               onError={() => setVideoError(true)}
             >
-              <source
-                src="https://static1.squarespace.com/static/66901f0f8865462c0ac066ba/t/6899a19131e4b55cddf56fb2/1754898858755/download+%2820%29.mp4"
+              {/* Migrated from Squarespace CDN 2026-04-17 — original URL in git history */}
+            <source
+                src="/media/hero-luxury.mp4"
                 type="video/mp4"
               />
             </video>

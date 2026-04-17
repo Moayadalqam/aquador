@@ -1,14 +1,17 @@
+import { Suspense } from 'react';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
-import { getProductBySlug, getRelatedProducts, getAllProductSlugs, getCategoryBySlug } from '@/lib/supabase/product-service';
+import { getProductBySlug, getAllProductSlugs, getCategoryBySlug } from '@/lib/supabase/product-service';
 import ProductDetails from '@/components/products/ProductDetails';
-import RelatedProducts from '@/components/products/RelatedProducts';
 import ProductGallery from '@/components/products/ProductGallery';
+import RelatedProductsSection from '@/components/products/RelatedProductsSection';
+import RelatedProductsSkeleton from '@/components/products/RelatedProductsSkeleton';
 import ParallaxWrapper from './ParallaxWrapper';
 import { ProductViewTracker } from '@/components/products/ProductViewTracker';
 import { buildProductSchema, buildProductBreadcrumb } from '@/lib/seo/product-schema';
+import JsonLd from '@/components/seo/JsonLd';
 
 export const revalidate = 3600;
 
@@ -81,8 +84,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
     notFound();
   }
 
-  const relatedProductsData = await getRelatedProducts(product.id, product.category);
-
   // Transform Supabase product to match expected interface
   const transformedProduct = {
     id: product.id,
@@ -100,22 +101,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
     gender: product.gender ?? undefined,
     tags: product.tags ?? undefined,
   };
-
-  const relatedProducts = relatedProductsData.map(p => ({
-    id: p.id,
-    name: p.name,
-    description: p.description,
-    price: Number(p.price),
-    salePrice: p.sale_price ? Number(p.sale_price) : undefined,
-    category: p.category,
-    productType: p.product_type,
-    size: p.size,
-    image: p.image,
-    inStock: p.in_stock ?? true,
-    brand: p.brand ?? undefined,
-    gender: p.gender ?? undefined,
-    tags: p.tags ?? undefined,
-  }));
 
   // JSON-LD structured data for SEO (Merchant-grade Product schema)
   const allImages = [product.image, ...(product.images ?? [])].filter(Boolean);
@@ -135,14 +120,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
       <ProductViewTracker productSlug={slug} productName={product.name} />
 
       {/* Structured Data */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema).replace(/</g, '\\u003c') }}
-      />
+      <JsonLd schema={jsonLd} />
+      <JsonLd schema={breadcrumbSchema} />
 
       <main className="min-h-screen bg-gold-ambient pt-24 md:pt-28 lg:pt-32 pb-20">
         <div className="content-container">
@@ -175,10 +154,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
             </div>
           </div>
 
-          {/* Related Products */}
-          {relatedProducts.length > 0 && (
-            <RelatedProducts products={relatedProducts} />
-          )}
+          {/* Related Products — streamed via Suspense so main product content is not blocked */}
+          <Suspense fallback={<RelatedProductsSkeleton />}>
+            <RelatedProductsSection productId={product.id} category={product.category} />
+          </Suspense>
         </div>
       </main>
     </>

@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
+import * as Sentry from '@sentry/nextjs';
+import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
 import { estimateReadTime } from '@/lib/blog';
+import { formatApiError } from '@/lib/api-utils';
 import { z } from 'zod';
 
 export const maxDuration = 10;
@@ -28,23 +31,42 @@ export async function GET(
     const { slug } = await params;
     const supabase = await createClient();
 
-    const { data, error } = await supabase
+    // Check if requester is an admin (admins can view drafts)
+    const { data: { user } } = await supabase.auth.getUser();
+    let isAdmin = false;
+    if (user) {
+      const { data: adminUser } = await supabase
+        .from('admin_users')
+        .select('id')
+        .eq('id', user.id)
+        .single();
+      isAdmin = !!adminUser;
+    }
+
+    let query = supabase
       .from('blog_posts')
       .select('*')
-      .eq('slug', slug)
-      .single();
+      .eq('slug', slug);
+
+    if (!isAdmin) {
+      query = query.eq('status', 'published');
+    }
+
+    const { data, error } = await query.single();
 
     if (error || !data) {
       return NextResponse.json({ error: 'Post not found' }, { status: 404 });
     }
 
     const response = NextResponse.json(data);
-    response.headers.set('Cache-Control', 'public, s-maxage=600, stale-while-revalidate=86400');
+    if (!isAdmin) {
+      response.headers.set('Cache-Control', 'public, s-maxage=600, stale-while-revalidate=86400');
+    }
     return response;
   } catch (error) {
-    console.error('Blog slug GET error:', error);
+    Sentry.captureException(error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Internal server error' },
+      formatApiError(error, 'Failed to fetch blog post'),
       { status: 500 }
     );
   }
@@ -100,11 +122,17 @@ export async function PUT(
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
+    revalidatePath('/blog');
+    revalidatePath(`/blog/${slug}`);
+    if (data?.slug && data.slug !== slug) {
+      revalidatePath(`/blog/${data.slug}`);
+    }
+
     return NextResponse.json(data);
   } catch (error) {
-    console.error('Blog slug PUT error:', error);
+    Sentry.captureException(error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Internal server error' },
+      formatApiError(error, 'Failed to update blog post'),
       { status: 500 }
     );
   }
@@ -142,11 +170,14 @@ export async function DELETE(
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
+    revalidatePath('/blog');
+    revalidatePath(`/blog/${slug}`);
+
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Blog slug DELETE error:', error);
+    Sentry.captureException(error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Internal server error' },
+      formatApiError(error, 'Failed to delete blog post'),
       { status: 500 }
     );
   }

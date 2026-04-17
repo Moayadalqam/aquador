@@ -24,6 +24,7 @@ export function PerfumeBottle({
   return (
     <group position={position} scale={scale}>
       {/* Main bottle body */}
+      {/* Hex colors below are intentional — meshPhysicalMaterial props cannot use CSS variables */}
       <mesh ref={meshRef} castShadow receiveShadow>
         <cylinderGeometry args={[0.5, 0.5, 2, 32]} />
         <meshPhysicalMaterial

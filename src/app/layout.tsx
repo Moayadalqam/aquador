@@ -11,7 +11,6 @@ import CookieConsent from "@/components/ui/CookieConsent";
 import { ErrorBoundary, AbortErrorSuppressor } from "@/components/providers/ErrorBoundary";
 import VisitorTracker from "@/components/VisitorTracker";
 import { PageTransition } from "@/components/providers/PageTransition";
-import { AnimationBudgetProvider } from "@/lib/performance/animation-budget";
 import { ScrollDepthTracker } from "@/components/analytics/ScrollDepthTracker";
 
 const ChatWidget = dynamic(() => import("@/components/ai/ChatWidget"), {
@@ -141,22 +140,20 @@ export default function RootLayout({
         </a>
         <AbortErrorSuppressor />
         <ErrorBoundary>
-          <AnimationBudgetProvider>
-            <CartProvider>
-              <Navbar />
-              <PageTransition>
-                <main id="main-content" className="min-h-screen">
-                  {children}
-                </main>
-              </PageTransition>
-              <Footer />
-              <CartDrawer />
-              <CookieConsent />
-              <ScrollDepthTracker />
-              <ChatWidget />
-              <VisitorTracker />
-            </CartProvider>
-          </AnimationBudgetProvider>
+          <CartProvider>
+            <Navbar />
+            <PageTransition>
+              <main id="main-content" className="min-h-screen">
+                {children}
+              </main>
+            </PageTransition>
+            <Footer />
+            <CartDrawer />
+            <CookieConsent />
+            <ScrollDepthTracker />
+            <ChatWidget />
+            <VisitorTracker />
+          </CartProvider>
         </ErrorBoundary>
         <Analytics />
         <SpeedInsights />

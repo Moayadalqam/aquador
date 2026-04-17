@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+import * as Sentry from '@sentry/nextjs';
+import { formatApiError } from '@/lib/api-utils';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'edge';
@@ -9,12 +11,6 @@ export async function GET() {
       status: 'ok',
       timestamp: new Date().toISOString(),
       version: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) || 'local',
-      environment: process.env.NODE_ENV,
-      checks: {
-        stripe: !!process.env.STRIPE_SECRET_KEY,
-        resend: !!process.env.RESEND_API_KEY,
-        sentry: !!process.env.SENTRY_DSN,
-      },
     };
 
     return NextResponse.json(health, {
@@ -24,9 +20,9 @@ export async function GET() {
       },
     });
   } catch (error) {
-    console.error('Health check error:', error);
+    Sentry.captureException(error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Internal server error' },
+      formatApiError(error, 'Health check failed'),
       { status: 500 }
     );
   }

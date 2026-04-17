@@ -1,7 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import * as Sentry from '@sentry/nextjs';
 import { timingSafeEqual } from 'crypto';
 import { z } from 'zod';
+import { checkRateLimit } from '@/lib/rate-limit';
+import { formatApiError } from '@/lib/api-utils';
 
 const SetupSchema = z.object({
   email: z.string().email(),
@@ -34,7 +37,10 @@ function validateSetupKey(providedKey: string): boolean {
 }
 
 // POST: Create initial admin user
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  const rateLimitResponse = await checkRateLimit(request, 'checkout');
+  if (rateLimitResponse) return rateLimitResponse;
+
   try {
     if (process.env.ADMIN_SETUP_COMPLETE === 'true') {
       return NextResponse.json({ error: 'Setup already completed' }, { status: 403 });
@@ -97,16 +103,19 @@ export async function POST(request: Request) {
       email
     });
   } catch (error) {
-    console.error('Admin setup error:', error);
+    Sentry.captureException(error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Internal server error' },
+      formatApiError(error, 'Admin setup failed'),
       { status: 500 }
     );
   }
 }
 
 // PUT: Update existing admin password
-export async function PUT(request: Request) {
+export async function PUT(request: NextRequest) {
+  const rateLimitResponse = await checkRateLimit(request, 'checkout');
+  if (rateLimitResponse) return rateLimitResponse;
+
   try {
     if (process.env.ADMIN_SETUP_COMPLETE === 'true') {
       return NextResponse.json({ error: 'Setup already completed' }, { status: 403 });
@@ -152,9 +161,9 @@ export async function PUT(request: Request) {
       email
     });
   } catch (error) {
-    console.error('Admin password update error:', error);
+    Sentry.captureException(error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Internal server error' },
+      formatApiError(error, 'Password update failed'),
       { status: 500 }
     );
   }

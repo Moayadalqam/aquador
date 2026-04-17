@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ProductImage } from '@/components/ui/ProductImage';
 import { OptimizedImage } from '@/components/ui/OptimizedImage';
 import { ZOOM_CONFIG } from '@/lib/image-utils';
+import { useDeviceCapabilities } from '@/hooks/useDeviceCapabilities';
 
 const FALLBACK_IMAGE = '/placeholder-product.svg';
 
@@ -36,6 +37,7 @@ export default function ProductGallery({ mainImage, images, name, inStock }: Pro
   const [isZoomed, setIsZoomed] = useState(false);
   const [_zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 }); // percentage
   const [show3D, setShow3D] = useState(false);
+  const { supports3D } = useDeviceCapabilities();
   const touchStartX = useRef(0);
   const initialPinchDistance = useRef<number | null>(null);
 
@@ -166,12 +168,23 @@ export default function ProductGallery({ mainImage, images, name, inStock }: Pro
         </button>
       </div>
 
-      {/* Conditional rendering: 3D viewer or 2D gallery */}
-      {show3D ? (
+      {/* Conditional rendering: 3D viewer, unsupported fallback, or 2D gallery */}
+      {show3D && supports3D ? (
         <ProductViewer
           productName={name}
           className="h-[600px]"
         />
+      ) : show3D && !supports3D ? (
+        <div className="flex items-center justify-center h-[600px] bg-dark-900/50 backdrop-blur-sm rounded-lg">
+          <div className="text-center px-6">
+            <svg className="w-12 h-12 mx-auto mb-4 text-gold-500/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
+            </svg>
+            <p className="text-gold-500/70 text-sm font-medium">
+              3D viewer not available on this device — try desktop
+            </p>
+          </div>
+        </div>
       ) : (
         <>
           {/* Main image */}

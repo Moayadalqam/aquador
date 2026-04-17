@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
+import * as Sentry from '@sentry/nextjs';
+import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
 import { estimateReadTime, generateSlug } from '@/lib/blog';
+import { formatApiError } from '@/lib/api-utils';
 import { z } from 'zod';
 
 export const maxDuration = 10;
@@ -84,9 +87,9 @@ export async function GET(request: NextRequest) {
     }
     return response;
   } catch (error) {
-    console.error('Blog GET error:', error);
+    Sentry.captureException(error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Internal server error' },
+      formatApiError(error, 'Failed to fetch blog posts'),
       { status: 500 }
     );
   }
@@ -138,11 +141,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
+    revalidatePath('/blog');
+    revalidatePath(`/blog/${slug}`);
+
     return NextResponse.json(data, { status: 201 });
   } catch (error) {
-    console.error('Blog POST error:', error);
+    Sentry.captureException(error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Internal server error' },
+      formatApiError(error, 'Failed to create blog post'),
       { status: 500 }
     );
   }

@@ -15,7 +15,7 @@ const nextConfig = {
   // - Page transitions: < 300ms total duration
 
   experimental: {
-    optimizePackageImports: ['framer-motion', 'lucide-react'],
+    optimizePackageImports: ['framer-motion', 'lucide-react', 'three', '@react-three/drei'],
   },
 
   images: {
@@ -30,20 +30,19 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'static1.squarespace.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'images.squarespace-cdn.com',
-      },
-      {
-        protocol: 'https',
         hostname: 'i.ibb.co',
       },
       {
         protocol: 'https',
         hostname: '**.supabase.co',
         pathname: '/storage/v1/object/public/**',
+      },
+      // NOTE: Kept for ~100 product images stored in Supabase DB that reference Squarespace CDN.
+      // Hero video + Lattafa category image migrated off Squarespace in v3.2 (P29 T4).
+      // Full product image migration tracked as future work.
+      {
+        protocol: 'https',
+        hostname: 'images.squarespace-cdn.com',
       },
     ],
   },
@@ -82,7 +81,7 @@ const nextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; img-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' https://vercel.live https://*.vercel.live https://js.stripe.com https://*.sentry.io; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; frame-src https://www.google.com https://js.stripe.com https://vercel.live; media-src 'self' https://static1.squarespace.com https://images.squarespace-cdn.com https://*.supabase.co; connect-src 'self' https://api.stripe.com https://vercel.live https://*.vercel.app wss://ws-us3.pusher.com https://*.sentry.io https://*.supabase.co wss://*.supabase.co;",
+            value: "default-src 'self'; img-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' https://vercel.live https://*.vercel.live https://js.stripe.com https://*.sentry.io; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; frame-src https://www.google.com https://js.stripe.com https://vercel.live; media-src 'self' https://*.supabase.co; connect-src 'self' https://api.stripe.com https://openrouter.ai https://vercel.live https://*.vercel.app wss://ws-us3.pusher.com https://*.sentry.io https://*.supabase.co wss://*.supabase.co;",
           },
         ],
       },

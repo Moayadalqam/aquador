@@ -8,6 +8,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 
+// Module-scope singleton — created once, reused across all mounts
+const supabaseClient = createClient();
+
 type ChatMode = 'ai' | 'live' | 'menu';
 
 interface Message {
@@ -89,36 +92,70 @@ export default function ChatWidget() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const liveInputRef = useRef<HTMLInputElement>(null);
-  const supabaseRef = useRef(createClient());
 
   useEffect(() => { messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages, liveMessages]);
   useEffect(() => { if (isOpen && mode === 'ai') inputRef.current?.focus(); if (isOpen && mode === 'live') liveInputRef.current?.focus(); }, [isOpen, mode]);
 
-  // Poll for messages + session status (Realtime is unreliable, polling guarantees delivery)
+  // Realtime-primary message delivery with polling fallback
   useEffect(() => {
     if (!sessionId) return;
-    const supabase = supabaseRef.current;
+    let pollInterval: ReturnType<typeof setInterval> | null = null;
+    let realtimeConnected = false;
 
     const fetchMessages = async () => {
-      const { data } = await supabase.from('live_chat_messages').select('*').eq('session_id', sessionId).order('created_at', { ascending: true });
+      const { data } = await supabaseClient.from('live_chat_messages').select('*').eq('session_id', sessionId).order('created_at', { ascending: true });
       if (data) setLiveMessages(data as unknown as LiveMessage[]);
     };
     const fetchSession = async () => {
-      const { data } = await supabase.from('live_chat_sessions').select('status').eq('id', sessionId).single();
+      const { data } = await supabaseClient.from('live_chat_sessions').select('status').eq('id', sessionId).single();
       if (data) setLiveStatus(data.status as 'waiting' | 'active' | 'closed');
     };
 
+    // Initial fetch
     fetchMessages();
     fetchSession();
 
-    // Poll every 3 seconds
-    const interval = setInterval(() => { fetchMessages(); fetchSession(); }, 3000);
+    const startFallbackPolling = () => {
+      if (pollInterval) return; // already polling
+      pollInterval = setInterval(() => { fetchMessages(); fetchSession(); }, 10000);
+    };
 
-    // Also try Realtime for instant delivery
-    const msgChannel = supabase.channel(`live-chat-msgs-${sessionId}`).on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'live_chat_messages', filter: `session_id=eq.${sessionId}` }, (payload) => { const msg = payload.new as LiveMessage; setLiveMessages(prev => prev.some(m => m.id === msg.id) ? prev : [...prev, msg]); }).subscribe();
-    const sessionChannel = supabase.channel(`live-chat-session-${sessionId}`).on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'live_chat_sessions', filter: `id=eq.${sessionId}` }, (payload) => { setLiveStatus((payload.new as { status: 'waiting' | 'active' | 'closed' }).status); }).subscribe();
+    // Realtime subscriptions — primary delivery mechanism
+    const msgChannel = supabaseClient.channel(`live-chat-msgs-${sessionId}`)
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'live_chat_messages', filter: `session_id=eq.${sessionId}` }, (payload) => {
+        const msg = payload.new as LiveMessage;
+        setLiveMessages(prev => prev.some(m => m.id === msg.id) ? prev : [...prev, msg]);
+      })
+      .subscribe((status) => {
+        if (status === 'SUBSCRIBED') {
+          realtimeConnected = true;
+        } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+          realtimeConnected = false;
+          startFallbackPolling();
+        }
+      });
 
-    return () => { clearInterval(interval); supabase.removeChannel(msgChannel); supabase.removeChannel(sessionChannel); };
+    const sessionChannel = supabaseClient.channel(`live-chat-session-${sessionId}`)
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'live_chat_sessions', filter: `id=eq.${sessionId}` }, (payload) => {
+        setLiveStatus((payload.new as { status: 'waiting' | 'active' | 'closed' }).status);
+      })
+      .subscribe((status) => {
+        if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+          startFallbackPolling();
+        }
+      });
+
+    // Safety net: start fallback polling after 5s if Realtime hasn't connected
+    const safetyTimeout = setTimeout(() => {
+      if (!realtimeConnected) startFallbackPolling();
+    }, 5000);
+
+    return () => {
+      clearTimeout(safetyTimeout);
+      if (pollInterval) clearInterval(pollInterval);
+      supabaseClient.removeChannel(msgChannel);
+      supabaseClient.removeChannel(sessionChannel);
+    };
   }, [sessionId]);
 
   const handleSend = async () => {
@@ -138,13 +175,12 @@ export default function ChatWidget() {
 
   const startLiveChat = useCallback(async () => {
     const visitorId = getVisitorId();
-    const supabase = supabaseRef.current;
-    const { data: existing } = await supabase.from('live_chat_sessions').select('id, status').eq('visitor_id', visitorId).in('status', ['waiting', 'active']).order('created_at', { ascending: false }).limit(1);
+    const { data: existing } = await supabaseClient.from('live_chat_sessions').select('id, status').eq('visitor_id', visitorId).in('status', ['waiting', 'active']).order('created_at', { ascending: false }).limit(1);
     if (existing && existing.length > 0) { setSessionId(existing[0].id); setLiveStatus(existing[0].status as 'waiting' | 'active'); setMode('live'); return; }
-    const { data: session, error } = await supabase.from('live_chat_sessions').insert({ visitor_id: visitorId }).select('id').single();
+    const { data: session, error } = await supabaseClient.from('live_chat_sessions').insert({ visitor_id: visitorId }).select('id').single();
     if (error || !session) { Sentry.captureException(error); return; }
     setSessionId(session.id); setLiveStatus('waiting'); setMode('live');
-    await supabase.from('live_chat_messages').insert({ session_id: session.id, sender_type: 'system', content: 'You are now in the queue. An agent will be with you shortly.' });
+    await supabaseClient.from('live_chat_messages').insert({ session_id: session.id, sender_type: 'system', content: 'You are now in the queue. An agent will be with you shortly.' });
     // Notify staff via WhatsApp/email
     fetch('/api/live-chat/notify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sessionId: session.id }) }).catch(() => {});
   }, []);
@@ -155,7 +191,7 @@ export default function ChatWidget() {
     // Optimistic update — show message instantly
     const optimisticMsg: LiveMessage = { id: `opt-${Date.now()}`, sender_type: 'visitor', content, created_at: new Date().toISOString() };
     setLiveMessages(prev => [...prev, optimisticMsg]);
-    await supabaseRef.current.from('live_chat_messages').insert({ session_id: sessionId, sender_type: 'visitor', content });
+    await supabaseClient.from('live_chat_messages').insert({ session_id: sessionId, sender_type: 'visitor', content });
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (mode === 'ai') handleSend(); else if (mode === 'live') handleLiveSend(); } };
@@ -202,7 +238,7 @@ export default function ChatWidget() {
                   <div className="flex-1"><h3 className="text-black font-semibold text-sm flex items-center gap-1.5">Aquad{"'"}or<span className="w-1.5 h-1.5 bg-green-500 rounded-full" /></h3><p className="text-[10px] text-gray-400">AI Fragrance Expert</p></div>
                   <button onClick={() => setIsOpen(false)} className="p-1 hover:bg-white/10 rounded-full transition-colors min-[481px]:hidden"><X className="w-5 h-5 text-gray-400" /></button>
                 </div>
-                <div className="flex-1 overflow-y-auto p-2.5 space-y-2.5">
+                <div className="flex-1 overflow-y-auto p-2.5 space-y-2.5" role="log" aria-live="polite">
                   {messages.map((message, index) => (<motion.div key={index} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}><div className={`max-w-[88%] rounded-2xl px-3 py-2 ${message.role === 'user' ? 'bg-gold text-dark' : 'bg-gray-100 text-black border border-gold/10'}`}><p className="text-[13px] whitespace-pre-wrap leading-relaxed">{message.role === 'assistant' ? renderMarkdown(message.content) : message.content}</p></div></motion.div>))}
                   {isLoading && (<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start"><div className="bg-gray-100 border border-gold/10 rounded-2xl px-3 py-2 flex items-center gap-2"><Loader2 className="w-3.5 h-3.5 text-gold animate-spin" /><span className="text-xs text-gray-400">Thinking...</span></div></motion.div>)}
                   <div ref={messagesEndRef} />
@@ -210,8 +246,8 @@ export default function ChatWidget() {
                 {messages.length <= 2 && (<div className="px-2.5 pb-1.5"><div className="flex flex-wrap gap-1">{suggestions.map((s, i) => (<button key={i} onClick={() => { setInput(s); inputRef.current?.focus(); }} className="text-[10px] px-2 py-1 bg-gray-100 border border-gold/20 text-gray-700 rounded-full hover:border-gold hover:text-gold transition-all">{s}</button>))}</div></div>)}
                 <div className="border-t border-gold/20 p-2.5 bg-gray-50">
                   <div className="flex items-center gap-2">
-                    <input ref={inputRef} type="text" value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKeyPress} placeholder="Ask about fragrances..." disabled={isLoading} className="flex-1 bg-white border border-gold/20 text-black placeholder-gray-500 px-3 py-2 text-sm rounded-xl focus:outline-none focus:border-gold transition-colors disabled:opacity-50" />
-                    <button onClick={handleSend} disabled={!input.trim() || isLoading} className="bg-gold text-dark p-2 rounded-xl hover:bg-gold-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><Send className="w-4 h-4" /></button>
+                    <input ref={inputRef} type="text" value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKeyPress} placeholder="Ask about fragrances..." aria-label="Ask about fragrances" disabled={isLoading} className="flex-1 bg-white border border-gold/20 text-black placeholder-gray-500 px-3 py-2 text-sm rounded-xl focus:outline-none focus:border-gold transition-colors disabled:opacity-50" />
+                    <button onClick={handleSend} disabled={!input.trim() || isLoading} aria-label="Send message" className="bg-gold text-dark p-2 rounded-xl hover:bg-gold-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><Send className="w-4 h-4" /></button>
                   </div>
                   <p className="text-[9px] text-gray-500 mt-1.5 text-center">Powered by{' '}<a href="https://qualiasolutions.net" target="_blank" rel="noopener noreferrer" className="text-gold/70 hover:text-gold transition-colors">Qualia Solutions</a></p>
                 </div>
@@ -229,7 +265,7 @@ export default function ChatWidget() {
                   </div>
                   <button onClick={() => setIsOpen(false)} className="p-1 hover:bg-white/10 rounded-full transition-colors min-[481px]:hidden"><X className="w-5 h-5 text-gray-400" /></button>
                 </div>
-                <div className="flex-1 overflow-y-auto p-2.5 space-y-2.5">
+                <div className="flex-1 overflow-y-auto p-2.5 space-y-2.5" role="log" aria-live="polite">
                   {liveMessages.map((msg) => (<motion.div key={msg.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className={`flex ${msg.sender_type === 'visitor' ? 'justify-end' : msg.sender_type === 'system' ? 'justify-center' : 'justify-start'}`}>{msg.sender_type === 'system' ? (<p className="text-[11px] text-gray-400 italic bg-gray-50 px-3 py-1 rounded-full">{msg.content}</p>) : (<div className={`max-w-[88%] rounded-2xl px-3 py-2 ${msg.sender_type === 'visitor' ? 'bg-gold text-dark' : 'bg-gray-100 text-black border border-gold/10'}`}><p className="text-[13px] whitespace-pre-wrap leading-relaxed">{msg.content}</p></div>)}</motion.div>))}
                   {liveStatus === 'waiting' && liveMessages.length <= 1 && (<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-center pt-4"><div className="flex items-center gap-2 text-gray-400"><Loader2 className="w-4 h-4 animate-spin text-gold" /><span className="text-xs">Connecting you to an agent...</span></div></motion.div>)}
                   <div ref={messagesEndRef} />
@@ -237,8 +273,8 @@ export default function ChatWidget() {
                 <div className="border-t border-gold/20 p-2.5 bg-gray-50">
                   {liveStatus === 'closed' ? (<button onClick={() => { setSessionId(null); setLiveMessages([]); setLiveStatus('waiting'); startLiveChat(); }} className="w-full py-2 bg-gold text-dark text-sm font-medium rounded-xl hover:bg-gold-light transition-colors">Start New Chat</button>) : (
                     <div className="flex items-center gap-2">
-                      <input ref={liveInputRef} type="text" value={liveInput} onChange={(e) => setLiveInput(e.target.value)} onKeyDown={handleKeyPress} placeholder="Type a message..." maxLength={2000} className="flex-1 bg-white border border-gold/20 text-black placeholder-gray-500 px-3 py-2 text-sm rounded-xl focus:outline-none focus:border-gold transition-colors" />
-                      <button onClick={handleLiveSend} disabled={!liveInput.trim()} className="bg-gold text-dark p-2 rounded-xl hover:bg-gold-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><Send className="w-4 h-4" /></button>
+                      <input ref={liveInputRef} type="text" value={liveInput} onChange={(e) => setLiveInput(e.target.value)} onKeyDown={handleKeyPress} placeholder="Type a message..." aria-label="Type a message" maxLength={2000} className="flex-1 bg-white border border-gold/20 text-black placeholder-gray-500 px-3 py-2 text-sm rounded-xl focus:outline-none focus:border-gold transition-colors" />
+                      <button onClick={handleLiveSend} disabled={!liveInput.trim()} aria-label="Send message" className="bg-gold text-dark p-2 rounded-xl hover:bg-gold-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><Send className="w-4 h-4" /></button>
                     </div>
                   )}
                   <p className="text-[9px] text-gray-500 mt-1.5 text-center">Powered by{' '}<a href="https://qualiasolutions.net" target="_blank" rel="noopener noreferrer" className="text-gold/70 hover:text-gold transition-colors">Qualia Solutions</a></p>

@@ -105,14 +105,14 @@ export default function LattafaContent({ products }: LattafaContentProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="flex justify-center"
+          className="flex justify-center overflow-x-auto"
         >
           <div className="inline-flex bg-dark-light/50 backdrop-blur-sm rounded-full p-1.5 border border-gold/20">
             {genderTabs.map((tab) => (
               <button
                 key={tab.key}
                 onClick={() => setGenderFilter(tab.key)}
-                className={`relative px-6 py-2.5 text-sm font-medium uppercase tracking-wider transition-all duration-300 rounded-full ${
+                className={`relative px-4 sm:px-6 py-2.5 text-xs sm:text-sm font-medium uppercase tracking-wider transition-all duration-300 rounded-full ${
                   genderFilter === tab.key
                     ? 'bg-gold text-dark shadow-lg shadow-gold/30'
                     : 'text-gray-400 hover:text-white'

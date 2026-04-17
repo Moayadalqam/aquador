@@ -1,13 +1,11 @@
-import dynamic from 'next/dynamic';
 import { getFeaturedAquadorProducts, getFeaturedLattafaProducts } from '@/lib/supabase/product-service';
 import Hero from '@/components/home/Hero';
 import TrustBar from '@/components/home/TrustBar';
 import Categories from '@/components/home/Categories';
 import CreateSection from '@/components/home/CreateSection';
-
-const FeaturedProducts = dynamic(() => import('@/components/home/FeaturedProducts'), {
-  ssr: true,
-});
+import FeaturedProducts from '@/components/home/FeaturedProducts';
+import { AnimationBudgetProvider } from '@/lib/performance/animation-budget';
+import JsonLd from '@/components/seo/JsonLd';
 
 export const revalidate = 600;
 
@@ -117,24 +115,11 @@ export default async function Home() {
     priceRange: '€€',
   };
 
-  // Safe JSON-LD serialization: escape </script> injection vector only
-  const safeStringify = (obj: unknown) =>
-    JSON.stringify(obj).replace(/<\/script>/gi, '<\\/script>');
-
   return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: safeStringify(organizationSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: safeStringify(websiteSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: safeStringify(localBusinessSchema) }}
-      />
+    <AnimationBudgetProvider>
+      <JsonLd schema={organizationSchema} />
+      <JsonLd schema={websiteSchema} />
+      <JsonLd schema={localBusinessSchema} />
       <Hero />
       <TrustBar />
       <Categories />
@@ -155,6 +140,6 @@ export default async function Home() {
         viewAllHref="/shop/lattafa"
         viewAllLabel="View All Lattafa"
       />
-    </>
+    </AnimationBudgetProvider>
   );
 }

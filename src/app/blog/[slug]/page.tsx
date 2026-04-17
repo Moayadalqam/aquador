@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getAllBlogSlugs, getBlogPostBySlug, getRelatedPosts } from '@/lib/blog';
+import JsonLd from '@/components/seo/JsonLd';
 import BlogPostContent from './BlogPostContent';
 
 export const revalidate = 300; // Revalidate every 5 minutes (ISR)
@@ -172,11 +173,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   return (
     <>
       {schemas.map((schema, i) => (
-        <script
-          key={i}
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }}
-        />
+        <JsonLd key={i} schema={schema} />
       ))}
       <BlogPostContent post={post} relatedPosts={relatedPosts} />
     </>

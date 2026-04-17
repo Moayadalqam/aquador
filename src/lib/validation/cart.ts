@@ -77,6 +77,15 @@ export async function validateCartPrices(items: CartItem[]): Promise<{
       continue;
     }
 
+    // Reject deactivated products — they must not be purchasable
+    if (product.is_active === false) {
+      errors.push({
+        productId: item.productId,
+        reason: `Product "${product.name}" is no longer available`,
+      });
+      continue;
+    }
+
     // Aquador's own products support virtual variants (perfume/oil/lotion)
     // with fixed pricing — the DB stores the base product, variants are derived.
     if (AQUADOR_CATEGORIES.has(product.category)) {

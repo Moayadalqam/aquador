@@ -2,7 +2,8 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getProductsByGender, getGenderLabel } from '@/lib/supabase/product-service';
 import type { ProductGender } from '@/lib/supabase/types';
-import { buildCollectionPage, jsonLdScript } from '@/lib/seo/listing-schema';
+import { buildCollectionPage } from '@/lib/seo/listing-schema';
+import JsonLd from '@/components/seo/JsonLd';
 import GenderContent from './GenderContent';
 
 export const revalidate = 1800;
@@ -104,14 +105,8 @@ export default async function GenderPage({ params }: GenderPageProps) {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema).replace(/</g, '\\u003c') }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: jsonLdScript(collectionSchema) }}
-      />
+      <JsonLd schema={breadcrumbSchema} />
+      <JsonLd schema={collectionSchema} />
       <GenderContent gender={gender} genderLabel={genderLabel} products={products} />
     </>
   );

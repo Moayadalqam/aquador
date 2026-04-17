@@ -294,8 +294,64 @@ export const catalogueProducts: CatalogueProduct[] = [
   { number: 'A44', name: 'Rose Al Tahara', brand: "Designed by Aquad'or", gender: 'Unisex', type: 'essence-oil', searchTerms: ['rose', 'musk'] },
 ];
 
+/** Pre-built keyword -> product[] index for O(1) lookup */
+const keywordIndex: Map<string, CatalogueProduct[]> = new Map();
+
+function buildKeywordIndex() {
+  for (const product of catalogueProducts) {
+    const terms = new Set<string>();
+    // Add brand words (lowercased)
+    if (product.brand && product.brand !== '-') {
+      product.brand.toLowerCase().split(/\s+/).forEach(w => terms.add(w));
+    }
+    // Add name words
+    product.name.toLowerCase().split(/\s+/).forEach(w => terms.add(w));
+    // Add gender
+    terms.add(product.gender.toLowerCase());
+    // Add type
+    terms.add(product.type);
+    // Add searchTerms
+    (product.searchTerms || []).forEach(t => terms.add(t.toLowerCase()));
+
+    terms.forEach(term => {
+      if (term.length < 2) return; // skip single chars
+      const existing = keywordIndex.get(term) || [];
+      existing.push(product);
+      keywordIndex.set(term, existing);
+    });
+  }
+}
+buildKeywordIndex(); // Run at module load
+
+/** Fast keyword lookup — returns products matching any of the given keywords */
+export function searchByKeywords(keywords: string[]): CatalogueProduct[] {
+  const seen = new Set<string>();
+  const results: CatalogueProduct[] = [];
+  for (const kw of keywords) {
+    const matches = keywordIndex.get(kw.toLowerCase()) || [];
+    for (const p of matches) {
+      if (!seen.has(p.number)) {
+        seen.add(p.number);
+        results.push(p);
+      }
+    }
+  }
+  return results;
+}
+
+/** Get all unique brand names from catalogue */
+export function getAllBrands(): string[] {
+  const brands = new Set(catalogueProducts.map(p => p.brand).filter(b => b !== '-'));
+  return Array.from(brands).sort();
+}
+
+/** Get all unique category keywords (brand names + genders) for matching */
+export function getCatalogueKeywords(): string[] {
+  return Array.from(keywordIndex.keys());
+}
+
 /**
- * Search products by note, name, brand, or gender
+ * Search products by note, name, brand, or gender (linear scan fallback)
  */
 export function searchCatalogue(query: string): CatalogueProduct[] {
   const lowercaseQuery = query.toLowerCase().trim();
