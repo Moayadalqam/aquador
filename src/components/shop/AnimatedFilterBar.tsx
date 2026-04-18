@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { filterVariants, FILTER_TIMING } from '@/lib/animations/filter-transitions';
 import { getFilterAnnouncement } from '@/lib/accessibility/aria-labels';
 

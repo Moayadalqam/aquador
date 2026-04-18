@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { ProductCard } from '@/components/ui/ProductCard';
 import type { LegacyProduct } from '@/types';
 

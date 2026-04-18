@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import type { BlogPost } from '@/lib/blog-types';
 import { formatBlogDate } from '@/lib/blog-types';

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { track } from '@vercel/analytics';
 import * as Sentry from '@sentry/nextjs';
 import { useCart } from './CartProvider';

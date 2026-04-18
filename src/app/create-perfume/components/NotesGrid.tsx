@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'motion/react'
 import { FragranceNote, FragranceCategory } from '@/lib/perfume/types'
 import { NoteCard } from './NoteCard'
 import { staggerFast, categoryThemes } from '../motion'

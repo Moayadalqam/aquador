@@ -3,8 +3,8 @@
 import { Canvas, useFrame } from '@react-three/fiber';
 import { PerspectiveCamera, OrbitControls, ContactShadows } from '@react-three/drei';
 import { Suspense, useRef, useMemo } from 'react';
-import { useTransform } from 'framer-motion';
-import type { MotionValue } from 'framer-motion';
+import { useTransform } from 'motion/react';
+import type { MotionValue } from 'motion/react';
 import { Color, type Group } from 'three';
 import { AquadorBottleGeometry } from '@/components/3d/AquadorBottleGeometry';
 

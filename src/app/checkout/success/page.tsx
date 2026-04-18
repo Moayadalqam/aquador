@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import Link from 'next/link';
 import { CheckCircle, Package, ArrowRight, XCircle, Loader2 } from 'lucide-react';
 import * as Sentry from '@sentry/nextjs';

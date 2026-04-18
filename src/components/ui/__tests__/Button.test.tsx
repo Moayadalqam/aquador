@@ -1,8 +1,8 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import Button from '../Button';
 
-// Mock framer-motion to avoid animation issues in tests
-jest.mock('framer-motion', () => ({
+// Mock motion/react to avoid animation issues in tests
+jest.mock('motion/react', () => ({
   motion: {
     button: ({ children, whileHover: _whileHover, whileTap: _whileTap, ...props }: React.ComponentProps<'button'> & { whileHover?: unknown; whileTap?: unknown }) => (
       <button {...props}>{children}</button>

@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { PerfumeComposition, PerfumeVolume } from '@/lib/perfume/types'
 import { calculatePrice } from '@/lib/perfume/pricing'
 import { formVariants, buttonVariants, slideUpFadeVariants } from '../motion'

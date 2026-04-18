@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 import dynamic from 'next/dynamic';
-import { motion, useScroll } from 'framer-motion';
+import { motion, useScroll } from 'motion/react';
 import { useDeviceCapabilities } from '@/hooks/useDeviceCapabilities';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { Canvas3DBoundary } from '@/components/3d/Canvas3DBoundary';

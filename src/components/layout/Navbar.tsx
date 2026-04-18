@@ -3,9 +3,9 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { Search, X, ChevronDown } from 'lucide-react';
-import { CartIcon } from '@/components/cart';
+import CartIcon from '@/components/cart/CartIcon';
 import { SearchBar } from '@/components/search';
 import Image from 'next/image';
 import type { NavItem } from '@/types';
@@ -32,19 +32,29 @@ export default function Navbar() {
   const pathname = usePathname();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [scrollY, setScrollY] = useState(0);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [blurIntensity, setBlurIntensity] = useState(0);
   const [expandedMobile, setExpandedMobile] = useState<string | null>(null);
   const ticking = useRef(false);
-
-  const isScrolled = scrollY > 60;
-  // Transition zone: 0–120px — gradual blur/background transition
-  const blurIntensity = Math.min(1, scrollY / 120);
+  const lastIsScrolled = useRef(false);
+  const lastBlurBucket = useRef(0);
 
   useEffect(() => {
     const handleScroll = () => {
       if (!ticking.current) {
         requestAnimationFrame(() => {
-          setScrollY(window.scrollY);
+          const y = window.scrollY;
+          const scrolled = y > 60;
+          // Bucket blur intensity into ~10 steps to avoid per-pixel state updates
+          const blur = Math.min(1, y / 120);
+          const blurBucket = Math.round(blur * 10);
+
+          if (scrolled !== lastIsScrolled.current || blurBucket !== lastBlurBucket.current) {
+            lastIsScrolled.current = scrolled;
+            lastBlurBucket.current = blurBucket;
+            setIsScrolled(scrolled);
+            setBlurIntensity(blur);
+          }
           ticking.current = false;
         });
         ticking.current = true;

@@ -6,6 +6,41 @@
 - ✅ **v1.1 Security Audit Remediation** - Phases 8-9 (shipped 2026-03-03)
 - ✅ **v1.2 Design Overhaul & Premium UX** - Phases 10-12 (shipped 2026-03-04)
 - ✅ **v2.0 Immersive Luxury Experience** - Phases 13-17 (shipped 2026-03-09)
+- 🔧 **v3.9 Optimization Fixes** - Phase 32 (in progress 2026-04-18)
+
+## Current Phase
+
+### Phase 32: v3.9 Optimization Fixes
+**Goal**: Close all CRITICAL + HIGH findings from OPTIMIZE.md v3.9 pass (7 critical, 14 high).
+**Depends on**: Phase 31
+**Source**: `.planning/OPTIMIZE.md` (2026-04-18)
+
+**Success Criteria** (what must be TRUE):
+  1. Live chat: anon SELECT returns no rows without valid session_secret header (C1, C2, C3)
+  2. All framer-motion imports migrated to motion/react (C4)
+  3. Admin dashboard loads in <300ms with 1000+ orders via count/sum queries (C5)
+  4. Homepage LCP <2.5s on mobile throttled — WelcomeSplash removed or ≤1.2s, hero video <3MB with WebM (C6, H10)
+  5. CartItem remove button positioned correctly (C7)
+  6. All inputs across admin + create-perfume + reorder + ChatWidget + SearchBar show visible focus ring (H1-H4)
+  7. create-perfume has single h1 (H5)
+  8. PageTransition removed; route navigation no longer unmounts entire tree (H6)
+  9. No `select('*')` in src except blog admin content read (H7)
+  10. DOMPurify dynamic-imported client-side (H8)
+  11. 3D Environment self-hosts HDRI instead of drei CDN fetch (H9)
+  12. Blog post page parallelises post + related fetches (H11)
+  13. All admin + blog mutation routes rate-limited (H12, H13)
+  14. /api/live-chat/notify + /api/blog GET + /api/checkout/session-details Zod-validated (H14, M19)
+  15. `npx tsc --noEmit` clean, `npm run lint` clean, `npm run build` succeeds
+  16. Smoke test `/`, `/shop`, `/products/[slug]`, `/create-perfume`, `/admin` all HTTP 200
+
+**Plans**: 5 plans (1 sequential prep + 4 parallel)
+
+Plans:
+- [ ] 32-00 (PREP): C4 framer-motion global import migration (82 files) — sequential
+- [ ] 32-01: Live chat security (C1, C2, C3, L17, H3, H14-notify, M16) — parallel
+- [ ] 32-03: Homepage LCP + RSC boundaries (C6, H10, L11, M8, M13, M14, L12, L3) — parallel
+- [ ] 32-04: Admin perf + data access + rate limits + Zod (C5, H7, H11, H12, H13, H14-blog, M11, M17, M18, M19, M20, L9, L14) — parallel
+- [ ] 32-05: A11y rings + CartItem + misc polish (C7, H1, H2, H4, H5, H6, H8, H9, M1-M7, M10, M12, M15, L1, L2, L4, L5, L6, L7, L8, L10, L13, L15, L16) — parallel
 
 ## Phases
 

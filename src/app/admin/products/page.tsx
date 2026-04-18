@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
 import { Plus, Search, AlertCircle } from 'lucide-react';
 import * as Sentry from '@sentry/nextjs';
+import { focusRingInput } from '@/lib/ui/focus';
 import ProductsTable from '@/components/admin/ProductsTable';
 import type { ProductCategory, Product } from '@/lib/supabase/types';
 
@@ -111,7 +112,7 @@ export default function ProductsPage() {
             name="search"
             defaultValue={searchQuery}
             placeholder="Search products..."
-            className="w-full pl-10 pr-4 py-2.5 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gold transition-colors"
+            className={`w-full pl-10 pr-4 py-2.5 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 ${focusRingInput} transition-colors`}
           />
         </form>
         <form action="/admin/products">
@@ -123,7 +124,7 @@ export default function ProductsPage() {
               const form = e.target.form;
               if (form) form.submit();
             }}
-            className="px-4 py-2.5 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-gold transition-colors"
+            className={`px-4 py-2.5 bg-gray-900 border border-gray-700 rounded-lg text-white ${focusRingInput} transition-colors`}
           >
             <option value="">All Categories</option>
             <option value="men">Men</option>

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import Image from 'next/image';
 import { Mail, Phone, MapPin, ArrowUpRight, ShieldCheck, Gem, Truck, Clock } from 'lucide-react';
 import { AnimatedSection } from '@/components/ui/AnimatedSection';
@@ -168,7 +168,7 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   className="group flex items-start gap-3 text-black/75 hover:text-black transition-colors"
                 >
-                  <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-black/10 text-gold-dark group-hover:border-gold group-hover:bg-gold/[0.08] transition-colors">
+                  <span className="flex h-10 w-10 min-h-[44px] min-w-[44px] flex-shrink-0 items-center justify-center rounded-full border border-black/10 text-gold-dark group-hover:border-gold group-hover:bg-gold/[0.08] transition-colors">
                     <MapPin className="w-3.5 h-3.5" strokeWidth={1.75} />
                   </span>
                   <span className="leading-[1.55] pt-1">
@@ -181,7 +181,7 @@ export default function Footer() {
                   href="tel:+35799980809"
                   className="group flex items-center gap-3 text-black/75 hover:text-black transition-colors"
                 >
-                  <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-black/10 text-gold-dark group-hover:border-gold group-hover:bg-gold/[0.08] transition-colors">
+                  <span className="flex h-10 w-10 min-h-[44px] min-w-[44px] flex-shrink-0 items-center justify-center rounded-full border border-black/10 text-gold-dark group-hover:border-gold group-hover:bg-gold/[0.08] transition-colors">
                     <Phone className="w-3.5 h-3.5" strokeWidth={1.75} />
                   </span>
                   +357 99 980 809
@@ -192,7 +192,7 @@ export default function Footer() {
                   href="mailto:info@aquadorcy.com"
                   className="group flex items-center gap-3 text-black/75 hover:text-black transition-colors"
                 >
-                  <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-black/10 text-gold-dark group-hover:border-gold group-hover:bg-gold/[0.08] transition-colors">
+                  <span className="flex h-10 w-10 min-h-[44px] min-w-[44px] flex-shrink-0 items-center justify-center rounded-full border border-black/10 text-gold-dark group-hover:border-gold group-hover:bg-gold/[0.08] transition-colors">
                     <Mail className="w-3.5 h-3.5" strokeWidth={1.75} />
                   </span>
                   info@aquadorcy.com

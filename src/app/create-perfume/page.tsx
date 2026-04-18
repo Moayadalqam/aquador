@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'motion/react'
 import { fragranceDatabase, fragranceCategories } from '@/lib/perfume/notes'
 import type {
   PerfumeComposition,
@@ -568,12 +568,12 @@ export default function CreatePerfumePage() {
                   <p className="text-[10px] uppercase tracking-[0.28em] text-gold-dark mb-4">
                     Your Composition
                   </p>
-                  <h1
+                  <h2
                     className="font-playfair font-semibold leading-[1.05] tracking-tight"
                     style={{ fontSize: 'clamp(2rem, 1rem + 3vw, 3.25rem)' }}
                   >
                     Finalize your masterpiece
-                  </h1>
+                  </h2>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-[1.2fr_0.8fr] gap-8 md:gap-12">
@@ -637,7 +637,7 @@ export default function CreatePerfumePage() {
                         onChange={(e) => setPerfumeName(e.target.value)}
                         placeholder="e.g., Midnight Bloom"
                         maxLength={30}
-                        className="w-full bg-white border border-neutral-200 rounded-xl px-5 py-3.5 text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-gold-dark focus:ring-2 focus:ring-gold/20 transition-all"
+                        className="w-full bg-white border border-neutral-200 rounded-xl px-5 py-3.5 text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-gold-dark focus-visible:ring-2 focus-visible:ring-gold/60 transition-all"
                       />
                     </div>
 
@@ -699,7 +699,7 @@ export default function CreatePerfumePage() {
                         onChange={(e) => setSpecialRequests(e.target.value)}
                         placeholder="Any preferences for intensity, longevity, or occasion..."
                         rows={3}
-                        className="w-full bg-white border border-neutral-200 rounded-xl px-5 py-3.5 text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-gold-dark focus:ring-2 focus:ring-gold/20 transition-all resize-none"
+                        className="w-full bg-white border border-neutral-200 rounded-xl px-5 py-3.5 text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-gold-dark focus-visible:ring-2 focus-visible:ring-gold/60 transition-all resize-none"
                       />
                     </div>
 

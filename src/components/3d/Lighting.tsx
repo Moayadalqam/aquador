@@ -1,4 +1,4 @@
-import { Environment, AccumulativeShadows, RandomizedLight } from '@react-three/drei';
+import { AccumulativeShadows, RandomizedLight } from '@react-three/drei';
 import { LIGHTING_CONFIG } from '@/lib/three/config';
 
 type LightingProps = {
@@ -6,18 +6,13 @@ type LightingProps = {
 };
 
 /**
- * Realistic lighting setup with HDRI environment and temporal shadows.
+ * Lighting setup for the 3D bottle scene.
  *
- * Full mode (default):
- * - Environment preset="city" for HDRI-based realistic lighting
- * - AccumulativeShadows with temporal rendering (spread across 100 frames)
- * - RandomizedLight for soft, realistic shadow sampling
+ * Full mode: ambient + directional lights with accumulative soft shadows.
+ * Environment preset removed — the clean-glass bottle renders well with
+ * direct lights alone, and this avoids a CDN fetch for the HDRI map.
  *
- * Simplified mode (mobile optimization):
- * - Basic ambient + directional lights only
- * - No environment map or accumulative shadows
- *
- * @param simplified - Enable low-end device optimization (Plan 04)
+ * Simplified mode (mobile): basic ambient + directional only.
  */
 export function Lighting({ simplified = false }: LightingProps) {
   if (simplified) {
@@ -34,7 +29,6 @@ export function Lighting({ simplified = false }: LightingProps) {
 
   return (
     <>
-      <Environment preset="city" background={false} />
       <ambientLight intensity={LIGHTING_CONFIG.ambientIntensity} />
       <directionalLight
         position={LIGHTING_CONFIG.directionalPosition}
@@ -43,7 +37,7 @@ export function Lighting({ simplified = false }: LightingProps) {
       />
       <AccumulativeShadows
         temporal
-        frames={100}
+        frames={40}
         color="#9d4b4b"
         colorBlend={0.5}
         alphaTest={0.9}

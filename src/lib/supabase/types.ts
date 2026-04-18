@@ -381,6 +381,7 @@ export type Database = {
           closed_at: string | null
           created_at: string
           id: string
+          session_secret: string
           status: string
           updated_at: string
           visitor_id: string
@@ -391,6 +392,7 @@ export type Database = {
           closed_at?: string | null
           created_at?: string
           id?: string
+          session_secret?: string
           status?: string
           updated_at?: string
           visitor_id: string
@@ -401,6 +403,7 @@ export type Database = {
           closed_at?: string | null
           created_at?: string
           id?: string
+          session_secret?: string
           status?: string
           updated_at?: string
           visitor_id?: string

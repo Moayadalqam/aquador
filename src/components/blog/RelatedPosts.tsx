@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import type { BlogPost } from '@/lib/blog-types';
 import BlogCard from './BlogCard';
 

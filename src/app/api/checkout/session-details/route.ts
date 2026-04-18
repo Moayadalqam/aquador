@@ -4,6 +4,7 @@ import { formatApiError } from '@/lib/api-utils';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { getStripe } from '@/lib/stripe';
 import { getProductsByIds } from '@/lib/supabase/product-service';
+import { z } from 'zod';
 
 export const maxDuration = 10;
 
@@ -45,14 +46,17 @@ export async function GET(request: NextRequest) {
 
   try {
     const searchParams = request.nextUrl.searchParams;
-    const sessionId = searchParams.get('session_id');
+    const sessionIdSchema = z.string().startsWith('cs_').min(10).max(255);
+    const parsed = sessionIdSchema.safeParse(searchParams.get('session_id'));
 
-    if (!sessionId) {
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: 'Missing session_id parameter' },
+        { error: 'Missing or invalid session_id parameter' },
         { status: 400 }
       );
     }
+
+    const sessionId = parsed.data;
 
     const stripe = getStripe();
 
@@ -180,7 +184,9 @@ export async function GET(request: NextRequest) {
       createdAt: session.created,
     };
 
-    return NextResponse.json(response);
+    const jsonResponse = NextResponse.json(response);
+    jsonResponse.headers.set('Cache-Control', 'private, max-age=3600');
+    return jsonResponse;
   } catch (error) {
     Sentry.captureException(error, {
       tags: { route: 'session-details' },

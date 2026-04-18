@@ -1,4 +1,4 @@
-import { Variants, Transition } from 'framer-motion'
+import { Variants, Transition } from 'motion/react'
 
 // Category theme colors for visual effects
 export const categoryThemes = {

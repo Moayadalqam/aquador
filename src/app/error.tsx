@@ -18,16 +18,16 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black px-4">
+    <div className="min-h-screen flex items-center justify-center bg-[#FAFAF8] px-4">
       <div className="text-center max-w-md">
         <div className="mb-8">
           <div className="w-24 h-24 mx-auto mb-6 rounded-full border border-gold/30 flex items-center justify-center">
-            <span className="text-5xl">!</span>
+            <span className="text-5xl text-black">!</span>
           </div>
           <h1 className="text-4xl font-playfair text-gradient-gold mb-4">
             Something Went Wrong
           </h1>
-          <p className="text-gray-400">
+          <p className="text-gray-600">
             We apologize for the inconvenience. An unexpected error has occurred.
           </p>
         </div>

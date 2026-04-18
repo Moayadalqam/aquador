@@ -18,7 +18,7 @@
  * @module micro-interactions
  */
 
-import type { Transition } from 'framer-motion';
+import type { Transition } from 'motion/react';
 
 // Easing constants
 const SMOOTH_EASE = [0.22, 1, 0.36, 1] as const;

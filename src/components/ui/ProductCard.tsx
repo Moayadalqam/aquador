@@ -8,7 +8,7 @@
 
 import React, { useState, useRef } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { formatPrice } from '@/lib/currency';
 import { ProductImage } from './ProductImage';
 import { ProductQuickView } from '@/components/shop/ProductQuickView';

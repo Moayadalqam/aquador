@@ -3,6 +3,7 @@ import * as Sentry from '@sentry/nextjs';
 import { z } from 'zod';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 export const maxDuration = 10;
 
@@ -31,6 +32,9 @@ const manualOrderSchema = z.object({
 });
 
 export async function POST(request: NextRequest) {
+  const rateLimitResponse = await checkRateLimit(request, 'admin');
+  if (rateLimitResponse) return rateLimitResponse;
+
   try {
     // Verify user is authenticated
     const authSupabase = await createClient();
@@ -48,7 +52,7 @@ export async function POST(request: NextRequest) {
       .from('admin_users')
       .select('id')
       .eq('id', user.id)
-      .single();
+      .maybeSingle();
 
     if (!adminUser) {
       return NextResponse.json(

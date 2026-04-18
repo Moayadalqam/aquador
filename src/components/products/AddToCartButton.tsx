@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { ShoppingBag, Check, Minus, Plus } from 'lucide-react';
 import { track } from '@vercel/analytics';
 import { useCart } from '@/components/cart';

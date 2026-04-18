@@ -1,8 +1,25 @@
+import { cache } from 'react';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getAllBlogSlugs, getBlogPostBySlug, getRelatedPosts } from '@/lib/blog';
+import { createPublicClient } from '@/lib/supabase/public';
 import JsonLd from '@/components/seo/JsonLd';
 import BlogPostContent from './BlogPostContent';
+
+/** Lightweight query to get just the category for parallel fetching */
+const getPostCategory = cache(async (slug: string): Promise<string | null> => {
+  const supabase = createPublicClient();
+  const { data } = await supabase
+    .from('blog_posts')
+    .select('category')
+    .eq('slug', slug)
+    .eq('status', 'published')
+    .single();
+  return data?.category ?? null;
+});
+
+/** Deduplicated full post fetch via React cache */
+const getCachedPost = cache(getBlogPostBySlug);
 
 export const revalidate = 300; // Revalidate every 5 minutes (ISR)
 
@@ -17,7 +34,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = await getBlogPostBySlug(slug);
+  const post = await getCachedPost(slug);
 
   if (!post) {
     return { title: 'Post Not Found | Aquad\'or' };
@@ -57,15 +74,18 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slug } = await params;
-  const post = await getBlogPostBySlug(slug);
+
+  // Fetch category with a lightweight query, then parallelize full post + related posts
+  const category = await getPostCategory(slug);
+
+  const [post, relatedPosts] = await Promise.all([
+    getCachedPost(slug),
+    category ? getRelatedPosts(category, slug) : Promise.resolve([]),
+  ]);
 
   if (!post) {
     notFound();
   }
-
-  const relatedPosts = post.category
-    ? await getRelatedPosts(post.category, post.slug)
-    : [];
 
   // Build structured data array
   const schemas: Record<string, unknown>[] = [];

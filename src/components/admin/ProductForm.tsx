@@ -7,6 +7,7 @@ import { createClient } from '@/lib/supabase/client';
 import { Upload, X, Loader2, Plus } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import type { Product, ProductInsert, ProductUpdate, ProductCategory, ProductType, ProductGender } from '@/lib/supabase/types';
+import { focusRingInput } from '@/lib/ui/focus';
 
 const RichTextEditor = dynamic(() => import('./RichTextEditor'), { ssr: false });
 
@@ -245,7 +246,7 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
                 value={formData.name}
                 onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                 required
-                className="w-full px-4 py-3 bg-black/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gold transition-colors"
+                className={`w-full px-4 py-3 bg-black/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 ${focusRingInput} transition-colors`}
                 placeholder="e.g. Oud Ispahan by Dior"
               />
             </div>
@@ -268,7 +269,7 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
                 type="text"
                 value={formData.brand}
                 onChange={(e) => setFormData(prev => ({ ...prev, brand: e.target.value }))}
-                className="w-full px-4 py-3 bg-black/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gold transition-colors"
+                className={`w-full px-4 py-3 bg-black/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 ${focusRingInput} transition-colors`}
                 placeholder="e.g. Dior, Chanel, Aquad'or"
               />
             </div>
@@ -281,7 +282,7 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
                 type="text"
                 value={formData.tags}
                 onChange={(e) => setFormData(prev => ({ ...prev, tags: e.target.value }))}
-                className="w-full px-4 py-3 bg-black/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gold transition-colors"
+                className={`w-full px-4 py-3 bg-black/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 ${focusRingInput} transition-colors`}
                 placeholder="e.g. oud, woody, oriental"
               />
             </div>
@@ -303,7 +304,7 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
                   value={formData.price}
                   onChange={(e) => setFormData(prev => ({ ...prev, price: e.target.value }))}
                   required
-                  className="w-full px-4 py-3 bg-black/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gold transition-colors"
+                  className={`w-full px-4 py-3 bg-black/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 ${focusRingInput} transition-colors`}
                   placeholder="29.99"
                 />
               </div>
@@ -317,7 +318,7 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
                   min="0"
                   value={formData.sale_price}
                   onChange={(e) => setFormData(prev => ({ ...prev, sale_price: e.target.value }))}
-                  className="w-full px-4 py-3 bg-black/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gold transition-colors"
+                  className={`w-full px-4 py-3 bg-black/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 ${focusRingInput} transition-colors`}
                   placeholder="24.99"
                 />
               </div>
@@ -382,7 +383,7 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
                 type="url"
                 value={formData.image}
                 onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
-                className="w-full px-4 py-2.5 bg-black/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gold transition-colors text-sm"
+                className={`w-full px-4 py-2.5 bg-black/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 ${focusRingInput} transition-colors text-sm`}
                 placeholder="https://..."
               />
             </div>
@@ -456,7 +457,7 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
                 value={formData.category}
                 onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value as ProductCategory }))}
                 required
-                className="w-full px-4 py-2.5 bg-black/50 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-gold transition-colors"
+                className={`w-full px-4 py-2.5 bg-black/50 border border-gray-700 rounded-lg text-white ${focusRingInput} transition-colors`}
               >
                 {categories.map(cat => (
                   <option key={cat.value} value={cat.value}>{cat.label}</option>
@@ -472,7 +473,7 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
                 value={formData.product_type}
                 onChange={(e) => setFormData(prev => ({ ...prev, product_type: e.target.value as ProductType }))}
                 required
-                className="w-full px-4 py-2.5 bg-black/50 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-gold transition-colors"
+                className={`w-full px-4 py-2.5 bg-black/50 border border-gray-700 rounded-lg text-white ${focusRingInput} transition-colors`}
               >
                 {productTypes.map(type => (
                   <option key={type.value} value={type.value}>{type.label}</option>
@@ -488,7 +489,7 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
                 value={formData.size}
                 onChange={(e) => setFormData(prev => ({ ...prev, size: e.target.value }))}
                 required
-                className="w-full px-4 py-2.5 bg-black/50 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-gold transition-colors"
+                className={`w-full px-4 py-2.5 bg-black/50 border border-gray-700 rounded-lg text-white ${focusRingInput} transition-colors`}
               >
                 {sizes.map(size => (
                   <option key={size} value={size}>{size}</option>
@@ -503,7 +504,7 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
               <select
                 value={formData.gender}
                 onChange={(e) => setFormData(prev => ({ ...prev, gender: e.target.value as ProductGender | '' }))}
-                className="w-full px-4 py-2.5 bg-black/50 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-gold transition-colors"
+                className={`w-full px-4 py-2.5 bg-black/50 border border-gray-700 rounded-lg text-white ${focusRingInput} transition-colors`}
               >
                 {genders.map(g => (
                   <option key={g.value} value={g.value}>{g.label}</option>

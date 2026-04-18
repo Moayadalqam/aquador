@@ -24,9 +24,19 @@ export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<OrderStatus | 'all'>('all');
   const [page, setPage] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
+
+  // Debounce search input — update immediately for controlled input UX, delay fetch
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+      setPage(0);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [search]);
 
   const fetchOrders = useCallback(async () => {
     setLoading(true);
@@ -34,7 +44,7 @@ export default function OrdersPage() {
 
     let query = supabase
       .from('orders')
-      .select('*', { count: 'exact' })
+      .select('id, stripe_session_id, status, total, customer_email, customer_name, created_at', { count: 'exact' })
       .order('created_at', { ascending: false })
       .range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1);
 
@@ -42,9 +52,9 @@ export default function OrdersPage() {
       query = query.eq('status', statusFilter);
     }
 
-    if (search.trim()) {
+    if (debouncedSearch.trim()) {
       // SEC-03: Escape SQL wildcards to prevent PostgREST filter injection
-      const escapedSearch = search.trim().replace(/[%_]/g, '\\$&');
+      const escapedSearch = debouncedSearch.trim().replace(/[%_]/g, '\\$&');
       query = query.or(`customer_email.ilike.%${escapedSearch}%,customer_name.ilike.%${escapedSearch}%`);
     }
 
@@ -52,7 +62,7 @@ export default function OrdersPage() {
     setOrders((data || []) as Order[]);
     setTotalCount(count || 0);
     setLoading(false);
-  }, [page, statusFilter, search]);
+  }, [page, statusFilter, debouncedSearch]);
 
   useEffect(() => {
     fetchOrders();
@@ -96,7 +106,7 @@ export default function OrdersPage() {
             type="text"
             placeholder="Search by email or name..."
             value={search}
-            onChange={(e) => { setSearch(e.target.value); setPage(0); }}
+            onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 bg-gray-900 border border-gray-800 rounded-lg text-white text-sm placeholder:text-gray-500 focus:outline-none focus:border-gold/50"
           />
         </div>

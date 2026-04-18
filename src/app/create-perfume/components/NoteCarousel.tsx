@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, useMotionValue, animate } from 'framer-motion'
+import { motion, useMotionValue, animate } from 'motion/react'
 import { useState, useRef, useEffect } from 'react'
 import { FragranceNote, FragranceCategory } from '@/lib/perfume/types'
 import { categoryThemes } from '../motion'

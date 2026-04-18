@@ -45,7 +45,7 @@ async function verifyAdmin(): Promise<
     .from('admin_users')
     .select('id')
     .eq('id', user.id)
-    .single();
+    .maybeSingle();
 
   if (!adminUser) {
     return {

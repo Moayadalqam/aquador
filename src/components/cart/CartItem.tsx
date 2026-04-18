@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import Image from 'next/image';
 import { Minus, Plus, X } from 'lucide-react';
 import type { CartItem as CartItemType } from '@/types/cart';
@@ -34,7 +34,7 @@ function CartItemImpl({ item }: CartItemProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, x: -100 }}
-      className="flex gap-4 py-4 border-b border-gray-300"
+      className="relative flex gap-4 py-4 border-b border-gray-300"
     >
       {/* Product Image */}
       <div className="relative w-20 h-20 bg-dark-lighter rounded-lg overflow-hidden flex-shrink-0">

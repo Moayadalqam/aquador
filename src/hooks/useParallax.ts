@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
-import { useScroll, useTransform, MotionValue } from 'framer-motion';
+import { useScroll, useTransform, MotionValue } from 'motion/react';
 import { useReducedMotion } from './useReducedMotion';
 import { isMobileViewport, PARALLAX_CONFIG, getAccessibleSpeed } from '@/lib/animations/parallax';
 

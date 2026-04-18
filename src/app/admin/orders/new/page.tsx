@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Plus, Trash2, Loader2 } from 'lucide-react';
+import { focusRingInput } from '@/lib/ui/focus';
 
 interface OrderItem {
   name: string;
@@ -98,7 +99,7 @@ export default function NewManualOrderPage() {
   };
 
   const inputClass =
-    'w-full px-3 py-2.5 bg-gray-900 border border-gray-800 rounded-lg text-white text-sm placeholder:text-gray-500 focus:outline-none focus:border-gold/50';
+    `w-full px-3 py-2.5 bg-gray-900 border border-gray-800 rounded-lg text-white text-sm placeholder:text-gray-500 ${focusRingInput}`;
   const labelClass = 'block text-sm font-medium text-gray-300 mb-1.5';
 
   return (

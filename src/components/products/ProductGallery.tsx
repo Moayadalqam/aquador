@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { ProductImage } from '@/components/ui/ProductImage';
 import { OptimizedImage } from '@/components/ui/OptimizedImage';
 import { ZOOM_CONFIG } from '@/lib/image-utils';

@@ -16,6 +16,7 @@ import {
   EyeOff,
   Check,
 } from 'lucide-react';
+import { focusRingInput } from '@/lib/ui/focus';
 
 interface CategoryWithCount extends ProductCategoryRow {
   product_count: number;
@@ -433,7 +434,7 @@ export default function CategoriesPage() {
                   onChange={(e) => handleNameChange(e.target.value)}
                   required
                   autoFocus
-                  className="w-full px-4 py-3 bg-black/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gold transition-colors"
+                  className={`w-full px-4 py-3 bg-black/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 ${focusRingInput} transition-colors`}
                   placeholder="e.g. Unisex Collection"
                 />
               </div>
@@ -449,7 +450,7 @@ export default function CategoriesPage() {
                     setFormData((prev) => ({ ...prev, slug: e.target.value }))
                   }
                   required
-                  className="w-full px-4 py-3 bg-black/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gold transition-colors font-mono text-sm"
+                  className={`w-full px-4 py-3 bg-black/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 ${focusRingInput} transition-colors font-mono text-sm`}
                   placeholder="e.g. unisex-collection"
                 />
                 <p className="text-gray-500 text-xs mt-1.5">
@@ -467,7 +468,7 @@ export default function CategoriesPage() {
                     setFormData((prev) => ({ ...prev, description: e.target.value }))
                   }
                   rows={3}
-                  className="w-full px-4 py-3 bg-black/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gold transition-colors resize-none"
+                  className={`w-full px-4 py-3 bg-black/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 ${focusRingInput} transition-colors resize-none`}
                   placeholder="Brief description of this category..."
                 />
               </div>

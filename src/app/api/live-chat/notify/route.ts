@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import * as Sentry from '@sentry/nextjs';
 import { checkRateLimit } from '@/lib/rate-limit';
-import { createPublicClient } from '@/lib/supabase/public';
+import { createAdminClient } from '@/lib/supabase/admin';
 
 export const maxDuration = 10;
 
@@ -87,22 +88,29 @@ export async function POST(request: NextRequest) {
   if (rateLimitResponse) return rateLimitResponse;
 
   try {
-    const { sessionId } = await request.json();
-
-    if (!sessionId || typeof sessionId !== 'string') {
-      return NextResponse.json({ error: 'sessionId required' }, { status: 400 });
+    const body = await request.json();
+    const notifySchema = z.object({
+      sessionId: z.string().uuid(),
+      sessionSecret: z.string().min(1),
+    });
+    const parsed = notifySchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: parsed.error.issues[0]?.message || 'Invalid request' },
+        { status: 400 }
+      );
     }
 
-    // Validate session exists and is in 'waiting' state
-    const supabase = createPublicClient();
+    const { sessionId, sessionSecret } = parsed.data;
+    const supabase = createAdminClient();
     const { data: session } = await supabase
       .from('live_chat_sessions')
-      .select('id, status')
+      .select('id, status, session_secret')
       .eq('id', sessionId)
       .eq('status', 'waiting')
       .single();
 
-    if (!session) {
+    if (!session || session.session_secret !== sessionSecret) {
       return NextResponse.json({ error: 'Invalid session' }, { status: 400 });
     }
 

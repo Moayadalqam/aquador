@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { UserPlus, Shield, ShieldCheck } from 'lucide-react';
 import type { AdminUser } from '@/lib/supabase/types';
+import { focusRingInput } from '@/lib/ui/focus';
 
 export default function SettingsPage() {
   const [adminUsers, setAdminUsers] = useState<AdminUser[]>([]);
@@ -109,7 +110,7 @@ export default function SettingsPage() {
                 value={newEmail}
                 onChange={(e) => setNewEmail(e.target.value)}
                 required
-                className="w-full px-4 py-2.5 bg-black/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gold transition-colors"
+                className={`w-full px-4 py-2.5 bg-black/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 ${focusRingInput} transition-colors`}
                 placeholder="admin@aquadorcy.com"
               />
             </div>
@@ -123,7 +124,7 @@ export default function SettingsPage() {
                 onChange={(e) => setNewPassword(e.target.value)}
                 required
                 minLength={8}
-                className="w-full px-4 py-2.5 bg-black/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gold transition-colors"
+                className={`w-full px-4 py-2.5 bg-black/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 ${focusRingInput} transition-colors`}
                 placeholder="••••••••"
               />
             </div>
@@ -135,7 +136,7 @@ export default function SettingsPage() {
             <select
               value={newRole}
               onChange={(e) => setNewRole(e.target.value as 'admin' | 'super_admin')}
-              className="w-full px-4 py-2.5 bg-black/50 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-gold transition-colors"
+              className={`w-full px-4 py-2.5 bg-black/50 border border-gray-700 rounded-lg text-white ${focusRingInput} transition-colors`}
             >
               <option value="admin">Admin</option>
               <option value="super_admin">Super Admin</option>

@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
 import { estimateReadTime } from '@/lib/blog';
 import { formatApiError } from '@/lib/api-utils';
+import { checkRateLimit } from '@/lib/rate-limit';
 import { z } from 'zod';
 
 export const maxDuration = 10;
@@ -45,7 +46,7 @@ export async function GET(
 
     let query = supabase
       .from('blog_posts')
-      .select('*')
+      .select('id, slug, title, content, excerpt, category, status, featured, author_name, author_avatar, author_role, cover_image, meta_title, meta_description, tags, featured_products, read_time, published_at, created_at, updated_at')
       .eq('slug', slug);
 
     if (!isAdmin) {
@@ -76,6 +77,9 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
+  const rateLimitResponse = await checkRateLimit(request, 'admin');
+  if (rateLimitResponse) return rateLimitResponse;
+
   try {
     const { slug } = await params;
     const supabase = await createClient();
@@ -89,7 +93,7 @@ export async function PUT(
     .from('admin_users')
     .select('id')
     .eq('id', user.id)
-    .single();
+    .maybeSingle();
 
   if (!adminUser) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
@@ -142,6 +146,9 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
+  const rateLimitResponse = await checkRateLimit(request, 'admin');
+  if (rateLimitResponse) return rateLimitResponse;
+
   try {
     const { slug } = await params;
     const supabase = await createClient();
@@ -155,7 +162,7 @@ export async function DELETE(
     .from('admin_users')
     .select('id')
     .eq('id', user.id)
-    .single();
+    .maybeSingle();
 
   if (!adminUser) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });

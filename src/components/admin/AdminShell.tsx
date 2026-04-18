@@ -75,7 +75,7 @@ export default function AdminShell({ children }: AdminShellProps) {
 
         const { data: adminData, error: adminError } = await supabase
           .from('admin_users')
-          .select('*')
+          .select('id, email, role, created_at')
           .eq('id', currentUser.id)
           .maybeSingle();
         if (!mountedRef.current) return;

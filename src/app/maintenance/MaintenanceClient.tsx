@@ -46,7 +46,7 @@ export default function MaintenanceClient() {
               value={code}
               onChange={(e) => setCode(e.target.value)}
               placeholder="Enter access code"
-              className={`w-full px-5 py-3 text-center text-lg tracking-[0.3em] bg-white border rounded-xl outline-none transition-all duration-300 font-[family-name:var(--font-poppins)] ${
+              className={`w-full px-5 py-3 text-center text-lg tracking-[0.3em] bg-white border rounded-xl outline-0 focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-1 transition-all duration-300 font-[family-name:var(--font-poppins)] ${
                 error
                   ? 'border-red-400 text-red-500'
                   : 'border-gray-200 focus:border-[#D4AF37] text-black'

@@ -1,6 +1,6 @@
 'use client';
 
-import { useInView, type UseInViewOptions } from 'framer-motion';
+import { useInView, type UseInViewOptions } from 'motion/react';
 import { useRef, type RefObject } from 'react';
 import { useReducedMotion } from './useReducedMotion';
 

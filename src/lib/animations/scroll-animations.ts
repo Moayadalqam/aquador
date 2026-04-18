@@ -1,4 +1,4 @@
-import { Variants } from 'framer-motion';
+import { Variants } from 'motion/react';
 import { useEffect, useRef } from 'react';
 import { trackScrollDepth, type ScrollDepthMilestone } from '@/lib/analytics/engagement-tracker';
 

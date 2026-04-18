@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { X, ShoppingBag } from 'lucide-react';
 import Link from 'next/link';
 import { useCart } from './CartProvider';
@@ -96,7 +96,7 @@ export default function CartDrawer() {
               </div>
               <button
                 onClick={closeCart}
-                className="p-2 text-gray-400 hover:text-black transition-colors"
+                className="p-3 min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-400 hover:text-black transition-colors"
                 aria-label="Close cart"
               >
                 <X className="w-5 h-5" />
@@ -156,14 +156,14 @@ export default function CartDrawer() {
                 <div className="flex items-center justify-center gap-4">
                   <button
                     onClick={clearCart}
-                    className="text-sm text-gray-500 hover:text-red-400 transition-colors"
+                    className="text-sm text-gray-500 hover:text-red-400 transition-colors min-h-[44px] flex items-center"
                   >
                     Clear Cart
                   </button>
                   <span className="text-gray-600">|</span>
                   <button
                     onClick={closeCart}
-                    className="text-sm text-gold hover:text-gold-light transition-colors"
+                    className="text-sm text-gold hover:text-gold-light transition-colors min-h-[44px] flex items-center"
                   >
                     Continue Shopping
                   </button>

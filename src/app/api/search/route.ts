@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     if (!query || query.trim().length < 2) {
       return NextResponse.json(
         { error: 'Query parameter "q" is required and must be at least 2 characters' },
-        { status: 400 }
+        { status: 400, headers: { 'Cache-Control': 'no-store' } }
       );
     }
 
@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
     Sentry.captureException(error);
     return NextResponse.json(
       formatApiError(error, 'Failed to search products'),
-      { status: 500 }
+      { status: 500, headers: { 'Cache-Control': 'no-store' } }
     );
   }
 }

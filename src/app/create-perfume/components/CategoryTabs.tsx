@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { FragranceCategory } from '@/lib/perfume/types'
 import { fragranceCategories } from '@/lib/perfume/notes'
 import { categoryTabVariants, categoryThemes, staggerContainer } from '../motion'

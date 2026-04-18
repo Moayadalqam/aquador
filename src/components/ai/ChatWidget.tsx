@@ -1,15 +1,11 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { X, Send, Loader2, User, Bot, ArrowLeft } from 'lucide-react';
 import * as Sentry from '@sentry/nextjs';
 import Image from 'next/image';
 import Link from 'next/link';
-import { createClient } from '@/lib/supabase/client';
-
-// Module-scope singleton — created once, reused across all mounts
-const supabaseClient = createClient();
 
 type ChatMode = 'ai' | 'live' | 'menu';
 
@@ -24,6 +20,31 @@ interface LiveMessage {
   sender_type: 'visitor' | 'admin' | 'system';
   content: string;
   created_at: string;
+}
+
+interface LiveChatSession {
+  sessionId: string;
+  sessionSecret: string;
+}
+
+const STORAGE_KEY = 'aquador_live_chat';
+
+function persistSession(session: LiveChatSession) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(session)); } catch { /* noop */ }
+}
+
+function loadSession(): LiveChatSession | null {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (parsed?.sessionId && parsed?.sessionSecret) return parsed;
+  } catch { /* noop */ }
+  return null;
+}
+
+function clearSession() {
+  try { localStorage.removeItem(STORAGE_KEY); } catch { /* noop */ }
 }
 
 function renderMarkdown(text: string) {
@@ -86,7 +107,7 @@ export default function ChatWidget() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [liveMessages, setLiveMessages] = useState<LiveMessage[]>([]);
-  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [liveSession, setLiveSession] = useState<LiveChatSession | null>(null);
   const [liveStatus, setLiveStatus] = useState<'waiting' | 'active' | 'closed'>('waiting');
   const [liveInput, setLiveInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -96,67 +117,27 @@ export default function ChatWidget() {
   useEffect(() => { messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages, liveMessages]);
   useEffect(() => { if (isOpen && mode === 'ai') inputRef.current?.focus(); if (isOpen && mode === 'live') liveInputRef.current?.focus(); }, [isOpen, mode]);
 
-  // Realtime-primary message delivery with polling fallback
+  const fetchSessionData = useCallback(async (session: LiveChatSession) => {
+    try {
+      const res = await fetch(`/api/live-chat/session/${session.sessionId}?secret=${encodeURIComponent(session.sessionSecret)}`);
+      if (!res.ok) {
+        if (res.status === 404) { clearSession(); setLiveSession(null); }
+        return;
+      }
+      const data = await res.json();
+      setLiveMessages(data.messages || []);
+      setLiveStatus(data.status as 'waiting' | 'active' | 'closed');
+    } catch (err) {
+      Sentry.captureException(err);
+    }
+  }, []);
+
   useEffect(() => {
-    if (!sessionId) return;
-    let pollInterval: ReturnType<typeof setInterval> | null = null;
-    let realtimeConnected = false;
-
-    const fetchMessages = async () => {
-      const { data } = await supabaseClient.from('live_chat_messages').select('id, session_id, sender_type, content, created_at').eq('session_id', sessionId).order('created_at', { ascending: true });
-      if (data) setLiveMessages(data as unknown as LiveMessage[]);
-    };
-    const fetchSession = async () => {
-      const { data } = await supabaseClient.from('live_chat_sessions').select('status').eq('id', sessionId).single();
-      if (data) setLiveStatus(data.status as 'waiting' | 'active' | 'closed');
-    };
-
-    // Initial fetch
-    fetchMessages();
-    fetchSession();
-
-    const startFallbackPolling = () => {
-      if (pollInterval) return; // already polling
-      pollInterval = setInterval(() => { fetchMessages(); fetchSession(); }, 10000);
-    };
-
-    // Realtime subscriptions — primary delivery mechanism
-    const msgChannel = supabaseClient.channel(`live-chat-msgs-${sessionId}`)
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'live_chat_messages', filter: `session_id=eq.${sessionId}` }, (payload) => {
-        const msg = payload.new as LiveMessage;
-        setLiveMessages(prev => prev.some(m => m.id === msg.id) ? prev : [...prev, msg]);
-      })
-      .subscribe((status) => {
-        if (status === 'SUBSCRIBED') {
-          realtimeConnected = true;
-        } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
-          realtimeConnected = false;
-          startFallbackPolling();
-        }
-      });
-
-    const sessionChannel = supabaseClient.channel(`live-chat-session-${sessionId}`)
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'live_chat_sessions', filter: `id=eq.${sessionId}` }, (payload) => {
-        setLiveStatus((payload.new as { status: 'waiting' | 'active' | 'closed' }).status);
-      })
-      .subscribe((status) => {
-        if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
-          startFallbackPolling();
-        }
-      });
-
-    // Safety net: start fallback polling after 5s if Realtime hasn't connected
-    const safetyTimeout = setTimeout(() => {
-      if (!realtimeConnected) startFallbackPolling();
-    }, 5000);
-
-    return () => {
-      clearTimeout(safetyTimeout);
-      if (pollInterval) clearInterval(pollInterval);
-      supabaseClient.removeChannel(msgChannel);
-      supabaseClient.removeChannel(sessionChannel);
-    };
-  }, [sessionId]);
+    if (!liveSession) return;
+    fetchSessionData(liveSession);
+    const interval = setInterval(() => fetchSessionData(liveSession), 5000);
+    return () => clearInterval(interval);
+  }, [liveSession, fetchSessionData]);
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
@@ -174,24 +155,57 @@ export default function ChatWidget() {
   };
 
   const startLiveChat = useCallback(async () => {
+    const saved = loadSession();
+    if (saved) {
+      setLiveSession(saved);
+      setMode('live');
+      return;
+    }
+
     const visitorId = getVisitorId();
-    const { data: existing } = await supabaseClient.from('live_chat_sessions').select('id, status').eq('visitor_id', visitorId).in('status', ['waiting', 'active']).order('created_at', { ascending: false }).limit(1);
-    if (existing && existing.length > 0) { setSessionId(existing[0].id); setLiveStatus(existing[0].status as 'waiting' | 'active'); setMode('live'); return; }
-    const { data: session, error } = await supabaseClient.from('live_chat_sessions').insert({ visitor_id: visitorId }).select('id').single();
-    if (error || !session) { Sentry.captureException(error); return; }
-    setSessionId(session.id); setLiveStatus('waiting'); setMode('live');
-    await supabaseClient.from('live_chat_messages').insert({ session_id: session.id, sender_type: 'system', content: 'You are now in the queue. An agent will be with you shortly.' });
-    // Notify staff via WhatsApp/email
-    fetch('/api/live-chat/notify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sessionId: session.id }) }).catch(() => {});
+    try {
+      const res = await fetch('/api/live-chat/session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ visitorId }),
+      });
+      if (!res.ok) {
+        Sentry.captureMessage('Failed to create live chat session');
+        return;
+      }
+      const data = await res.json();
+      const session: LiveChatSession = { sessionId: data.sessionId, sessionSecret: data.sessionSecret };
+      persistSession(session);
+      setLiveSession(session);
+      setLiveStatus(data.status as 'waiting' | 'active' | 'closed');
+      setMode('live');
+
+      if (!data.resumed) {
+        fetch('/api/live-chat/notify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sessionId: session.sessionId, sessionSecret: session.sessionSecret }),
+        }).catch(() => {});
+      }
+    } catch (error) {
+      Sentry.captureException(error);
+    }
   }, []);
 
   const handleLiveSend = async () => {
-    if (!liveInput.trim() || !sessionId) return;
+    if (!liveInput.trim() || !liveSession) return;
     const content = liveInput.trim(); setLiveInput('');
-    // Optimistic update — show message instantly
     const optimisticMsg: LiveMessage = { id: `opt-${Date.now()}`, sender_type: 'visitor', content, created_at: new Date().toISOString() };
     setLiveMessages(prev => [...prev, optimisticMsg]);
-    await supabaseClient.from('live_chat_messages').insert({ session_id: sessionId, sender_type: 'visitor', content });
+    try {
+      await fetch('/api/live-chat/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId: liveSession.sessionId, sessionSecret: liveSession.sessionSecret, text: content }),
+      });
+    } catch (error) {
+      Sentry.captureException(error);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (mode === 'ai') handleSend(); else if (mode === 'live') handleLiveSend(); } };
@@ -200,11 +214,9 @@ export default function ChatWidget() {
 
   return (
     <>
-      <motion.button onClick={handleToggle} className="fixed bottom-4 right-4 z-50 w-14 h-14 bg-gradient-to-br from-gold to-gold-light rounded-full shadow-xl flex items-center justify-center" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} animate={{ boxShadow: isOpen ? '0 4px 20px rgba(212, 175, 55, 0.3)' : ['0 4px 20px rgba(212, 175, 55, 0.3)', '0 4px 30px rgba(212, 175, 55, 0.5)', '0 4px 20px rgba(212, 175, 55, 0.3)'] }} transition={{ boxShadow: { repeat: Infinity, duration: 2 } }}>
-        <AnimatePresence mode="wait">
-          {isOpen ? (<motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }}><X className="w-6 h-6 text-dark" /></motion.div>) : (<motion.div key="open" initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0, opacity: 0 }} className="relative"><AquadorBottleIcon className="w-6 h-6 text-dark" /><span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full border border-gold" /></motion.div>)}
-        </AnimatePresence>
-      </motion.button>
+      <button onClick={handleToggle} className="chat-toggle-btn fixed bottom-4 right-4 z-50 w-14 h-14 bg-gradient-to-br from-gold to-gold-light rounded-full shadow-xl flex items-center justify-center hover:scale-105 active:scale-95 transition-transform">
+        {isOpen ? (<X className="w-6 h-6 text-dark" />) : (<span className="relative"><AquadorBottleIcon className="w-6 h-6 text-dark" /><span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full border border-gold" /></span>)}
+      </button>
 
       <AnimatePresence>
         {isOpen && (
@@ -217,11 +229,11 @@ export default function ChatWidget() {
                   <button onClick={() => setIsOpen(false)} className="p-1 hover:bg-white/10 rounded-full transition-colors min-[481px]:hidden"><X className="w-5 h-5 text-gray-400" /></button>
                 </div>
                 <div className="flex-1 flex flex-col gap-3 p-4 justify-center">
-                  <button onClick={() => setMode('ai')} className="flex items-center gap-3 p-4 bg-gray-50 border border-gold/20 rounded-xl hover:border-gold hover:bg-gold/5 transition-all group">
+                  <button onClick={() => setMode('ai')} className="flex items-center gap-3 p-4 bg-gray-50 border border-gold/20 rounded-xl hover:border-gold hover:bg-gold/5 transition-all group cursor-pointer">
                     <div className="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center group-hover:bg-gold/20 transition-colors"><Bot className="w-5 h-5 text-gold" /></div>
                     <div className="text-left"><p className="text-sm font-semibold text-black">AI Fragrance Expert</p><p className="text-[11px] text-gray-500">Get instant product recommendations</p></div>
                   </button>
-                  <button onClick={startLiveChat} className="flex items-center gap-3 p-4 bg-gray-50 border border-gold/20 rounded-xl hover:border-gold hover:bg-gold/5 transition-all group">
+                  <button onClick={startLiveChat} className="flex items-center gap-3 p-4 bg-gray-50 border border-gold/20 rounded-xl hover:border-gold hover:bg-gold/5 transition-all group cursor-pointer">
                     <div className="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center group-hover:bg-gold/20 transition-colors"><User className="w-5 h-5 text-gold" /></div>
                     <div className="text-left"><p className="text-sm font-semibold text-black">Talk to a Human</p><p className="text-[11px] text-gray-500">Chat with our team in real time</p></div>
                   </button>
@@ -233,7 +245,7 @@ export default function ChatWidget() {
             {mode === 'ai' && (
               <div className="flex flex-col h-full">
                 <div className="bg-gradient-to-r from-gold/10 to-gold-light/10 border-b border-gold/20 p-2.5 flex items-center gap-2.5">
-                  <button onClick={() => setMode('menu')} className="p-1 hover:bg-black/5 rounded-full transition-colors"><ArrowLeft className="w-4 h-4 text-gray-500" /></button>
+                  <button onClick={() => setMode('menu')} className="p-1 hover:bg-black/5 rounded-full transition-colors cursor-pointer"><ArrowLeft className="w-4 h-4 text-gray-500" /></button>
                   <div className="relative w-9 h-9 rounded-full overflow-hidden bg-white border border-gold/30 flex items-center justify-center"><Image src="/aquador-logo.png" alt="Aquad'or" width={36} height={36} className="object-cover" /></div>
                   <div className="flex-1"><h3 className="text-black font-semibold text-sm flex items-center gap-1.5">Aquad{"'"}or<span className="w-1.5 h-1.5 bg-green-500 rounded-full" /></h3><p className="text-[10px] text-gray-400">AI Fragrance Expert</p></div>
                   <button onClick={() => setIsOpen(false)} className="p-1 hover:bg-white/10 rounded-full transition-colors min-[481px]:hidden"><X className="w-5 h-5 text-gray-400" /></button>
@@ -243,11 +255,11 @@ export default function ChatWidget() {
                   {isLoading && (<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start"><div className="bg-gray-100 border border-gold/10 rounded-2xl px-3 py-2 flex items-center gap-2"><Loader2 className="w-3.5 h-3.5 text-gold animate-spin" /><span className="text-xs text-gray-400">Thinking...</span></div></motion.div>)}
                   <div ref={messagesEndRef} />
                 </div>
-                {messages.length <= 2 && (<div className="px-2.5 pb-1.5"><div className="flex flex-wrap gap-1">{suggestions.map((s, i) => (<button key={i} onClick={() => { setInput(s); inputRef.current?.focus(); }} className="text-[10px] px-2 py-1 bg-gray-100 border border-gold/20 text-gray-700 rounded-full hover:border-gold hover:text-gold transition-all">{s}</button>))}</div></div>)}
+                {messages.length <= 2 && (<div className="px-2.5 pb-1.5"><div className="flex flex-wrap gap-1">{suggestions.map((s, i) => (<button key={i} onClick={() => { setInput(s); inputRef.current?.focus(); }} className="text-[10px] px-2 py-1 bg-gray-100 border border-gold/20 text-gray-700 rounded-full hover:border-gold hover:text-gold transition-all cursor-pointer">{s}</button>))}</div></div>)}
                 <div className="border-t border-gold/20 p-2.5 bg-gray-50">
                   <div className="flex items-center gap-2">
-                    <input ref={inputRef} type="text" value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKeyPress} placeholder="Ask about fragrances..." aria-label="Ask about fragrances" disabled={isLoading} className="flex-1 bg-white border border-gold/20 text-black placeholder-gray-500 px-3 py-2 text-sm rounded-xl focus:outline-none focus:border-gold transition-colors disabled:opacity-50" />
-                    <button onClick={handleSend} disabled={!input.trim() || isLoading} aria-label="Send message" className="bg-gold text-dark p-2 rounded-xl hover:bg-gold-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><Send className="w-4 h-4" /></button>
+                    <input ref={inputRef} type="text" value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKeyPress} placeholder="Ask about fragrances..." aria-label="Ask about fragrances" disabled={isLoading} className="flex-1 bg-white border border-gold/20 text-black placeholder-gray-500 px-3 py-2 text-sm rounded-xl focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-1 focus-visible:outline-none transition-colors disabled:opacity-50" />
+                    <button onClick={handleSend} disabled={!input.trim() || isLoading} aria-label="Send message" className="bg-gold text-dark p-2 rounded-xl hover:bg-gold-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"><Send className="w-4 h-4" /></button>
                   </div>
                   <p className="text-[9px] text-gray-500 mt-1.5 text-center">Powered by{' '}<a href="https://qualiasolutions.net" target="_blank" rel="noopener noreferrer" className="text-gold/70 hover:text-gold transition-colors">Qualia Solutions</a></p>
                 </div>
@@ -257,7 +269,7 @@ export default function ChatWidget() {
             {mode === 'live' && (
               <div className="flex flex-col h-full">
                 <div className="bg-gradient-to-r from-gold/10 to-gold-light/10 border-b border-gold/20 p-2.5 flex items-center gap-2.5">
-                  <button onClick={() => setMode('menu')} className="p-1 hover:bg-black/5 rounded-full transition-colors"><ArrowLeft className="w-4 h-4 text-gray-500" /></button>
+                  <button onClick={() => setMode('menu')} className="p-1 hover:bg-black/5 rounded-full transition-colors cursor-pointer"><ArrowLeft className="w-4 h-4 text-gray-500" /></button>
                   <div className="w-9 h-9 rounded-full bg-gold/10 border border-gold/30 flex items-center justify-center"><User className="w-5 h-5 text-gold" /></div>
                   <div className="flex-1">
                     <h3 className="text-black font-semibold text-sm flex items-center gap-1.5">Live Chat<span className={`w-1.5 h-1.5 rounded-full ${liveStatus === 'active' ? 'bg-green-500' : liveStatus === 'waiting' ? 'bg-amber-400 animate-pulse' : 'bg-gray-400'}`} /></h3>
@@ -271,10 +283,10 @@ export default function ChatWidget() {
                   <div ref={messagesEndRef} />
                 </div>
                 <div className="border-t border-gold/20 p-2.5 bg-gray-50">
-                  {liveStatus === 'closed' ? (<button onClick={() => { setSessionId(null); setLiveMessages([]); setLiveStatus('waiting'); startLiveChat(); }} className="w-full py-2 bg-gold text-dark text-sm font-medium rounded-xl hover:bg-gold-light transition-colors">Start New Chat</button>) : (
+                  {liveStatus === 'closed' ? (<button onClick={() => { clearSession(); setLiveSession(null); setLiveMessages([]); setLiveStatus('waiting'); startLiveChat(); }} className="w-full py-2 bg-gold text-dark text-sm font-medium rounded-xl hover:bg-gold-light transition-colors cursor-pointer">Start New Chat</button>) : (
                     <div className="flex items-center gap-2">
-                      <input ref={liveInputRef} type="text" value={liveInput} onChange={(e) => setLiveInput(e.target.value)} onKeyDown={handleKeyPress} placeholder="Type a message..." aria-label="Type a message" maxLength={2000} className="flex-1 bg-white border border-gold/20 text-black placeholder-gray-500 px-3 py-2 text-sm rounded-xl focus:outline-none focus:border-gold transition-colors" />
-                      <button onClick={handleLiveSend} disabled={!liveInput.trim()} aria-label="Send message" className="bg-gold text-dark p-2 rounded-xl hover:bg-gold-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><Send className="w-4 h-4" /></button>
+                      <input ref={liveInputRef} type="text" value={liveInput} onChange={(e) => setLiveInput(e.target.value)} onKeyDown={handleKeyPress} placeholder="Type a message..." aria-label="Type a message" maxLength={2000} className="flex-1 bg-white border border-gold/20 text-black placeholder-gray-500 px-3 py-2 text-sm rounded-xl focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-1 focus-visible:outline-none transition-colors" />
+                      <button onClick={handleLiveSend} disabled={!liveInput.trim()} aria-label="Send message" className="bg-gold text-dark p-2 rounded-xl hover:bg-gold-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"><Send className="w-4 h-4" /></button>
                     </div>
                   )}
                   <p className="text-[9px] text-gray-500 mt-1.5 text-center">Powered by{' '}<a href="https://qualiasolutions.net" target="_blank" rel="noopener noreferrer" className="text-gold/70 hover:text-gold transition-colors">Qualia Solutions</a></p>
@@ -284,6 +296,19 @@ export default function ChatWidget() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <style jsx global>{`
+        @keyframes chat-toggle-glow {
+          0%, 100% { box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3); }
+          50% { box-shadow: 0 4px 30px rgba(212, 175, 55, 0.5); }
+        }
+        .chat-toggle-btn:not([data-open="true"]) {
+          animation: chat-toggle-glow 2s ease-in-out infinite;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .chat-toggle-btn { animation: none !important; }
+        }
+      `}</style>
     </>
   );
 }

@@ -1,9 +1,9 @@
 'use client';
 
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'motion/react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRef, useState } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
 import { formatPrice } from '@/lib/utils';
 import { SectionHeader } from '@/components/ui/Section';
 import { AnimatedSection } from '@/components/ui/AnimatedSection';
@@ -12,6 +12,86 @@ import { useReducedMotion } from '@/hooks/useReducedMotion';
 import type { LegacyProduct } from '@/types';
 
 const FALLBACK_IMAGE = '/placeholder-product.svg';
+
+interface FeaturedProductCardProps {
+  product: LegacyProduct;
+  failed: boolean;
+  onImageError: (id: string) => void;
+  priority: boolean;
+}
+
+const FeaturedProductCard = React.memo(function FeaturedProductCard({
+  product,
+  failed,
+  onImageError,
+  priority,
+}: FeaturedProductCardProps) {
+  return (
+    <motion.div variants={fadeInUp}>
+      <Link href={`/products/${product.id}`} className="group block">
+        {/* Image */}
+        <div className="relative aspect-square overflow-hidden bg-[#f0ede8] mb-4">
+          <Image
+            src={failed ? FALLBACK_IMAGE : (product.image || FALLBACK_IMAGE)}
+            alt={product.name}
+            fill
+            priority={priority}
+            className="object-cover transition-transform duration-700 group-hover:scale-105"
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 33vw"
+            onError={() => onImageError(product.id)}
+          />
+
+          {/* Sale badge */}
+          {product.salePrice && (
+            <div className="absolute top-3 left-3 bg-gold text-black text-[9px] uppercase tracking-[0.12em] px-2.5 py-1 font-medium">
+              Sale
+            </div>
+          )}
+
+          {/* Hover reveal overlay */}
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500" />
+
+          {/* Subtle bottom gradient */}
+          <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        </div>
+
+        {/* Content */}
+        <div className="space-y-1.5">
+          {product.brand && (
+            <p className="eyebrow text-gold-accessible text-[10px]">{product.brand}</p>
+          )}
+          <h3 className="font-playfair text-sm md:text-[15px] text-gray-900 group-hover:text-gold-dark transition-colors duration-300 line-clamp-1 leading-snug">
+            {product.name}
+          </h3>
+
+          {/* Price + size in one clean row */}
+          <div className="flex items-center justify-between pt-1">
+            <div className="flex items-baseline gap-2">
+              <span className={`font-playfair text-sm md:text-base ${product.salePrice ? 'text-gold-dark' : 'text-gray-800'}`}>
+                {formatPrice(product.salePrice ?? product.price)}
+              </span>
+              {product.salePrice && (
+                <span className="text-[11px] text-gray-400 line-through">
+                  {formatPrice(product.price)}
+                </span>
+              )}
+            </div>
+            {product.size && (
+              <span className="text-[10px] text-gray-400 uppercase tracking-wide">
+                {product.size}
+              </span>
+            )}
+          </div>
+
+          {/* Animated gold underline on hover */}
+          <div className="h-px bg-gold/20 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gold/60 -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]" />
+          </div>
+        </div>
+      </Link>
+    </motion.div>
+  );
+});
 
 interface FeaturedProductsProps {
   products: LegacyProduct[];
@@ -34,6 +114,14 @@ export default function FeaturedProducts({
     offset: ['start end', 'end start'],
   });
   const headerY = useTransform(scrollYProgress, [0, 1], ['20px', '-20px']);
+
+  const handleImageError = useCallback((id: string) => {
+    setFailedImages(prev => {
+      const next = new Set(prev);
+      next.add(id);
+      return next;
+    });
+  }, []);
 
   return (
     <section ref={sectionRef} className="section-lg bg-gold-ambient">
@@ -60,77 +148,18 @@ export default function FeaturedProducts({
           </div>
         )}
 
-        {/* Products grid — wider spacing, more breathing room */}
+        {/* Products grid */}
         {products.length > 0 && (
         <AnimatedSection variant="stagger" staggerDelay={0.08}>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
             {products.map((product, index) => (
-              <motion.div
+              <FeaturedProductCard
                 key={product.id}
-                variants={fadeInUp}
-              >
-                <Link href={`/products/${product.id}`} className="group block">
-                  {/* Image — generous proportions */}
-                  <div className="relative aspect-square overflow-hidden bg-[#f0ede8] mb-4">
-                    <Image
-                      src={failedImages.has(product.id) ? FALLBACK_IMAGE : (product.image || FALLBACK_IMAGE)}
-                      alt={product.name}
-                      fill
-                      priority={index < 3}
-                      className="object-cover transition-transform duration-700 group-hover:scale-105"
-                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 33vw"
-                      onError={() => { setFailedImages(prev => { const next = new Set(prev); next.add(product.id); return next; }); }}
-                    />
-
-                    {/* Sale badge */}
-                    {product.salePrice && (
-                      <div className="absolute top-3 left-3 bg-gold text-black text-[9px] uppercase tracking-[0.12em] px-2.5 py-1 font-medium">
-                        Sale
-                      </div>
-                    )}
-
-                    {/* Hover reveal overlay */}
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500" />
-
-                    {/* Subtle bottom gradient */}
-                    <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  </div>
-
-                  {/* Content — clean typographic hierarchy */}
-                  <div className="space-y-1.5">
-                    {product.brand && (
-                      <p className="eyebrow text-gold-accessible text-[10px]">{product.brand}</p>
-                    )}
-                    <h3 className="font-playfair text-sm md:text-[15px] text-gray-900 group-hover:text-gold-dark transition-colors duration-300 line-clamp-1 leading-snug">
-                      {product.name}
-                    </h3>
-
-                    {/* Price + size in one clean row */}
-                    <div className="flex items-center justify-between pt-1">
-                      <div className="flex items-baseline gap-2">
-                        <span className={`font-playfair text-sm md:text-base ${product.salePrice ? 'text-gold-dark' : 'text-gray-800'}`}>
-                          {formatPrice(product.salePrice ?? product.price)}
-                        </span>
-                        {product.salePrice && (
-                          <span className="text-[11px] text-gray-400 line-through">
-                            {formatPrice(product.price)}
-                          </span>
-                        )}
-                      </div>
-                      {product.size && (
-                        <span className="text-[10px] text-gray-400 uppercase tracking-wide">
-                          {product.size}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Animated gold underline on hover */}
-                    <div className="h-px bg-gold/20 relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gold/60 -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]" />
-                    </div>
-                  </div>
-                </Link>
-              </motion.div>
+                product={product}
+                failed={failedImages.has(product.id)}
+                onImageError={handleImageError}
+                priority={index < 3}
+              />
             ))}
           </div>
         </AnimatedSection>

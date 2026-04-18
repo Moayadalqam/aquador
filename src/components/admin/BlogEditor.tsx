@@ -6,6 +6,7 @@ import type { BlogPost, BlogCategory } from '@/lib/blog-types';
 import { Save, Eye, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { focusRingInput } from '@/lib/ui/focus';
 
 interface BlogEditorProps {
   post?: BlogPost;
@@ -95,7 +96,7 @@ export default function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
-              className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gold transition-colors"
+              className={`w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 ${focusRingInput} transition-colors`}
               placeholder="Post title"
             />
           </div>
@@ -110,7 +111,7 @@ export default function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
                 setSlug(e.target.value);
                 setSlugManuallyEdited(true);
               }}
-              className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gold transition-colors font-mono text-sm"
+              className={`w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 ${focusRingInput} transition-colors font-mono text-sm`}
               placeholder="post-slug"
             />
           </div>
@@ -122,7 +123,7 @@ export default function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
               value={excerpt}
               onChange={(e) => setExcerpt(e.target.value)}
               rows={2}
-              className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gold transition-colors resize-none"
+              className={`w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 ${focusRingInput} transition-colors resize-none`}
               placeholder="Brief description for listings..."
             />
           </div>
@@ -135,7 +136,7 @@ export default function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
               onChange={(e) => setContent(e.target.value)}
               required
               rows={20}
-              className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gold transition-colors resize-y font-mono text-sm"
+              className={`w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 ${focusRingInput} transition-colors resize-y font-mono text-sm`}
               placeholder="<h2>Your heading</h2><p>Your content here...</p>"
             />
             <p className="text-xs text-gray-500 mt-1">
@@ -152,7 +153,7 @@ export default function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
                 type="text"
                 value={metaTitle}
                 onChange={(e) => setMetaTitle(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gold transition-colors"
+                className={`w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 ${focusRingInput} transition-colors`}
                 placeholder="SEO title (defaults to post title)"
               />
             </div>
@@ -162,7 +163,7 @@ export default function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
                 value={metaDescription}
                 onChange={(e) => setMetaDescription(e.target.value)}
                 rows={2}
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gold transition-colors resize-none"
+                className={`w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 ${focusRingInput} transition-colors resize-none`}
                 placeholder="SEO description (defaults to excerpt)"
               />
             </div>
@@ -180,7 +181,7 @@ export default function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-gold transition-colors"
+                className={`w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white ${focusRingInput} transition-colors`}
               >
                 <option value="draft">Draft</option>
                 <option value="published">Published</option>
@@ -225,7 +226,7 @@ export default function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
               type="url"
               value={coverImage}
               onChange={(e) => setCoverImage(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gold transition-colors text-sm"
+              className={`w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 ${focusRingInput} transition-colors text-sm`}
               placeholder="https://..."
             />
             {coverImage && (
@@ -241,7 +242,7 @@ export default function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-gold transition-colors"
+              className={`w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white ${focusRingInput} transition-colors`}
             >
               <option value="">No category</option>
               {categories.map((cat) => (
@@ -257,7 +258,7 @@ export default function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
               type="text"
               value={tags}
               onChange={(e) => setTags(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gold transition-colors text-sm"
+              className={`w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 ${focusRingInput} transition-colors text-sm`}
               placeholder="tag1, tag2, tag3"
             />
             <p className="text-xs text-gray-500">Comma separated</p>
@@ -272,7 +273,7 @@ export default function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
                 type="text"
                 value={authorName}
                 onChange={(e) => setAuthorName(e.target.value)}
-                className="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm focus:outline-none focus:border-gold transition-colors"
+                className={`w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm ${focusRingInput} transition-colors`}
               />
             </div>
             <div>
@@ -281,7 +282,7 @@ export default function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
                 type="text"
                 value={authorRole}
                 onChange={(e) => setAuthorRole(e.target.value)}
-                className="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm focus:outline-none focus:border-gold transition-colors"
+                className={`w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm ${focusRingInput} transition-colors`}
               />
             </div>
           </div>
@@ -293,7 +294,7 @@ export default function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
               type="text"
               value={featuredProducts}
               onChange={(e) => setFeaturedProducts(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-gold transition-colors text-sm"
+              className={`w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 ${focusRingInput} transition-colors text-sm`}
               placeholder="product-id-1, product-id-2"
             />
             <p className="text-xs text-gray-500">Comma-separated product IDs</p>

@@ -78,6 +78,16 @@ export const rateLimiters = {
       })
     : null,
 
+  // Live chat send: 20 requests per minute
+  'live_chat': isConfigured && redis
+    ? new Ratelimit({
+        redis,
+        limiter: Ratelimit.slidingWindow(20, '1 m'),
+        analytics: true,
+        prefix: 'ratelimit:live-chat',
+      })
+    : null,
+
   // Search: 20 requests per minute
   search: isConfigured && redis
     ? new Ratelimit({

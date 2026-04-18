@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView } from 'motion/react';
 import Link from 'next/link';
 import Button from '@/components/ui/Button';
 import { ParallaxSection } from '@/components/ui/ParallaxSection';
@@ -33,10 +33,12 @@ export default function Hero() {
               muted
               loop
               playsInline
+              preload="metadata"
               poster="/images/aquadour1.jpg"
               className="absolute w-full h-full object-cover"
               style={{ filter: 'brightness(0.25) saturate(0.7) contrast(1.1)' }}
               onError={() => setVideoError(true)}
+              aria-hidden="true"
             >
               {/* Migrated from Squarespace CDN 2026-04-17 — original URL in git history */}
             <source

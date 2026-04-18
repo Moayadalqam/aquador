@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { Search, X } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 import type { Product } from '@/lib/supabase/types';
@@ -136,7 +136,7 @@ export default function SearchBar({
           aria-label="Search fragrances"
           placeholder={placeholder}
           className={`
-            w-full bg-transparent border-none outline-none text-black placeholder-gray-400/70 focus-visible:ring-2 focus-visible:ring-gold-500
+            w-full bg-transparent border-none outline-0 text-black placeholder-gray-400/70 focus-visible:ring-2 focus-visible:ring-gold-500
             ${isNavbar ? 'px-3 py-3 text-sm' : 'px-4 py-3.5 text-base'}
           `}
         />

@@ -1,8 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { ArrowRight } from 'lucide-react';
+import { focusRingLinkLight } from '@/lib/ui/focus';
 
 const houses = [
   {
@@ -36,7 +37,7 @@ export default function CuratedHousesStrip() {
           >
             <Link
               href={h.href}
-              className="group block rounded-lg border border-gold/15 bg-[#111111] p-6 md:p-7 transition-colors duration-200 hover:border-gold/60 focus-visible:border-gold focus-visible:outline-none"
+              className={`group block rounded-lg border border-gold/15 bg-[#111111] p-6 md:p-7 transition-colors duration-200 hover:border-gold/60 ${focusRingLinkLight}`}
             >
               <div className="flex items-start justify-between gap-4">
                 <div>

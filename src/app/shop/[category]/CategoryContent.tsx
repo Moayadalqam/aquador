@@ -1,21 +1,18 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { trackCategoryTransition, trackFilterChange } from '@/lib/analytics/product-engagement';
 import { SearchBar } from '@/components/search';
 import { PageHero } from '@/components/ui/Section';
 import { CategoryTransition } from '@/components/shop/CategoryTransition';
 import { SwipeableProductGrid } from '@/components/shop/SwipeableProductGrid';
-import { formatPrice } from '@/lib/utils';
+import { ProductCard } from '@/components/ui/ProductCard';
 import { gridLayoutTransition, gridItemVariants } from '@/lib/animations/filter-transitions';
 import { categories as allCategories } from '@/lib/categories';
 import type { Product } from '@/lib/supabase/types';
 import type { Category } from '@/types';
-
-const FALLBACK_IMAGE = '/placeholder-product.svg';
 
 interface CategoryContentProps {
   category: Category;
@@ -24,7 +21,6 @@ interface CategoryContentProps {
 
 export default function CategoryContent({ category, products }: CategoryContentProps) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [failedImages, setFailedImages] = useState<Set<string>>(new Set());
 
   // Prevents tracking on SSR initial hydration — only fires on client-side navigation
   const isInitializedRef = useRef(false);
@@ -166,56 +162,7 @@ export default function CategoryContent({ category, products }: CategoryContentP
                     layout
                     transition={gridLayoutTransition}
                   >
-                    <Link href={`/products/${product.id}`} className="group block product-card">
-                      {/* Image */}
-                      <div className="relative aspect-[3/4] overflow-hidden">
-                        <Image
-                          src={failedImages.has(String(product.id)) ? FALLBACK_IMAGE : (product.image || FALLBACK_IMAGE)}
-                          alt={product.name}
-                          fill
-                          className={`object-cover transition-transform duration-700 group-hover:scale-105 ${!(product.in_stock ?? true) ? 'opacity-60' : ''}`}
-                          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                          onError={() => { setFailedImages(prev => { const next = new Set(prev); next.add(String(product.id)); return next; }); }}
-                        />
-                        {product.sale_price && product.sale_price < product.price && (product.in_stock ?? true) && (
-                          <span className="absolute top-3 left-3 bg-gold text-black text-[9px] uppercase tracking-wider px-2 py-1 font-medium">
-                            Sale
-                          </span>
-                        )}
-                        {!(product.in_stock ?? true) && (
-                          <span className="absolute top-3 left-3 bg-gray-800 text-white text-[9px] uppercase tracking-wider px-2 py-1 font-medium">
-                            Coming Soon
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Content */}
-                      <div className="p-4 bg-white">
-                        {product.brand && (
-                          <p className="label-micro mb-1.5 truncate">{product.brand}</p>
-                        )}
-                        <h3 className="text-sm font-playfair text-gray-900 group-hover:text-gold-dark transition-colors mb-2 line-clamp-1">
-                          {product.name}
-                        </h3>
-                        <div className="pt-2 border-t border-gray-100">
-                          <div className="flex items-baseline justify-between">
-                            <div className="flex items-baseline gap-1.5">
-                              <span className="text-base font-playfair text-gray-900">
-                                {formatPrice(product.sale_price || product.price)}
-                              </span>
-                              {product.sale_price && product.sale_price < product.price && (
-                                <span className="text-xs text-gray-400 line-through">
-                                  {formatPrice(product.price)}
-                                </span>
-                              )}
-                            </div>
-                            <span className="text-[9px] text-gray-400 uppercase">
-                              {product.size}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </Link>
+                    <ProductCard product={product} />
                   </motion.div>
                 ))}
               </motion.div>

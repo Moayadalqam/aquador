@@ -44,7 +44,9 @@ export default function AdminDashboard() {
         const [
           { data: allProducts },
           { data: recentProductsData },
-          { data: allOrders },
+          { count: orderCount },
+          { data: orderTotals },
+          { data: recentOrdersData },
           { count: totalCustomers },
           { data: visitors },
         ] = await Promise.all([
@@ -52,11 +54,15 @@ export default function AdminDashboard() {
           supabase.from('products').select('in_stock, category'),
           // Query 2: Recent products for display
           supabase.from('products').select('id, name, image, price, category, product_type, in_stock, created_at').order('created_at', { ascending: false }).limit(5),
-          // Query 3: Get all orders for stats and recent orders
-          supabase.from('orders').select('id, stripe_session_id, status, total, customer_email, customer_name, created_at').order('created_at', { ascending: false }),
-          // Query 4: Customer count
+          // Query 3: Order count (head-only, no row data transferred)
+          supabase.from('orders').select('id', { count: 'exact', head: true }),
+          // Query 4: Order totals for revenue calculation (only the total column)
+          supabase.from('orders').select('total'),
+          // Query 5: Recent orders for display (limited to 5)
+          supabase.from('orders').select('id, stripe_session_id, status, total, customer_email, customer_name, created_at').order('created_at', { ascending: false }).limit(5),
+          // Query 6: Customer count
           supabase.from('customers').select('id', { count: 'exact', head: true }),
-          // Query 5: Live visitors
+          // Query 7: Live visitors
           supabase.from('site_visitors').select('id').gte('last_seen', new Date(Date.now() - 2 * 60 * 1000).toISOString()),
         ]);
 
@@ -66,10 +72,10 @@ export default function AdminDashboard() {
         const outOfStockProducts = totalProducts - inStockProducts;
         const categoryCount = new Set(allProducts?.map(p => p.category)).size;
 
-        // Derive order stats from single query
-        const totalOrders = allOrders?.length || 0;
-        const totalRevenue = (allOrders || []).reduce((sum, o) => sum + o.total, 0);
-        const latestOrders = (allOrders || []).slice(0, 5);
+        // Derive order stats from separate optimized queries
+        const totalOrders = orderCount || 0;
+        const totalRevenue = (orderTotals || []).reduce((sum, o) => sum + o.total, 0);
+        const latestOrders = (recentOrdersData || []).slice(0, 5);
 
         setStats({
           totalProducts,

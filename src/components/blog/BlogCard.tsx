@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { ArrowUpRight } from 'lucide-react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import type { BlogPost } from '@/lib/blog-types';

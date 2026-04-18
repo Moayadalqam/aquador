@@ -8,7 +8,7 @@
  * @module animations/cinematic
  */
 
-import type { Variants, Transition } from 'framer-motion';
+import type { Variants, Transition } from 'motion/react';
 import { trackCinematicEngagement } from '@/lib/analytics/performance-monitor';
 
 /**

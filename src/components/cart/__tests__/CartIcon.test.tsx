@@ -1,8 +1,8 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import CartIcon from '../CartIcon';
 
-// Mock framer-motion
-jest.mock('framer-motion', () => ({
+// Mock motion/react
+jest.mock('motion/react', () => ({
   motion: {
     button: ({ children, whileHover: _whileHover, whileTap: _whileTap, ...props }: React.ComponentProps<'button'> & { whileHover?: unknown; whileTap?: unknown }) => (
       <button {...props}>{children}</button>

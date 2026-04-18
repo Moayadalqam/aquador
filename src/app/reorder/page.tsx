@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'motion/react'
 import { Plus, Minus, Upload, X, Check, AlertCircle, Loader2, ArrowLeft, Droplets, FlaskConical, Pipette } from 'lucide-react'
 
 type ProductType = '50ml-perfume' | '100ml-perfume' | '10ml-oil'
@@ -369,7 +369,7 @@ export default function ReorderPage() {
                       aria-invalid={!!submitError && !row.code}
                       aria-describedby={submitError && !row.code ? 'reorder-error' : undefined}
                       className="w-full rounded-lg border border-black/[0.08] bg-[#FAFAF8] px-3.5 py-2.5 text-black placeholder-gray-300
-                                 focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all text-sm"
+                                 focus:border-gold/40 focus:outline-none focus:ring-1 focus-visible:ring-gold/60 transition-all text-sm"
                     />
                   </div>
 
@@ -384,7 +384,7 @@ export default function ReorderPage() {
                       aria-invalid={!!submitError && !row.category}
                       aria-describedby={submitError && !row.category ? 'reorder-error' : undefined}
                       className="w-full rounded-lg border border-black/[0.08] bg-[#FAFAF8] px-3 py-2.5 text-black
-                                 focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all text-sm
+                                 focus:border-gold/40 focus:outline-none focus:ring-1 focus-visible:ring-gold/60 transition-all text-sm
                                  appearance-none cursor-pointer"
                       style={{
                         backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23aaa'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
@@ -415,7 +415,7 @@ export default function ReorderPage() {
                       aria-invalid={!!submitError && !row.amount}
                       aria-describedby={submitError && !row.amount ? 'reorder-error' : undefined}
                       className="w-full rounded-lg border border-black/[0.08] bg-[#FAFAF8] px-3.5 py-2.5 text-black placeholder-gray-300
-                                 focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-all text-sm
+                                 focus:border-gold/40 focus:outline-none focus:ring-1 focus-visible:ring-gold/60 transition-all text-sm
                                  [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
                   </div>

@@ -5,7 +5,7 @@ import {
   useScroll,
   useTransform,
   useReducedMotion as useFMReducedMotion,
-} from 'framer-motion';
+} from 'motion/react';
 import { useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -163,8 +163,9 @@ export default function SignatureStories() {
                   fill
                   className="object-cover"
                   style={{ objectPosition: story.imagePosition }}
-                  sizes="100vw"
+                  sizes="(max-width: 768px) 0px, 100vw"
                   priority={idx === 0}
+                  {...(idx > 0 ? { loading: 'lazy' } : {})}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-black/10" />
                 <div
@@ -278,6 +279,7 @@ export function SignatureStoriesMobile() {
               className="object-cover"
               style={{ objectPosition: story.imagePosition }}
               sizes="100vw"
+              loading="lazy"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
             <div className="relative z-10 h-full flex flex-col justify-end p-8">

@@ -1,3 +1,6 @@
+// M13: Considered extracting usePathname() into a thin SiteChromeSwitch RSC wrapper,
+// but all children (Navbar, Footer, CartDrawer, etc.) are client components anyway.
+// Splitting would add complexity without meaningful bundle savings. Keeping as-is.
 'use client';
 
 import dynamic from 'next/dynamic';
@@ -12,7 +15,6 @@ import { PageTransition } from '@/components/providers/PageTransition';
 import { ScrollDepthTracker } from '@/components/analytics/ScrollDepthTracker';
 
 const ChatWidget = dynamic(() => import('@/components/ai/ChatWidget'), { ssr: false });
-const WelcomeSplash = dynamic(() => import('@/components/ui/WelcomeSplash'), { ssr: false });
 
 export default function SiteFrame({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -29,7 +31,6 @@ export default function SiteFrame({ children }: { children: React.ReactNode }) {
   return (
     <>
       <ScrollProgress />
-      <WelcomeSplash />
       <Navbar />
       <PageTransition>
         <main id="main-content" className="min-h-screen">

@@ -12,8 +12,18 @@ export default function CustomersPage() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [page, setPage] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
+
+  // Debounce search input — update immediately for controlled input UX, delay fetch
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+      setPage(0);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [search]);
 
   const fetchCustomers = useCallback(async () => {
     setLoading(true);
@@ -21,19 +31,19 @@ export default function CustomersPage() {
 
     let query = supabase
       .from('customers')
-      .select('*', { count: 'exact' })
+      .select('id, email, name, phone, total_orders, total_spent, last_order_at', { count: 'exact' })
       .order('last_order_at', { ascending: false, nullsFirst: false })
       .range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1);
 
-    if (search.trim()) {
-      query = query.or(`email.ilike.%${search.trim()}%,name.ilike.%${search.trim()}%`);
+    if (debouncedSearch.trim()) {
+      query = query.or(`email.ilike.%${debouncedSearch.trim()}%,name.ilike.%${debouncedSearch.trim()}%`);
     }
 
     const { data, count } = await query;
     setCustomers((data || []) as Customer[]);
     setTotalCount(count || 0);
     setLoading(false);
-  }, [page, search]);
+  }, [page, debouncedSearch]);
 
   useEffect(() => {
     fetchCustomers();
@@ -58,7 +68,7 @@ export default function CustomersPage() {
           type="text"
           placeholder="Search by email or name..."
           value={search}
-          onChange={(e) => { setSearch(e.target.value); setPage(0); }}
+          onChange={(e) => setSearch(e.target.value)}
           className="w-full pl-10 pr-4 py-2.5 bg-gray-900 border border-gray-800 rounded-lg text-white text-sm placeholder:text-gray-500 focus:outline-none focus:border-gold/50"
         />
       </div>

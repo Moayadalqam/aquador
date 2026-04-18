@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { ReactNode } from 'react';
 
 const EXPO_EASE = [0.22, 1, 0.36, 1] as const;

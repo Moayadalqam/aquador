@@ -6,12 +6,12 @@ See: .planning/PROJECT.md
 **Core value:** A customer completes a purchase and knows it worked — they see their order details on screen, receive a confirmation email, and the store is notified. No silent failures, no misleading messages, no security holes.
 
 ## Current Position
-Phase: 31 of 31 — v3.4 Cinematic Scroll
-Status: shipped
+Phase: 32 of 32 — v3.9 Optimization Fixes
+Status: in_progress
 Assigned to: OWNER (Fawzi Goussous)
-Last activity: 2026-04-17 — v3.4 milestone SHIPPED (3D scroll + welcome splash + progress bar)
+Last activity: 2026-04-18 — Phase 32 kicked off (7 critical + 14 high from OPTIMIZE.md v3.9)
 
-Progress: [██████████] 100%
+Progress: [█████████▒] 97% (31/32 shipped, Phase 32 in flight)
 
 Deployed: https://www.aquadorcy.com (v3.4 latest deploy)
 
@@ -47,6 +47,9 @@ Deployed: https://www.aquadorcy.com (v3.4 latest deploy)
 | 27 | Security + Reliability | is_active block, draft leak fix, RLS, upsert RPC, Sentry unify | shipped |
 | 28 | Performance + Bundle + Architecture | Suspense stream, /shop static, dead code, 3D gate | shipped |
 | 29 | Conventions + A11y + Responsive | loading/error routes, JsonLd, CDN migration, 27/27 responsive | shipped |
+| 30 | Optimize Pass 2 | 33/33 findings, 3 migrations applied | shipped |
+| 31 | Cinematic Scroll | WelcomeSplash + ScrollProgress + Hero3DScroll | shipped |
+| 32 | v3.9 Optimization Fixes | 7 critical + 14 high from OPTIMIZE v3.9 | in_progress |
 
 ## Milestones (history)
 - ✅ **v1.0** Order/Payment System Fix — 2026-03-02 (phases 1-4)
