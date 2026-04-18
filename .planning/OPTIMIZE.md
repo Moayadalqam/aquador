@@ -1,171 +1,160 @@
 ---
 date: 2026-04-18
 mode: full
-fixed: 13
-deferred_high: 4
-deferred_medium: 10
-deferred_low: 16
+critical: 7
+high: 14
+medium: 20
+low: 17
 status: needs_attention
 ---
 
-# Optimization Report — v3.8
+# Optimization Report — v3.9
 
 **Project:** aquador (Next.js 14 luxury perfume e-commerce)
 **Mode:** full (frontend + backend + performance)
 **Date:** 2026-04-18
-**Analyst:** 3 parallel specialist agents (frontend-agent, backend-agent, performance-oracle)
+**Analysts:** 3 parallel specialist agents (frontend, backend, performance-oracle) + manual synthesis
+
+Prior pass (v3.8, 13 fixed + 30 deferred) archived to `.planning/reports/OPTIMIZE-v3.8-2026-04-18.md`.
 
 ## Summary
 
-3 parallel agents reviewed the codebase after v3.4 Cinematic Scroll shipped. They surfaced **0 CRITICAL**, **10 HIGH**, **21 MEDIUM**, and **16 LOW** findings across frontend, backend, security, performance, and accessibility dimensions.
+This run surfaced **7 CRITICAL**, **14 HIGH**, **20 MEDIUM**, and **17 LOW** findings. Several CRITICAL items are carry-overs from v3.8 (live chat RLS, framer-motion import path) that were deferred and remain unfixed; this report confirms they are still present and adds new findings the prior pass missed (WelcomeSplash LCP block, admin dashboard unbounded query, SiteFrame `'use client'` barrel, CartItem position bug, session_secret dead code).
 
-Of those, **13 safe high/medium/low fixes were applied in this pass (v3.8)**; the remaining findings are documented below as deferred, with severity and suggested fix. Several require database migrations or deliberate scoping decisions (e.g. live chat RLS tightening, Framer Motion purge from static pages, Navbar focus trap) and belong in a dedicated follow-up phase.
+Five systemic patterns stand out:
 
-This v3.8 pass also shipped three user-requested features alongside the fixes: cinematic homepage scroll (snap + horizontal + fade), clear-glass 3D bottle with real AQUAD'OR logo, and AQUAD'OR-first sort on men/women/niche pages.
-
----
-
-## Fixed in v3.8 (this pass)
-
-| # | Dimension | Finding | Location | Fix Applied |
-|---|-----------|---------|----------|-------------|
-| 1 | Bundle | `import * as THREE` blocked tree-shaking | `Hero3DScene.tsx`, `PerfumeBottle3D.tsx` | Switched to named imports (`Color`, `MathUtils`, type aliases) |
-| 2 | Performance | ContactShadows re-rendered every frame | both 3D scenes | Added `frames={1}` — static shadow, frees ~2-4ms GPU/frame |
-| 3 | Mobile | `h-[100vh]` clipped under iOS Safari URL bar | `Hero3DScroll.tsx:92` | Switched to `h-[100dvh]` |
-| 4 | Performance | `getAllProducts()` unbounded | `product-service.ts:19` | Added `.limit(500)` safety cap |
-| 5 | Performance | Hero poster (217KB JPG) preloaded on every page | `layout.tsx:133` | Removed — `<video poster>` attribute handles it |
-| 6 | A11y | Footer link touch targets ~20px (WCAG fail) | `Footer.tsx:118,142` | Added `py-2 -my-0.5 min-h-[44px]` |
-| 7 | Resilience | `sessionStorage` could throw in private browsing | `WelcomeSplash.tsx:12-24` | Wrapped in safeGet/safeSet helpers with try/catch |
-| 8 | UX | `FeaturedProducts` returned `null` on empty | `FeaturedProducts.tsx:38` | Added graceful empty state with CTA to shop |
-| 9 | Security | Middleware didn't protect `/api/admin/*` | `middleware.ts` | Extended matcher + branch returning 401/403 JSON for API paths |
-| 10 | API | Blog admin check used `.single()` (throws on no row) | `/api/blog/route.ts:50`, `/api/blog/[slug]/route.ts:42` | Switched to `.maybeSingle()` |
-| 11 | Observability | Admin routes used `checkout` rate-limit bucket | admin/setup, admin/products, admin/categories (8 call sites) | Switched to `admin` bucket |
-| 12 | Render | Shop product cards had `layout` prop causing layout thrash on 100+ items | `ShopContent.tsx:227` | Removed `layout` + unused `gridLayoutTransition` import |
-| 13 | A11y | create-perfume rotating rings + AmbientParticles ignored `prefers-reduced-motion` | `create-perfume/page.tsx:49-78, 477-487` | Wrapped in `useReducedMotion` guards — zero animation loops for affected users |
-
-**Verification:** `npx tsc --noEmit` clean · `npm run lint` clean (no new warnings) · dev server smoke-tested `/`, `/shop`, `/shop/gender/men`, `/create-perfume` all HTTP 200 · `/api/admin/products` now returns 401 unauthenticated (middleware defense-in-depth confirmed).
+1. **Framer Motion entry point** — 82 files import from `framer-motion` instead of `motion/react`. Single find-replace unlocks tree-shaking (~15-25KB gzipped).
+2. **Focus ring inconsistency** — ~15 files rely on border colour shifts or `ring-gold/20` (invisible) as the sole focus indicator. Fails WCAG 2.4.7 across admin, create-perfume, reorder, ChatWidget, SearchBar, maintenance, CuratedHousesStrip.
+3. **Live chat RLS** — three interlocking CRITICAL findings. Anon `SELECT USING (true)` + permissive INSERT + dead `session_secret` column mean any visitor can enumerate sessions and inject messages.
+4. **`'use client'` leakage** — SiteFrame plus 5 static marketing pages (about/contact/terms/shipping/privacy) are client components purely for framer-motion scroll animations, shipping ~30-50KB of needless JS.
+5. **Unbounded admin queries** — `/admin` dashboard fetches every order row on every load; customers/orders search fires a query per keystroke.
 
 ---
 
-## Deferred — HIGH severity
+## CRITICAL
 
-### H1. Live chat session enumeration via anon SELECT `USING (true)`
-- **Where:** `supabase/migrations/20260417_enable_rls_live_chat.sql:31-36`
-- **Why:** Any anonymous user can list every live chat session, exposing visitor IDs and enabling message-injection into other sessions.
-- **Fix:** Route live chat reads through a server API that validates `session_secret`, then tighten anon SELECT to `USING (false)`. Requires DB migration + rewrite of `useLiveChatSession` and `live-chat/notify` route.
-- **Severity:** HIGH
-- **Why deferred:** Needs careful migration + chat-flow testing to avoid breaking the feature. Separate phase.
+| # | Dimension | Finding | Location | Fix |
+|---|-----------|---------|----------|-----|
+| C1 | Security | Live chat anon SELECT `USING (true)` allows any visitor to enumerate every session including `session_secret` column. Confirmed still present. | `supabase/migrations/20260417_enable_rls_live_chat.sql:31-36` | Route visitor session reads through a server API that validates `session_secret`, then tighten anon SELECT to `USING (false)`. Rewrites `useLiveChatSession` + `live-chat/notify`. |
+| C2 | Security | Live chat INSERT policy only checks session existence, not ownership. Combined with C1, any anon user can inject messages into any live conversation (phishing, impersonation). | `supabase/migrations/20260417_enable_rls_live_chat.sql:97-104` | Require API call with session_secret for inserts; set anon INSERT policy to `USING (false)` and expose `/api/live-chat/send` that validates the secret. |
+| C3 | Security | `session_secret` column was added (v3.8) but ChatWidget never reads/sends it and UPDATE policy checks `session_secret IS NOT NULL` (always true since NOT NULL DEFAULT). Any anon user can UPDATE any session's admin_id/status. | `supabase/migrations/20260417_live_chat_session_secret.sql:37-43`; `src/components/ai/ChatWidget.tsx` (0 refs) | Return secret on session creation, store in localStorage, send as header, compare in policy via RPC. Or drop the column and enforce UPDATE `USING (false)`. |
+| C4 | Bundle | 82 files import from `framer-motion` instead of `motion/react`, blocking the canonical tree-shake entry point. Estimated 15-25KB gzip overhead. | 82 files (`rg "from ['\"]framer-motion['\"]" src`) | Single repo-wide replace `from 'framer-motion'` → `from 'motion/react'`. API surface identical for every feature used. |
+| C5 | Performance | `/admin` dashboard calls `supabase.from('orders').select(...).order(...)` with no limit, then `.reduce()`s for revenue. O(n) memory + network; at 10k orders → 5MB+ transfer. | `src/app/admin/page.tsx:56` | Split into 3 queries: `count:'exact', head:true` for totalOrders, `select('total')` for revenue (or Postgres RPC `sum(total)`), `select(...).limit(5)` for recent. |
+| C6 | Performance / UX | `WelcomeSplash` mounts `z-[9999]` for 3s on first visit, covering hero + all interactive content. Destroys LCP (~+3s) and INP. | `src/components/ui/WelcomeSplash.tsx:36` | Remove entirely (hero video is the brand moment) OR reduce to ≤1.2s + `pointer-events-none` during fade so LCP measures the real content beneath. |
+| C7 | UX | CartItem remove button is `absolute top-4 right-4` but parent `motion.div` has no `relative` — anchors to nearest positioned ancestor (the drawer), overlapping other cart items. | `src/components/cart/CartItem.tsx:37` | Add `relative` to the parent motion.div className. |
 
-### H2. Live chat message injection into any session
-- **Where:** same migration (messages INSERT policy)
-- **Why:** Anon INSERT only checks session exists — not that caller owns it.
-- **Fix:** Add `session_secret` check to INSERT policy or route all sends through a validating server API.
-- **Severity:** HIGH — pairs with H1.
+## HIGH
 
-### H3. Navbar mobile menu does not trap focus
-- **Where:** `src/components/layout/Navbar.tsx:226-343`
-- **Why:** Keyboard/screen-reader users can Tab out of the overlay into hidden page content (WCAG 2.4.3 violation).
-- **Fix:** Copy the focus-trap pattern already in `CartDrawer.tsx:24-63` (track focusable elements, cycle on Tab/Shift+Tab).
-- **Severity:** HIGH — defer only because it needs browser-tested verification.
+| # | Dimension | Finding | Location | Fix |
+|---|-----------|---------|----------|-----|
+| H1 | A11y (systemic) | Admin inputs use `focus:outline-none focus:border-gold` — border colour shift is not a WCAG focus indicator. Affects ~10 input groups in ProductForm + BlogEditor + every admin page. | `src/components/admin/ProductForm.tsx:248,271,284,306,320,385,459,475,491,506`; `BlogEditor.tsx`; `admin/settings`, `admin/login`, `admin/categories`, `admin/orders/new`, `admin/customers`, `admin/products` | Define a shared `focusRingInput` utility: `focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-1 focus-visible:ring-offset-gray-900`. |
+| H2 | A11y | create-perfume inputs use `focus:ring-gold/20` (20% opacity on white = invisible). | `src/app/create-perfume/page.tsx:640, 702` | `focus-visible:ring-2 focus-visible:ring-gold/60`. |
+| H3 | A11y | ChatWidget inputs rely only on border colour shift. | `src/components/ai/ChatWidget.tsx:249, 276` | Add `focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-1`. |
+| H4 | A11y | SearchBar uses `border-none outline-none` base then `focus-visible:ring-2` — ring may not render in older browsers without `:focus-visible`. | `src/components/search/SearchBar.tsx:139` | Replace `outline-none` with `outline-0`. |
+| H5 | A11y | create-perfume has two `<h1>` (intro + checkout steps). WCAG 1.3.1 violation. | `src/app/create-perfume/page.tsx:232, 573` | Change checkout step to `<h2>`. |
+| H6 | Performance | `PageTransition` wraps every route with `AnimatePresence mode="popLayout" key={pathname}` — full unmount/remount on every navigation. Breaks partial render/streaming, +200-400ms INP. | `src/components/providers/PageTransition.tsx:62-75` | Remove. App Router has native route transitions; use CSS `view-transition-name` or opacity-only fade without key-based remount. |
+| H7 | Performance | `select('*')` still used in 4 places after v3.8: AdminShell auth, blog slug GET, admin customers list, admin orders list. | `src/components/admin/AdminShell.tsx:78`; `src/app/api/blog/[slug]/route.ts:48`; `src/app/admin/customers/page.tsx:24`; `src/app/admin/orders/page.tsx:37` | Explicit columns. AdminShell → `select('id, role')`. Blog slug → `BLOG_POST_COLUMNS`. Customers/orders → only what the table renders. |
+| H8 | Bundle | DOMPurify statically imported on RichDescription + BlogContent → ~15KB gzipped on product/blog routes even when content is plain text. | `src/components/products/RichDescription.tsx:4`; `src/components/blog/BlogContent.tsx:4` | Dynamic import inside effect when HTML detected, or sanitize server-side so client never loads DOMPurify. |
+| H9 | Bundle | `<Environment preset="city" />` in 3D `Lighting.tsx` fetches ~1-2MB HDRI from drei CDN at runtime. | `src/components/3d/Lighting.tsx:1` | Self-host compressed `.hdr`/`.exr` under `/public/hdri/`, use `<Environment files="/hdri/studio.hdr" />`. Reduce `AccumulativeShadows frames` 100 → 30-40. |
+| H10 | Performance | Hero video 5.3MB MP4 with no `preload="none"`, no WebM/AV1 variant, autoplays during the 3s WelcomeSplash window. | `public/media/hero-luxury.mp4`; `src/components/home/Hero.tsx:34-46` | `preload="metadata"`, add WebM/AV1 ~2MB as first `<source>`, compress MP4 further (1080p CRF 28 → ~2-3MB). |
+| H11 | Performance | Blog post page waterfall: `getBlogPostBySlug(slug)` awaits, then `post.category` feeds related fetch. +50ms at ISR boundary. | `src/app/blog/[slug]/page.tsx:58-68` | Wrap with `cache()`; fetch category lightly first, then `Promise.all` the full post + related queries. |
+| H12 | Security | Blog POST (`/api/blog`) and PUT/DELETE (`/api/blog/[slug]`) have no rate limiting — every other admin mutation does. | `src/app/api/blog/route.ts:98`; `src/app/api/blog/[slug]/route.ts:75, 141` | Add `await checkRateLimit(request, 'admin')` at each handler. |
+| H13 | Security | `/api/admin/orders` POST has no rate limiting. | `src/app/api/admin/orders/route.ts:33` | Add `checkRateLimit(request, 'admin')` guard. |
+| H14 | Security | `/api/live-chat/notify` and blog GET accept unvalidated params. sessionId flows into WhatsApp/email bodies; `limit` is unbounded. | `src/app/api/live-chat/notify/route.ts:90`; `src/app/api/blog/route.ts:28-32` | Zod. notify: `z.object({ sessionId: z.string().uuid() })`. Blog: bounded page, `z.coerce.number().int().min(1).max(50).default(9)` for limit, enum for status. |
 
-### H4. 3D scenes never dispose geometries/materials/textures
-- **Where:** `Hero3DScene.tsx`, `PerfumeBottle3D.tsx`, `AquadorBottleGeometry.tsx`
-- **Why:** Each mount/unmount accumulates GPU memory. Navigating `/ ↔ /create-perfume` steadily grows VRAM — risk of crashes on mobile over long sessions.
-- **Fix:** Add `onCreated={(state) => () => state.gl.dispose()}` to each `<Canvas>` and memo-ize inline materials at module level. Dispose the `CanvasTexture` from `aquadorLogoTexture.ts` when the last consumer unmounts.
-- **Severity:** HIGH (degradation over time, not immediate break).
+## MEDIUM
 
----
+| # | Dimension | Finding | Location | Fix |
+|---|-----------|---------|----------|-----|
+| M1 | UI | `error.tsx` uses `bg-black` while rest of site is cream `#FAFAF8`. | `src/app/error.tsx:21` | `bg-[#FAFAF8]`, `text-black`, `text-gray-600`. |
+| M2 | A11y | CartDrawer close button `p-2` ≈ 36x36px. | `src/components/cart/CartDrawer.tsx:97-101` | `p-3` or `min-h-[44px] min-w-[44px]`. |
+| M3 | A11y | CartDrawer "Clear Cart" / "Continue Shopping" ~20px tall touch. | `src/components/cart/CartDrawer.tsx:157-170` | `min-h-[44px] flex items-center`. |
+| M4 | A11y | `CategoryContent` inline product card has no focus-visible ring. | `src/app/shop/[category]/CategoryContent.tsx:169` | `focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2`. |
+| M5 | A11y | `reorder` inputs use `focus:ring-gold/20` (invisible). | `src/app/reorder/page.tsx:372, 387, 418` | `focus-visible:ring-2 focus-visible:ring-gold/60`. |
+| M6 | Perf | Poppins loaded `display: 'optional'` — body text may never render in Poppins on slow connections. Playfair correctly uses `swap`. | `src/app/layout.tsx:20` | `display: 'swap'`. |
+| M7 | Re-render | `FeaturedProducts` keeps `failedImages` Set in state → one failure re-renders all 6 cards. | `src/components/home/FeaturedProducts.tsx:67-135` | Extract memoised `<FeaturedProductCard>` with `failed: boolean` prop. |
+| M8 | Perf | `SignatureStories` desktop renders 5 full-viewport images with `sizes="100vw"`. Both desktop + mobile variants sit in DOM; mobile still downloads desktop markup. | `src/components/home/SignatureStories.tsx:165-169`; `src/app/page.tsx:141-142` | Mark idx>0 images as `loading="lazy"`; scope `sizes` to md+ only. |
+| M9 | Perf | `/shop` fetches up to 500 products as RSC payload. OK at 100, will pressure TTFB + mobile memory past 200. | `src/app/shop/page.tsx:31`; `ShopContent.tsx:63` | `content-visibility: auto` on grid cells now; server-side paginate past 200. |
+| M10 | Perf | `ScrollProgress` global scroll listener runs on every route incl. admin/checkout. ~3-5ms/frame when combined with other handlers. | `src/components/ui/ScrollProgress.tsx:21`; `src/components/layout/SiteFrame.tsx:32` | Skip on admin + checkout routes via pathname check. |
+| M11 | Perf | Admin customers + orders search fires query per keystroke. | `src/app/admin/customers/page.tsx:62`; `src/app/admin/orders/page.tsx:99` | 300ms debounce (pattern already in `SearchBar.tsx:49`). |
+| M12 | Re-render | `Navbar` calls `setScrollY(window.scrollY)` in RAF — full navbar re-render per frame; only two derived booleans matter. | `src/components/layout/Navbar.tsx:46-56` | Derive `isScrolled` + `blurIntensity`, only `setState` on threshold crossings. Or CSS scroll-driven animations. |
+| M13 | Arch / Bundle | `SiteFrame` is `'use client'` solely for `usePathname()`, forcing Navbar + Footer + ChatWidget client-side. | `src/components/layout/SiteFrame.tsx:1` | Extract admin-check/conditional into thin `<SiteChromeSwitch>` client component; keep rest RSC. |
+| M14 | Arch / Bundle | 5 static pages are `'use client'` only to run framer-motion scroll animations. | `src/app/about/page.tsx`; `contact`, `terms`, `shipping`, `privacy` | Extract animated wrappers into small client components; keep pages as RSC. |
+| M15 | UI Consistency | `CategoryContent` duplicates product-card markup instead of using `<ProductCard />`. Different hover/quick-view behaviour vs `/shop`. | `src/app/shop/[category]/CategoryContent.tsx:169-220` | Replace with `<ProductCard product={product} />`. |
+| M16 | Perf | ChatWidget toggle button animates box-shadow `repeat: Infinity` — GPU cycles forever. | `src/components/ai/ChatWidget.tsx:203` | CSS keyframes + `prefers-reduced-motion` guard. |
+| M17 | Security | `verifyAdmin()` helpers use `.single()` on admin_users lookup — throws PostgrestError for non-admins; handled but log pollution. Middleware uses `.maybeSingle()` correctly. | `src/app/api/admin/products/route.ts:78`; `admin/categories/route.ts:48`; `blog/route.ts:111`; `blog/[slug]/route.ts:92, 158` | `.single()` → `.maybeSingle()`. |
+| M18 | Security / Perf | Blog public GET uses cookie-based server client → forces dynamic rendering even for published-only reads. | `src/app/api/blog/route.ts:35` | Use `createPublicClient()` when `statusFilter !== 'all'`. |
+| M19 | Security | `/api/checkout/session-details` accepts `session_id` with only a null check. | `src/app/api/checkout/session-details/route.ts:48-54` | `z.string().startsWith('cs_').min(10).max(255)`. |
+| M20 | Security | `gift_set_inventory` has TWO SELECT policies — the 2026-02-07 `USING (true)` was never dropped; the 2026-03-02 `USING (active = true)` added later. RLS permissive → `true` wins → inactive gift sets publicly visible. | `supabase/migrations/20260207110000_valentine_gift_set.sql:17-18` | New migration `DROP POLICY IF EXISTS "Allow public read gift_set_inventory" ON gift_set_inventory;`. |
 
-## Deferred — MEDIUM severity
+## LOW
 
-### M1. `/api/checkout/session-details` exposes shipping PII
-- **Where:** `src/app/api/checkout/session-details/route.ts:41-183`
-- **Why:** Anyone with the session ID (logged in proxies, analytics, referrers) gets name + full street address + postal code.
-- **Fix:** Strip shipping fields from response; return only order number, items, total. Alternatively require a HMAC token cookie set at checkout.
-
-### M2. Client-side product delete bypasses API route
-- **Where:** `src/components/admin/ProductsTable.tsx:22-26`
-- **Why:** Skips API-level Zod/Sentry/rate-limit/revalidate. Functions only because RLS policy is correct; no audit trail.
-- **Fix:** Replace direct Supabase client delete with `fetch('/api/admin/products', { method: 'DELETE' })` — pattern matches `ProductForm.tsx:200-208`.
-
-### M3. Admin setup PUT allows indefinite password resets
-- **Where:** `src/app/api/admin/setup/route.ts:120`
-- **Fix:** Set `ADMIN_SETUP_COMPLETE=true` in Vercel env OR remove the PUT handler entirely and use Supabase auth password reset.
-
-### M4. Framer Motion shipped on static pages
-- **Where:** `about/page.tsx`, `terms/page.tsx`, `privacy/page.tsx`, `shipping/page.tsx` — all `'use client'`
-- **Why:** Each unnecessarily ships ~40KB FM runtime for simple fade-ins.
-- **Fix:** Convert to Server Components; replace entrance animations with CSS `@keyframes`.
-
-### M5. AmbientParticles × 20 infinite animations across create-perfume
-- **Where:** `create-perfume/page.tsx` called at 3 step renders simultaneously
-- **Fix:** Convert to CSS `@keyframes` (compositor-accelerated); render only on active step; reduce count to 8-10.
-- **Partial:** Reduced-motion users now get zero particles (fixed in v3.8 #13).
-
-### M6. Admin dashboard unbounded orders query
-- **Where:** `src/app/admin/page.tsx:56`
-- **Fix:** Split into three efficient queries: `count: 'exact', head: true` for total, RPC aggregate for revenue, `.limit(5)` for recent.
-
-### M7. `live-chat/notify` uses `createPublicClient` for privileged check
-- **Where:** `src/app/api/live-chat/notify/route.ts:97`
-- **Fix:** Replace with `createAdminClient()` — don't rely on overly-permissive anon policy.
-
-### M8. Shop `ShopContent` still client-heavy
-- **Where:** Product catalog serialized into RSC payload (1-2KB/product × 200+)
-- **Fix:** Introduce server-side pagination or move filtering to searchParams; current `.limit(500)` is a ceiling, not a solution.
-
-### M9. Hero video 5.3MB MP4 with no responsive variants
-- **Where:** `Hero.tsx:31-46` + `public/media/hero-luxury.mp4`
-- **Fix:** Add `preload="metadata"`, provide a 720p variant for mobile via `<source media>`.
-
-### M10. ChatWidget continuous pulse animation
-- **Where:** `src/components/ai/ChatWidget.tsx:203`
-- **Fix:** Replace infinite Framer Motion `boxShadow` with CSS animation, or pulse only on unread.
-
----
-
-## Deferred — LOW severity
-
-- **L1.** `ScrollProgress` forces FM runtime into every page bundle → dynamic import or vanilla scroll listener.
-- **L2.** Heartbeat fires every 30s regardless of `document.visibilityState` → add visibility check.
-- **L3.** Public images in `/public/images/` are JPEG — convert to WebP (expected ~60% savings).
-- **L4.** Tiptap editor import not explicitly dynamic → wrap with `next/dynamic` at the blog-edit page.
-- **L5.** `AccumulativeShadows frames={100}` in `Lighting.tsx` spikes CPU on init → drop to 30-50.
-- **L6.** Two dozen Framer Motion imports in static content → gradual CSS migration.
-- **L7.** AdminShell `.select('*')` from admin_users → narrow to `id, role, email`.
-- **L8.** Blog `[slug]` route uses `select('*')` for public reads → use `BLOG_POST_FULL_COLUMNS`.
-- **L9.** Canvas3DBoundary has no retry mechanism → add "Try again" button.
-- **L10.** Product data transformation copy-pasted in 4 locations → extract `toLegacyProduct()` helper.
-- **L11.** Idempotency key missing on custom perfume Stripe session → accept client UUID, pass to Stripe.
-- **L12.** POST routes have no explicit body-size limit → add Content-Length guard.
-- **L13.** Emoji used as note icons in perfume builder → swap to SVGs.
-- **L14.** `useDeviceCapabilities` defaults `supports3D: true` during SSR → default false, upgrade after detection (saves chunk download on low-end).
-- **L15.** `AnimationBudgetProvider` runs 5s FPS measurement on homepage load → delay until first scroll.
-- **L16.** `Hero3DScroll` has `pointer-events-none` on text container → prevents text selection.
+| # | Dimension | Finding | Location | Fix |
+|---|-----------|---------|----------|-----|
+| L1 | UI | `not-found.tsx` uses `bg-white` not cream. | `src/app/not-found.tsx:7` | `bg-[#FAFAF8]`. |
+| L2 | A11y | Footer contact icon circles `h-8 w-8` (32px). | `src/components/layout/Footer.tsx:171, 184, 195` | `h-10 w-10` or `min-h-[44px]` on parent `<a>`. |
+| L3 | A11y | Hero video is decorative but lacks `aria-hidden="true"`. | `src/components/home/Hero.tsx:31-46` | Add `aria-hidden="true"`. |
+| L4 | SEO | `FeaturedProducts` builds `/products/${product.id}` — verify `id` is the slug. Route expects slugs via `generateStaticParams`. | `src/components/home/FeaturedProducts.tsx:72` | Confirm id is slug, otherwise use `product.slug`. |
+| L5 | A11y | `CuratedHousesStrip` sets `focus-visible:outline-none` without a visible replacement. | `src/components/shop/CuratedHousesStrip.tsx:39` | `focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2`. |
+| L6 | A11y | `MaintenanceClient` password input has bare `outline-none`. | `src/app/maintenance/MaintenanceClient.tsx:49` | `focus-visible:ring-2 focus-visible:ring-gold`. |
+| L7 | DOM | `DiscoveryGrid` nests grids inside full-span row wrappers that also apply the same grid — doubles grid containers. | `src/components/shop/DiscoveryGrid.tsx:102-119` | Flatten to a single grid; delay animation via index-based variants. |
+| L8 | Bundle | `src/components/cart/index.ts` barrel re-exports CartDrawer/CheckoutButton/CartIcon — Navbar's `CartIcon` import evaluates all. | `src/components/cart/index.ts:1-5` | Import directly from source files. |
+| L9 | Perf | `/api/checkout/session-details` has no Cache-Control; success page refetches on back/refresh. Data immutable after payment. | `src/app/api/checkout/session-details/route.ts:173` | `Cache-Control: private, max-age=3600`. |
+| L10 | Perf | `FeaturedProducts priority={index < 3}` × 2 sections = 6 priority images, above browser preload slots; second (Lattafa) is below fold. | `src/components/home/FeaturedProducts.tsx:79` | `priorityCount` prop; only first section gets priority. |
+| L11 | Perf | `<link rel="preconnect" href="https://fonts.googleapis.com">` is a no-op — `next/font/google` self-hosts at build. | `src/app/layout.tsx:112-113` | Remove both Google Fonts preconnects. Keep Supabase + Stripe. |
+| L12 | Perf | `SignatureStoriesMobile` always in DOM; desktop downloads mobile-variant images via CSS hide. | `src/app/page.tsx:141-142` | `loading="lazy"` on mobile variant images. |
+| L13 | Perf | `ChatWidget` creates module-scope Supabase client → WebSocket/realtime setup on every page even if chat never opened. | `src/components/ai/ChatWidget.tsx:10` | Lazy-init client only when `sessionId` is set. |
+| L14 | Security | `/api/search` error responses (400, 500) have no `Cache-Control: no-store`. | `src/app/api/search/route.ts:17-19, 34-37` | Add `Cache-Control: no-store` on error paths. |
+| L15 | Security | `decrement_gift_set_stock` is `SECURITY INVOKER`; if ever called by anon, would silently fail. | `supabase/migrations/20260207110000_valentine_gift_set.sql:33-50` | Document as service-role only, or `SECURITY DEFINER SET search_path = public` + `GRANT EXECUTE`. |
+| L16 | Maintainability | Large files: webhook (517), ProductForm (562), reorder (629). | `src/app/api/webhooks/stripe/route.ts`; `src/components/admin/ProductForm.tsx`; `src/app/reorder/page.tsx` | Split webhook into `src/lib/orders/{persist,email/confirmation,email/notification}.ts`; split ProductForm into field-group subcomponents. |
+| L17 | Arch | `ChatWidget` directly hits `live_chat_messages` via browser client; tight coupling breaks when C1-C3 are fixed. | `src/components/ai/ChatWidget.tsx` | Refactor in the C1-C3 fix phase — move data ops to `src/lib/live-chat/` + API route wrappers. |
 
 ---
 
-## Positives the agents confirmed
+## Cross-cutting patterns (for planning a fix phase)
 
-- Stripe webhook signature verification is correct
-- Zod validation on all POST/PUT endpoints
-- Service role key never exposed client-side; `createAdminClient` only in server routes
-- No `eval()` anywhere; all `dangerouslySetInnerHTML` properly sanitized (DOMPurify / JsonLd escaping)
-- Order persistence is idempotent via `upsert` on `stripe_session_id`
-- Cart prices validated server-side against catalog
-- Deactivated products blocked at checkout (v3.2 CRITICAL fix)
-- RLS enabled on all 9 tables with 24 policies (v1.1)
-- Sentry integration comprehensive, GDPR-compliant
-- `revalidatePath` after mutations
-- escapeHtml in all email templates
-- Build-time AI catalogue generation
-- Device-gated 3D via `useDeviceCapabilities` + `Canvas3DBoundary`
+**Single find-replace wins (~2h):**
+- C4 (framer-motion → motion/react, 82 files)
+- H12/H13 (rate limit on 4 admin routes)
+- L11 (remove Google Fonts preconnect)
+- M17 (`.single()` → `.maybeSingle()`, 5 call sites)
+
+**Shared focus-ring utility (~2h):**
+- H1, H2, H3, H4, M4, M5, L5, L6 all point to one utility. Define `focusRingInput` + `focusRingLink` fragments, swap in once.
+
+**Live chat security phase (~4h):**
+- C1 + C2 + C3 + L17 + ChatWidget rewrite. Migration + `/api/live-chat/session` + `/api/live-chat/send` + localStorage secret handling.
+
+**Homepage LCP phase (~3h):**
+- C6 (WelcomeSplash), H10 (hero video), L11, M8 (SignatureStories), L12.
+
+**Admin perf phase (~3h):**
+- C5 (dashboard unbounded), H7 (select(*)), M11 (debounce), M17 (maybeSingle).
+
+**RSC boundary phase (~2h):**
+- M13 (SiteFrame), M14 (5 static pages), L8 (cart barrel). ~30-50KB JS reduction.
 
 ---
 
-## Next steps
+## Verification plan (per finding class)
 
-1. **Ship this batch (v3.8)** — 13 fixes + new cinematic scroll feature + clear-glass 3D bottle + Aquad'or-first sort.
-2. Queue **v3.9 Security Tightening phase** for H1/H2/H3/M1/M2/M3 (live chat RLS, focus trap, PII, product delete).
-3. Queue **v4.0 Performance phase** for H4/M4/M5/M6/M8/M9 (3D dispose, FM purge, pagination, video variants, dashboard query).
-4. Triage remaining LOW items opportunistically.
+- **Security fixes** — Supabase `list_advisors` + manual `curl` with anon key to confirm `USING (false)` rejection.
+- **Bundle fixes** — `npm run build` before/after; compare First Load JS.
+- **A11y fixes** — keyboard-walk each affected form; `axe` on `/`, `/shop`, `/create-perfume`, `/admin`.
+- **LCP fixes** — Lighthouse mobile throttled on `/`; target LCP < 2.5s.
+- **Admin perf** — synthetic 1000-row orders table; dashboard TTFB before/after.
+
+---
+
+## Next command
+
+Pick one:
+
+1. **Create a fix phase** — insert `Phase 32: v3.9 Optimization Fixes` in ROADMAP.md with C1-C7 + H1-H14 as success criteria. Run `/qualia-plan 32`.
+2. **Auto-fix LOW/MEDIUM only** — `/qualia-optimize --fix` (skips CRITICAL/HIGH; applies M6, M11, L1, L2, L3, L8, L11, L14, M17, etc.).
+3. **Triage manually** — cherry-pick via `/qualia-quick`.
+
+Report: `.planning/OPTIMIZE.md`
+Prior pass: `.planning/reports/OPTIMIZE-v3.8-2026-04-18.md`
+
+*Generated 2026-04-18 by 3 parallel specialist agents + synthesis pass.*
