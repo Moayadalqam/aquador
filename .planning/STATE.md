@@ -7,11 +7,11 @@ See: .planning/PROJECT.md
 
 ## Current Position
 Phase: 32 of 32 — v3.9 Optimization Fixes
-Status: in_progress
+Status: shipped
 Assigned to: OWNER (Fawzi Goussous)
-Last activity: 2026-04-18 — Phase 32 kicked off (7 critical + 14 high from OPTIMIZE.md v3.9)
+Last activity: 2026-04-18 — v3.9 milestone SHIPPED (45/58 findings closed; deployed to aquadorcy.com)
 
-Progress: [█████████▒] 97% (31/32 shipped, Phase 32 in flight)
+Progress: [██████████] 100%
 
 Deployed: https://www.aquadorcy.com (v3.4 latest deploy)
 
@@ -49,7 +49,7 @@ Deployed: https://www.aquadorcy.com (v3.4 latest deploy)
 | 29 | Conventions + A11y + Responsive | loading/error routes, JsonLd, CDN migration, 27/27 responsive | shipped |
 | 30 | Optimize Pass 2 | 33/33 findings, 3 migrations applied | shipped |
 | 31 | Cinematic Scroll | WelcomeSplash + ScrollProgress + Hero3DScroll | shipped |
-| 32 | v3.9 Optimization Fixes | 7 critical + 14 high from OPTIMIZE v3.9 | in_progress |
+| 32 | v3.9 Optimization Fixes | 7 critical + 14 high from OPTIMIZE v3.9 — 45/58 closed | shipped |
 
 ## Milestones (history)
 - ✅ **v1.0** Order/Payment System Fix — 2026-03-02 (phases 1-4)
