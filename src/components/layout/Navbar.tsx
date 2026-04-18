@@ -11,19 +11,17 @@ import Image from 'next/image';
 import type { NavItem } from '@/types';
 
 const navLinks: NavItem[] = [
-  { label: 'Men', href: '/shop/gender/men' },
-  { label: 'Women', href: '/shop/gender/women' },
-  { label: 'Unisex', href: '/shop/gender/unisex' },
-  { label: 'Lattafa Originals', href: '/shop/lattafa' },
   { label: 'Dubai Shop', href: '/shop', children: [
     { label: 'All Dubai Fragrances', href: '/shop' },
     { label: 'Al Haramain', href: '/shop/al-haramain-originals' },
     { label: 'Xerjoff', href: '/shop?brand=xerjoff' },
-    { label: 'Niche Collection', href: '/shop/niche' },
   ]},
+  { label: 'Men', href: '/shop/gender/men' },
+  { label: 'Women', href: '/shop/gender/women' },
+  { label: 'Niche', href: '/shop/niche' },
+  { label: 'Lattafa Originals', href: '/shop/lattafa' },
   { label: 'Create Your Own', href: '/create-perfume' },
   { label: 'Re-Order', href: '/reorder' },
-  { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
 ];
 
@@ -86,14 +84,16 @@ export default function Navbar() {
     // Gender-specific routes
     if (href === '/shop/gender/men') return pathname.startsWith('/shop/gender/men');
     if (href === '/shop/gender/women') return pathname.startsWith('/shop/gender/women');
-    if (href === '/shop/gender/unisex') return pathname.startsWith('/shop/gender/unisex');
+    // Niche
+    if (href === '/shop/niche') return pathname === '/shop/niche' || pathname.startsWith('/shop/niche/');
     // Lattafa Originals
     if (href === '/shop/lattafa') return pathname === '/shop/lattafa' || pathname.startsWith('/shop/lattafa/');
-    // Dubai Shop: activate when /shop or /shop/* but NOT /shop/gender/* or /shop/lattafa*
+    // Dubai Shop: activate on /shop or /shop/* but NOT gender, lattafa, or niche
     if (href === '/shop') {
       return (pathname === '/shop' || pathname.startsWith('/shop/'))
         && !pathname.startsWith('/shop/gender/')
-        && !pathname.startsWith('/shop/lattafa');
+        && !pathname.startsWith('/shop/lattafa')
+        && !pathname.startsWith('/shop/niche');
     }
     // Create Your Own
     if (href === '/create-perfume') return pathname.startsWith('/create-perfume');
