@@ -40,12 +40,19 @@ const productSchema = z.object({
   tags: z.array(z.string()).nullable().optional(),
 });
 
+// Product IDs are slugs (kebab-case text), not UUIDs — the `products.id` column is text-typed.
+const productIdSchema = z
+  .string()
+  .min(1, 'Valid product ID required')
+  .max(200, 'Valid product ID required')
+  .regex(/^[a-z0-9][a-z0-9-]*$/, 'Valid product ID required');
+
 const updateSchema = productSchema.extend({
-  id: z.string().uuid('Valid product ID required'),
+  id: productIdSchema,
 });
 
 const deleteSchema = z.object({
-  id: z.string().uuid('Valid product ID required'),
+  id: productIdSchema,
 });
 
 /** Verify the caller is an authenticated admin */
