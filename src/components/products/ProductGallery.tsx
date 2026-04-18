@@ -1,26 +1,12 @@
 'use client';
 
 import { useState, useCallback, useRef, useEffect } from 'react';
-import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ProductImage } from '@/components/ui/ProductImage';
 import { OptimizedImage } from '@/components/ui/OptimizedImage';
 import { ZOOM_CONFIG } from '@/lib/image-utils';
-import { useDeviceCapabilities } from '@/hooks/useDeviceCapabilities';
 
 const FALLBACK_IMAGE = '/placeholder-product.svg';
-
-const ProductViewer = dynamic(
-  () => import('@/components/3d/ProductViewer').then(mod => ({ default: mod.ProductViewer })),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="flex items-center justify-center h-[600px] bg-dark-900/50 backdrop-blur-sm rounded-lg">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold-500" />
-      </div>
-    )
-  }
-);
 
 interface ProductGalleryProps {
   mainImage: string;
@@ -36,8 +22,6 @@ export default function ProductGallery({ mainImage, images, name, inStock }: Pro
   const [direction, setDirection] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
   const [_zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 }); // percentage
-  const [show3D, setShow3D] = useState(false);
-  const { supports3D } = useDeviceCapabilities();
   const touchStartX = useRef(0);
   const initialPinchDistance = useRef<number | null>(null);
 
@@ -143,57 +127,13 @@ export default function ProductGallery({ mainImage, images, name, inStock }: Pro
 
   return (
     <div>
-      {/* 3D Toggle Button */}
-      <div className="mb-4 flex justify-center">
-        <button
-          onClick={() => setShow3D(!show3D)}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-gold-500/10 hover:bg-gold-500/20 text-gold-500 rounded-lg transition-colors duration-300 border border-gold-500/20"
-          aria-label={show3D ? 'View photos' : 'View in 3D'}
-        >
-          {show3D ? (
-            <>
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              View Photos
-            </>
-          ) : (
-            <>
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
-              </svg>
-              View in 3D
-            </>
-          )}
-        </button>
-      </div>
-
-      {/* Conditional rendering: 3D viewer, unsupported fallback, or 2D gallery */}
-      {show3D && supports3D ? (
-        <ProductViewer
-          productName={name}
-          className="h-[600px]"
-        />
-      ) : show3D && !supports3D ? (
-        <div className="flex items-center justify-center h-[600px] bg-dark-900/50 backdrop-blur-sm rounded-lg">
-          <div className="text-center px-6">
-            <svg className="w-12 h-12 mx-auto mb-4 text-gold-500/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
-            </svg>
-            <p className="text-gold-500/70 text-sm font-medium">
-              3D viewer not available on this device — try desktop
-            </p>
-          </div>
-        </div>
-      ) : (
-        <>
-          {/* Main image */}
-          <div
-            className="relative aspect-square overflow-hidden rounded-3xl bg-white/95 backdrop-blur-md"
-            onTouchStart={hasMultiple ? handleTouchStart : undefined}
-            onTouchMove={hasMultiple ? handleTouchMove : undefined}
-            onTouchEnd={hasMultiple ? handleTouchEnd : undefined}
-          >
+      {/* Main image */}
+      <div
+        className="relative aspect-square overflow-hidden rounded-3xl bg-white/95 backdrop-blur-md"
+        onTouchStart={hasMultiple ? handleTouchStart : undefined}
+        onTouchMove={hasMultiple ? handleTouchMove : undefined}
+        onTouchEnd={hasMultiple ? handleTouchEnd : undefined}
+      >
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={selectedIndex}
@@ -295,8 +235,6 @@ export default function ProductGallery({ mainImage, images, name, inStock }: Pro
             </button>
           ))}
         </div>
-      )}
-        </>
       )}
     </div>
   );
