@@ -91,7 +91,7 @@ function revalidateProductPaths(slug?: string) {
 
 // POST — Create product
 export async function POST(request: NextRequest) {
-  const rateLimitResponse = await checkRateLimit(request, 'checkout');
+  const rateLimitResponse = await checkRateLimit(request, 'admin');
   if (rateLimitResponse) return rateLimitResponse;
 
   const auth = await verifyAdmin();
@@ -135,7 +135,7 @@ export async function POST(request: NextRequest) {
 
 // PUT — Update product
 export async function PUT(request: NextRequest) {
-  const rateLimitResponse = await checkRateLimit(request, 'checkout');
+  const rateLimitResponse = await checkRateLimit(request, 'admin');
   if (rateLimitResponse) return rateLimitResponse;
 
   const auth = await verifyAdmin();
@@ -180,7 +180,7 @@ export async function PUT(request: NextRequest) {
 
 // DELETE — Delete product
 export async function DELETE(request: NextRequest) {
-  const rateLimitResponse = await checkRateLimit(request, 'checkout');
+  const rateLimitResponse = await checkRateLimit(request, 'admin');
   if (rateLimitResponse) return rateLimitResponse;
 
   const auth = await verifyAdmin();

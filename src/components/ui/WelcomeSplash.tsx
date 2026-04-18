@@ -9,19 +9,28 @@ export default function WelcomeSplash() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    const visited = sessionStorage.getItem('aquador_visited');
+    // sessionStorage can throw in Safari private mode or when quota is exceeded —
+    // fail closed (skip the splash) instead of breaking the page.
+    const safeGet = (key: string): string | null => {
+      try { return sessionStorage.getItem(key); } catch { return null; }
+    };
+    const safeSet = (key: string, value: string) => {
+      try { sessionStorage.setItem(key, value); } catch { /* ignore */ }
+    };
+
+    const visited = safeGet('aquador_visited');
     if (visited === '1') return;
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     // Skip entirely for reduced-motion users
     if (prefersReducedMotion) {
-      sessionStorage.setItem('aquador_visited', '1');
+      safeSet('aquador_visited', '1');
       return;
     }
 
     // Mark as visited immediately so refreshes/navigations don't replay
-    sessionStorage.setItem('aquador_visited', '1');
+    safeSet('aquador_visited', '1');
     setShow(true);
 
     const timer = setTimeout(() => setShow(false), 3000);

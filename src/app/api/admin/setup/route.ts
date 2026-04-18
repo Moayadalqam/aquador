@@ -38,7 +38,7 @@ function validateSetupKey(providedKey: string): boolean {
 
 // POST: Create initial admin user
 export async function POST(request: NextRequest) {
-  const rateLimitResponse = await checkRateLimit(request, 'checkout');
+  const rateLimitResponse = await checkRateLimit(request, 'admin');
   if (rateLimitResponse) return rateLimitResponse;
 
   try {
@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
 
 // PUT: Update existing admin password
 export async function PUT(request: NextRequest) {
-  const rateLimitResponse = await checkRateLimit(request, 'checkout');
+  const rateLimitResponse = await checkRateLimit(request, 'admin');
   if (rateLimitResponse) return rateLimitResponse;
 
   try {

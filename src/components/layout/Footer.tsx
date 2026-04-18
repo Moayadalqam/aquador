@@ -115,7 +115,7 @@ export default function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="group inline-flex items-center text-black/70 hover:text-black transition-colors text-[13px] py-0.5"
+                      className="group inline-flex items-center text-black/70 hover:text-black transition-colors text-[13px] py-2 -my-0.5 min-h-[44px]"
                     >
                       <span className="inline-block w-0 overflow-hidden group-hover:w-3 transition-[width] duration-200 text-gold-dark">
                         →
@@ -139,7 +139,7 @@ export default function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="group inline-flex items-center text-black/70 hover:text-black transition-colors text-[13px] py-0.5"
+                      className="group inline-flex items-center text-black/70 hover:text-black transition-colors text-[13px] py-2 -my-0.5 min-h-[44px]"
                     >
                       <span className="inline-block w-0 overflow-hidden group-hover:w-3 transition-[width] duration-200 text-gold-dark">
                         →

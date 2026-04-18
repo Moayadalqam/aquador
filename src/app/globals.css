@@ -1276,3 +1276,28 @@ select:focus-visible,
   @apply border-gold/10 my-6;
 }
 
+/* ==========================================================================
+   HOMEPAGE CINEMATIC SCROLL
+   Soft scroll-snap + smooth scroll so the homepage feels choreographed.
+   Proximity (not mandatory) — users retain free scrolling, sections only
+   "pull into place" near boundaries. Disabled for reduced-motion users.
+   ========================================================================== */
+
+.home-scroll-wrapper {
+  scroll-snap-type: y proximity;
+}
+
+.home-snap-start {
+  scroll-snap-align: start;
+  scroll-snap-stop: normal;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-scroll-wrapper {
+    scroll-snap-type: none;
+  }
+  .home-snap-start {
+    scroll-snap-align: none;
+  }
+}
+

@@ -5,8 +5,7 @@ import { PerspectiveCamera, OrbitControls, ContactShadows } from '@react-three/d
 import { Suspense, useRef, useMemo } from 'react';
 import { useTransform } from 'framer-motion';
 import type { MotionValue } from 'framer-motion';
-import type { Group } from 'three';
-import * as THREE from 'three';
+import { Color, type Group } from 'three';
 import { AquadorBottleGeometry } from '@/components/3d/AquadorBottleGeometry';
 
 interface Props {
@@ -103,15 +102,20 @@ function Bottle({ scrollYProgress }: Props) {
     groupRef.current.position.y = positionY.get() + Math.sin(t * 0.6) * 0.04;
   });
 
-  // Gold metallic body material for the homepage bottle
-  const goldBodyMaterial = useMemo(
+  // Clear glass body material — matches the reference photo (transparent bottle, gold logo painted on).
+  const glassBodyMaterial = useMemo(
     () => (
-      <meshStandardMaterial
-        color={new THREE.Color('#D4AF37')}
-        metalness={0.92}
-        roughness={0.15}
-        emissive={new THREE.Color('#3a2a00')}
-        emissiveIntensity={0.3}
+      <meshPhysicalMaterial
+        transmission={0.94}
+        ior={1.5}
+        roughness={0.04}
+        thickness={0.45}
+        clearcoat={1}
+        clearcoatRoughness={0.08}
+        metalness={0}
+        color={new Color('#ffffff')}
+        attenuationColor={new Color('#fdf8e6')}
+        attenuationDistance={1.4}
       />
     ),
     []
@@ -119,7 +123,7 @@ function Bottle({ scrollYProgress }: Props) {
 
   return (
     <group ref={groupRef}>
-      <AquadorBottleGeometry bodyMaterial={goldBodyMaterial} showLabel />
+      <AquadorBottleGeometry bodyMaterial={glassBodyMaterial} showLabel />
     </group>
   );
 }
@@ -176,13 +180,14 @@ export default function Hero3DScene({ scrollYProgress }: Props) {
         <Suspense fallback={null}>
           <Bottle scrollYProgress={scrollYProgress} />
           <GoldParticles scrollYProgress={scrollYProgress} />
-          {/* Contact shadow beneath the bottle for grounding */}
+          {/* Contact shadow beneath the bottle for grounding — rendered once, not per-frame */}
           <ContactShadows
             position={[0, -1.5, 0]}
             opacity={0.5}
             scale={6}
             blur={2}
             far={2}
+            frames={1}
           />
         </Suspense>
       </Canvas>

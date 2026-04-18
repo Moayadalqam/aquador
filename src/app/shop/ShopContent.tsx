@@ -10,7 +10,6 @@ import { ProductCard } from '@/components/ui/ProductCard';
 import { AnimatedFilterBar } from '@/components/shop/AnimatedFilterBar';
 import { AnimationBudgetProvider } from '@/lib/performance/animation-budget';
 import {
-  gridLayoutTransition,
   gridItemVariants,
   FILTER_TIMING,
 } from '@/lib/animations/filter-transitions';
@@ -224,8 +223,6 @@ export default function ShopContent({ products, categories, isSearchMode = false
                   <motion.div
                     key={product.id}
                     variants={gridItemVariants}
-                    layout
-                    transition={gridLayoutTransition}
                   >
                     <ProductCard product={product} priority={i < 4} />
                   </motion.div>

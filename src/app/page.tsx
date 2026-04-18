@@ -5,10 +5,16 @@ import TrustBar from '@/components/home/TrustBar';
 import Categories from '@/components/home/Categories';
 import CreateSection from '@/components/home/CreateSection';
 import FeaturedProducts from '@/components/home/FeaturedProducts';
+import ScrollFade from '@/components/home/ScrollFade';
+import { SignatureStoriesMobile } from '@/components/home/SignatureStories';
 import { AnimationBudgetProvider } from '@/lib/performance/animation-budget';
 import JsonLd from '@/components/seo/JsonLd';
 
 const Hero3DScroll = dynamic(() => import('@/components/home/Hero3DScroll'), {
+  ssr: false,
+});
+
+const SignatureStories = dynamic(() => import('@/components/home/SignatureStories'), {
   ssr: false,
 });
 
@@ -125,23 +131,41 @@ export default async function Home() {
       <JsonLd schema={organizationSchema} />
       <JsonLd schema={websiteSchema} />
       <JsonLd schema={localBusinessSchema} />
-      <Hero />
-      <Hero3DScroll />
-      <TrustBar />
-      <Categories />
-      <CreateSection />
-      <FeaturedProducts
-        products={aquadorProducts}
-        title="Featured Aquad'or Perfumes"
-        subtitle="Our signature collection, crafted exclusively for Aquad'or."
-        eyebrow="House Collection"
-      />
-      <FeaturedProducts
-        products={lattafaProducts}
-        title="Best-Selling Lattafa Originals"
-        subtitle="Authentic Lattafa perfumes, curated and imported directly."
-        eyebrow="Lattafa Collection"
-      />
+      <div className="home-scroll-wrapper">
+        <section className="home-snap-start">
+          <Hero />
+        </section>
+        <section className="home-snap-start">
+          <Hero3DScroll />
+        </section>
+        <SignatureStories />
+        <SignatureStoriesMobile />
+        <ScrollFade className="home-snap-start" distance={40}>
+          <TrustBar />
+        </ScrollFade>
+        <ScrollFade className="home-snap-start" distance={80}>
+          <Categories />
+        </ScrollFade>
+        <ScrollFade className="home-snap-start" distance={80}>
+          <CreateSection />
+        </ScrollFade>
+        <ScrollFade className="home-snap-start" distance={60}>
+          <FeaturedProducts
+            products={aquadorProducts}
+            title="Featured Aquad'or Perfumes"
+            subtitle="Our signature collection, crafted exclusively for Aquad'or."
+            eyebrow="House Collection"
+          />
+        </ScrollFade>
+        <ScrollFade className="home-snap-start" distance={60} keepVisibleOnExit>
+          <FeaturedProducts
+            products={lattafaProducts}
+            title="Best-Selling Lattafa Originals"
+            subtitle="Authentic Lattafa perfumes, curated and imported directly."
+            eyebrow="Lattafa Collection"
+          />
+        </ScrollFade>
+      </div>
     </AnimationBudgetProvider>
   );
 }

@@ -15,6 +15,31 @@ function escapePostgrestQuery(query: string): string {
 /** Explicit column selection for product queries (avoids select(*) overhead) */
 const PRODUCT_COLUMNS = 'id, name, description, price, sale_price, image, images, category, product_type, gender, brand, size, tags, in_stock, is_active, created_at, updated_at' as const;
 
+/**
+ * Aquad'or brand detection — products with null brand or brand containing "aquad" (case-insensitive).
+ * Null brand = house products predating the brand column.
+ */
+function isAquadorBrand(p: Pick<Product, 'brand'>): boolean {
+  const b = p.brand;
+  if (b == null || b === '') return true;
+  return /aquad/i.test(b);
+}
+
+/**
+ * Stable sort that lifts Aquad'or-branded products to the front, preserving the
+ * incoming order inside each group. Used on category/gender listing pages so the
+ * first 8–12 cards are always Aquad'or house products.
+ */
+export function sortAquadorFirst<T extends Pick<Product, 'brand'>>(products: T[]): T[] {
+  const aquador: T[] = [];
+  const rest: T[] = [];
+  for (const p of products) {
+    if (isAquadorBrand(p)) aquador.push(p);
+    else rest.push(p);
+  }
+  return [...aquador, ...rest];
+}
+
 // Get all products from Supabase (public-facing, filters inactive)
 export async function getAllProducts(): Promise<Product[]> {
   const supabase = createPublicClient();
@@ -23,14 +48,17 @@ export async function getAllProducts(): Promise<Product[]> {
     .select(PRODUCT_COLUMNS)
     .eq('is_active', true)
     .order('in_stock', { ascending: false })
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    // Safety cap — prevents unbounded RSC payload as the catalog grows.
+    // Paginated browsing should be introduced before this is hit in practice.
+    .limit(500);
 
   if (error) {
     Sentry.addBreadcrumb({ category: 'product-service', message: 'Error fetching products', level: 'error', data: { error } });
     return [];
   }
 
-  return data || [];
+  return sortAquadorFirst(data || []);
 }
 
 // Get product by ID (returns null if inactive)
@@ -90,7 +118,7 @@ export async function getProductsByCategory(category: string): Promise<Product[]
     return [];
   }
 
-  return data || [];
+  return sortAquadorFirst(data || []);
 }
 
 // Get featured products (active + in stock only)
@@ -232,7 +260,7 @@ export async function getProductsByGender(gender: ProductGender): Promise<Produc
     return [];
   }
 
-  return data || [];
+  return sortAquadorFirst(data || []);
 }
 
 // Get human-readable label for a gender value

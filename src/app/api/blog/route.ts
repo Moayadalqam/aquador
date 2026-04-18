@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
         .from('admin_users')
         .select('id')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
       if (!adminUser) {
         query = query.eq('status', 'published');
       }

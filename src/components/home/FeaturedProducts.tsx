@@ -35,8 +35,6 @@ export default function FeaturedProducts({
   });
   const headerY = useTransform(scrollYProgress, [0, 1], ['20px', '-20px']);
 
-  if (products.length === 0) return null;
-
   return (
     <section ref={sectionRef} className="section-lg bg-gold-ambient">
       <div className="container-wide">
@@ -48,7 +46,22 @@ export default function FeaturedProducts({
           />
         </motion.div>
 
+        {products.length === 0 && (
+          <div className="text-center py-16">
+            <p className="font-playfair text-xl text-gray-700 mb-4">
+              Our collection is being refreshed.
+            </p>
+            <Link
+              href="/shop"
+              className="inline-block text-gold-dark hover:text-gold transition-colors text-sm tracking-[0.18em] uppercase font-medium"
+            >
+              Browse the full shop &rarr;
+            </Link>
+          </div>
+        )}
+
         {/* Products grid — wider spacing, more breathing room */}
+        {products.length > 0 && (
         <AnimatedSection variant="stagger" staggerDelay={0.08}>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
             {products.map((product, index) => (
@@ -121,6 +134,7 @@ export default function FeaturedProducts({
             ))}
           </div>
         </AnimatedSection>
+        )}
 
       </div>
     </section>

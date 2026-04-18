@@ -20,9 +20,15 @@ export async function middleware(request: NextRequest) {
 
   const isAdminRoute = pathname.startsWith('/admin');
   const isAdminLoginRoute = pathname === '/admin/login';
+  const isAdminApiRoute = pathname.startsWith('/api/admin');
+  // Setup route bootstraps the first admin — it has its own secret-gated auth.
+  const isAdminSetupRoute = pathname === '/api/admin/setup';
 
-  // Handle admin route authentication
-  if (isAdminRoute && !isAdminLoginRoute) {
+  const needsAdminAuth =
+    (isAdminRoute && !isAdminLoginRoute) || (isAdminApiRoute && !isAdminSetupRoute);
+
+  // Handle admin route authentication (defense-in-depth for both UI and API routes)
+  if (needsAdminAuth) {
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -50,9 +56,27 @@ export async function middleware(request: NextRequest) {
 
     const { data: { user } } = await supabase.auth.getUser();
 
-    if (!user) {
+    const denyUnauthenticated = () => {
+      if (isAdminApiRoute) {
+        return NextResponse.json(
+          { error: 'Unauthorized' },
+          { status: 401, headers: { 'x-request-id': requestId } }
+        );
+      }
       return NextResponse.redirect(new URL('/admin/login', request.url));
-    }
+    };
+
+    const denyUnauthorized = () => {
+      if (isAdminApiRoute) {
+        return NextResponse.json(
+          { error: 'Forbidden' },
+          { status: 403, headers: { 'x-request-id': requestId } }
+        );
+      }
+      return NextResponse.redirect(new URL('/admin/login?error=unauthorized', request.url));
+    };
+
+    if (!user) return denyUnauthenticated();
 
     // Check if user is an admin - use maybeSingle to avoid throwing on no results
     const { data: adminUser, error: adminError } = await supabase
@@ -61,9 +85,7 @@ export async function middleware(request: NextRequest) {
       .eq('id', user.id)
       .maybeSingle();
 
-    if (adminError || !adminUser) {
-      return NextResponse.redirect(new URL('/admin/login?error=unauthorized', request.url));
-    }
+    if (adminError || !adminUser) return denyUnauthorized();
   }
 
   // Add request ID to response headers for debugging
@@ -73,5 +95,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: ['/admin/:path*', '/api/admin/:path*'],
 };

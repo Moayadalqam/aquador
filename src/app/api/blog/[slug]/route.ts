@@ -39,7 +39,7 @@ export async function GET(
         .from('admin_users')
         .select('id')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
       isAdmin = !!adminUser;
     }
 

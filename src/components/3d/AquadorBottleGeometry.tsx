@@ -1,12 +1,14 @@
 'use client';
 
 import { RoundedBox } from '@react-three/drei';
-import type { ReactNode } from 'react';
+import { useMemo, type ReactNode } from 'react';
+import * as THREE from 'three';
+import { getAquadorLogoTexture } from './aquadorLogoTexture';
 
 interface AquadorBottleGeometryProps {
-  /** Material element to apply to the body — e.g. gold metallic or clear glass */
+  /** Material element to apply to the body — e.g. clear glass or gold metallic */
   bodyMaterial: ReactNode;
-  /** Whether to show the gold label band with "AQUAD'OR" text */
+  /** Whether to show the AQUAD'OR logo on the label faces */
   showLabel?: boolean;
 }
 
@@ -14,19 +16,22 @@ interface AquadorBottleGeometryProps {
  * Realistic Aquad'or luxury perfume bottle geometry.
  *
  * Structure (bottom to top):
- *   Base ring -> Rectangular body (RoundedBox) -> Label band ->
+ *   Base ring -> Rectangular body (RoundedBox) -> Logo labels ->
  *   Shoulder taper -> Neck -> Cap base ring -> Cap -> Cap top ring
  *
  * The body uses a flattened rectangular RoundedBox with chamfered corners,
- * matching the brand's characteristic squared silhouette.
- *
- * Accepts a `bodyMaterial` prop so the same geometry can render as
- * gold metallic (homepage) or clear glass (create-perfume builder).
+ * matching the physical bottle's squared silhouette. The AQUAD'OR wordmark
+ * with lotus icon and "Cyprus" is baked into a CanvasTexture and applied
+ * as thin transparent decal planes on the front and back faces — visible
+ * through the clear glass as gold text painted on the bottle.
  */
 export function AquadorBottleGeometry({
   bodyMaterial,
   showLabel = true,
 }: AquadorBottleGeometryProps) {
+  // Logo texture is a singleton; safe to read per-render.
+  const logoTexture = useMemo(() => (showLabel ? getAquadorLogoTexture() : null), [showLabel]);
+
   return (
     <group>
       {/* ── Cap top gold ring ── */}
@@ -91,38 +96,29 @@ export function AquadorBottleGeometry({
         {bodyMaterial}
       </RoundedBox>
 
-      {/* ── Label band (front face) ── */}
-      {showLabel && (
+      {/* ── AQUAD'OR logo decals (front + back of glass) ── */}
+      {showLabel && logoTexture && (
         <group position={[0, -0.1, 0]}>
-          {/* Gold label backing */}
-          <mesh position={[0, 0, 0.26]}>
-            <boxGeometry args={[1.1, 0.35, 0.02]} />
-            <meshStandardMaterial
-              color="#D4AF37"
-              metalness={0.9}
-              roughness={0.12}
-              emissive="#3a2a00"
-              emissiveIntensity={0.2}
+          {/* Front face — slightly in front of the glass surface */}
+          <mesh position={[0, 0, 0.258]}>
+            <planeGeometry args={[0.95, 0.95]} />
+            <meshBasicMaterial
+              map={logoTexture}
+              transparent
+              toneMapped={false}
+              side={THREE.DoubleSide}
+              depthWrite={false}
             />
           </mesh>
-          {/* Engraved-style decorative ridge on front label */}
-          <mesh position={[0, 0, 0.27]}>
-            <boxGeometry args={[0.9, 0.02, 0.004]} />
-            <meshStandardMaterial color="#1a1400" metalness={0.3} roughness={0.6} />
-          </mesh>
-          <mesh position={[0, -0.08, 0.27]}>
-            <boxGeometry args={[0.6, 0.015, 0.004]} />
-            <meshStandardMaterial color="#1a1400" metalness={0.3} roughness={0.6} />
-          </mesh>
-          {/* Gold label backing (rear face, for when bottle is rotated) */}
-          <mesh position={[0, 0, -0.26]} rotation={[0, Math.PI, 0]}>
-            <boxGeometry args={[1.1, 0.35, 0.02]} />
-            <meshStandardMaterial
-              color="#D4AF37"
-              metalness={0.9}
-              roughness={0.12}
-              emissive="#3a2a00"
-              emissiveIntensity={0.2}
+          {/* Back face — mirrored so it reads correctly from behind */}
+          <mesh position={[0, 0, -0.258]} rotation={[0, Math.PI, 0]}>
+            <planeGeometry args={[0.95, 0.95]} />
+            <meshBasicMaterial
+              map={logoTexture}
+              transparent
+              toneMapped={false}
+              side={THREE.DoubleSide}
+              depthWrite={false}
             />
           </mesh>
         </group>

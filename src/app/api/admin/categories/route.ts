@@ -67,7 +67,7 @@ function revalidateCategoryPaths(slug?: string) {
 
 // POST — Create category
 export async function POST(request: NextRequest) {
-  const rateLimitResponse = await checkRateLimit(request, 'checkout');
+  const rateLimitResponse = await checkRateLimit(request, 'admin');
   if (rateLimitResponse) return rateLimitResponse;
 
   const auth = await verifyAdmin();
@@ -112,7 +112,7 @@ export async function POST(request: NextRequest) {
 
 // PUT — Update category
 export async function PUT(request: NextRequest) {
-  const rateLimitResponse = await checkRateLimit(request, 'checkout');
+  const rateLimitResponse = await checkRateLimit(request, 'admin');
   if (rateLimitResponse) return rateLimitResponse;
 
   const auth = await verifyAdmin();
@@ -158,7 +158,7 @@ export async function PUT(request: NextRequest) {
 
 // DELETE — Delete category
 export async function DELETE(request: NextRequest) {
-  const rateLimitResponse = await checkRateLimit(request, 'checkout');
+  const rateLimitResponse = await checkRateLimit(request, 'admin');
   if (rateLimitResponse) return rateLimitResponse;
 
   const auth = await verifyAdmin();

@@ -130,7 +130,6 @@ export default function RootLayout({
         <link rel="preconnect" href="https://js.stripe.com" />
         <link rel="dns-prefetch" href="https://hznpuxplqgszbacxzbhv.supabase.co" />
         <link rel="dns-prefetch" href="https://js.stripe.com" />
-        <link rel="preload" as="image" href="/images/aquadour1.jpg" />
       </head>
       <body className={`${poppins.variable} ${playfair.variable} antialiased`}>
         <a

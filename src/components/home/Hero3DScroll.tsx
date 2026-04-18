@@ -89,7 +89,7 @@ export default function Hero3DScroll() {
   return (
     <section
       ref={containerRef}
-      className="relative h-[100vh] overflow-hidden"
+      className="relative h-[100dvh] overflow-hidden"
       style={{
         background: 'linear-gradient(180deg, #0a0a0a 0%, #111111 40%, #0d0d0d 70%, #0a0a0a 100%)',
       }}

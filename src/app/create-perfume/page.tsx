@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { fragranceDatabase, fragranceCategories } from '@/lib/perfume/notes'
 import { PerfumeComposition, FragranceNote, PerfumeVolume, FragranceCategory } from '@/lib/perfume/types'
 import { isCompositionComplete } from '@/lib/perfume/composition'
@@ -47,6 +47,9 @@ const PARTICLE_SEEDS = Array.from({ length: 20 }, (_, i) => ({
 }))
 
 function AmbientParticles({ color = '#D4AF37' }: { color?: string }) {
+  const prefersReduced = useReducedMotion()
+  // Respect reduced-motion — render nothing instead of 20 infinite animation loops.
+  if (prefersReduced) return null
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       {PARTICLE_SEEDS.map((seed, i) => (
@@ -74,6 +77,26 @@ function AmbientParticles({ color = '#D4AF37' }: { color?: string }) {
         />
       ))}
     </div>
+  )
+}
+
+/** Decorative rotating rings — skipped entirely for reduced-motion users. */
+function DecorativeRings() {
+  const prefersReduced = useReducedMotion()
+  if (prefersReduced) return null
+  return (
+    <>
+      <motion.div
+        className="absolute w-[500px] h-[500px] md:w-[700px] md:h-[700px] rounded-full border border-gold/[0.06]"
+        animate={{ rotate: 360 }}
+        transition={{ duration: 120, repeat: Infinity, ease: 'linear' }}
+      />
+      <motion.div
+        className="absolute w-[350px] h-[350px] md:w-[500px] md:h-[500px] rounded-full border border-gold/[0.04]"
+        animate={{ rotate: -360 }}
+        transition={{ duration: 90, repeat: Infinity, ease: 'linear' }}
+      />
+    </>
   )
 }
 
@@ -474,17 +497,8 @@ export default function CreatePerfumePage() {
             >
               <AmbientParticles />
 
-              {/* Decorative rings */}
-              <motion.div
-                className="absolute w-[500px] h-[500px] md:w-[700px] md:h-[700px] rounded-full border border-gold/[0.06]"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 120, repeat: Infinity, ease: 'linear' }}
-              />
-              <motion.div
-                className="absolute w-[350px] h-[350px] md:w-[500px] md:h-[500px] rounded-full border border-gold/[0.04]"
-                animate={{ rotate: -360 }}
-                transition={{ duration: 90, repeat: Infinity, ease: 'linear' }}
-              />
+              {/* Decorative rings — skipped for reduced-motion */}
+              <DecorativeRings />
 
               <motion.div
                 initial={{ opacity: 0, y: 30 }}

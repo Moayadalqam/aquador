@@ -8,8 +8,7 @@ import {
   RoundedBox,
 } from '@react-three/drei';
 import { Suspense, useRef, useMemo, type ReactNode } from 'react';
-import * as THREE from 'three';
-import type { Group, Mesh } from 'three';
+import { Color, MathUtils, type Group, type Mesh, type MeshStandardMaterial } from 'three';
 import type { PerfumeComposition, FragranceCategory } from '@/lib/perfume/types';
 import { AquadorBottleGeometry } from '@/components/3d/AquadorBottleGeometry';
 import { Canvas3DBoundary } from '@/components/3d/Canvas3DBoundary';
@@ -39,10 +38,10 @@ const CATEGORY_COLORS: Record<FragranceCategory, string> = {
 };
 
 // Layer-to-liquid-color mapping
-const LAYER_COLORS: Record<NoteLayer, THREE.Color> = {
-  top: new THREE.Color('#FFD700'),
-  heart: new THREE.Color('#D4AF37'),
-  base: new THREE.Color('#8B6914'),
+const LAYER_COLORS: Record<NoteLayer, Color> = {
+  top: new Color('#FFD700'),
+  heart: new Color('#D4AF37'),
+  base: new Color('#8B6914'),
 };
 
 // Collect all selected notes from composition
@@ -127,7 +126,7 @@ function Liquid({
   activeLayer: NoteLayer;
 }) {
   const meshRef = useRef<Mesh>(null);
-  const currentColor = useRef(new THREE.Color(LAYER_COLORS[activeLayer]));
+  const currentColor = useRef(new Color(LAYER_COLORS[activeLayer]));
   const currentFill = useRef(0.15);
 
   // Body interior constants
@@ -143,7 +142,7 @@ function Liquid({
     const targetFill = 0.10 + (count / 3) * 0.80;
 
     // Lerp fill toward target
-    currentFill.current = THREE.MathUtils.lerp(
+    currentFill.current = MathUtils.lerp(
       currentFill.current,
       targetFill,
       1 - Math.pow(0.05, delta)
@@ -158,7 +157,7 @@ function Liquid({
     meshRef.current.scale.y = currentFill.current;
     meshRef.current.position.y = bodyBottomY + fillHeight * 0.5;
 
-    const mat = meshRef.current.material as THREE.MeshStandardMaterial;
+    const mat = meshRef.current.material as MeshStandardMaterial;
     mat.color.copy(currentColor.current);
     mat.emissive.copy(currentColor.current);
   });
@@ -208,7 +207,7 @@ function BottleScene({
         clearcoat={1}
         clearcoatRoughness={0.1}
         metalness={0}
-        color={new THREE.Color('#fef8e0')}
+        color={new Color('#fef8e0')}
       />
     ),
     []
@@ -309,6 +308,7 @@ export default function PerfumeBottle3D({
             scale={6}
             blur={2}
             far={2}
+            frames={1}
           />
         </Suspense>
       </Canvas>
