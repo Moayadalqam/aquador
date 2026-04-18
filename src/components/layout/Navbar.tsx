@@ -22,6 +22,7 @@ const navLinks: NavItem[] = [
     { label: 'Niche Collection', href: '/shop/niche' },
   ]},
   { label: 'Create Your Own', href: '/create-perfume' },
+  { label: 'Re-Order', href: '/reorder' },
   { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
 ];

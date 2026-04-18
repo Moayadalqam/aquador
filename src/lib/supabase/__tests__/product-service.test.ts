@@ -16,11 +16,14 @@ jest.mock('react', () => {
 
 // Captured calls to `.in(col, values)` for assertion.
 const inCalls: Array<{ column: string; values: unknown[] }> = [];
+// Captured calls to `.or(filter)` for assertion.
+const orCalls: string[] = [];
 
 interface MockChain {
   select: jest.Mock;
   in: jest.Mock;
   eq: jest.Mock;
+  or: jest.Mock;
   order: jest.Mock;
   then: (resolve: (value: { data: unknown[]; error: null }) => void) => void;
 }
@@ -34,6 +37,10 @@ function buildChain(): MockChain {
       return chain;
     }),
     eq: jest.fn(() => chain),
+    or: jest.fn((filter: string) => {
+      orCalls.push(filter);
+      return chain;
+    }),
     order: jest.fn(() => chain),
     then: (resolve) => resolve({ data: [], error: null }),
   };
@@ -56,6 +63,7 @@ import { getProductsByGender } from '../product-service';
 describe('getProductsByGender — gender filter widening (v3.7)', () => {
   beforeEach(() => {
     inCalls.length = 0;
+    orCalls.length = 0;
   });
 
   it('men page includes both "men" and "unisex"', async () => {
@@ -80,5 +88,18 @@ describe('getProductsByGender — gender filter widening (v3.7)', () => {
     expect(inCalls).toHaveLength(1);
     expect(inCalls[0].column).toBe('gender');
     expect(inCalls[0].values).toEqual(['unisex']);
+  });
+
+  it('restricts all gender pages to Aquad\'or brand (null or ilike %aquad%)', async () => {
+    await getProductsByGender('men');
+    expect(orCalls).toEqual(['brand.is.null,brand.ilike.%aquad%']);
+
+    orCalls.length = 0;
+    await getProductsByGender('women');
+    expect(orCalls).toEqual(['brand.is.null,brand.ilike.%aquad%']);
+
+    orCalls.length = 0;
+    await getProductsByGender('unisex');
+    expect(orCalls).toEqual(['brand.is.null,brand.ilike.%aquad%']);
   });
 });

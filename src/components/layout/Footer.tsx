@@ -14,6 +14,7 @@ const shopLinks = [
   { label: 'Lattafa Originals', href: '/shop/lattafa' },
   { label: 'Dubai Shop', href: '/shop' },
   { label: 'Create Your Fragrance', href: '/create-perfume' },
+  { label: 'Re-Order', href: '/reorder' },
 ];
 
 const companyLinks = [

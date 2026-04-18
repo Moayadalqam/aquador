@@ -119,7 +119,7 @@ export default function AdminShell({ children }: AdminShellProps) {
   }
 
   return (
-    <div className="pt-[60px] md:pt-[70px]">
+    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950">
       {/* Admin Navigation Bar — horizontal on desktop, hamburger on mobile */}
       <AdminNavBar
         user={user}
@@ -131,12 +131,10 @@ export default function AdminShell({ children }: AdminShellProps) {
       {/* Mobile sidebar drawer */}
       <AdminSidebar isOpen={sidebarOpen} onClose={closeSidebar} liveChatCount={liveChatCount} />
 
-      {/* Admin content area — dark panel */}
-      <div className="bg-gray-950 text-white min-h-[calc(100vh-160px)] rounded-t-2xl mx-2 sm:mx-4 md:mx-6 mb-0 overflow-hidden">
-        <main className="p-4 sm:p-6">
-          {children}
-        </main>
-      </div>
+      {/* Admin content area */}
+      <main className="text-white px-4 sm:px-6 lg:px-8 py-6 sm:py-8 max-w-screen-2xl mx-auto">
+        {children}
+      </main>
     </div>
   );
 }

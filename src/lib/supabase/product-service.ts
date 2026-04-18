@@ -242,6 +242,8 @@ export async function searchProducts(query: string): Promise<Product[]> {
 // Get products by gender (filters inactive)
 // Men and Women pages include unisex products (common e-commerce pattern — "products a man/woman can wear").
 // Unisex page shows only gender='unisex' for a focused browse.
+// Restricted to Aquad'or house products only (brand null or matching "aquad") — other brands
+// (Lattafa, Al Haramain, etc.) live on their dedicated brand pages.
 export async function getProductsByGender(gender: ProductGender): Promise<Product[]> {
   const supabase = createPublicClient();
   const genderFilter: ProductGender[] =
@@ -252,6 +254,7 @@ export async function getProductsByGender(gender: ProductGender): Promise<Produc
     .select(PRODUCT_COLUMNS)
     .in('gender', genderFilter)
     .eq('is_active', true)
+    .or('brand.is.null,brand.ilike.%aquad%')
     .order('in_stock', { ascending: false })
     .order('created_at', { ascending: false });
 

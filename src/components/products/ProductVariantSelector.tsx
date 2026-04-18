@@ -1,11 +1,11 @@
 'use client';
 
 // Canonical pricing — single source of truth for Aquador's own variant pricing.
-// Any change here cascades through PRODUCT_VARIANTS and getDefaultVariant() so
-// the €199.00 100ml price (per fix commit c47a66e) cannot drift again.
+// Any change here cascades through PRODUCT_VARIANTS and getDefaultVariant().
+// Must stay in sync with AQUADOR_VARIANT_PRICES in src/lib/validation/cart.ts.
 const PRICE = {
   perfume50ml: 29.99,
-  perfume100ml: 199.00,
+  perfume100ml: 49.99,
   essenceOil10ml: 19.99,
   bodyLotion150ml: 29.99,
 } as const;

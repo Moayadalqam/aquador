@@ -1,26 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Poppins } from "next/font/google";
-import dynamic from "next/dynamic";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-import { CartProvider, CartDrawer } from "@/components/cart";
-import CookieConsent from "@/components/ui/CookieConsent";
+import SiteFrame from "@/components/layout/SiteFrame";
+import { CartProvider } from "@/components/cart";
 import { ErrorBoundary, AbortErrorSuppressor } from "@/components/providers/ErrorBoundary";
-import VisitorTracker from "@/components/VisitorTracker";
-import { PageTransition } from "@/components/providers/PageTransition";
-import { ScrollDepthTracker } from "@/components/analytics/ScrollDepthTracker";
-import ScrollProgress from "@/components/ui/ScrollProgress";
-
-const ChatWidget = dynamic(() => import("@/components/ai/ChatWidget"), {
-  ssr: false,
-});
-
-const WelcomeSplash = dynamic(() => import("@/components/ui/WelcomeSplash"), {
-  ssr: false,
-});
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -138,23 +123,10 @@ export default function RootLayout({
         >
           Skip to content
         </a>
-        <ScrollProgress />
-        <WelcomeSplash />
         <AbortErrorSuppressor />
         <ErrorBoundary>
           <CartProvider>
-            <Navbar />
-            <PageTransition>
-              <main id="main-content" className="min-h-screen">
-                {children}
-              </main>
-            </PageTransition>
-            <Footer />
-            <CartDrawer />
-            <CookieConsent />
-            <ScrollDepthTracker />
-            <ChatWidget />
-            <VisitorTracker />
+            <SiteFrame>{children}</SiteFrame>
           </CartProvider>
         </ErrorBoundary>
         <Analytics />

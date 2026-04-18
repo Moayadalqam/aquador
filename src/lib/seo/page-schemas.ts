@@ -61,7 +61,7 @@ export const createPerfumeServiceSchema = {
   areaServed: { '@type': 'Country', name: 'Cyprus' },
   offers: [
     { '@type': 'Offer', name: 'Custom Perfume 50ml', price: '29.99', priceCurrency: 'EUR' },
-    { '@type': 'Offer', name: 'Custom Perfume 100ml', price: '199.00', priceCurrency: 'EUR' },
+    { '@type': 'Offer', name: 'Custom Perfume 100ml', price: '49.99', priceCurrency: 'EUR' },
   ],
   description: 'Design your own custom perfume from floral, fruity, woody, oriental, and gourmand notes.',
 };

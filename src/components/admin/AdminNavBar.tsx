@@ -58,62 +58,68 @@ export default function AdminNavBar({ user, adminUser, onMobileMenuToggle, liveC
   };
 
   return (
-    <div className="sticky top-[60px] md:top-[70px] z-30 bg-gray-900/95 backdrop-blur-xl border-b border-gold/10">
-      <div className="px-4 sm:px-6">
-        <div className="flex items-center justify-between h-12 md:h-14">
-          {/* Mobile: hamburger */}
-          <button
-            onClick={onMobileMenuToggle}
-            className="md:hidden p-2 -ml-2 text-gray-400 hover:text-white rounded-lg hover:bg-white/5 transition-colors"
-          >
-            <Menu className="h-5 w-5" />
-          </button>
+    <div className="sticky top-0 z-30 bg-gray-900/95 backdrop-blur-xl border-b border-gold/10 shadow-sm shadow-black/20">
+      <div className="px-4 sm:px-6 lg:px-8 max-w-screen-2xl mx-auto">
+        <div className="flex items-center justify-between h-14 md:h-16">
+          {/* Left: brand + mobile hamburger */}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={onMobileMenuToggle}
+              className="md:hidden p-2 -ml-2 text-gray-400 hover:text-white rounded-lg hover:bg-white/5 transition-colors"
+              aria-label="Open navigation menu"
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+            <Link href="/admin" className="flex items-center gap-2 group">
+              <span className="h-7 w-7 rounded-md bg-gradient-to-br from-gold to-gold/60 flex items-center justify-center text-black text-xs font-bold font-playfair">A</span>
+              <span className="hidden sm:block text-sm font-semibold text-white tracking-wide">
+                Aquad&apos;or <span className="text-gold/80 font-normal">· Admin</span>
+              </span>
+            </Link>
+          </div>
 
           {/* Desktop: horizontal nav links */}
-          <nav className="hidden md:flex items-center gap-1 overflow-x-auto scrollbar-hide">
+          <nav className="hidden md:flex items-center gap-0.5 overflow-x-auto scrollbar-hide flex-1 justify-center mx-4">
             {navigation.map((item) => {
               const active = isActive(item.href);
               return (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`relative flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-all whitespace-nowrap ${
+                  className={`relative flex items-center gap-1.5 px-3 py-2 text-[13px] font-medium rounded-lg transition-all whitespace-nowrap ${
                     active
                       ? 'bg-gold/10 text-gold'
                       : 'text-gray-400 hover:text-white hover:bg-white/5'
                   }`}
                 >
-                  <item.icon className="h-3.5 w-3.5" />
+                  <item.icon className="h-4 w-4" />
                   {item.name}
                   {item.name === 'Live Chat' && liveChatCount > 0 && (
-                    <span className="bg-amber-500 text-black text-[9px] font-bold px-1 py-px rounded-full min-w-[16px] text-center animate-pulse">
+                    <span className="bg-amber-500 text-black text-[10px] font-bold px-1.5 py-px rounded-full min-w-[18px] text-center animate-pulse">
                       {liveChatCount}
                     </span>
                   )}
                   {active && (
-                    <span className="absolute bottom-0 left-3 right-3 h-px bg-gold" />
+                    <span className="absolute -bottom-px left-3 right-3 h-[2px] bg-gold rounded-full" />
                   )}
                 </Link>
               );
             })}
           </nav>
 
-          {/* Mobile: page title */}
-          <span className="md:hidden text-sm font-semibold text-white">
-            Admin
-          </span>
-
           {/* User dropdown */}
           <div className="relative">
             <button
               onClick={() => setShowDropdown(!showDropdown)}
               className="flex items-center gap-2 py-1.5 px-2 rounded-lg hover:bg-white/5 transition-colors"
+              aria-label="User menu"
+              aria-expanded={showDropdown}
             >
-              <div className="w-7 h-7 rounded-full bg-gold/20 flex items-center justify-center">
-                <User className="h-3.5 w-3.5 text-gold" />
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gold/30 to-gold/10 border border-gold/20 flex items-center justify-center">
+                <User className="h-4 w-4 text-gold" />
               </div>
-              <span className="hidden sm:block text-xs text-gray-300 max-w-[120px] truncate">{user.email}</span>
-              <ChevronDown className="h-3 w-3 text-gray-500 hidden sm:block" />
+              <span className="hidden sm:block text-xs text-gray-300 max-w-[140px] truncate">{user.email}</span>
+              <ChevronDown className={`h-3 w-3 text-gray-500 hidden sm:block transition-transform ${showDropdown ? 'rotate-180' : ''}`} />
             </button>
 
             {showDropdown && (

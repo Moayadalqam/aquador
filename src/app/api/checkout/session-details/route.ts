@@ -135,7 +135,7 @@ export async function GET(request: NextRequest) {
     } else if (metadata.productType === 'custom-perfume') {
       // Custom perfume checkout — build item from metadata fields
       const volume = metadata.volume || '50ml';
-      const price = volume === '100ml' ? 199.00 : 29.99;
+      const price = volume === '100ml' ? 49.99 : 29.99;
 
       items.push({
         name: `Custom Perfume: ${metadata.perfumeName || 'Unnamed'}`,

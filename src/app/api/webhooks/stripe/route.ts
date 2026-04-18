@@ -414,7 +414,7 @@ export async function POST(request: NextRequest) {
         items = [{
           name: `Custom Perfume: ${metadata.perfumeName || 'Unnamed'}`,
           quantity: 1,
-          price: volume === '100ml' ? 199.00 : 29.99,
+          price: volume === '100ml' ? 49.99 : 29.99,
           productType: 'custom-perfume',
         }];
         orderTags['custom-perfume'] = 'true';
