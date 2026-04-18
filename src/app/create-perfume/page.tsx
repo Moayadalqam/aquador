@@ -13,12 +13,12 @@ import { isCompositionComplete } from '@/lib/perfume/composition'
 import { validatePerfumeForm } from '@/lib/perfume/validation'
 import { calculatePrice } from '@/lib/perfume/pricing'
 import { AnimationBudgetProvider } from '@/lib/performance/animation-budget'
+import { useCart } from '@/components/cart'
+import type { CartItem } from '@/types/cart'
 import {
   ChevronLeft,
   ChevronRight,
   Check,
-  Loader2,
-  Sparkles,
   RotateCcw,
   Flower2,
   TreePine,
@@ -29,6 +29,7 @@ import {
   ShieldCheck,
   Truck,
   Package,
+  ShoppingBag,
 } from 'lucide-react'
 import dynamic from 'next/dynamic'
 
@@ -83,13 +84,13 @@ const categoryIcons: Record<FragranceCategory, typeof Flower2> = {
 }
 
 export default function CreatePerfumePage() {
+  const { addItem } = useCart()
   const [step, setStep] = useState<Step>('intro')
   const [composition, setComposition] = useState<PerfumeComposition>({ top: null, heart: null, base: null })
   const [activeCategory, setActiveCategory] = useState<FragranceCategory>('woody')
   const [perfumeName, setPerfumeName] = useState('')
   const [selectedVolume, setSelectedVolume] = useState<PerfumeVolume | null>(null)
   const [specialRequests, setSpecialRequests] = useState('')
-  const [isProcessing, setIsProcessing] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const activeLayer: NoteLayer =
@@ -130,7 +131,7 @@ export default function CreatePerfumePage() {
     if (idx > 0) setStep(STEP_ORDER[idx - 1])
   }, [step])
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
     const validationResult = validatePerfumeForm({
@@ -143,30 +144,35 @@ export default function CreatePerfumePage() {
       setError(Object.values(validationResult.errors).flat()[0] || 'Please fix the errors')
       return
     }
-    setIsProcessing(true)
-    try {
-      const response = await fetch('/api/create-perfume/payment', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          perfumeName,
-          composition: {
-            top: composition.top?.name,
-            heart: composition.heart?.name,
-            base: composition.base?.name,
-          },
-          volume: selectedVolume,
-          specialRequests,
-        }),
-      })
-      const data = await response.json()
-      if (!response.ok) throw new Error(data.error || 'Payment failed')
-      if (data.url) window.location.href = data.url
-      else throw new Error('No checkout URL received')
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Payment failed')
-      setIsProcessing(false)
+    if (!selectedVolume || !composition.top || !composition.heart || !composition.base) {
+      setError('Please complete your composition before adding to cart')
+      return
     }
+    const uniqueId = Date.now().toString(36)
+    const item: CartItem = {
+      productId: 'custom-perfume',
+      variantId: `custom-${uniqueId}-perfume-${selectedVolume}`,
+      quantity: 1,
+      name: `${perfumeName} — Custom Perfume`,
+      image: '/aquador-logo.png',
+      price: calculatePrice(selectedVolume),
+      size: selectedVolume,
+      productType: 'perfume',
+      customPerfume: {
+        name: perfumeName,
+        topNote: composition.top.name,
+        heartNote: composition.heart.name,
+        baseNote: composition.base.name,
+        specialRequests: specialRequests || undefined,
+      },
+    }
+    addItem(item)
+    // Reset the atelier after adding so the user can compose another
+    setComposition({ top: null, heart: null, base: null })
+    setPerfumeName('')
+    setSelectedVolume(null)
+    setSpecialRequests('')
+    setStep('intro')
   }
 
   // Svg fallback for the 3D bottle on low-end devices
@@ -286,19 +292,19 @@ export default function CreatePerfumePage() {
                   transition={{ delay: 0.25, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                   className="relative"
                 >
-                  <div className="relative aspect-[3/4] rounded-3xl bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-900 overflow-hidden shadow-[0_30px_80px_-20px_rgba(0,0,0,0.3)]">
+                  <div className="relative aspect-square sm:aspect-[4/5] overflow-visible">
                     <div
                       className="absolute inset-0 pointer-events-none"
                       aria-hidden="true"
                       style={{
                         background:
-                          'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(212,175,55,0.25) 0%, transparent 60%)',
+                          'radial-gradient(ellipse 70% 60% at 50% 55%, rgba(212,175,55,0.18) 0%, transparent 65%)',
                       }}
                     />
                     <PerfumeBottle3D
                       composition={composition}
                       activeLayer={activeLayer}
-                      className="absolute inset-0"
+                      className="absolute inset-0 scale-110"
                       fallback={bottleFallback}
                     />
                   </div>
@@ -382,23 +388,23 @@ export default function CreatePerfumePage() {
                   </button>
                 </div>
 
-                {/* Two-column layout */}
-                <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-10 lg:gap-16">
-                  {/* Bottle preview — sticky on desktop */}
-                  <div className="lg:sticky lg:top-24 self-start">
-                    <div className="relative aspect-[3/4] rounded-3xl bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-900 overflow-hidden shadow-[0_24px_60px_-20px_rgba(0,0,0,0.25)]">
+                {/* Two-column layout — bottle right, selection left (desktop); bottle top, selection bottom (mobile) */}
+                <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-10 lg:gap-16">
+                  {/* Bottle preview — sticky on desktop (right on desktop, top on mobile) */}
+                  <div className="lg:sticky lg:top-24 self-start lg:order-2 order-1">
+                    <div className="relative aspect-square sm:aspect-[4/5] overflow-visible">
                       <div
                         className="absolute inset-0 pointer-events-none"
                         aria-hidden="true"
                         style={{
                           background:
-                            'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(212,175,55,0.22) 0%, transparent 60%)',
+                            'radial-gradient(ellipse 70% 60% at 50% 55%, rgba(212,175,55,0.16) 0%, transparent 65%)',
                         }}
                       />
                       <PerfumeBottle3D
                         composition={composition}
                         activeLayer={activeLayer}
-                        className="absolute inset-0"
+                        className="absolute inset-0 scale-110"
                         fallback={bottleFallback}
                       />
                     </div>
@@ -445,8 +451,8 @@ export default function CreatePerfumePage() {
                     </div>
                   </div>
 
-                  {/* Selection column */}
-                  <div>
+                  {/* Selection column (left on desktop, bottom on mobile) */}
+                  <div className="lg:order-1 order-2">
                     <p className="text-[10px] tracking-[0.28em] uppercase text-gold-dark mb-3">
                       Step {layerMeta[activeLayer].number} of 3 &middot; {layerMeta[activeLayer].subtitle}
                     </p>
@@ -570,22 +576,23 @@ export default function CreatePerfumePage() {
                   </h1>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-[0.8fr_1.2fr] gap-8 md:gap-12">
-                  {/* Bottle + composition */}
-                  <div className="md:sticky md:top-24 self-start">
-                    <div className="relative aspect-[3/4] rounded-3xl bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-900 overflow-hidden shadow-[0_24px_60px_-20px_rgba(0,0,0,0.25)]">
+                <div className="grid grid-cols-1 md:grid-cols-[1.2fr_0.8fr] gap-8 md:gap-12">
+                  {/* Form (left on desktop) */}
+                  {/* Bottle + composition (right on desktop) */}
+                  <div className="md:sticky md:top-24 self-start md:order-2 order-1">
+                    <div className="relative aspect-square sm:aspect-[4/5] overflow-visible">
                       <div
                         className="absolute inset-0 pointer-events-none"
                         aria-hidden="true"
                         style={{
                           background:
-                            'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(212,175,55,0.25) 0%, transparent 60%)',
+                            'radial-gradient(ellipse 70% 60% at 50% 55%, rgba(212,175,55,0.18) 0%, transparent 65%)',
                         }}
                       />
                       <PerfumeBottle3D
                         composition={composition}
                         activeLayer="base"
-                        className="absolute inset-0"
+                        className="absolute inset-0 scale-110"
                         fallback={bottleFallback}
                       />
                     </div>
@@ -614,8 +621,8 @@ export default function CreatePerfumePage() {
                     </div>
                   </div>
 
-                  {/* Form */}
-                  <form onSubmit={handleSubmit} className="space-y-7">
+                  {/* Form (left on desktop, below on mobile) */}
+                  <form onSubmit={handleSubmit} className="space-y-7 md:order-1 order-2">
                     <div>
                       <label
                         htmlFor="perfume-name"
@@ -720,31 +727,22 @@ export default function CreatePerfumePage() {
                       </div>
                       <button
                         type="submit"
-                        disabled={isProcessing || !perfumeName || !selectedVolume || !isComplete}
+                        disabled={!perfumeName || !selectedVolume || !isComplete}
                         className={`inline-flex items-center gap-2 px-8 py-4 rounded-full text-sm font-medium tracking-[0.15em] uppercase transition-all ${
-                          isProcessing || !perfumeName || !selectedVolume || !isComplete
+                          !perfumeName || !selectedVolume || !isComplete
                             ? 'bg-neutral-200 text-neutral-400 cursor-not-allowed'
-                            : 'bg-neutral-900 text-white hover:bg-gold-dark'
+                            : 'bg-neutral-900 text-white hover:bg-gold-dark shadow-[0_12px_30px_-10px_rgba(184,134,11,0.5)]'
                         }`}
                       >
-                        {isProcessing ? (
-                          <>
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                            Processing
-                          </>
-                        ) : (
-                          <>
-                            <Sparkles className="w-4 h-4" />
-                            Pay with Stripe
-                          </>
-                        )}
+                        <ShoppingBag className="w-4 h-4" />
+                        Add to Cart
                       </button>
                     </div>
 
                     <div className="flex flex-wrap gap-x-6 gap-y-2 text-[11px] text-neutral-500 pt-2">
                       <span className="inline-flex items-center gap-1.5">
                         <ShieldCheck className="w-3.5 h-3.5 text-gold-dark" strokeWidth={1.75} />
-                        Secure checkout via Stripe
+                        Handcrafted in Nicosia
                       </span>
                       <span className="inline-flex items-center gap-1.5">
                         <Truck className="w-3.5 h-3.5 text-gold-dark" strokeWidth={1.75} />

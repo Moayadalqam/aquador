@@ -1,5 +1,13 @@
 import type { ProductType, ProductSize } from './product';
 
+export interface CustomPerfumeMeta {
+  name: string;
+  topNote: string;
+  heartNote: string;
+  baseNote: string;
+  specialRequests?: string;
+}
+
 export interface CartItem {
   productId: string;
   variantId: string;
@@ -9,6 +17,8 @@ export interface CartItem {
   price: number;
   size: ProductSize;
   productType: ProductType;
+  /** Present only for Atelier-composed custom perfumes (productId = "custom-perfume"). */
+  customPerfume?: CustomPerfumeMeta;
 }
 
 export interface Cart {

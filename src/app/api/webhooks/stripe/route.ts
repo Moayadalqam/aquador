@@ -387,11 +387,31 @@ export async function POST(request: NextRequest) {
             qty: number;
           }>;
 
-          const productIds = shortItems.map(si => si.pid);
-          const products = await getProductsByIds(productIds);
+          const productIds = shortItems.map(si => si.pid).filter(id => id !== 'custom-perfume');
+          const products = productIds.length > 0 ? await getProductsByIds(productIds) : [];
           const productMap = new Map(products.map(p => [p.id, p]));
 
+          // Fetch line_items from Stripe for custom perfumes (no DB row exists)
+          const hasCustomPerfume = shortItems.some(si => si.pid === 'custom-perfume');
+          const lineItems = hasCustomPerfume
+            ? (await stripe.checkout.sessions.listLineItems(session.id, { limit: 100 })).data
+            : [];
+
           for (const shortItem of shortItems) {
+            if (shortItem.pid === 'custom-perfume') {
+              // Match by variant id encoded in the line item description
+              const vidSize = shortItem.vid.split('-').pop() || '50ml';
+              const price = vidSize === '100ml' ? 49.99 : 29.99;
+              const line = lineItems.find(li => (li.price?.unit_amount ?? 0) === Math.round(price * 100));
+              items.push({
+                name: line?.description || `Custom Perfume (${vidSize})`,
+                quantity: shortItem.qty,
+                price,
+                productType: 'custom-perfume',
+              });
+              orderTags['has-custom-perfume'] = 'true';
+              continue;
+            }
             const product = productMap.get(shortItem.pid);
             if (product) {
               items.push({
