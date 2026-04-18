@@ -74,7 +74,7 @@ export default function AdminLiveChat() {
 
   const sendBrowserNotification = useCallback((title: string, body: string) => {
     if ('Notification' in window && Notification.permission === 'granted') {
-      new Notification(title, { body, icon: '/aquador.webp' });
+      new Notification(title, { body, icon: '/aquador-logo.png' });
     }
   }, []);
 

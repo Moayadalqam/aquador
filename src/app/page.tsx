@@ -52,7 +52,7 @@ export default async function Home() {
     '@type': 'Organization',
     name: "Aquad'or",
     url: 'https://aquadorcy.com',
-    logo: 'https://aquadorcy.com/aquador.webp',
+    logo: 'https://aquadorcy.com/aquador-logo.png',
     description: "Cyprus's premier luxury fragrance house offering curated niche perfumes and bespoke fragrance creation.",
     address: {
       '@type': 'PostalAddress',
@@ -93,7 +93,7 @@ export default async function Home() {
     '@context': 'https://schema.org',
     '@type': 'Store',
     name: "Aquad'or",
-    image: 'https://aquadorcy.com/aquador.webp',
+    image: 'https://aquadorcy.com/aquador-logo.png',
     url: 'https://aquadorcy.com',
     telephone: '+357-99-980809',
     email: 'info@aquadorcy.com',

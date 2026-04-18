@@ -9,13 +9,13 @@ export const metadata: Metadata = {
     title: "About Us | Aquad'or Cyprus",
     description: "Cyprus's premier luxury fragrance house in Nicosia. Curated niche perfumes and personalized consultations.",
     url: 'https://aquadorcy.com/about',
-    images: [{ url: '/aquador.webp', width: 800, height: 600, alt: "About Aquad'or" }],
+    images: [{ url: '/aquador-logo.png', width: 800, height: 600, alt: "About Aquad'or" }],
   },
   twitter: {
     card: 'summary_large_image',
     title: "About Us | Aquad'or Cyprus",
     description: "Cyprus's premier luxury fragrance house in Nicosia.",
-    images: ['/aquador.webp'],
+    images: ['/aquador-logo.png'],
   },
   alternates: {
     canonical: 'https://aquadorcy.com/about',

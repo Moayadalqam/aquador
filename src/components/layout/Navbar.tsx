@@ -120,7 +120,7 @@ export default function Navbar() {
       >
         <nav className="container-wide" aria-label="Primary">
           {/* Taller nav for more spacious feel */}
-          <div className="relative flex items-center justify-between h-[60px] md:h-[70px]">
+          <div className="relative flex items-center justify-between h-[80px] md:h-[96px]">
 
             {/* Left: Hamburger (mobile) + Left nav links (desktop) */}
             <div className="flex items-center h-full">
@@ -155,7 +155,7 @@ export default function Navbar() {
               href="/"
               className="absolute left-1/2 -translate-x-1/2 z-10"
             >
-              <Image src="/aquador.webp" alt="Aquad'or" width={160} height={48} className="h-[40px] sm:h-[48px] xl:h-[44px] 2xl:h-[52px] w-auto" priority />
+              <Image src="/aquador-logo.png" alt="Aquad'or" width={160} height={160} className="h-[68px] sm:h-[80px] xl:h-[84px] 2xl:h-[92px] w-auto" priority />
             </Link>
 
             {/* Right: Right nav links (desktop) + Icons */}

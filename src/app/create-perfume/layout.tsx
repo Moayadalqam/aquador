@@ -9,13 +9,13 @@ export const metadata: Metadata = {
     title: "Create Your Own Perfume | Aquad'or Cyprus",
     description: "Design your own custom perfume. Choose from 5 fragrance families to create your signature scent.",
     url: 'https://aquadorcy.com/create-perfume',
-    images: [{ url: '/aquador.webp', width: 800, height: 600, alt: "Create Your Own Perfume at Aquad'or" }],
+    images: [{ url: '/aquador-logo.png', width: 800, height: 600, alt: "Create Your Own Perfume at Aquad'or" }],
   },
   twitter: {
     card: 'summary_large_image',
     title: "Create Your Own Perfume | Aquad'or Cyprus",
     description: "Design your own custom perfume from 5 fragrance families.",
-    images: ['/aquador.webp'],
+    images: ['/aquador-logo.png'],
   },
   alternates: {
     canonical: 'https://aquadorcy.com/create-perfume',

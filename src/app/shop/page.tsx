@@ -14,13 +14,13 @@ export const metadata: Metadata = {
     title: "Dubai Shop | Aquad'or Cyprus",
     description: "Browse our curated Dubai collection of luxury perfumes and niche fragrances.",
     url: 'https://aquadorcy.com/shop',
-    images: [{ url: '/aquador.webp', width: 800, height: 600, alt: "Aquad'or Perfume Collection" }],
+    images: [{ url: '/aquador-logo.png', width: 800, height: 600, alt: "Aquad'or Perfume Collection" }],
   },
   twitter: {
     card: 'summary_large_image',
     title: "Dubai Shop | Aquad'or Cyprus",
     description: "Browse our curated Dubai collection of luxury perfumes and niche fragrances.",
-    images: ['/aquador.webp'],
+    images: ['/aquador-logo.png'],
   },
   alternates: {
     canonical: 'https://aquadorcy.com/shop',

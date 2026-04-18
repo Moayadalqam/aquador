@@ -49,11 +49,11 @@ function LoginForm() {
         {/* Logo */}
         <div className="flex justify-center mb-8">
           <Image
-            src="/aquador.webp"
+            src="/aquador-logo.png"
             alt="Aquad'or Admin"
-            width={200}
-            height={60}
-            className="h-16 w-auto"
+            width={140}
+            height={140}
+            className="h-28 w-auto"
           />
         </div>
 

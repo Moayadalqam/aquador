@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: "Re-Order Your Custom Perfume | Aquad'or",
     description: "Quickly reorder your custom fragrance.",
-    images: ['/aquador.webp'],
+    images: ['/aquador-logo.png'],
   },
   alternates: {
     canonical: 'https://aquadorcy.com/reorder',

@@ -50,7 +50,7 @@ export default function AdminSidebar({ isOpen, onClose, liveChatCount }: AdminSi
         <div className="flex flex-col h-full">
           <div className="flex items-center justify-between h-16 border-b border-gray-800 px-4">
             <Link href="/admin" onClick={onClose} className="flex items-center">
-              <Image src="/aquador.webp" alt="Aquad'or" width={120} height={40} className="h-10 w-auto" />
+              <Image src="/aquador-logo.png" alt="Aquad'or" width={56} height={56} className="h-12 w-auto" />
             </Link>
             <button
               onClick={onClose}

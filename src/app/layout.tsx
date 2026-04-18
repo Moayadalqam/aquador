@@ -56,7 +56,7 @@ export const metadata: Metadata = {
         alt: "Aquad'or — Luxury Perfumes Cyprus",
       },
       {
-        url: "/aquador.webp",
+        url: "/aquador-logo.png",
         width: 800,
         height: 600,
         alt: "Aquad'or Logo",

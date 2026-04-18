@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Blog | The Art of Scent | Aquad\'or Cyprus',
     description: 'Stories, guides, and inspiration from the world of luxury fragrance.',
-    images: ['/aquador.webp'],
+    images: ['/aquador-logo.png'],
   },
   alternates: {
     canonical: 'https://aquadorcy.com/blog',

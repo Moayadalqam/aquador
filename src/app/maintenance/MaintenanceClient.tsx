@@ -33,11 +33,11 @@ export default function MaintenanceClient() {
       <div className="fixed inset-0 z-[9999] bg-[#FAFAF8] flex items-center justify-center px-6">
         <div className="w-full max-w-sm text-center">
           <Image
-            src="/aquador.webp"
+            src="/aquador-logo.png"
             alt="Aquad'or"
-            width={200}
-            height={60}
-            className="mx-auto mb-10 h-16 w-auto"
+            width={160}
+            height={160}
+            className="mx-auto mb-10 h-28 w-auto"
           />
           <form onSubmit={handleSubmit} className="space-y-4">
             <input
@@ -88,11 +88,11 @@ export default function MaintenanceClient() {
 
       {/* Logo — 2× size */}
       <Image
-        src="/aquador.webp"
+        src="/aquador-logo.png"
         alt="Aquad'or"
-        width={640}
-        height={192}
-        className="h-36 sm:h-44 w-auto mb-12"
+        width={280}
+        height={280}
+        className="h-44 sm:h-56 w-auto mb-12"
         priority
       />
 

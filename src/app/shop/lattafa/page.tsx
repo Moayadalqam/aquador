@@ -14,13 +14,13 @@ export const metadata: Metadata = {
     title: "Lattafa Originals Perfumes | Aquad'or Cyprus",
     description: 'Authentic Arabian fragrances crafted with the finest ingredients. Original Lattafa Perfumes collection.',
     url: 'https://aquadorcy.com/shop/lattafa',
-    images: [{ url: '/aquador.webp', width: 800, height: 600, alt: 'Lattafa Originals Perfumes' }],
+    images: [{ url: '/aquador-logo.png', width: 800, height: 600, alt: 'Lattafa Originals Perfumes' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: "Lattafa Originals Perfumes | Aquad'or Cyprus",
     description: 'Authentic Arabian fragrances. Original Lattafa Perfumes collection.',
-    images: ['/aquador.webp'],
+    images: ['/aquador-logo.png'],
   },
   alternates: {
     canonical: 'https://aquadorcy.com/shop/lattafa',

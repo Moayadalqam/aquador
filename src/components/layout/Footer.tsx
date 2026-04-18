@@ -54,11 +54,11 @@ export default function Footer() {
           >
             <Link href="/" className="inline-block mb-4 w-fit">
               <Image
-                src="/aquador.webp"
+                src="/aquador-logo.png"
                 alt="Aquad'or"
-                width={160}
-                height={48}
-                className="h-10 md:h-11 w-auto"
+                width={180}
+                height={180}
+                className="h-20 md:h-24 w-auto"
               />
             </Link>
             <p className="text-gold-dark text-xs font-playfair italic tracking-wide">

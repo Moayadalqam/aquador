@@ -212,7 +212,7 @@ export default function ChatWidget() {
             {mode === 'menu' && (
               <div className="flex flex-col h-full">
                 <div className="bg-gradient-to-r from-gold/10 to-gold-light/10 border-b border-gold/20 p-2.5 flex items-center gap-2.5">
-                  <div className="relative w-9 h-9 rounded-full overflow-hidden bg-white border border-gold/30 flex items-center justify-center"><Image src="/aquador.webp" alt="Aquad'or" width={36} height={36} className="object-cover" /></div>
+                  <div className="relative w-9 h-9 rounded-full overflow-hidden bg-white border border-gold/30 flex items-center justify-center"><Image src="/aquador-logo.png" alt="Aquad'or" width={36} height={36} className="object-cover" /></div>
                   <div className="flex-1"><h3 className="text-black font-semibold text-sm">How can we help?</h3><p className="text-[10px] text-gray-400">Choose an option below</p></div>
                   <button onClick={() => setIsOpen(false)} className="p-1 hover:bg-white/10 rounded-full transition-colors min-[481px]:hidden"><X className="w-5 h-5 text-gray-400" /></button>
                 </div>
@@ -234,7 +234,7 @@ export default function ChatWidget() {
               <div className="flex flex-col h-full">
                 <div className="bg-gradient-to-r from-gold/10 to-gold-light/10 border-b border-gold/20 p-2.5 flex items-center gap-2.5">
                   <button onClick={() => setMode('menu')} className="p-1 hover:bg-black/5 rounded-full transition-colors"><ArrowLeft className="w-4 h-4 text-gray-500" /></button>
-                  <div className="relative w-9 h-9 rounded-full overflow-hidden bg-white border border-gold/30 flex items-center justify-center"><Image src="/aquador.webp" alt="Aquad'or" width={36} height={36} className="object-cover" /></div>
+                  <div className="relative w-9 h-9 rounded-full overflow-hidden bg-white border border-gold/30 flex items-center justify-center"><Image src="/aquador-logo.png" alt="Aquad'or" width={36} height={36} className="object-cover" /></div>
                   <div className="flex-1"><h3 className="text-black font-semibold text-sm flex items-center gap-1.5">Aquad{"'"}or<span className="w-1.5 h-1.5 bg-green-500 rounded-full" /></h3><p className="text-[10px] text-gray-400">AI Fragrance Expert</p></div>
                   <button onClick={() => setIsOpen(false)} className="p-1 hover:bg-white/10 rounded-full transition-colors min-[481px]:hidden"><X className="w-5 h-5 text-gray-400" /></button>
                 </div>
