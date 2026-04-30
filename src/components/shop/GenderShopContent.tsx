@@ -9,7 +9,7 @@ import { ProductCard } from '@/components/ui/ProductCard';
 import { gridLayoutTransition, gridItemVariants } from '@/lib/animations/filter-transitions';
 import type { Product } from '@/lib/supabase/types';
 
-interface GenderContentProps {
+interface GenderShopContentProps {
   gender: string;
   genderLabel: string;
   products: Product[];
@@ -21,7 +21,7 @@ const GENDER_SUBTITLES: Record<string, string> = {
   unisex: 'Versatile fragrances that transcend boundaries',
 };
 
-export default function GenderContent({ gender, genderLabel, products }: GenderContentProps) {
+export default function GenderShopContent({ gender, genderLabel, products }: GenderShopContentProps) {
   const [searchQuery, setSearchQuery] = useState('');
 
   const handleSearch = useCallback((query: string) => {
@@ -32,7 +32,6 @@ export default function GenderContent({ gender, genderLabel, products }: GenderC
     setSearchQuery('');
   }, []);
 
-  // Filter products based on search query
   const filteredProducts = useMemo(() => {
     if (searchQuery.trim().length < 2) {
       return products;
@@ -57,7 +56,6 @@ export default function GenderContent({ gender, genderLabel, products }: GenderC
         titleVariant="gold"
       />
 
-      {/* Coming Soon state for empty collections */}
       {isEmpty ? (
         <section className="section">
           <div className="container-wide">
@@ -87,7 +85,6 @@ export default function GenderContent({ gender, genderLabel, products }: GenderC
         </section>
       ) : (
         <>
-          {/* Search Bar */}
           <section className="container-wide py-6 md:py-8">
             <motion.div
               initial={{ opacity: 0, y: 15 }}
@@ -102,7 +99,6 @@ export default function GenderContent({ gender, genderLabel, products }: GenderC
               />
             </motion.div>
 
-            {/* Search results summary */}
             {searchQuery.length >= 2 && (
               <motion.div
                 initial={{ opacity: 0 }}
@@ -122,7 +118,6 @@ export default function GenderContent({ gender, genderLabel, products }: GenderC
             )}
           </section>
 
-          {/* Products Grid */}
           <section className="container-wide pb-16 md:pb-20">
             <motion.div
               initial="hidden"
@@ -157,7 +152,6 @@ export default function GenderContent({ gender, genderLabel, products }: GenderC
             )}
           </section>
 
-          {/* Back to shop link */}
           <section className="container-wide pb-12 md:pb-16 text-center">
             <Link
               href="/shop"

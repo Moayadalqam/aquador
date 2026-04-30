@@ -16,8 +16,8 @@ const navLinks: NavItem[] = [
     { label: 'Al Haramain', href: '/shop/al-haramain-originals' },
     { label: 'Xerjoff', href: '/shop?brand=xerjoff' },
   ]},
-  { label: 'Men', href: '/shop/gender/men' },
-  { label: 'Women', href: '/shop/gender/women' },
+  { label: 'Men', href: '/shop/men' },
+  { label: 'Women', href: '/shop/women' },
   { label: 'Niche', href: '/shop/niche' },
   { label: 'Lattafa Originals', href: '/shop/lattafa' },
   { label: 'Create Your Own', href: '/create-perfume' },
@@ -92,8 +92,8 @@ export default function Navbar() {
 
   const checkActive = (href: string) => {
     // Gender-specific routes
-    if (href === '/shop/gender/men') return pathname.startsWith('/shop/gender/men');
-    if (href === '/shop/gender/women') return pathname.startsWith('/shop/gender/women');
+    if (href === '/shop/men') return pathname === '/shop/men' || pathname.startsWith('/shop/men/');
+    if (href === '/shop/women') return pathname === '/shop/women' || pathname.startsWith('/shop/women/');
     // Niche
     if (href === '/shop/niche') return pathname === '/shop/niche' || pathname.startsWith('/shop/niche/');
     // Lattafa Originals
@@ -101,7 +101,9 @@ export default function Navbar() {
     // Dubai Shop: activate on /shop or /shop/* but NOT gender, lattafa, or niche
     if (href === '/shop') {
       return (pathname === '/shop' || pathname.startsWith('/shop/'))
-        && !pathname.startsWith('/shop/gender/')
+        && !pathname.startsWith('/shop/men')
+        && !pathname.startsWith('/shop/women')
+        && !pathname.startsWith('/shop/unisex')
         && !pathname.startsWith('/shop/lattafa')
         && !pathname.startsWith('/shop/niche');
     }
