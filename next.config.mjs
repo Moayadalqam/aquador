@@ -47,6 +47,16 @@ const nextConfig = {
   // Server-side only (no CSP entry needed, documented for reference):
   // - api.resend.com: transactional email via Resend (contact form, order confirmations)
   // - graph.facebook.com: WhatsApp notifications via Meta Cloud API
+  async redirects() {
+    return [
+      // Old gender URLs were /shop/gender/{men|women|unisex}; flattened to /shop/{gender} in v3.3.
+      {
+        source: '/shop/gender/:gender(men|women|unisex)',
+        destination: '/shop/:gender',
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {

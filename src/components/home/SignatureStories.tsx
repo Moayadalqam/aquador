@@ -39,7 +39,7 @@ const stories = [
     image: '/images/categories/women.webp',
     imagePosition: 'center',
     accent: '#E8C872',
-    cta: { label: "Shop women's", href: '/shop/gender/women' },
+    cta: { label: "Shop women's", href: '/shop/women' },
   },
   {
     eyebrow: 'Bespoke Perfumery',
@@ -59,7 +59,7 @@ const stories = [
     image: '/images/categories/men.jpg',
     imagePosition: 'center',
     accent: '#C9A227',
-    cta: { label: "Shop men's", href: '/shop/gender/men' },
+    cta: { label: "Shop men's", href: '/shop/men' },
   },
   {
     eyebrow: 'Dubai Shop',

@@ -8,9 +8,9 @@ import { AnimatedSection } from '@/components/ui/AnimatedSection';
 import { fadeInUp } from '@/lib/animations/scroll-animations';
 
 const shopLinks = [
-  { label: 'Women', href: '/shop/gender/women' },
-  { label: 'Men', href: '/shop/gender/men' },
-  { label: 'Unisex', href: '/shop/gender/unisex' },
+  { label: 'Women', href: '/shop/women' },
+  { label: 'Men', href: '/shop/men' },
+  { label: 'Unisex', href: '/shop/unisex' },
   { label: 'Lattafa Originals', href: '/shop/lattafa' },
   { label: 'Dubai Shop', href: '/shop' },
   { label: 'Create Your Fragrance', href: '/create-perfume' },

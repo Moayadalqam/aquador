@@ -6,7 +6,7 @@ import { ShoppingBag, RefreshCw } from 'lucide-react';
 import * as Sentry from '@sentry/nextjs';
 import Button from '@/components/ui/Button';
 
-export default function GenderError({
+export default function GenderShopError({
   error,
   reset,
 }: {
