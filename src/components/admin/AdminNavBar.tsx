@@ -95,7 +95,7 @@ export default function AdminNavBar({ user, adminUser, onMobileMenuToggle, liveC
                   <item.icon className="h-4 w-4" />
                   {item.name}
                   {item.name === 'Live Chat' && liveChatCount > 0 && (
-                    <span className="bg-amber-500 text-black text-[10px] font-bold px-1.5 py-px rounded-full min-w-[18px] text-center animate-pulse">
+                    <span className="bg-amber-500 text-black text-xs font-bold px-1.5 py-px rounded-full min-w-[18px] text-center animate-pulse">
                       {liveChatCount}
                     </span>
                   )}

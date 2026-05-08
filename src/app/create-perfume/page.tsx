@@ -224,7 +224,7 @@ export default function CreatePerfumePage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  <p className="text-[10px] uppercase tracking-[0.32em] text-gold-dark mb-6">
+                  <p className="text-xs uppercase tracking-[0.32em] text-gold-dark mb-6">
                     Bespoke Fragrance Atelier
                   </p>
                   <h1
@@ -308,7 +308,7 @@ export default function CreatePerfumePage() {
                       fallback={bottleFallback}
                     />
                   </div>
-                  <p className="text-[10px] text-center mt-4 uppercase tracking-[0.24em] text-neutral-400">
+                  <p className="text-xs text-center mt-4 uppercase tracking-[0.24em] text-neutral-400">
                     Drag to rotate &middot; live composition preview
                   </p>
                 </motion.div>
@@ -411,7 +411,7 @@ export default function CreatePerfumePage() {
 
                     {/* Current composition readout */}
                     <div className="mt-6 rounded-2xl border border-neutral-200 bg-white p-5">
-                      <p className="text-[10px] tracking-[0.24em] uppercase text-neutral-500 mb-3">
+                      <p className="text-xs tracking-[0.24em] uppercase text-neutral-500 mb-3">
                         Your Composition
                       </p>
                       <div className="space-y-2.5">
@@ -453,7 +453,7 @@ export default function CreatePerfumePage() {
 
                   {/* Selection column (left on desktop, bottom on mobile) */}
                   <div className="lg:order-1 order-2">
-                    <p className="text-[10px] tracking-[0.28em] uppercase text-gold-dark mb-3">
+                    <p className="text-xs tracking-[0.28em] uppercase text-gold-dark mb-3">
                       Step {layerMeta[activeLayer].number} of 3 &middot; {layerMeta[activeLayer].subtitle}
                     </p>
                     <h2
@@ -565,7 +565,7 @@ export default function CreatePerfumePage() {
                 </button>
 
                 <div className="mb-10">
-                  <p className="text-[10px] uppercase tracking-[0.28em] text-gold-dark mb-4">
+                  <p className="text-xs uppercase tracking-[0.28em] text-gold-dark mb-4">
                     Your Composition
                   </p>
                   <h2
@@ -626,7 +626,7 @@ export default function CreatePerfumePage() {
                     <div>
                       <label
                         htmlFor="perfume-name"
-                        className="block text-[10px] uppercase tracking-[0.22em] text-gold-dark mb-2"
+                        className="block text-xs uppercase tracking-[0.22em] text-gold-dark mb-2"
                       >
                         Name your creation *
                       </label>
@@ -642,7 +642,7 @@ export default function CreatePerfumePage() {
                     </div>
 
                     <fieldset>
-                      <legend className="text-[10px] uppercase tracking-[0.22em] text-gold-dark mb-3">
+                      <legend className="text-xs uppercase tracking-[0.22em] text-gold-dark mb-3">
                         Choose volume *
                       </legend>
                       <div className="grid grid-cols-2 gap-3">
@@ -689,7 +689,7 @@ export default function CreatePerfumePage() {
                     <div>
                       <label
                         htmlFor="special-requests"
-                        className="block text-[10px] uppercase tracking-[0.22em] text-gold-dark mb-2"
+                        className="block text-xs uppercase tracking-[0.22em] text-gold-dark mb-2"
                       >
                         Special requests <span className="text-neutral-400 normal-case tracking-normal">(optional)</span>
                       </label>
@@ -718,7 +718,7 @@ export default function CreatePerfumePage() {
 
                     <div className="flex items-center justify-between pt-6 border-t border-neutral-200">
                       <div>
-                        <div className="text-[10px] uppercase tracking-[0.22em] text-neutral-500">
+                        <div className="text-xs uppercase tracking-[0.22em] text-neutral-500">
                           Total
                         </div>
                         <div className="text-3xl font-playfair text-neutral-900">

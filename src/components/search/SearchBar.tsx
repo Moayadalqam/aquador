@@ -180,7 +180,7 @@ export default function SearchBar({
                     </div>
                     <div className="flex-1 min-w-0">
                       {product.brand && (
-                        <p className="text-[10px] text-gray-500 uppercase tracking-wider">
+                        <p className="text-xs text-gray-500 uppercase tracking-wider">
                           {product.brand}
                         </p>
                       )}

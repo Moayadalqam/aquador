@@ -119,7 +119,7 @@ export function ProductQuickView({ product, isVisible, onClose }: ProductQuickVi
             <motion.div variants={itemVariants}>
               <Link
                 href={`/products/${product.id}`}
-                className="inline-block pointer-events-auto text-[10px] md:text-[11px] px-3 py-1.5 border border-gold-500/50 hover:border-gold-500 text-gold-500 hover:text-gold-400 rounded-full uppercase tracking-wider font-medium transition-all duration-200 hover:bg-gold-500/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                className="inline-block pointer-events-auto text-xs md:text-[11px] px-3 py-1.5 border border-gold-500/50 hover:border-gold-500 text-gold-500 hover:text-gold-400 rounded-full uppercase tracking-wider font-medium transition-all duration-200 hover:bg-gold-500/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                 onClick={(e) => {
                   // Don't prevent default - allow navigation
                   e.stopPropagation();

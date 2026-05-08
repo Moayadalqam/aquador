@@ -29,7 +29,7 @@ export default function BlogCard({ post, index = 0 }: BlogCardProps) {
           {/* Category & Date row */}
           <div className="flex items-center gap-3 mb-4">
             {post.category && (
-              <span className="text-[10px] uppercase tracking-[0.2em] text-gold font-medium">
+              <span className="text-xs uppercase tracking-[0.2em] text-gold font-medium">
                 {post.category}
               </span>
             )}
@@ -37,7 +37,7 @@ export default function BlogCard({ post, index = 0 }: BlogCardProps) {
               <span className="w-1 h-1 rounded-full bg-gray-300" />
             )}
             {post.published_at && (
-              <span className="text-[10px] uppercase tracking-[0.12em] text-gray-400">
+              <span className="text-xs uppercase tracking-[0.12em] text-gray-400">
                 {formatBlogDate(post.published_at)}
               </span>
             )}
@@ -58,12 +58,12 @@ export default function BlogCard({ post, index = 0 }: BlogCardProps) {
           {/* Footer */}
           <div className="flex items-center justify-between pt-4 border-t border-gray-100 mt-auto">
             {post.read_time && (
-              <span className="text-[10px] text-gray-400 uppercase tracking-wider">
+              <span className="text-xs text-gray-400 uppercase tracking-wider">
                 {post.read_time} min read
               </span>
             )}
             <motion.span
-              className="flex items-center gap-1.5 text-[10px] text-gold uppercase tracking-[0.15em] font-medium"
+              className="flex items-center gap-1.5 text-xs text-gold uppercase tracking-[0.15em] font-medium"
               whileHover={reducedMotion ? {} : { x: 3 }}
             >
               Read

@@ -85,7 +85,7 @@ export default function LattafaContent({ products }: LattafaContentProps) {
           >
             <Link
               href="/shop"
-              className="inline-flex items-center text-gold/50 hover:text-gold mb-4 text-[10px] uppercase tracking-[0.2em] transition-colors"
+              className="inline-flex items-center text-gold/50 hover:text-gold mb-4 text-xs uppercase tracking-[0.2em] transition-colors"
             >
               &larr; Back to Collections
             </Link>
@@ -197,13 +197,13 @@ export default function LattafaContent({ products }: LattafaContentProps) {
                   />
                   {/* Sale Badge */}
                   {product.salePrice && product.salePrice < product.price && product.inStock && (
-                    <span className="absolute top-4 left-4 bg-gold text-black text-[10px] uppercase tracking-wider px-3 py-1.5 font-medium">
+                    <span className="absolute top-4 left-4 bg-gold text-black text-xs uppercase tracking-wider px-3 py-1.5 font-medium">
                       Sale
                     </span>
                   )}
                   {/* Coming Soon Badge */}
                   {!product.inStock && (
-                    <span className="absolute top-4 left-4 bg-gray-800 text-white text-[10px] uppercase tracking-wider px-3 py-1.5 font-medium">
+                    <span className="absolute top-4 left-4 bg-gray-800 text-white text-xs uppercase tracking-wider px-3 py-1.5 font-medium">
                       Coming Soon
                     </span>
                   )}

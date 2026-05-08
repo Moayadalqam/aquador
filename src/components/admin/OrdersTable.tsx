@@ -115,12 +115,12 @@ export default function OrdersTable({ orders, onStatusChange }: OrdersTableProps
                           #{order.stripe_session_id ? order.stripe_session_id.slice(-8).toUpperCase() : order.id.slice(0, 8).toUpperCase()}
                         </span>
                         {order.order_source === 'manual' && (
-                          <span className="ml-2 text-[10px] font-medium px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                          <span className="ml-2 text-xs font-medium px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">
                             MANUAL
                           </span>
                         )}
                         {isCustomPerfume && (
-                          <span className="ml-2 text-[10px] font-medium px-1.5 py-0.5 rounded bg-gold/10 text-gold border border-gold/20">
+                          <span className="ml-2 text-xs font-medium px-1.5 py-0.5 rounded bg-gold/10 text-gold border border-gold/20">
                             CUSTOM
                           </span>
                         )}
@@ -209,15 +209,15 @@ export default function OrdersTable({ orders, onStatusChange }: OrdersTableProps
                               return (
                                 <div className="space-y-2">
                                   <div className="flex items-center gap-2">
-                                    <span className="text-[10px] uppercase tracking-wider text-gray-500 w-12">Top</span>
+                                    <span className="text-xs uppercase tracking-wider text-gray-500 w-12">Top</span>
                                     <span className="text-gray-200 text-sm">{comp.top}</span>
                                   </div>
                                   <div className="flex items-center gap-2">
-                                    <span className="text-[10px] uppercase tracking-wider text-gray-500 w-12">Heart</span>
+                                    <span className="text-xs uppercase tracking-wider text-gray-500 w-12">Heart</span>
                                     <span className="text-gray-200 text-sm">{comp.heart}</span>
                                   </div>
                                   <div className="flex items-center gap-2">
-                                    <span className="text-[10px] uppercase tracking-wider text-gray-500 w-12">Base</span>
+                                    <span className="text-xs uppercase tracking-wider text-gray-500 w-12">Base</span>
                                     <span className="text-gray-200 text-sm">{comp.base}</span>
                                   </div>
                                 </div>

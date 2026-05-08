@@ -123,7 +123,7 @@ function ProductCardImpl({ product, priority = false, variant = 'default' }: Pro
 
         {/* Sale Badge */}
         {isOnSale && (
-          <div className="absolute top-3 right-3 bg-red-500/90 backdrop-blur-sm text-white text-[9px] md:text-[10px] uppercase tracking-wider px-2.5 py-1 font-medium rounded-full">
+          <div className="absolute top-3 right-3 bg-red-500/90 backdrop-blur-sm text-white text-[9px] md:text-xs uppercase tracking-wider px-2.5 py-1 font-medium rounded-full">
             Sale
           </div>
         )}
@@ -164,7 +164,7 @@ function ProductCardImpl({ product, priority = false, variant = 'default' }: Pro
 
         {/* Size */}
         {product.size && (
-          <p className="text-[10px] text-gray-400 uppercase tracking-wider">
+          <p className="text-xs text-gray-400 uppercase tracking-wider">
             {product.size}
           </p>
         )}

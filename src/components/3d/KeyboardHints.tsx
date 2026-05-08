@@ -118,7 +118,7 @@ export function KeyboardHints() {
           {/* Header row */}
           <div className="flex items-center justify-between gap-6 mb-1">
             <span
-              className="text-[#D4AF37] font-medium tracking-widest uppercase text-[10px]"
+              className="text-[#D4AF37] font-medium tracking-widest uppercase text-xs"
               style={{ fontFamily: 'var(--font-playfair, serif)' }}
             >
               Keyboard Controls

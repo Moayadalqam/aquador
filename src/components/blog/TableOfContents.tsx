@@ -53,7 +53,7 @@ export default function TableOfContents({ content }: TableOfContentsProps) {
 
   return (
     <nav className="blog-toc" aria-label="Table of contents">
-      <p className="text-[10px] uppercase tracking-[0.2em] text-gold mb-4">
+      <p className="text-xs uppercase tracking-[0.2em] text-gold mb-4">
         Contents
       </p>
       <ul className="space-y-1">

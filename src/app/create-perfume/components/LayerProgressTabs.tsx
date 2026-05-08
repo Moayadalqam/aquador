@@ -90,7 +90,7 @@ export function LayerProgressTabs({
                   <motion.span
                     initial={reducedMotion ? undefined : { opacity: 0, y: -5 }}
                     animate={reducedMotion ? undefined : { opacity: 1, y: 0 }}
-                    className="block text-[10px] sm:text-xs mt-0.5 opacity-70"
+                    className="block text-xs sm:text-xs mt-0.5 opacity-70"
                   >
                     {selectedNote.icon} {selectedNote.name}
                   </motion.span>

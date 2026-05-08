@@ -84,7 +84,7 @@ export default function Categories() {
                     <p className="text-xs text-gray-300 tracking-wide mb-6 transition-colors duration-300 group-hover:text-gray-200">
                       {feature.description}
                     </p>
-                    <span className="inline-flex items-center gap-2.5 text-gold text-[10px] uppercase tracking-[0.2em] border-b border-gold/0 group-hover:border-gold/40 pb-1 transition-all duration-500">
+                    <span className="inline-flex items-center gap-2.5 text-gold text-xs uppercase tracking-[0.2em] border-b border-gold/0 group-hover:border-gold/40 pb-1 transition-all duration-500">
                       Explore Collection
                       <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
                     </span>

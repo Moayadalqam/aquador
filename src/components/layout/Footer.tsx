@@ -216,7 +216,7 @@ export default function Footer() {
             {trustBadges.map(({ icon: Icon, label }) => (
               <li
                 key={label}
-                className="flex items-center justify-center gap-2 text-[10px] uppercase tracking-[0.18em] text-black/55"
+                className="flex items-center justify-center gap-2 text-xs uppercase tracking-[0.18em] text-black/55"
               >
                 <Icon className="w-3.5 h-3.5 text-gold-dark flex-shrink-0" strokeWidth={1.75} />
                 <span>{label}</span>

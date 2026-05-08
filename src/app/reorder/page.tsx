@@ -338,9 +338,9 @@ export default function ReorderPage() {
 
           {/* Header row */}
           <div className="hidden sm:grid grid-cols-[1fr_120px_100px_40px] gap-3 mb-3 px-3">
-            <span className="text-[10px] text-gray-400 tracking-wider uppercase">Perfume Code</span>
-            <span className="text-[10px] text-gray-400 tracking-wider uppercase">Category</span>
-            <span className="text-[10px] text-gray-400 tracking-wider uppercase">Amount</span>
+            <span className="text-xs text-gray-400 tracking-wider uppercase">Perfume Code</span>
+            <span className="text-xs text-gray-400 tracking-wider uppercase">Category</span>
+            <span className="text-xs text-gray-400 tracking-wider uppercase">Amount</span>
             <span></span>
           </div>
 
@@ -358,7 +358,7 @@ export default function ReorderPage() {
                 >
                   {/* Code input */}
                   <div className="sm:contents">
-                    <label className="sm:hidden text-[10px] text-gray-400 tracking-wider uppercase mb-1 block">
+                    <label className="sm:hidden text-xs text-gray-400 tracking-wider uppercase mb-1 block">
                       Perfume Code
                     </label>
                     <input
@@ -375,7 +375,7 @@ export default function ReorderPage() {
 
                   {/* Category selector */}
                   <div className="sm:contents">
-                    <label className="sm:hidden text-[10px] text-gray-400 tracking-wider uppercase mb-1 block">
+                    <label className="sm:hidden text-xs text-gray-400 tracking-wider uppercase mb-1 block">
                       Category
                     </label>
                     <select
@@ -402,7 +402,7 @@ export default function ReorderPage() {
 
                   {/* Amount input */}
                   <div className="sm:contents">
-                    <label className="sm:hidden text-[10px] text-gray-400 tracking-wider uppercase mb-1 block">
+                    <label className="sm:hidden text-xs text-gray-400 tracking-wider uppercase mb-1 block">
                       Amount
                     </label>
                     <input

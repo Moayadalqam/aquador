@@ -284,7 +284,7 @@ export function SignatureStoriesMobile() {
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
             <div className="relative z-10 h-full flex flex-col justify-end p-8">
               <p
-                className="text-[10px] tracking-[0.28em] uppercase font-light mb-3"
+                className="text-xs tracking-[0.28em] uppercase font-light mb-3"
                 style={{ color: story.accent }}
               >
                 {story.eyebrow}

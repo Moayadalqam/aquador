@@ -51,7 +51,7 @@ export default function ShareButtons({ url, title }: ShareButtonsProps) {
 
   return (
     <div className="flex items-center gap-3">
-      <span className="text-[10px] uppercase tracking-[0.15em] text-gray-500 mr-1">
+      <span className="text-xs uppercase tracking-[0.15em] text-gray-500 mr-1">
         <Share2 className="w-3.5 h-3.5 inline mr-1.5" />
         Share
       </span>

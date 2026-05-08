@@ -28,7 +28,7 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
           {/* Featured badge */}
           <div className="flex items-center gap-2 mb-6">
             <Sparkles className="w-3.5 h-3.5 text-gold" />
-            <span className="text-[10px] uppercase tracking-[0.25em] text-gold font-medium">
+            <span className="text-xs uppercase tracking-[0.25em] text-gold font-medium">
               Featured Article
             </span>
           </div>
@@ -36,17 +36,17 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
           {/* Category & Meta */}
           <div className="flex flex-wrap items-center gap-3 mb-5">
             {post.category && (
-              <span className="text-[10px] uppercase tracking-[0.2em] text-gold bg-gold/8 px-3 py-1.5 border border-gold/10">
+              <span className="text-xs uppercase tracking-[0.2em] text-gold bg-gold/8 px-3 py-1.5 border border-gold/10">
                 {post.category}
               </span>
             )}
             {post.published_at && (
-              <span className="text-[10px] uppercase tracking-[0.15em] text-gray-500">
+              <span className="text-xs uppercase tracking-[0.15em] text-gray-500">
                 {formatBlogDate(post.published_at)}
               </span>
             )}
             {post.read_time && (
-              <span className="text-[10px] uppercase tracking-[0.15em] text-gray-400">
+              <span className="text-xs uppercase tracking-[0.15em] text-gray-400">
                 {post.read_time} min read
               </span>
             )}
@@ -75,7 +75,7 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
               <div>
                 <p className="text-sm text-black font-medium">{post.author_name}</p>
                 {post.author_role && (
-                  <p className="text-[10px] text-gray-500 uppercase tracking-wider">
+                  <p className="text-xs text-gray-500 uppercase tracking-wider">
                     {post.author_role}
                   </p>
                 )}

@@ -323,7 +323,7 @@ export function LocationMap({
               transition={{ duration: 0.2 }}
             >
               <div className="h-1.5 w-1.5 rounded-full bg-gold" />
-              <span className="text-muted-foreground text-[10px] font-medium tracking-wide uppercase">
+              <span className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
                 Live
               </span>
             </motion.div>
@@ -370,7 +370,7 @@ export function LocationMap({
 
       {/* Click hint */}
       <motion.p
-        className="text-muted-foreground absolute -bottom-6 left-1/2 text-[10px] whitespace-nowrap"
+        className="text-muted-foreground absolute -bottom-6 left-1/2 text-xs whitespace-nowrap"
         style={{ x: "-50%" }}
         initial={{ opacity: 0 }}
         animate={{

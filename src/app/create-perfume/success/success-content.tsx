@@ -96,19 +96,19 @@ export function SuccessContent() {
 
             <div className="rounded-2xl border border-black/[0.06] bg-white p-6 space-y-5 text-left">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] uppercase tracking-wider text-gray-400">Order Number</span>
+                <span className="text-xs uppercase tracking-wider text-gray-400">Order Number</span>
                 <span className="text-sm font-medium text-gold">{orderData.orderNumber}</span>
               </div>
 
               <div className="h-px bg-black/[0.04]" />
 
               <div>
-                <span className="text-[10px] uppercase tracking-wider text-gray-400 block mb-2">Your Creation</span>
+                <span className="text-xs uppercase tracking-wider text-gray-400 block mb-2">Your Creation</span>
                 <p className="font-playfair text-lg text-black mb-3">{orderData.perfumeName}</p>
                 <div className="space-y-2">
                   {(['top', 'heart', 'base'] as const).map(layer => (
                     <div key={layer} className="flex items-center gap-3">
-                      <span className="text-[10px] uppercase tracking-wider text-gray-400 w-10">{layer}</span>
+                      <span className="text-xs uppercase tracking-wider text-gray-400 w-10">{layer}</span>
                       <span className="text-sm text-black">{orderData.composition[layer]}</span>
                     </div>
                   ))}

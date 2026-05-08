@@ -57,7 +57,7 @@ export function ProductCard({
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
           />
           {salePrice && salePrice < price && (
-            <span className="absolute top-4 left-4 bg-gold text-black text-[10px] uppercase tracking-wider px-3 py-1.5 font-medium">
+            <span className="absolute top-4 left-4 bg-gold text-black text-xs uppercase tracking-wider px-3 py-1.5 font-medium">
               Sale
             </span>
           )}
@@ -85,7 +85,7 @@ export function ProductCard({
                 )}
               </div>
               {size && (
-                <span className="text-[10px] text-gray-500 uppercase tracking-wider">
+                <span className="text-xs text-gray-500 uppercase tracking-wider">
                   {size}
                 </span>
               )}

@@ -131,7 +131,7 @@ export default function MaintenanceClient() {
       {/* Login link */}
       <button
         onClick={() => setShowLogin(true)}
-        className="mt-16 text-[10px] text-gray-300 hover:text-gray-500 transition-colors tracking-[0.1em] uppercase font-[family-name:var(--font-poppins)]"
+        className="mt-16 text-xs text-gray-300 hover:text-gray-500 transition-colors tracking-[0.1em] uppercase font-[family-name:var(--font-poppins)]"
       >
         Login with code
       </button>

@@ -89,7 +89,7 @@ export default function AdminSidebar({ isOpen, onClose, liveChatCount }: AdminSi
               <MessageCircle className="h-5 w-5" />
               Live Chat
               {liveChatCount > 0 && (
-                <span className="ml-auto bg-amber-500 text-black text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center animate-pulse">
+                <span className="ml-auto bg-amber-500 text-black text-xs font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center animate-pulse">
                   {liveChatCount}
                 </span>
               )}

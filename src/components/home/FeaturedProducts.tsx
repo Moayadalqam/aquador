@@ -58,7 +58,7 @@ const FeaturedProductCard = React.memo(function FeaturedProductCard({
         {/* Content */}
         <div className="space-y-1.5">
           {product.brand && (
-            <p className="eyebrow text-gold-accessible text-[10px]">{product.brand}</p>
+            <p className="eyebrow text-gold-accessible text-xs">{product.brand}</p>
           )}
           <h3 className="font-playfair text-sm md:text-[15px] text-gray-900 group-hover:text-gold-dark transition-colors duration-300 line-clamp-1 leading-snug">
             {product.name}
@@ -77,7 +77,7 @@ const FeaturedProductCard = React.memo(function FeaturedProductCard({
               )}
             </div>
             {product.size && (
-              <span className="text-[10px] text-gray-400 uppercase tracking-wide">
+              <span className="text-xs text-gray-400 uppercase tracking-wide">
                 {product.size}
               </span>
             )}

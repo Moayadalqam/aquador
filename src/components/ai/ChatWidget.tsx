@@ -225,7 +225,7 @@ export default function ChatWidget() {
               <div className="flex flex-col h-full">
                 <div className="bg-gradient-to-r from-gold/10 to-gold-light/10 border-b border-gold/20 p-2.5 flex items-center gap-2.5">
                   <div className="relative w-9 h-9 rounded-full overflow-hidden bg-white border border-gold/30 flex items-center justify-center"><Image src="/aquador-logo.png" alt="Aquad'or" width={36} height={36} className="object-cover" /></div>
-                  <div className="flex-1"><h3 className="text-black font-semibold text-sm">How can we help?</h3><p className="text-[10px] text-gray-400">Choose an option below</p></div>
+                  <div className="flex-1"><h3 className="text-black font-semibold text-sm">How can we help?</h3><p className="text-xs text-gray-400">Choose an option below</p></div>
                   <button onClick={() => setIsOpen(false)} className="p-1 hover:bg-white/10 rounded-full transition-colors min-[481px]:hidden"><X className="w-5 h-5 text-gray-400" /></button>
                 </div>
                 <div className="flex-1 flex flex-col gap-3 p-4 justify-center">
@@ -247,7 +247,7 @@ export default function ChatWidget() {
                 <div className="bg-gradient-to-r from-gold/10 to-gold-light/10 border-b border-gold/20 p-2.5 flex items-center gap-2.5">
                   <button onClick={() => setMode('menu')} className="p-1 hover:bg-black/5 rounded-full transition-colors cursor-pointer"><ArrowLeft className="w-4 h-4 text-gray-500" /></button>
                   <div className="relative w-9 h-9 rounded-full overflow-hidden bg-white border border-gold/30 flex items-center justify-center"><Image src="/aquador-logo.png" alt="Aquad'or" width={36} height={36} className="object-cover" /></div>
-                  <div className="flex-1"><h3 className="text-black font-semibold text-sm flex items-center gap-1.5">Aquad{"'"}or<span className="w-1.5 h-1.5 bg-green-500 rounded-full" /></h3><p className="text-[10px] text-gray-400">AI Fragrance Expert</p></div>
+                  <div className="flex-1"><h3 className="text-black font-semibold text-sm flex items-center gap-1.5">Aquad{"'"}or<span className="w-1.5 h-1.5 bg-green-500 rounded-full" /></h3><p className="text-xs text-gray-400">AI Fragrance Expert</p></div>
                   <button onClick={() => setIsOpen(false)} className="p-1 hover:bg-white/10 rounded-full transition-colors min-[481px]:hidden"><X className="w-5 h-5 text-gray-400" /></button>
                 </div>
                 <div className="flex-1 overflow-y-auto p-2.5 space-y-2.5" role="log" aria-live="polite">
@@ -255,7 +255,7 @@ export default function ChatWidget() {
                   {isLoading && (<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start"><div className="bg-gray-100 border border-gold/10 rounded-2xl px-3 py-2 flex items-center gap-2"><Loader2 className="w-3.5 h-3.5 text-gold animate-spin" /><span className="text-xs text-gray-400">Thinking...</span></div></motion.div>)}
                   <div ref={messagesEndRef} />
                 </div>
-                {messages.length <= 2 && (<div className="px-2.5 pb-1.5"><div className="flex flex-wrap gap-1">{suggestions.map((s, i) => (<button key={i} onClick={() => { setInput(s); inputRef.current?.focus(); }} className="text-[10px] px-2 py-1 bg-gray-100 border border-gold/20 text-gray-700 rounded-full hover:border-gold hover:text-gold transition-all cursor-pointer">{s}</button>))}</div></div>)}
+                {messages.length <= 2 && (<div className="px-2.5 pb-1.5"><div className="flex flex-wrap gap-1">{suggestions.map((s, i) => (<button key={i} onClick={() => { setInput(s); inputRef.current?.focus(); }} className="text-xs px-2 py-1 bg-gray-100 border border-gold/20 text-gray-700 rounded-full hover:border-gold hover:text-gold transition-all cursor-pointer">{s}</button>))}</div></div>)}
                 <div className="border-t border-gold/20 p-2.5 bg-gray-50">
                   <div className="flex items-center gap-2">
                     <input ref={inputRef} type="text" value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKeyPress} placeholder="Ask about fragrances..." aria-label="Ask about fragrances" disabled={isLoading} className="flex-1 bg-white border border-gold/20 text-black placeholder-gray-500 px-3 py-2 text-sm rounded-xl focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-1 focus-visible:outline-none transition-colors disabled:opacity-50" />
@@ -273,7 +273,7 @@ export default function ChatWidget() {
                   <div className="w-9 h-9 rounded-full bg-gold/10 border border-gold/30 flex items-center justify-center"><User className="w-5 h-5 text-gold" /></div>
                   <div className="flex-1">
                     <h3 className="text-black font-semibold text-sm flex items-center gap-1.5">Live Chat<span className={`w-1.5 h-1.5 rounded-full ${liveStatus === 'active' ? 'bg-green-500' : liveStatus === 'waiting' ? 'bg-amber-400 animate-pulse' : 'bg-gray-400'}`} /></h3>
-                    <p className="text-[10px] text-gray-400">{liveStatus === 'waiting' && 'Waiting for an agent...'}{liveStatus === 'active' && 'Connected to agent'}{liveStatus === 'closed' && 'Chat ended'}</p>
+                    <p className="text-xs text-gray-400">{liveStatus === 'waiting' && 'Waiting for an agent...'}{liveStatus === 'active' && 'Connected to agent'}{liveStatus === 'closed' && 'Chat ended'}</p>
                   </div>
                   <button onClick={() => setIsOpen(false)} className="p-1 hover:bg-white/10 rounded-full transition-colors min-[481px]:hidden"><X className="w-5 h-5 text-gray-400" /></button>
                 </div>

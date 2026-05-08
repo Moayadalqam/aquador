@@ -398,7 +398,7 @@ export default function AdminLiveChat() {
                           {msg.content}
                         </p>
                         <p
-                          className={`text-[10px] mt-1 ${
+                          className={`text-xs mt-1 ${
                             msg.sender_type === 'admin'
                               ? 'text-dark/60'
                               : 'text-gray-500'

@@ -17,7 +17,7 @@ const playfair = Playfair_Display({
 const poppins = Poppins({
   subsets: ["latin"],
   variable: "--font-poppins",
-  display: "optional",
+  display: "swap",
   weight: ["300", "400", "600"],
 });
 
@@ -84,7 +84,6 @@ export const metadata: Metadata = {
     canonical: 'https://aquadorcy.com',
     languages: {
       'en-CY': 'https://aquadorcy.com',
-      'en-GB': 'https://aquadorcy.com',
       'x-default': 'https://aquadorcy.com',
     },
   },

@@ -138,7 +138,7 @@ export function AnimatedTypeFilter({
             onClick={() => onTypeChange(type.id)}
             className={`
               px-3 py-1 min-h-[44px] flex items-center
-              text-[10px] uppercase tracking-[0.12em]
+              text-xs uppercase tracking-[0.12em]
               transition-colors
               ${isActive ? 'text-gold' : 'text-gray-600 hover:text-black'}
             `}

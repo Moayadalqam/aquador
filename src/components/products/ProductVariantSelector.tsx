@@ -81,7 +81,7 @@ export default function ProductVariantSelector({
     <div className="space-y-5">
       {/* Type selector */}
       <div>
-        <p className="text-[10px] uppercase tracking-[0.15em] text-gray-400 mb-3">
+        <p className="text-xs uppercase tracking-[0.15em] text-gray-400 mb-3">
           Product Type
         </p>
         <div className="flex gap-2" role="radiogroup" aria-label="Product type">
@@ -108,7 +108,7 @@ export default function ProductVariantSelector({
 
       {/* Size selector */}
       <div>
-        <p className="text-[10px] uppercase tracking-[0.15em] text-gray-400 mb-3">
+        <p className="text-xs uppercase tracking-[0.15em] text-gray-400 mb-3">
           Size
         </p>
         <div className="flex gap-2" role="radiogroup" aria-label="Size">

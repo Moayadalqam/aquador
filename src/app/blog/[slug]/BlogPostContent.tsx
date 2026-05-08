@@ -60,7 +60,7 @@ export default function BlogPostContent({ post, relatedPosts }: BlogPostContentP
               {/* Category & Meta */}
               <div className="flex flex-wrap items-center gap-3 mb-6">
                 {post.category && (
-                  <span className="text-[10px] uppercase tracking-[0.2em] text-gold bg-gold/10 px-3 py-1">
+                  <span className="text-xs uppercase tracking-[0.2em] text-gold bg-gold/10 px-3 py-1">
                     {post.category}
                   </span>
                 )}
@@ -91,7 +91,7 @@ export default function BlogPostContent({ post, relatedPosts }: BlogPostContentP
                   <div>
                     <p className="text-sm text-black">{post.author_name}</p>
                     {post.author_role && (
-                      <p className="text-[10px] text-gray-500 uppercase tracking-wider">
+                      <p className="text-xs text-gray-500 uppercase tracking-wider">
                         {post.author_role}
                       </p>
                     )}
@@ -116,7 +116,7 @@ export default function BlogPostContent({ post, relatedPosts }: BlogPostContentP
                   {post.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="text-[10px] uppercase tracking-[0.15em] text-gray-400 border border-gold/10 px-3 py-1.5"
+                      className="text-xs uppercase tracking-[0.15em] text-gray-400 border border-gold/10 px-3 py-1.5"
                     >
                       {tag}
                     </span>

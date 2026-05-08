@@ -116,7 +116,7 @@ export function FragrancePyramid({
                       className="flex items-center gap-1 text-black/80"
                     >
                       <span>{note.icon}</span>
-                      <span className="text-[10px]">{note.name}</span>
+                      <span className="text-xs">{note.name}</span>
                     </motion.span>
                   )}
                 </div>
