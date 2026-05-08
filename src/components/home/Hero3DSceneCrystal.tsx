@@ -101,7 +101,7 @@ function createBottleBodyGeometry() {
     bevelEnabled: true,
     bevelSize: 0.075,
     bevelThickness: 0.12,
-    bevelSegments: 8,
+    bevelSegments: 4,
     curveSegments: 2,
   });
   geometry.center();
@@ -119,7 +119,7 @@ function createInnerPanelGeometry() {
   shape.quadraticCurveTo(0.52, -0.28, 0.44, -1.15);
   shape.quadraticCurveTo(0.24, -1.34, 0, -1.35);
   shape.quadraticCurveTo(-0.24, -1.34, -0.44, -1.15);
-  const geometry = new THREE.ShapeGeometry(shape, 64);
+  const geometry = new THREE.ShapeGeometry(shape, 32);
   geometry.computeVertexNormals();
   return geometry;
 }
@@ -129,7 +129,7 @@ function GoldCylinder({
   radiusTop = 1,
   radiusBottom = 1,
   height = 1,
-  segments = 96,
+  segments = 48,
 }: {
   position: [number, number, number];
   radiusTop?: number;
@@ -138,7 +138,7 @@ function GoldCylinder({
   segments?: number;
 }) {
   return (
-    <mesh position={position} castShadow receiveShadow>
+    <mesh position={position}>
       <cylinderGeometry args={[radiusTop, radiusBottom, height, segments, 1, false]} />
       <meshStandardMaterial color="#d8aa2f" metalness={1} roughness={0.16} envMapIntensity={2.4} />
     </mesh>
@@ -160,8 +160,8 @@ function GoldMotes({ scrollYProgress }: Props) {
       ySpeed: number;
       yRange: number;
     }> = [];
-    for (let i = 0; i < 36; i++) {
-      const angle = (i / 36) * Math.PI * 2;
+    for (let i = 0; i < 16; i++) {
+      const angle = (i / 16) * Math.PI * 2;
       const radius = 1.9 + Math.random() * 2.6;
       const y = (Math.random() - 0.5) * 4.2;
       items.push({
@@ -220,10 +220,10 @@ function CrystalBottle({ scrollYProgress }: Props) {
   const panelGeometry = useMemo(() => createInnerPanelGeometry(), []);
   const logoTexture = useMemo(() => makeLotusLogoTexture(), []);
 
-  // Scroll-driven scale + Y position + subtle tilt
+  // Scroll-driven scale + Y position + subtle tilt — sized down ~30% from v1
   const rotationX = useTransform(scrollYProgress, [0, 0.5, 1], [0.18, 0, -0.14]);
-  const scale = useTransform(scrollYProgress, [0, 0.3, 0.6, 1], [0.78, 1.05, 1.1, 0.86]);
-  const positionY = useTransform(scrollYProgress, [0, 0.5, 1], [-0.4, 0.05, 0.45]);
+  const scale = useTransform(scrollYProgress, [0, 0.3, 0.6, 1], [0.55, 0.74, 0.78, 0.62]);
+  const positionY = useTransform(scrollYProgress, [0, 0.5, 1], [-0.3, 0.05, 0.35]);
 
   useFrame(({ clock }) => {
     if (!groupRef.current) return;
@@ -236,33 +236,33 @@ function CrystalBottle({ scrollYProgress }: Props) {
 
   return (
     <group ref={groupRef} position={[0, -0.1, 0]}>
-      {/* Crystal-glass body */}
-      <mesh geometry={bodyGeometry} castShadow receiveShadow>
+      {/* Crystal-glass body — samples reduced to 4 for perf */}
+      <mesh geometry={bodyGeometry}>
         <MeshTransmissionMaterial
           backside
-          samples={10}
+          samples={4}
+          resolution={256}
           thickness={0.7}
-          chromaticAberration={0.05}
-          anisotropy={0.12}
-          distortion={0.03}
-          distortionScale={0.16}
-          temporalDistortion={0.02}
+          chromaticAberration={0.04}
+          anisotropy={0.1}
+          distortion={0}
           transmission={1}
-          roughness={0.015}
+          roughness={0.02}
           ior={1.52}
           color="#ffffff"
           attenuationColor="#fff7e0"
           attenuationDistance={1.8}
           clearcoat={1}
-          envMapIntensity={2.6}
+          envMapIntensity={2.4}
         />
       </mesh>
 
       {/* Inner raised front panel */}
-      <mesh geometry={panelGeometry} position={[0, -0.14, 0.333]} castShadow>
+      <mesh geometry={panelGeometry} position={[0, -0.14, 0.333]}>
         <MeshTransmissionMaterial
           backside
-          samples={6}
+          samples={3}
+          resolution={128}
           thickness={0.32}
           transmission={1}
           roughness={0.02}
@@ -295,13 +295,14 @@ function CrystalBottle({ scrollYProgress }: Props) {
       ))}
 
       {/* Thick clear base */}
-      <mesh position={[0, -1.74, 0.02]} castShadow receiveShadow>
+      <mesh position={[0, -1.74, 0.02]}>
         <boxGeometry args={[1.36, 0.24, 0.62]} />
         <MeshTransmissionMaterial
-          samples={6}
+          samples={2}
+          resolution={128}
           thickness={0.5}
           transmission={1}
-          roughness={0.01}
+          roughness={0.02}
           ior={1.52}
           color="#ffffff"
           attenuationDistance={1.1}
@@ -322,18 +323,11 @@ function CrystalBottle({ scrollYProgress }: Props) {
       <GoldCylinder position={[0, 1.89, 0]} radiusTop={0.76} radiusBottom={0.46} height={0.28} />
       <GoldCylinder position={[0, 2.07, 0]} radiusTop={0.78} radiusBottom={0.78} height={0.18} />
 
-      {/* Knurled cap top */}
-      {Array.from({ length: 80 }).map((_, i) => {
-        const angle = (i / 80) * Math.PI * 2;
-        const x = Math.cos(angle) * 0.735;
-        const z = Math.sin(angle) * 0.735;
-        return (
-          <mesh key={i} position={[x, 2.18, z]} rotation={[0, -angle, 0]}>
-            <boxGeometry args={[0.015, 0.035, 0.034]} />
-            <meshStandardMaterial color="#f0c94d" metalness={1} roughness={0.18} />
-          </mesh>
-        );
-      })}
+      {/* Knurled cap top — single torus replaces 80 individual boxes (huge draw-call save) */}
+      <mesh position={[0, 2.18, 0]} rotation={[Math.PI / 2, 0, 0]}>
+        <torusGeometry args={[0.735, 0.018, 6, 48]} />
+        <meshStandardMaterial color="#f0c94d" metalness={1} roughness={0.22} />
+      </mesh>
     </group>
   );
 }
@@ -342,11 +336,10 @@ export default function Hero3DSceneCrystal({ scrollYProgress }: Props) {
   return (
     <div className="absolute inset-0" aria-hidden="true">
       <Canvas
-        shadows
         gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
-        dpr={[1, 1.75]}
+        dpr={[1, 1.4]}
       >
-        <PerspectiveCamera makeDefault position={[0, 0.55, 5.4]} fov={35} />
+        <PerspectiveCamera makeDefault position={[0, 0.4, 7.5]} fov={32} />
 
         <OrbitControls
           enableZoom={false}
@@ -383,11 +376,11 @@ export default function Hero3DSceneCrystal({ scrollYProgress }: Props) {
           <GoldMotes scrollYProgress={scrollYProgress} />
           <Environment preset="studio" />
           <ContactShadows
-            position={[0, -2.05, 0]}
-            opacity={0.55}
-            scale={6}
-            blur={2.4}
-            far={3}
+            position={[0, -1.6, 0]}
+            opacity={0.5}
+            scale={4.5}
+            blur={2}
+            far={2.5}
             frames={1}
           />
         </Suspense>
