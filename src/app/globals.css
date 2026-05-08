@@ -379,11 +379,11 @@ body {
 
   /* Micro label - for brands, categories */
   .label-micro {
-    @apply text-[10px] uppercase tracking-[0.2em] text-gray-500;
+    @apply text-xs uppercase tracking-[0.2em] text-gray-500;
   }
 
   .label-micro-gold {
-    @apply text-[10px] uppercase tracking-[0.2em] text-gold;
+    @apply text-xs uppercase tracking-[0.2em] text-gold;
   }
 
   /* Link with underline animation */
@@ -1215,7 +1215,7 @@ select:focus-visible,
 }
 
 .blog-product-card .blog-product-btn {
-  @apply inline-block text-[10px] uppercase tracking-[0.2em] text-gold border border-gold/30 px-5 py-2 hover:bg-gold hover:text-black transition-all duration-300;
+  @apply inline-block text-xs uppercase tracking-[0.2em] text-gold border border-gold/30 px-5 py-2 hover:bg-gold hover:text-black transition-all duration-300;
 }
 
 /* ==========================================================================
