@@ -293,12 +293,32 @@ export default function CreatePerfumePage() {
                   className="relative"
                 >
                   <div className="relative aspect-square sm:aspect-[4/5] overflow-visible">
+                    {/* Soft floor pool — warmest near the bottle's base */}
                     <div
                       className="absolute inset-0 pointer-events-none"
                       aria-hidden="true"
                       style={{
                         background:
-                          'radial-gradient(ellipse 70% 60% at 50% 55%, rgba(212,175,55,0.18) 0%, transparent 65%)',
+                          'radial-gradient(ellipse 65% 55% at 50% 60%, rgba(212,175,55,0.22) 0%, rgba(212,175,55,0.08) 40%, transparent 70%)',
+                      }}
+                    />
+                    {/* Vertical spotlight beam — narrow cone of warm light from above */}
+                    <div
+                      className="absolute inset-x-0 top-0 h-3/4 pointer-events-none"
+                      aria-hidden="true"
+                      style={{
+                        background:
+                          'radial-gradient(ellipse 22% 80% at 50% 0%, rgba(255,239,200,0.34) 0%, rgba(212,175,55,0.12) 30%, transparent 65%)',
+                        mixBlendMode: 'screen',
+                      }}
+                    />
+                    {/* Tiny gold scintillae — barely-there sparkle dots, decorative only */}
+                    <div
+                      className="absolute inset-0 pointer-events-none opacity-60"
+                      aria-hidden="true"
+                      style={{
+                        backgroundImage:
+                          'radial-gradient(circle 1px at 22% 18%, rgba(212,175,55,0.65) 50%, transparent 51%), radial-gradient(circle 1px at 78% 28%, rgba(255,215,0,0.55) 50%, transparent 51%), radial-gradient(circle 1.5px at 14% 64%, rgba(212,175,55,0.5) 50%, transparent 51%), radial-gradient(circle 1px at 84% 72%, rgba(212,175,55,0.6) 50%, transparent 51%), radial-gradient(circle 1px at 50% 88%, rgba(255,215,0,0.5) 50%, transparent 51%)',
                       }}
                     />
                     <PerfumeBottle3D
