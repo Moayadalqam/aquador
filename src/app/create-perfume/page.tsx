@@ -215,9 +215,9 @@ export default function CreatePerfumePage() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.5 }}
-              className="min-h-screen flex items-center pt-24 pb-16"
+              className="min-h-screen flex items-center pt-24 pb-16 overflow-x-clip"
             >
-              <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-20 items-center">
+              <div className="max-w-6xl w-full mx-auto px-6 grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-20 items-center">
                 {/* Copy column */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -228,12 +228,11 @@ export default function CreatePerfumePage() {
                     Bespoke Fragrance Atelier
                   </p>
                   <h1
-                    className="font-playfair font-semibold leading-[1.05] tracking-tight mb-6"
-                    style={{ fontSize: 'clamp(2.25rem, 1.5rem + 3vw, 4rem)' }}
+                    className="font-playfair font-semibold leading-[1.05] tracking-tight mb-6 [text-wrap:balance]"
+                    style={{ fontSize: 'clamp(1.875rem, 0.75rem + 4.2vw, 4rem)' }}
                   >
-                    Your scent,
-                    <br />
-                    <span className="italic text-gold-dark">composed layer by layer.</span>
+                    Your scent,{' '}
+                    <span className="italic text-gold-dark block sm:inline">composed layer by layer.</span>
                   </h1>
                   <div className="w-14 h-px bg-gold-dark mb-6" />
                   <p className="text-neutral-600 text-base md:text-lg leading-relaxed max-w-xl mb-10">
@@ -304,7 +303,7 @@ export default function CreatePerfumePage() {
                     <PerfumeBottle3D
                       composition={composition}
                       activeLayer={activeLayer}
-                      className="absolute inset-0 scale-110"
+                      className="absolute inset-0 scale-100 lg:scale-110"
                       fallback={bottleFallback}
                     />
                   </div>
