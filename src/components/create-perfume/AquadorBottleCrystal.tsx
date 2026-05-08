@@ -496,17 +496,12 @@ function Bottle({
 function StudioLights() {
   return (
     <>
-      <ambientLight intensity={0.55} color="#FFF6E0" />
-      <spotLight
-        position={[4.5, 6, 4]}
-        angle={0.35}
-        penumbra={0.75}
-        intensity={4.8}
-        castShadow
-        shadow-mapSize={[2048, 2048]}
-      />
-      <pointLight position={[-3.8, 3.3, 3]} intensity={1.6} color="#FFE1A8" />
-      <pointLight position={[3, 2.8, -2.5]} intensity={0.9} color="#FFD700" />
+      <ambientLight intensity={0.85} color="#FFF6E0" />
+      <directionalLight position={[5, 8, 5]} intensity={2.2} color="#FFFAF0" castShadow shadow-mapSize={[2048, 2048]} />
+      <directionalLight position={[-5, 5, 3]} intensity={1.2} color="#FFE1A8" />
+      <directionalLight position={[0, -3, 5]} intensity={0.55} color="#FFD9A0" />
+      <pointLight position={[3, 2.8, -2.5]} intensity={1.4} color="#FFD700" />
+      <pointLight position={[-3, 1, 4]} intensity={0.9} color="#FFEBC1" />
     </>
   );
 }
@@ -531,7 +526,7 @@ export default function AquadorBottleCrystal({
         <Canvas
           shadows
           dpr={[1, 1.75]}
-          camera={{ position: [0, 0.55, 5.4], fov: 35 }}
+          camera={{ position: [0, 0.4, 6.4], fov: 32 }}
           gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
           style={{ width: '100%', height: '100%' }}
         >
@@ -544,19 +539,20 @@ export default function AquadorBottleCrystal({
                 onUserInteract={() => setHasInteracted(true)}
               />
             </Float>
-            {/* Synthetic studio environment via Lightformers — keeps gold reflections sharp without fetching an external HDR (CSP-friendly). */}
-            <Environment resolution={256} frames={1}>
-              <color attach="background" args={['#f4f1ea']} />
-              <Lightformer position={[5, 5, 2]} scale={[8, 4, 1]} intensity={1.6} color="#fff5d8" />
-              <Lightformer position={[-5, 3, -1]} scale={[6, 6, 1]} intensity={1.2} color="#ffe1a8" />
-              <Lightformer position={[0, -3, 4]} scale={[5, 5, 1]} intensity={0.6} color="#ffd9a8" />
-              <Lightformer
-                position={[3, -2, -3]}
-                rotation={[0, Math.PI, 0]}
-                scale={[4, 4, 1]}
-                intensity={0.8}
-                color="#fff6d8"
-              />
+            {/* Studio reflection map — Lightformers positioned outside camera frustum so they
+                shape the gold's specular highlights without showing through the glass body.
+                resolution=128 frames=1 = one off-screen render at component mount. */}
+            <Environment resolution={128} frames={1} background={false}>
+              <color attach="background" args={['#fafaf6']} />
+              {/* Top key — the brightest highlight on cap & shoulders */}
+              <Lightformer form="rect" position={[0, 6, 1]} rotation={[Math.PI / 2, 0, 0]} scale={[6, 4, 1]} intensity={2.6} color="#fff6dc" />
+              {/* Side fill — soft warmth on rims */}
+              <Lightformer form="rect" position={[-5, 1.5, 2]} scale={[3, 6, 1]} intensity={1.5} color="#ffe7b2" />
+              <Lightformer form="rect" position={[5, 1.5, 2]} scale={[3, 6, 1]} intensity={1.5} color="#ffe7b2" />
+              {/* Back rim — separates bottle silhouette */}
+              <Lightformer form="rect" position={[0, 2, -5]} scale={[8, 5, 1]} intensity={0.9} color="#fff2d0" />
+              {/* Floor bounce — warms the base */}
+              <Lightformer form="rect" position={[0, -4, 1]} rotation={[-Math.PI / 2, 0, 0]} scale={[6, 5, 1]} intensity={0.7} color="#ffe2a8" />
             </Environment>
             <ContactShadows
               position={[0, -2.18, 0]}
