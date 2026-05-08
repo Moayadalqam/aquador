@@ -228,11 +228,12 @@ export default function CreatePerfumePage() {
                     Bespoke Fragrance Atelier
                   </p>
                   <h1
-                    className="font-playfair font-semibold leading-[1.05] tracking-tight mb-6 [text-wrap:balance]"
+                    className="font-playfair font-semibold leading-[1.05] tracking-tight mb-6"
                     style={{ fontSize: 'clamp(1.875rem, 0.75rem + 4.2vw, 4rem)' }}
                   >
-                    Your scent,{' '}
-                    <span className="italic text-gold-dark block sm:inline">composed layer by layer.</span>
+                    Your scent,
+                    <br />
+                    <span className="italic text-gold-dark">composed layer by layer.</span>
                   </h1>
                   <div className="w-14 h-px bg-gold-dark mb-6" />
                   <p className="text-neutral-600 text-base md:text-lg leading-relaxed max-w-xl mb-10">
@@ -268,7 +269,7 @@ export default function CreatePerfumePage() {
                   </button>
 
                   {/* Trust line */}
-                  <div className="mt-10 flex flex-wrap gap-x-7 gap-y-3 text-[11px] text-neutral-500">
+                  <div className="mt-10 flex flex-col sm:flex-row sm:flex-wrap gap-x-7 gap-y-2.5 text-[11px] text-neutral-500">
                     <span className="inline-flex items-center gap-2">
                       <ShieldCheck className="w-3.5 h-3.5 text-gold-dark" strokeWidth={1.75} />
                       Secure checkout
