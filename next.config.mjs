@@ -44,7 +44,7 @@ const nextConfig = {
   },
   // CSP connect-src notes:
   // - openrouter.ai: AI fragrance assistant proxy (added v3.2 — allows future client-side move)
-  // - raw.githack.com: pmndrs/drei-assets HDR cube maps for the 3D perfume bottle Environment
+  // - raw.githubusercontent.com: pmndrs/drei-assets HDR cube maps for the 3D perfume bottle Environment
   //   (read-only static texture fetches, no user data ever leaves the page)
   // Server-side only (no CSP entry needed, documented for reference):
   // - api.resend.com: transactional email via Resend (contact form, order confirmations)
@@ -84,7 +84,7 @@ const nextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; img-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' https://vercel.live https://*.vercel.live https://js.stripe.com https://*.sentry.io; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; frame-src https://www.google.com https://js.stripe.com https://vercel.live; media-src 'self' https://*.supabase.co; connect-src 'self' https://api.stripe.com https://openrouter.ai https://vercel.live https://*.vercel.app wss://ws-us3.pusher.com https://*.sentry.io https://*.supabase.co wss://*.supabase.co https://raw.githack.com;",
+            value: "default-src 'self'; img-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' https://vercel.live https://*.vercel.live https://js.stripe.com https://*.sentry.io; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; frame-src https://www.google.com https://js.stripe.com https://vercel.live; media-src 'self' https://*.supabase.co; connect-src 'self' https://api.stripe.com https://openrouter.ai https://vercel.live https://*.vercel.app wss://ws-us3.pusher.com https://*.sentry.io https://*.supabase.co wss://*.supabase.co https://raw.githubusercontent.com;",
           },
         ],
       },
