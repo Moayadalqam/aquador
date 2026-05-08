@@ -111,13 +111,13 @@ export function useKeyboardControls({
         case '=':
         case 'Add':
           event.preventDefault();
-          onZoom?.(1);
+          onZoom?.(zoomStep);
           break;
 
         case '-':
         case 'Subtract':
           event.preventDefault();
-          onZoom?.(-1);
+          onZoom?.(-zoomStep);
           break;
 
         case 'r':

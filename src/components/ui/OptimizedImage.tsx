@@ -76,6 +76,7 @@ export function OptimizedImage({
       >
         <Image
           {...imageProps}
+          alt={alt}
           fill
           sizes={responsiveSizes || '100vw'}
         />
@@ -92,6 +93,7 @@ export function OptimizedImage({
   return (
     <Image
       {...imageProps}
+      alt={alt}
       width={width}
       height={height}
       sizes={responsiveSizes}

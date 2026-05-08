@@ -1,18 +1,7 @@
 import { getFeaturedAquadorProducts, getFeaturedLattafaProducts } from '@/lib/supabase/product-service';
-import dynamic from 'next/dynamic';
-import Hero from '@/components/home/Hero';
-import TrustBar from '@/components/home/TrustBar';
-import Categories from '@/components/home/Categories';
-import CreateSection from '@/components/home/CreateSection';
-import FeaturedProducts from '@/components/home/FeaturedProducts';
-import ScrollFade from '@/components/home/ScrollFade';
-import { SignatureStoriesMobile } from '@/components/home/SignatureStories';
 import { AnimationBudgetProvider } from '@/lib/performance/animation-budget';
 import JsonLd from '@/components/seo/JsonLd';
-
-const SignatureStories = dynamic(() => import('@/components/home/SignatureStories'), {
-  ssr: false,
-});
+import PremiumHomeExperience from '@/components/home/PremiumHomeExperience';
 
 export const revalidate = 600;
 
@@ -127,38 +116,10 @@ export default async function Home() {
       <JsonLd schema={organizationSchema} />
       <JsonLd schema={websiteSchema} />
       <JsonLd schema={localBusinessSchema} />
-      <div className="home-scroll-wrapper">
-        <section className="home-snap-start">
-          <Hero />
-        </section>
-        <SignatureStories />
-        <SignatureStoriesMobile />
-        <ScrollFade className="home-snap-start" distance={40}>
-          <TrustBar />
-        </ScrollFade>
-        <ScrollFade className="home-snap-start" distance={80}>
-          <Categories />
-        </ScrollFade>
-        <ScrollFade className="home-snap-start" distance={80}>
-          <CreateSection />
-        </ScrollFade>
-        <ScrollFade className="home-snap-start" distance={60}>
-          <FeaturedProducts
-            products={aquadorProducts}
-            title="Featured Aquad'or Perfumes"
-            subtitle="Our signature collection, crafted exclusively for Aquad'or."
-            eyebrow="House Collection"
-          />
-        </ScrollFade>
-        <ScrollFade className="home-snap-start" distance={60} keepVisibleOnExit>
-          <FeaturedProducts
-            products={lattafaProducts}
-            title="Best-Selling Lattafa Originals"
-            subtitle="Authentic Lattafa perfumes, curated and imported directly."
-            eyebrow="Lattafa Collection"
-          />
-        </ScrollFade>
-      </div>
+      <PremiumHomeExperience
+        aquadorProducts={aquadorProducts}
+        lattafaProducts={lattafaProducts}
+      />
     </AnimationBudgetProvider>
   );
 }

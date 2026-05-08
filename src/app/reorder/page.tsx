@@ -270,7 +270,7 @@ export default function ReorderPage() {
           <div
             role="group"
             aria-label="Product type"
-            aria-invalid={!!submitError && !selectedProduct}
+            data-invalid={!!submitError && !selectedProduct}
             aria-describedby={submitError && !selectedProduct ? 'reorder-error' : undefined}
             className="grid grid-cols-1 sm:grid-cols-3 gap-3"
           >
