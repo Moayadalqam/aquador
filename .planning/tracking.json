@@ -14,8 +14,8 @@
   "verification": "pass",
   "gap_cycles": {},
   "blockers": [],
-  "last_updated": "2026-05-08T11:45:21Z",
-  "last_commit": "d66fce7",
+  "last_updated": "2026-05-08T11:47:22Z",
+  "last_commit": "5b78eaa",
   "deployed_url": "https://www.aquadorcy.com",
   "notes": "v3.4 shipped 2026-04-17: WelcomeSplash (first-visit-only, 400ms), ScrollProgress (gold gradient bar), Hero3DScroll (scroll-driven R3F bottle rotating/scaling/floating on scroll, CSS fallback on mobile/reduced-motion). Bundle unchanged at 88.4KB.",
   "lifetime": {
@@ -118,7 +118,7 @@
       }
     ]
   },
-  "last_pushed_at": "2026-05-08T11:45:21Z",
+  "last_pushed_at": "2026-05-08T11:47:22Z",
   "milestone_name": "",
   "milestones": [],
   "report_seq": 1
