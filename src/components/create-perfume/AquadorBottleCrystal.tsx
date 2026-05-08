@@ -5,6 +5,7 @@ import {
   OrbitControls,
   ContactShadows,
   Environment,
+  Lightformer,
   MeshTransmissionMaterial,
   Float,
   RoundedBox,
@@ -543,7 +544,20 @@ export default function AquadorBottleCrystal({
                 onUserInteract={() => setHasInteracted(true)}
               />
             </Float>
-            <Environment preset="studio" />
+            {/* Synthetic studio environment via Lightformers — keeps gold reflections sharp without fetching an external HDR (CSP-friendly). */}
+            <Environment resolution={256} frames={1}>
+              <color attach="background" args={['#f4f1ea']} />
+              <Lightformer position={[5, 5, 2]} scale={[8, 4, 1]} intensity={1.6} color="#fff5d8" />
+              <Lightformer position={[-5, 3, -1]} scale={[6, 6, 1]} intensity={1.2} color="#ffe1a8" />
+              <Lightformer position={[0, -3, 4]} scale={[5, 5, 1]} intensity={0.6} color="#ffd9a8" />
+              <Lightformer
+                position={[3, -2, -3]}
+                rotation={[0, Math.PI, 0]}
+                scale={[4, 4, 1]}
+                intensity={0.8}
+                color="#fff6d8"
+              />
+            </Environment>
             <ContactShadows
               position={[0, -2.18, 0]}
               opacity={0.32}
