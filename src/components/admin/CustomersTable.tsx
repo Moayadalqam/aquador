@@ -1,5 +1,3 @@
-'use client';
-
 import Link from 'next/link';
 import { Phone } from 'lucide-react';
 import type { Customer } from '@/lib/supabase/types';

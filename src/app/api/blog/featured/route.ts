@@ -1,10 +1,14 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import * as Sentry from '@sentry/nextjs';
 import { getFeaturedPost } from '@/lib/blog';
 import { formatApiError } from '@/lib/api-utils';
+import { checkRateLimit } from '@/lib/rate-limit';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const rateLimitResponse = await checkRateLimit(request, 'search');
+    if (rateLimitResponse) return rateLimitResponse;
+
     const post = await getFeaturedPost();
     const response = NextResponse.json(post);
     response.headers.set('Cache-Control', 'public, s-maxage=600, stale-while-revalidate=86400');

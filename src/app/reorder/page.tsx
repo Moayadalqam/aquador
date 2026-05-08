@@ -202,7 +202,7 @@ export default function ReorderPage() {
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={{ delay: 0.2, type: 'spring', bounce: 0.4 }}
+            transition={{ delay: 0.2, type: 'spring', stiffness: 400, damping: 25 }}
             className="w-20 h-20 rounded-full bg-gradient-to-b from-emerald-100 to-emerald-50 border border-emerald-200 flex items-center justify-center mx-auto mb-8"
           >
             <Check className="w-8 h-8 text-emerald-500" />

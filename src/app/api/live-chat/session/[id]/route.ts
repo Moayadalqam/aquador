@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import * as Sentry from '@sentry/nextjs';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 export const maxDuration = 10;
 
@@ -18,6 +19,9 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const rateLimitResponse = await checkRateLimit(request, 'live_chat');
+    if (rateLimitResponse) return rateLimitResponse;
+
     const resolvedParams = await params;
     const paramsParsed = paramsSchema.safeParse(resolvedParams);
     if (!paramsParsed.success) {

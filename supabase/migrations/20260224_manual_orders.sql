@@ -8,9 +8,14 @@ ALTER TABLE orders ADD COLUMN IF NOT EXISTS order_source text NOT NULL DEFAULT '
 -- Allow null stripe_session_id for manual orders
 ALTER TABLE orders ALTER COLUMN stripe_session_id DROP NOT NULL;
 
--- Add check constraint: stripe orders must have session ID
-ALTER TABLE orders ADD CONSTRAINT orders_stripe_requires_session_id
-  CHECK (order_source != 'stripe' OR stripe_session_id IS NOT NULL);
+-- Add check constraint: stripe orders must have session ID (idempotent)
+DO $$
+BEGIN
+  ALTER TABLE orders ADD CONSTRAINT orders_stripe_requires_session_id
+    CHECK (order_source != 'stripe' OR stripe_session_id IS NOT NULL);
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+END $$;
 
 -- Index for quick lookups by source
 CREATE INDEX IF NOT EXISTS idx_orders_source ON orders (order_source);

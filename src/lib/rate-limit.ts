@@ -8,6 +8,13 @@ const isConfigured = !!(
   process.env.UPSTASH_REDIS_REST_TOKEN
 );
 
+// Fail-loud in production if rate limiting is unconfigured — silent no-op is a footgun
+if (!isConfigured && process.env.NODE_ENV === 'production') {
+  console.warn(
+    '[rate-limit] UPSTASH_REDIS_REST_URL/TOKEN not set — rate limiting is DISABLED. All endpoints will allow unlimited requests.'
+  );
+}
+
 // Create Redis client (only if configured)
 const redis = isConfigured
   ? new Redis({
