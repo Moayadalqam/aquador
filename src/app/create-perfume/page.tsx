@@ -34,7 +34,7 @@ import {
 import dynamic from 'next/dynamic'
 
 const PerfumeBottle3D = dynamic(
-  () => import('@/components/create-perfume/PerfumeBottle3D'),
+  () => import('@/components/create-perfume/AquadorBottleCrystal'),
   { ssr: false }
 )
 
