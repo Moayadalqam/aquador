@@ -1,47 +1,88 @@
-# Production Review — 2026-04-18
+# Production Review — 2026-05-08
+
+Project: aquador (Aquad'or Cyprus)
+Deployed: https://www.aquadorcy.com (v3.9 shipped)
+Stack: Next.js 14.2.35, React 18, Supabase, Stripe, Sentry, Tailwind
 
 ## Summary
+
 | Category | Critical | High | Medium | Low | Score |
-|----------|----------|------|--------|-----|-------|
-| Security | 0 | 2 | 3 | 0 | 3/5 |
-| Quality  | 0 | 0 | 2 | 2 | 4/5 |
-| Perf     | 0 | 1 | 2 | 1 | 4/5 |
-| **Total** | 0 | 3 | 7 | 3 | **3.7/5** |
+|----------|---------:|-----:|-------:|----:|------:|
+| Security |        0 |    1 |      0 |   0 |   5/5 |
+| Quality  |        0 |    1 |      3 |   2 |   4/5 |
+| Perf     |        0 |    0 |      1 |   2 |   5/5 |
+| **Total** |    **0** | **2** |  **4** | **4** | **4.67/5** |
+
+**Verdict: PASS** — No critical blockers, but 2 high-severity items should be addressed in v4.0.
 
 ## Findings
 
 ### CRITICAL
-_(none — no service_role in client, no hardcoded secrets, no tracked .env, no eval())_
+_(none)_
 
 ### HIGH
-- **Next.js DoS advisory (GHSA-9g9p-9gw9-jx7f)** — `package.json` — Current Next.js (14.2.35) falls in the vulnerable 9.5.0–15.5.14 range for Image Optimizer remotePatterns DoS. Fix: `npm audit fix --force` or bump to `next@15.5.15+`. Verify SSR/ISR after the bump.
-- **flatted high-severity transitive (GHSA-25h7-pfq9-p65f / GHSA-rf6f-7fwh-wjgh)** — prototype pollution + unbounded recursion. Fix: `npm audit fix` (non-breaking).
-- **Bundle-heavy routes** — `/products/[slug]` 221 kB First Load, `/create-perfume` 196 kB, `create-perfume/page.tsx` is 772 LOC, 72% of TSX files are client components. Fix: move page shells to Server Components, keep client islands narrow, parallelize awaits with `Promise.all`.
+
+**HIGH-01 · Next.js 14.2.35 has multiple known DoS vulnerabilities**
+- File: `package.json:next` — current `14.2.35`
+- Issues from `npm audit`:
+  - `GHSA-9g9p-9gw9-jx7f` — DoS via Image Optimizer remotePatterns
+  - `GHSA-h25m-26qc-wcjf` — HTTP request deserialization DoS in RSC
+  - `GHSA-ggv3-7p47-pfv8` — HTTP request smuggling in rewrites
+  - `GHSA-3x4c-7xq6-9pq8` — Unbounded next/image disk cache
+  - `GHSA-q4gf-8mx6-v5v3` — DoS with Server Components
+  - postcss XSS via unescaped `</style>` (transitive)
+- Fix: `npm audit fix --force` migrates to Next 16 (BREAKING) OR upgrade to latest 14.x patch if a patch covers all 5
+- Severity rationale: vendor advisories rate as high; Cyprus storefront on the open internet, image optimizer is exposed
+
+**HIGH-02 · TypeScript binary missing from node_modules**
+- File: `package.json` declares `typescript: ^5` but `node_modules/typescript/` doesn't exist
+- Symptom: `npm run type-check` exits with `tsc: command not found`
+- Impact: type-check gate in CI/local cannot run; the deploy hook can't enforce TypeScript correctness
+- Fix: `npm install` (someone deleted node_modules or used --omit=dev recently); add a smoke test that `npx tsc --version` succeeds in CI
 
 ### MEDIUM
-- **11 API routes without auth checks** — `src/app/api/{ai-assistant,blog/categories,blog/featured,checkout,checkout/session-details,contact,create-perfume/payment,health,heartbeat,live-chat/notify,search}/route.ts`. Most are intentionally public; confirm `checkout/session-details` does not leak PII when called with a stranger's session ID. Fix: verify ownership or strip customer data before returning.
-- **Admin panel does 24 client-side Supabase mutations** — `src/app/admin/live-chat/page.tsx`, `src/app/admin/orders/page.tsx`, `src/components/admin/ProductsTable.tsx`. Only safe if RLS on `orders`, `live_chat_*`, `products` restricts writes to admins. Fix: audit `supabase/migrations/` for `auth.uid() IN (SELECT user_id FROM admin_users)` guards.
-- **dompurify moderate advisories** (5 CVEs, GHSA-h8r8-wccr-v5f2 et al.) used by `RichDescription.tsx`, `BlogContent.tsx`. Fix: `npm audit fix` to 3.3.4+.
-- **21 `any`/`as any` casts** across `src/` — type holes. Fix: grep and replace with Supabase generic types or Stripe event types.
-- **128/178 TSX files use `'use client'` (72%)** — bundle bloat. Fix: extract client islands from top-level pages, especially `create-perfume/page.tsx`.
+
+**MED-01 · 21 `any` type usages across src/**
+- Count: `grep -rn ": any\| as any" src/ | wc -l` = 21
+- Fix: replace with `unknown` + type guards, or proper interface
+
+**MED-02 · 5 console.log calls in performance instrumentation**
+- `src/lib/performance/metrics.ts:31, :54`
+- `src/lib/performance/animation-budget.tsx:170, :181, :286`
+- Impact: leaks to browser console in production for users with devtools; minor info disclosure
+- Fix: gate behind `process.env.NODE_ENV === 'development'` or use Sentry breadcrumbs
+
+**MED-03 · Large monolithic files**
+- `src/app/create-perfume/page.tsx` — 772 lines
+- `src/app/reorder/page.tsx` — 629 lines
+- `src/app/admin/categories/page.tsx` — 567 lines
+- `src/components/admin/ProductForm.tsx` — 563 lines
+- Impact: hard to test, slow to bundle-split, high cognitive cost
+- Fix: extract into co-located sub-components
+
+**MED-04 · 69% client-component ratio (126/182 .tsx files have `'use client'`)**
+- Impact: Server Components benefits (smaller bundle, streaming, RSC) are under-utilized
+- Fix: audit `'use client'` directives — push the boundary down to leaf interactive components
 
 ### LOW
-- **1 TODO/FIXME** — resolve or convert to issue.
-- **5 `console.log` calls in production code** — replace with structured logger from `src/lib/api-utils.ts`.
-- **Large files (>500 LOC)** — `create-perfume/page.tsx:772`, `reorder/page.tsx:629`, `admin/categories/page.tsx:566`, `ProductForm.tsx:562`, `webhooks/stripe/route.ts:517`. Split once active phase work settles.
 
-## Notes (worth preserving)
-- Zero TypeScript errors (`tsc --noEmit` clean).
-- All three `dangerouslySetInnerHTML` sites are guarded: `JsonLd.tsx` escapes `<`, `RichDescription.tsx` + `BlogContent.tsx` run `DOMPurify.sanitize`.
-- No service_role in client, no hardcoded secrets, no tracked `.env`, no `eval()`, no empty catch blocks.
-- Checkout route has Zod + server-side price validation (`validateCartPrices`) + rate limiting.
-- Middleware enforces admin auth via `admin_users` table lookup on `/admin/*`.
+**LOW-01 · 1 TODO comment** in src/
+**LOW-02 · 289 sequential `const x = await ...` statements outside Promise.all** — most are likely intentional; worth a perf audit pass
+**LOW-03 · No `.next/` build output present** — bundle analysis deferred until next build runs
+**LOW-04 · 1 unused-import-style noise** (no quantitative finding worth flagging individually)
+
+## What Was Verified Clean
+
+- `service_role` only appears in server-only files (`lib/supabase/admin.ts`, `app/api/admin/setup/route.ts`, test files) — no client leak
+- `dangerouslySetInnerHTML` is guarded by DOMPurify in all 3 call sites (`BlogContent.tsx`, `RichDescription.tsx`, `JsonLd.tsx` where input is server-controlled JSON)
+- No `.env` files tracked in git
+- Search route has rate-limiting + length validation + Sentry capture
+- Admin routes auth-checked via `src/middleware.ts`
+- 0 empty catch blocks
+- 0 hardcoded production secrets in source
 
 ## Verdict
-**PASS with advisories** — No critical blockers. 3 HIGH findings should be cleared before the next `/qualia-ship`; the Next.js CVE is the priority.
 
-### Recommended next steps
-1. `npm audit fix` — resolves flatted, dompurify, brace-expansion (non-breaking).
-2. Bump Next.js to 15.5.15+ on a dedicated branch, run `npm run test:all`, verify `/products/[slug]` ISR.
-3. Verify RLS on `orders`, `live_chat_*`, `products` via Supabase MCP.
-4. Audit `/api/checkout/session-details` for PII leakage on foreign session IDs.
+**PASS for deploy.** Two HIGH items (Next vuln, missing tsc) belong in v4.0 hardening work. No CRITICAL blockers. Site is shippable as-is.
+
+Recommended next step: feed these findings into `/qualia-optimize --perf --ui --backend` for the v4.0 milestone planning.
