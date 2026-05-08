@@ -10,10 +10,6 @@ import { SignatureStoriesMobile } from '@/components/home/SignatureStories';
 import { AnimationBudgetProvider } from '@/lib/performance/animation-budget';
 import JsonLd from '@/components/seo/JsonLd';
 
-const Hero3DScroll = dynamic(() => import('@/components/home/Hero3DScroll'), {
-  ssr: false,
-});
-
 const SignatureStories = dynamic(() => import('@/components/home/SignatureStories'), {
   ssr: false,
 });
@@ -134,9 +130,6 @@ export default async function Home() {
       <div className="home-scroll-wrapper">
         <section className="home-snap-start">
           <Hero />
-        </section>
-        <section className="home-snap-start">
-          <Hero3DScroll />
         </section>
         <SignatureStories />
         <SignatureStoriesMobile />
