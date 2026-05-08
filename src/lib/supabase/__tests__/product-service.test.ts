@@ -90,16 +90,19 @@ describe('getProductsByGender — gender filter widening (v3.7)', () => {
     expect(inCalls[0].values).toEqual(['unisex']);
   });
 
-  it('restricts all gender pages to Aquad\'or brand (null or ilike %aquad%)', async () => {
+  it('does NOT restrict by brand — gender pages show all active perfumes (v4.0 fix)', async () => {
+    // Previously restricted to Aquad'or house brand only, but no house perfumes had
+    // gender tagged so /shop/gender/men and /women rendered "Coming Soon". The brand
+    // filter was removed; sortAquadorFirst() still surfaces house items first.
     await getProductsByGender('men');
-    expect(orCalls).toEqual(['brand.is.null,brand.ilike.%aquad%']);
+    expect(orCalls).toEqual([]);
 
     orCalls.length = 0;
     await getProductsByGender('women');
-    expect(orCalls).toEqual(['brand.is.null,brand.ilike.%aquad%']);
+    expect(orCalls).toEqual([]);
 
     orCalls.length = 0;
     await getProductsByGender('unisex');
-    expect(orCalls).toEqual(['brand.is.null,brand.ilike.%aquad%']);
+    expect(orCalls).toEqual([]);
   });
 });
