@@ -206,10 +206,9 @@ function EditorialHero() {
           <div className="absolute right-[10%] top-[1%] hidden w-[200px] border border-[#d7b45d]/25 bg-[#17130d]/82 px-5 py-5 backdrop-blur md:block">
             <div className="flex items-center gap-2 text-[#d7b45d]">
               <Gem className="h-4 w-4" strokeWidth={1.5} />
-              <span className="text-[10px] uppercase tracking-[0.22em]">Heritage</span>
+              <span className="text-[10px] uppercase tracking-[0.22em]">Since 2018</span>
             </div>
-            <p className="mt-3 font-playfair text-4xl leading-none text-[#fff9eb]">Established</p>
-            <p className="mt-2 text-[11px] uppercase tracking-[0.28em] text-[#d7b45d]">Since 2018</p>
+            <p className="mt-3 font-playfair text-2xl leading-tight text-[#fff9eb]">From Dubai<br />to Cyprus</p>
           </div>
         </motion.div>
       </div>
@@ -219,28 +218,25 @@ function EditorialHero() {
 
 function StoryGallery() {
   return (
-    <section className="overflow-hidden bg-[#f0e6d6] py-20 md:py-28">
+    <section className="overflow-hidden bg-[#f0e6d6] py-16 md:py-24">
       <div className="container-wide">
-        <div className="grid gap-10 lg:grid-cols-[minmax(260px,360px)_1fr] lg:items-end">
-          <div>
-            <p className="mb-4 text-[11px] uppercase tracking-[0.32em] text-[#9c7b2c]">Signature Stories</p>
-            <h2 className="font-playfair text-[clamp(2.4rem,6vw,5.4rem)] leading-[0.95] tracking-normal text-[#17130d]">
-              A fragrance house with a point of view.
-            </h2>
-          </div>
-          <p className="max-w-[680px] text-base leading-[1.85] text-[#4b3d2b] md:text-lg lg:justify-self-end">
-            Aquad&apos;or brings together house-crafted scents, women&apos;s and men&apos;s fragrances,
-            bespoke perfumery, and rare Dubai imports in one Nicosia destination.
+        <div className="mx-auto max-w-3xl text-center">
+          <p className="mb-4 text-[11px] uppercase tracking-[0.32em] text-[#9c7b2c]">Signature Stories</p>
+          <h2 className="font-playfair text-[clamp(2.25rem,5vw,3.75rem)] leading-[1.05] tracking-normal text-[#17130d]">
+            Luxury in every drop.
+          </h2>
+          <div className="mx-auto mt-6 h-px w-12 bg-[#d7b45d]" />
+          <p className="mx-auto mt-6 max-w-[620px] text-base leading-[1.8] text-[#4b3d2b] md:text-lg">
+            House-crafted scents, women&apos;s and men&apos;s fragrances, bespoke perfumery, and
+            rare Dubai imports — gathered in one Nicosia atelier.
           </p>
         </div>
 
-        <div className="mt-12 grid gap-4 md:grid-cols-3 lg:mt-16">
-          {editorialStories.map((story, index) => (
+        <div className="mt-12 grid gap-4 md:grid-cols-3 lg:mt-14">
+          {editorialStories.map((story) => (
             <article
               key={story.title}
-              className={`group relative min-h-[520px] overflow-hidden border border-[#17130d]/10 bg-[#17130d] ${
-                index === 1 ? 'md:translate-y-10' : ''
-              }`}
+              className="group relative min-h-[480px] overflow-hidden border border-[#17130d]/10 bg-[#17130d]"
             >
               <Image
                 src={story.image}
