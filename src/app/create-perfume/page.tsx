@@ -31,13 +31,6 @@ import {
   Package,
   ShoppingBag,
 } from 'lucide-react'
-import dynamic from 'next/dynamic'
-
-const PerfumeBottle3D = dynamic(
-  () => import('@/components/create-perfume/AquadorBottleCrystal'),
-  { ssr: false }
-)
-
 type NoteLayer = 'top' | 'heart' | 'base'
 type Step = 'intro' | 'base' | 'heart' | 'top' | 'checkout'
 
@@ -321,15 +314,10 @@ export default function CreatePerfumePage() {
                           'radial-gradient(circle 1px at 22% 18%, rgba(212,175,55,0.65) 50%, transparent 51%), radial-gradient(circle 1px at 78% 28%, rgba(255,215,0,0.55) 50%, transparent 51%), radial-gradient(circle 1.5px at 14% 64%, rgba(212,175,55,0.5) 50%, transparent 51%), radial-gradient(circle 1px at 84% 72%, rgba(212,175,55,0.6) 50%, transparent 51%), radial-gradient(circle 1px at 50% 88%, rgba(255,215,0,0.5) 50%, transparent 51%)',
                       }}
                     />
-                    <PerfumeBottle3D
-                      composition={composition}
-                      activeLayer={activeLayer}
-                      className="absolute inset-0 scale-100 lg:scale-110"
-                      fallback={bottleFallback}
-                    />
+                    <div className="absolute inset-0 scale-100 lg:scale-110">{bottleFallback}</div>
                   </div>
                   <p className="text-xs text-center mt-4 uppercase tracking-[0.24em] text-neutral-400">
-                    Drag to rotate &middot; live composition preview
+                    Live composition preview
                   </p>
                 </motion.div>
               </div>
