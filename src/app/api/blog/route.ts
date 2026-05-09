@@ -11,7 +11,7 @@ import { z } from 'zod';
 export const maxDuration = 10;
 
 const blogListQuerySchema = z.object({
-  page: z.coerce.number().int().min(0).default(0),
+  page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(50).default(9),
   category: z.string().max(100).optional(),
   status: z.enum(['all', 'published', 'draft']).optional(),
@@ -97,7 +97,11 @@ export async function GET(request: NextRequest) {
     const { data, error, count } = await query;
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      Sentry.captureException(error);
+      return NextResponse.json(
+        formatApiError(error, 'Failed to fetch blog posts'),
+        { status: 500 }
+      );
     }
 
     const response = NextResponse.json({
@@ -165,7 +169,11 @@ export async function POST(request: NextRequest) {
     .single();
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      Sentry.captureException(error);
+      return NextResponse.json(
+        formatApiError(error, 'Failed to create blog post'),
+        { status: 500 }
+      );
     }
 
     revalidatePath('/blog');

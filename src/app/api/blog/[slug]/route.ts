@@ -123,7 +123,11 @@ export async function PUT(
     .single();
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      Sentry.captureException(error);
+      return NextResponse.json(
+        formatApiError(error, 'Failed to update blog post'),
+        { status: 500 }
+      );
     }
 
     revalidatePath('/blog');

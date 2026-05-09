@@ -77,7 +77,8 @@ export async function POST(request: NextRequest) {
   });
 
   if (authError) {
-    return NextResponse.json({ error: 'Failed to create user: ' + authError.message }, { status: 500 });
+    Sentry.captureException(authError, { tags: { action: 'admin_setup_create_user' } });
+    return NextResponse.json({ error: 'Failed to create user' }, { status: 500 });
   }
 
   if (!authData.user) {
@@ -94,7 +95,8 @@ export async function POST(request: NextRequest) {
     });
 
   if (insertError) {
-    return NextResponse.json({ error: 'Failed to add admin role: ' + insertError.message }, { status: 500 });
+    Sentry.captureException(insertError, { tags: { action: 'admin_setup_insert_role' } });
+    return NextResponse.json({ error: 'Failed to add admin role' }, { status: 500 });
   }
 
     return NextResponse.json({
@@ -152,7 +154,8 @@ export async function PUT(request: NextRequest) {
   );
 
   if (updateError) {
-    return NextResponse.json({ error: 'Failed to update password: ' + updateError.message }, { status: 500 });
+    Sentry.captureException(updateError, { tags: { action: 'admin_setup_update_password' } });
+    return NextResponse.json({ error: 'Failed to update password' }, { status: 500 });
   }
 
     return NextResponse.json({

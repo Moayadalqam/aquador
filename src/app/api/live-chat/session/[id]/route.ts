@@ -3,6 +3,7 @@ import { z } from 'zod';
 import * as Sentry from '@sentry/nextjs';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { checkRateLimit } from '@/lib/rate-limit';
+import { safeCompare } from '@/lib/crypto-safe';
 
 export const maxDuration = 10;
 
@@ -42,7 +43,7 @@ export async function GET(
       .eq('id', paramsParsed.data.id)
       .single();
 
-    if (!session || session.session_secret !== queryParsed.data.secret) {
+    if (!session || !safeCompare(session.session_secret, queryParsed.data.secret)) {
       return NextResponse.json({ error: 'Not found' }, { status: 404 });
     }
 

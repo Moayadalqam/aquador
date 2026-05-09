@@ -228,9 +228,12 @@ body {
      LAYOUT COMPONENTS
      ========================================================================== */
 
-  /* Container - consistent horizontal padding */
+  /* Container - consistent horizontal padding, capped on ultrawide */
   .container-wide {
     width: 100%;
+    max-width: var(--content-max-width);
+    margin-left: auto;
+    margin-right: auto;
     padding-left: var(--container-px);
     padding-right: var(--container-px);
   }

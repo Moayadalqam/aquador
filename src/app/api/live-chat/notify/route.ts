@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import * as Sentry from '@sentry/nextjs';
 import { checkRateLimit } from '@/lib/rate-limit';
+import { safeCompare } from '@/lib/crypto-safe';
 import { createAdminClient } from '@/lib/supabase/admin';
 
 export const maxDuration = 10;
@@ -110,7 +111,7 @@ export async function POST(request: NextRequest) {
       .eq('status', 'waiting')
       .single();
 
-    if (!session || session.session_secret !== sessionSecret) {
+    if (!session || !safeCompare(session.session_secret, sessionSecret)) {
       return NextResponse.json({ error: 'Invalid session' }, { status: 400 });
     }
 

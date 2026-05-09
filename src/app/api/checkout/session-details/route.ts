@@ -4,6 +4,7 @@ import { formatApiError } from '@/lib/api-utils';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { getStripe } from '@/lib/stripe';
 import { getProductsByIds } from '@/lib/supabase/product-service';
+import { calculatePrice, type PerfumeVolume } from '@/lib/perfume/pricing';
 import { z } from 'zod';
 
 export const maxDuration = 10;
@@ -109,11 +110,21 @@ export async function GET(request: NextRequest) {
           qty: number;
         }>;
 
-        const productIds = shortItems.map(si => si.pid);
-        const products = await getProductsByIds(productIds);
+        const productIds = shortItems.map(si => si.pid).filter(id => id !== 'custom-perfume');
+        const products = productIds.length > 0 ? await getProductsByIds(productIds) : [];
         const productMap = new Map(products.map(p => [p.id, p]));
 
         for (const shortItem of shortItems) {
+          if (shortItem.pid === 'custom-perfume') {
+            const vidSize = (shortItem.vid.split('-').pop() || '50ml') as PerfumeVolume;
+            items.push({
+              name: `Custom Perfume (${vidSize})`,
+              quantity: shortItem.qty,
+              price: calculatePrice(vidSize),
+              size: vidSize,
+            });
+            continue;
+          }
           const product = productMap.get(shortItem.pid);
           if (product) {
             items.push({
@@ -138,13 +149,12 @@ export async function GET(request: NextRequest) {
       }
     } else if (metadata.productType === 'custom-perfume') {
       // Custom perfume checkout — build item from metadata fields
-      const volume = metadata.volume || '50ml';
-      const price = volume === '100ml' ? 49.99 : 29.99;
+      const volume = (metadata.volume || '50ml') as PerfumeVolume;
 
       items.push({
         name: `Custom Perfume: ${metadata.perfumeName || 'Unnamed'}`,
         quantity: 1,
-        price,
+        price: calculatePrice(volume),
         size: volume,
         composition: {
           top: metadata.topNote || 'Unknown',

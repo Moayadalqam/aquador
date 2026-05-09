@@ -167,6 +167,7 @@ function EditorialHero() {
                 muted
                 loop
                 playsInline
+                aria-hidden="true"
                 preload="metadata"
                 poster="/images/aquadour1.jpg"
                 onError={() => setVideoError(true)}
@@ -220,7 +221,13 @@ function StoryGallery() {
   return (
     <section className="overflow-hidden bg-[#f0e6d6] py-16 md:py-24">
       <div className="container-wide">
-        <div className="mx-auto max-w-3xl text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          className="mx-auto max-w-3xl text-center"
+        >
           <p className="mb-4 text-[11px] uppercase tracking-[0.32em] text-[#9c7b2c]">Signature Stories</p>
           <h2 className="font-playfair text-[clamp(2.25rem,5vw,3.75rem)] leading-[1.05] tracking-normal text-[#17130d]">
             Luxury in every drop
@@ -230,12 +237,16 @@ function StoryGallery() {
             Aquad&rsquo;or unites bespoke perfumery, rare Dubai imports, and luxury fragrances
             into one refined scent destination in the heart of Nicosia
           </p>
-        </div>
+        </motion.div>
 
         <div className="mt-12 grid gap-4 md:grid-cols-3 lg:mt-14">
-          {editorialStories.map((story) => (
-            <article
+          {editorialStories.map((story, i) => (
+            <motion.article
               key={story.title}
+              initial={{ opacity: 0, y: 32 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.7, delay: i * 0.12, ease: [0.22, 1, 0.36, 1] }}
               className="group relative min-h-[480px] overflow-hidden border border-[#17130d]/10 bg-[#17130d]"
             >
               <Image
@@ -258,7 +269,7 @@ function StoryGallery() {
                   <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
                 </Link>
               </div>
-            </article>
+            </motion.article>
           ))}
         </div>
       </div>
@@ -272,7 +283,12 @@ function CollectionMap() {
   return (
     <section className="bg-[#17130d] py-20 text-[#f8f3ea] md:py-28">
       <div className="container-wide grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-        <div>
+        <motion.div
+          initial={{ opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        >
           <p className="mb-4 text-[11px] uppercase tracking-[0.32em] text-[#d7b45d]">Collections</p>
           <h2 className="font-playfair text-[clamp(2.6rem,7vw,6.2rem)] leading-[0.92] tracking-normal text-[#fff9eb]">
             Shop by character, origin, and mood.
@@ -281,7 +297,7 @@ function CollectionMap() {
             Explore women&apos;s, men&apos;s, niche, Lattafa Originals, and Al Haramain Originals
             from the current Aquad&apos;or catalogue.
           </p>
-        </div>
+        </motion.div>
 
         <div className="grid gap-5 lg:grid-cols-[220px_1fr]">
           <nav className="grid gap-2 sm:grid-cols-2 lg:flex lg:flex-col" aria-label="Featured collections">
@@ -289,6 +305,7 @@ function CollectionMap() {
               <Link
                 key={category.id}
                 href={`/shop/${category.slug}`}
+                aria-current={active.id === category.id ? 'true' : undefined}
                 onMouseEnter={() => setActive(category)}
                 onFocus={() => setActive(category)}
                 className={`border px-5 py-4 text-left transition duration-300 ${
@@ -337,7 +354,13 @@ function BespokeSection() {
     <section className="overflow-hidden bg-[#f8f3ea] py-20 md:py-28">
       <div className="container-wide">
         <div className="grid gap-12 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-start">
-          <div className="lg:sticky lg:top-28">
+          <motion.div
+            initial={{ opacity: 0, y: 28 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            className="lg:sticky lg:top-28"
+          >
             <p className="mb-4 text-[11px] uppercase tracking-[0.32em] text-[#9c7b2c]">Bespoke Perfumery</p>
             <h2 className="font-playfair text-[clamp(2.8rem,7vw,6.5rem)] leading-[0.9] tracking-normal text-[#17130d]">
               Create Your Signature
@@ -351,12 +374,16 @@ function BespokeSection() {
                 Start Creating
               </Button>
             </Link>
-          </div>
+          </motion.div>
 
           <div className="space-y-5">
             {bespokeNotes.map((note, index) => (
-              <article
+              <motion.article
                 key={note.title}
+                initial={{ opacity: 0, y: 32 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-60px' }}
+                transition={{ duration: 0.7, delay: index * 0.12, ease: [0.22, 1, 0.36, 1] }}
                 className="group grid overflow-hidden border border-[#17130d]/10 bg-[#fffaf1] md:grid-cols-[240px_1fr]"
               >
                 <div className="relative min-h-[240px] overflow-hidden">
@@ -378,7 +405,7 @@ function BespokeSection() {
                     <p className="mt-4 max-w-[560px] text-sm leading-[1.8] text-[#4b3d2b]">{note.description}</p>
                   </div>
                 </div>
-              </article>
+              </motion.article>
             ))}
           </div>
         </div>
@@ -393,12 +420,14 @@ function ProductShelf({
   title,
   subtitle,
   tone = 'light',
+  priorityImages = false,
 }: {
   products: LegacyProduct[];
   eyebrow: string;
   title: string;
   subtitle: string;
   tone?: 'light' | 'warm';
+  priorityImages?: boolean;
 }) {
   const [failedImages, setFailedImages] = useState<Set<string>>(new Set());
   const isWarm = tone === 'warm';
@@ -414,7 +443,13 @@ function ProductShelf({
   return (
     <section className={`${isWarm ? 'bg-[#efe1ca]' : 'bg-[#fffaf1]'} py-20 md:py-28`}>
       <div className="container-wide">
-        <div className="mb-12 grid gap-6 md:grid-cols-[minmax(0,0.9fr)_minmax(260px,0.55fr)] md:items-end">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+          className="mb-12 grid gap-6 md:grid-cols-[minmax(0,0.9fr)_minmax(260px,0.55fr)] md:items-end"
+        >
           <div>
             <p className="mb-4 text-[11px] uppercase tracking-[0.32em] text-[#9c7b2c]">{eyebrow}</p>
             <h2 className="max-w-[880px] font-playfair text-[clamp(2.3rem,5vw,4.8rem)] leading-[0.96] tracking-normal text-[#17130d]">
@@ -422,7 +457,7 @@ function ProductShelf({
             </h2>
           </div>
           <p className="text-sm leading-[1.75] text-[#5c4a33] md:text-base">{subtitle}</p>
-        </div>
+        </motion.div>
 
         {products.length === 0 ? (
           <div className="border-y border-[#17130d]/10 py-14">
@@ -438,8 +473,12 @@ function ProductShelf({
         ) : (
           <div className="grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-3 lg:grid-cols-6">
             {products.map((product, index) => (
-              <div
+              <motion.div
                 key={product.id}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{ duration: 0.55, delay: (index % 6) * 0.06, ease: [0.22, 1, 0.36, 1] }}
               >
                 <Link href={`/products/${product.id}`} className="group block">
                   <div className="relative aspect-[4/5] overflow-hidden border border-[#17130d]/10 bg-[#f4eadb]">
@@ -447,7 +486,8 @@ function ProductShelf({
                       src={failedImages.has(product.id) ? FALLBACK_IMAGE : product.image || FALLBACK_IMAGE}
                       alt={product.name}
                       fill
-                      priority={index < 3}
+                      priority={priorityImages && index < 3}
+                      loading={priorityImages && index < 3 ? undefined : 'lazy'}
                       onError={() => handleImageError(product.id)}
                       className="object-cover transition duration-700 group-hover:scale-[1.055]"
                       sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 17vw"
@@ -477,7 +517,7 @@ function ProductShelf({
                     </div>
                   </div>
                 </Link>
-              </div>
+              </motion.div>
             ))}
           </div>
         )}
