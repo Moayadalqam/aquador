@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react';
-import { ArrowRight, Award, Gem, Package, Sparkles, Truck } from 'lucide-react';
+import { ArrowRight, Gem, Sparkles } from 'lucide-react';
 import { useRef, useState } from 'react';
 import Button from '@/components/ui/Button';
 import { categories } from '@/lib/categories';
@@ -66,12 +66,6 @@ const bespokeNotes = [
   },
 ];
 
-const trustItems = [
-  { icon: Package, value: '200+', label: 'Fragrances' },
-  { icon: Truck, value: 'Free', label: 'Shipping Cyprus' },
-  { icon: Award, value: 'Since 2018', label: 'Established' },
-];
-
 interface PremiumHomeExperienceProps {
   aquadorProducts: LegacyProduct[];
   lattafaProducts: LegacyProduct[];
@@ -84,7 +78,6 @@ export default function PremiumHomeExperience({
   return (
     <div className="bg-[#f8f3ea] text-[#17130d]">
       <EditorialHero />
-      <TrustRunway />
       <StoryGallery />
       <CollectionMap />
       <BespokeSection />
@@ -212,34 +205,6 @@ function EditorialHero() {
             <p className="mt-3 font-playfair text-2xl leading-none text-[#fff9eb]">Curated in Cyprus</p>
           </div>
         </motion.div>
-      </div>
-    </section>
-  );
-}
-
-function TrustRunway() {
-  return (
-    <section className="border-b border-[#17130d]/10 bg-[#f8f3ea]">
-      <div className="container-wide grid gap-8 py-8 md:grid-cols-[1fr_auto] md:items-center md:py-10">
-        <div className="grid grid-cols-1 divide-y divide-[#17130d]/10 border-y border-[#17130d]/10 md:grid-cols-3 md:divide-x md:divide-y-0">
-          {trustItems.map(({ icon: Icon, value, label }) => (
-            <div key={label} className="flex items-center gap-4 py-5 md:px-7">
-              <Icon className="h-5 w-5 text-[#9c7b2c]" strokeWidth={1.5} />
-              <div>
-                <p className="font-playfair text-2xl leading-none text-[#17130d] md:text-3xl">{value}</p>
-                <p className="mt-1 text-[10px] uppercase tracking-[0.18em] text-[#6c5735]">{label}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-        <figure className="max-w-[440px] md:text-right">
-          <blockquote className="font-playfair text-xl italic leading-snug text-[#3b3021] md:text-2xl">
-            &ldquo;The most exquisite fragrance selection in Nicosia. Absolutely premium quality.&rdquo;
-          </blockquote>
-          <figcaption className="mt-3 text-[10px] uppercase tracking-[0.22em] text-[#8a7044]">
-            Verified Customer
-          </figcaption>
-        </figure>
       </div>
     </section>
   );

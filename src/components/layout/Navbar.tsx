@@ -11,11 +11,8 @@ import Image from 'next/image';
 import type { NavItem } from '@/types';
 
 const navLinks: NavItem[] = [
-  { label: 'Dubai Shop', href: '/shop', children: [
-    { label: 'All Dubai Fragrances', href: '/shop' },
-    { label: 'Al Haramain', href: '/shop/al-haramain-originals' },
-    { label: 'Xerjoff', href: '/shop?brand=xerjoff' },
-  ]},
+  { label: 'Dubai Shop', href: '/shop' },
+  { label: 'Al Haramain', href: '/shop/al-haramain-originals' },
   { label: 'Men', href: '/shop/gender/men' },
   { label: 'Women', href: '/shop/gender/women' },
   { label: 'Niche', href: '/shop/niche' },
@@ -25,8 +22,8 @@ const navLinks: NavItem[] = [
   { label: 'Contact', href: '/contact' },
 ];
 
-const leftLinks = navLinks.slice(0, 4);
-const rightLinks = navLinks.slice(4);
+const leftLinks = navLinks.slice(0, 5);
+const rightLinks = navLinks.slice(5);
 
 export default function Navbar() {
   const pathname = usePathname();

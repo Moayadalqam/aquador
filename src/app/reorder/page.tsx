@@ -247,7 +247,7 @@ export default function ReorderPage() {
           </span>
           <h1 className="font-playfair text-3xl md:text-4xl lg:text-5xl text-black mb-5">
             Re-Order Your{' '}
-            <span className="text-gradient-gold">Signature</span>
+            <span className="text-gradient-gold">Perfume</span>
           </h1>
           <p className="max-w-lg mx-auto text-gray-400 text-sm md:text-base leading-relaxed">
             Enter your formula below to re-order your custom fragrance,
