@@ -223,12 +223,12 @@ function StoryGallery() {
         <div className="mx-auto max-w-3xl text-center">
           <p className="mb-4 text-[11px] uppercase tracking-[0.32em] text-[#9c7b2c]">Signature Stories</p>
           <h2 className="font-playfair text-[clamp(2.25rem,5vw,3.75rem)] leading-[1.05] tracking-normal text-[#17130d]">
-            Luxury in every drop.
+            Luxury in every drop
           </h2>
           <div className="mx-auto mt-6 h-px w-12 bg-[#d7b45d]" />
           <p className="mx-auto mt-6 max-w-[620px] text-base leading-[1.8] text-[#4b3d2b] md:text-lg">
-            House-crafted scents, women&apos;s and men&apos;s fragrances, bespoke perfumery, and
-            rare Dubai imports — gathered in one Nicosia atelier.
+            Aquad&rsquo;or unites bespoke perfumery, rare Dubai imports, and luxury fragrances
+            into one refined scent destination in the heart of Nicosia
           </p>
         </div>
 
