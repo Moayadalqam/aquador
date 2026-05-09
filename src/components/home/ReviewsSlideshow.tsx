@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'motion/react';
 import { Star, ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -126,6 +127,21 @@ export default function ReviewsSlideshow() {
             <div>
               <p className="text-[10px] uppercase tracking-[0.22em] text-[#9c7b2c]">Google Reviews</p>
               <p className="mt-1 text-[11px] text-[#6c5735]">{reviews.length}+ verified visitors</p>
+              <a
+                href="https://www.google.com/search?q=Aquador+Cyprus+Nicosia+reviews"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 inline-block transition-opacity hover:opacity-80"
+                aria-label="See our Google verified reviews"
+              >
+                <Image
+                  src="/images/google-verified-reviews.png"
+                  alt="Google Verified Reviews — 5 stars"
+                  width={140}
+                  height={70}
+                  className="h-auto w-[140px]"
+                />
+              </a>
             </div>
           </div>
 
