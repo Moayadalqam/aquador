@@ -41,7 +41,7 @@ export default async function Home() {
     description: "Cyprus's premier luxury fragrance house offering curated niche perfumes and bespoke fragrance creation.",
     address: {
       '@type': 'PostalAddress',
-      streetAddress: 'Ledra 145',
+      streetAddress: 'Ledras 145',
       addressLocality: 'Nicosia',
       postalCode: '1011',
       addressCountry: 'CY',
@@ -84,7 +84,7 @@ export default async function Home() {
     email: 'info@aquadorcy.com',
     address: {
       '@type': 'PostalAddress',
-      streetAddress: 'Ledra 145',
+      streetAddress: 'Ledras 145',
       addressLocality: 'Nicosia',
       postalCode: '1011',
       addressCountry: 'CY',

@@ -18,7 +18,7 @@ test.describe('Contact Form', () => {
   });
 
   test('should display contact information', async ({ page }) => {
-    await expect(page.locator('text=Ledra 145, 1011')).toBeVisible();
+    await expect(page.locator('text=Ledras 145, 1011')).toBeVisible();
     await expect(page.locator('text=+357 99 980809')).toBeVisible();
     await expect(page.locator('text=info@aquadorcy.com')).toBeVisible();
   });

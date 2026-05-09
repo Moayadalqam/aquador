@@ -172,7 +172,7 @@ export default function Footer() {
                     <MapPin className="w-3.5 h-3.5" strokeWidth={1.75} />
                   </span>
                   <span className="leading-[1.55] pt-1">
-                    Ledra 145,<br />Nicosia, Cyprus
+                    Ledras 145,<br />Nicosia, Cyprus
                   </span>
                 </a>
               </li>

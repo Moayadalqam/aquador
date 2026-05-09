@@ -3,12 +3,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react';
-import { ArrowRight, Gem, Sparkles } from 'lucide-react';
+import { ArrowRight, Gem, Sparkles, Truck } from 'lucide-react';
 import { useRef, useState } from 'react';
 import Button from '@/components/ui/Button';
 import { categories } from '@/lib/categories';
 import { formatPrice } from '@/lib/utils';
 import type { LegacyProduct } from '@/types';
+import ReviewsSlideshow from '@/components/home/ReviewsSlideshow';
 
 const FALLBACK_IMAGE = '/placeholder-product.svg';
 
@@ -78,6 +79,7 @@ export default function PremiumHomeExperience({
   return (
     <div className="bg-[#f8f3ea] text-[#17130d]">
       <EditorialHero />
+      <ReviewsSlideshow />
       <StoryGallery />
       <CollectionMap />
       <BespokeSection />
@@ -148,6 +150,10 @@ function EditorialHero() {
               </Button>
             </Link>
           </div>
+          <p className="mt-6 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.24em] text-[#fff9eb]/65">
+            <Truck className="h-3.5 w-3.5 text-[#d7b45d]" strokeWidth={1.5} />
+            Free delivery in Cyprus on orders over &euro;35
+          </p>
         </div>
 
         <motion.div
@@ -192,7 +198,7 @@ function EditorialHero() {
               />
             </div>
             <div className="flex items-center justify-between gap-4 px-1 pt-3 text-[10px] uppercase tracking-[0.22em] text-[#6c5735]">
-              <span>Ledra 145</span>
+              <span>Ledras 145</span>
               <span>Nicosia</span>
             </div>
           </div>

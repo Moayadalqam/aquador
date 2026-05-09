@@ -24,7 +24,7 @@ export const contactPageSchema = {
     name: "Aquad'or",
     address: {
       '@type': 'PostalAddress',
-      streetAddress: 'Ledra 145',
+      streetAddress: 'Ledras 145',
       addressLocality: 'Nicosia',
       postalCode: '1011',
       addressCountry: 'CY',

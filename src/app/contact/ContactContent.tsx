@@ -27,7 +27,7 @@ const contactInfo = [
   {
     icon: <MapPin className="w-4 h-4 text-gold" />,
     title: 'Visit Us',
-    details: ['Ledra 145, 1011', 'Nicosia, Cyprus'],
+    details: ['Ledras 145, 1011', 'Nicosia, Cyprus'],
   },
   {
     icon: <Phone className="w-4 h-4 text-gold" />,

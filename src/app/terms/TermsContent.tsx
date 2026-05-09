@@ -96,7 +96,7 @@ export default function TermsContent() {
               <p>If you have questions about these Terms, please contact us:</p>
               <p><strong className="text-black">Email:</strong> info@aquadorcy.com</p>
               <p><strong className="text-black">Phone:</strong> +357 99 980809</p>
-              <p><strong className="text-black">Address:</strong> Ledra 145, 1011, Nicosia, Cyprus</p>
+              <p><strong className="text-black">Address:</strong> Ledras 145, 1011, Nicosia, Cyprus</p>
             </div>
           </section>
 

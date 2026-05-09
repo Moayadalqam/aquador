@@ -166,7 +166,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   // LocalBusiness schema - detect store references
-  if (post.content.includes('Ledra 145') || post.content.includes('Aquad\'or')) {
+  if (post.content.includes('Ledras 145') || post.content.includes('Aquad\'or')) {
     schemas.push({
       '@context': 'https://schema.org',
       '@type': 'LocalBusiness',
@@ -176,7 +176,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       url: 'https://aquadorcy.com',
       address: {
         '@type': 'PostalAddress',
-        streetAddress: 'Ledra 145',
+        streetAddress: 'Ledras 145',
         addressLocality: 'Nicosia',
         addressCountry: 'CY',
       },

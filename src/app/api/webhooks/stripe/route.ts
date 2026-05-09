@@ -205,7 +205,7 @@ async function sendOrderConfirmationEmail(
             <div style="background: #0a0a0a; padding: 20px; text-align: center;">
               <p style="color: #888; font-size: 12px; margin: 0;">
                 &copy; ${new Date().getFullYear()} Aquad'or Cyprus. All rights reserved.<br>
-                Ledra 145, 1011, Nicosia, Cyprus
+                Ledras 145, 1011, Nicosia, Cyprus
               </p>
             </div>
           </div>
