@@ -1,15 +1,14 @@
 'use client';
 
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { Canvas, useFrame } from '@react-three/fiber';
 import {
   OrbitControls,
   ContactShadows,
   Environment,
   MeshTransmissionMaterial,
-  Float,
   RoundedBox,
 } from '@react-three/drei';
-import { Suspense, useMemo, useRef, useState, useEffect, type ReactNode } from 'react';
+import { Suspense, useMemo, useRef, useState, type ReactNode } from 'react';
 import * as THREE from 'three';
 import type { PerfumeComposition, FragranceCategory } from '@/lib/perfume/types';
 import { Canvas3DBoundary } from '@/components/3d/Canvas3DBoundary';
@@ -279,61 +278,6 @@ function NoteMotes({ composition }: { composition: PerfumeComposition }) {
   );
 }
 
-/**
- * Cursor-tracking subtle tilt — bottle leans gently toward pointer while idle.
- * Resets when user grabs orbit controls.
- */
-function CursorTilt({
-  enabled,
-  groupRef,
-}: {
-  enabled: boolean;
-  groupRef: React.RefObject<THREE.Group>;
-}) {
-  const target = useRef({ x: 0, y: 0 });
-  const { size } = useThree();
-
-  useEffect(() => {
-    if (!enabled) return;
-    const onMove = (e: PointerEvent) => {
-      const rect = (e.target as HTMLElement).getBoundingClientRect?.();
-      if (!rect) return;
-      const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-      const ny = ((e.clientY - rect.top) / rect.height) * 2 - 1;
-      target.current.x = nx * 0.18;
-      target.current.y = ny * 0.12;
-    };
-    const onLeave = () => {
-      target.current.x = 0;
-      target.current.y = 0;
-    };
-    const el = document.querySelector('[data-bottle-canvas]');
-    el?.addEventListener('pointermove', onMove as EventListener);
-    el?.addEventListener('pointerleave', onLeave as EventListener);
-    return () => {
-      el?.removeEventListener('pointermove', onMove as EventListener);
-      el?.removeEventListener('pointerleave', onLeave as EventListener);
-    };
-  }, [enabled, size]);
-
-  useFrame((_, delta) => {
-    if (!enabled || !groupRef.current) return;
-    const k = 1 - Math.pow(0.04, delta);
-    groupRef.current.rotation.y = THREE.MathUtils.lerp(
-      groupRef.current.rotation.y,
-      target.current.x,
-      k,
-    );
-    groupRef.current.rotation.x = THREE.MathUtils.lerp(
-      groupRef.current.rotation.x,
-      -target.current.y,
-      k,
-    );
-  });
-
-  return null;
-}
-
 function Bottle({
   composition,
   activeLayer,
@@ -344,7 +288,6 @@ function Bottle({
   onUserInteract: () => void;
 }) {
   const group = useRef<THREE.Group>(null);
-  const tiltGroup = useRef<THREE.Group>(null);
   const [autoRotate, setAutoRotate] = useState(true);
   const [hovered, setHovered] = useState(false);
 
@@ -352,28 +295,14 @@ function Bottle({
   const panelGeometry = useMemo(() => createInnerPanelGeometry(), []);
   const logoTexture = useMemo(() => makeLotusLogoTexture(), []);
 
-  // Spring scale that bumps slightly each time a note is added
-  const noteCount = [composition.top, composition.heart, composition.base].filter(Boolean).length;
-  const targetScale = useRef(1);
-  const currentScale = useRef(1);
-  useEffect(() => {
-    targetScale.current = 1 + Math.min(noteCount, 3) * 0.012;
-  }, [noteCount]);
-
   useFrame((_, delta) => {
     if (autoRotate && !hovered && group.current) {
       group.current.rotation.y += delta * 0.18;
-    }
-    if (group.current) {
-      const k = 1 - Math.pow(0.06, delta);
-      currentScale.current = THREE.MathUtils.lerp(currentScale.current, targetScale.current, k);
-      group.current.scale.setScalar(currentScale.current);
     }
   });
 
   return (
     <group
-      ref={tiltGroup}
       onPointerOver={() => setHovered(true)}
       onPointerOut={() => setHovered(false)}
       onPointerDown={() => {
@@ -381,27 +310,23 @@ function Bottle({
         onUserInteract();
       }}
     >
-      <CursorTilt enabled={autoRotate && !hovered} groupRef={tiltGroup} />
-      <group ref={group} position={[0, -0.1, 0]}>
+      <group ref={group} position={[0, -0.1, 0]} scale={1}>
         {/* Crystal-glass body */}
         <mesh geometry={bodyGeometry} castShadow receiveShadow>
           <MeshTransmissionMaterial
             backside
-            samples={10}
+            samples={4}
             thickness={0.7}
-            chromaticAberration={0.05}
-            anisotropy={0.12}
-            distortion={0.03}
-            distortionScale={0.16}
-            temporalDistortion={0.02}
+            chromaticAberration={0.03}
+            anisotropy={0.1}
             transmission={1}
-            roughness={0.015}
+            roughness={0.02}
             ior={1.52}
             color="#ffffff"
             attenuationColor="#ffffff"
             attenuationDistance={1.8}
             clearcoat={1}
-            envMapIntensity={2.4}
+            envMapIntensity={2.0}
           />
         </mesh>
 
@@ -409,15 +334,15 @@ function Bottle({
         <mesh geometry={panelGeometry} position={[0, -0.14, 0.333]} castShadow>
           <MeshTransmissionMaterial
             backside
-            samples={6}
+            samples={3}
             thickness={0.32}
             transmission={1}
-            roughness={0.02}
+            roughness={0.04}
             ior={1.5}
             color="#ffffff"
             attenuationColor="#ffffff"
             attenuationDistance={2}
-            envMapIntensity={2.0}
+            envMapIntensity={1.8}
           />
         </mesh>
 
@@ -448,14 +373,14 @@ function Bottle({
         <mesh position={[0, -1.74, 0.02]} castShadow receiveShadow>
           <boxGeometry args={[1.36, 0.24, 0.62]} />
           <MeshTransmissionMaterial
-            samples={6}
+            samples={3}
             thickness={0.5}
             transmission={1}
-            roughness={0.01}
+            roughness={0.04}
             ior={1.52}
             color="#ffffff"
             attenuationDistance={1.1}
-            envMapIntensity={2.0}
+            envMapIntensity={1.8}
           />
         </mesh>
         <mesh position={[0, -1.91, 0.34]}>
@@ -536,13 +461,11 @@ export default function AquadorBottleCrystal({
         >
           <Suspense fallback={null}>
             <StudioLights />
-            <Float speed={1.1} rotationIntensity={0.08} floatIntensity={0.12}>
-              <Bottle
-                composition={composition}
-                activeLayer={activeLayer}
-                onUserInteract={() => setHasInteracted(true)}
-              />
-            </Float>
+            <Bottle
+              composition={composition}
+              activeLayer={activeLayer}
+              onUserInteract={() => setHasInteracted(true)}
+            />
             <Environment preset="studio" />
             <ContactShadows
               position={[0, -2.18, 0]}
@@ -555,13 +478,10 @@ export default function AquadorBottleCrystal({
             <OrbitControls
               enablePan={false}
               enableZoom={false}
-              enableDamping
-              dampingFactor={0.06}
-              minDistance={3.4}
-              maxDistance={7.2}
-              minPolarAngle={Math.PI * 0.28}
-              maxPolarAngle={Math.PI * 0.72}
-              rotateSpeed={0.65}
+              enableDamping={false}
+              minPolarAngle={Math.PI * 0.32}
+              maxPolarAngle={Math.PI * 0.68}
+              rotateSpeed={0.55}
             />
           </Suspense>
         </Canvas>

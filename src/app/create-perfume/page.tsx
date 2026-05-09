@@ -421,12 +421,7 @@ export default function CreatePerfumePage() {
                             'radial-gradient(ellipse 70% 60% at 50% 55%, rgba(212,175,55,0.16) 0%, transparent 65%)',
                         }}
                       />
-                      <PerfumeBottle3D
-                        composition={composition}
-                        activeLayer={activeLayer}
-                        className="absolute inset-0 scale-110"
-                        fallback={bottleFallback}
-                      />
+                      <div className="absolute inset-0">{bottleFallback}</div>
                     </div>
 
                     {/* Current composition readout */}
@@ -609,12 +604,7 @@ export default function CreatePerfumePage() {
                             'radial-gradient(ellipse 70% 60% at 50% 55%, rgba(212,175,55,0.18) 0%, transparent 65%)',
                         }}
                       />
-                      <PerfumeBottle3D
-                        composition={composition}
-                        activeLayer="base"
-                        className="absolute inset-0 scale-110"
-                        fallback={bottleFallback}
-                      />
+                      <div className="absolute inset-0">{bottleFallback}</div>
                     </div>
 
                     <div className="mt-6 rounded-2xl border border-neutral-200 bg-white p-5 space-y-2.5">
