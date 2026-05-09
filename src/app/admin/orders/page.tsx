@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
-import { createClient } from '@/lib/supabase/client';
 import { Search, Plus } from 'lucide-react';
 import OrdersTable from '@/components/admin/OrdersTable';
 import type { Order, OrderStatus } from '@/lib/supabase/types';
@@ -40,28 +39,29 @@ export default function OrdersPage() {
 
   const fetchOrders = useCallback(async () => {
     setLoading(true);
-    const supabase = createClient();
+    const params = new URLSearchParams({
+      page: String(page),
+      pageSize: String(PAGE_SIZE),
+      status: statusFilter,
+    });
+    if (debouncedSearch.trim()) params.set('q', debouncedSearch.trim());
 
-    let query = supabase
-      .from('orders')
-      .select('id, stripe_session_id, status, total, customer_email, customer_name, created_at', { count: 'exact' })
-      .order('created_at', { ascending: false })
-      .range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1);
-
-    if (statusFilter !== 'all') {
-      query = query.eq('status', statusFilter);
+    try {
+      const res = await fetch(`/api/admin/orders?${params}`, { cache: 'no-store' });
+      if (!res.ok) {
+        setOrders([]);
+        setTotalCount(0);
+        return;
+      }
+      const json = (await res.json()) as { orders: Order[]; total: number };
+      setOrders(json.orders || []);
+      setTotalCount(json.total || 0);
+    } catch {
+      setOrders([]);
+      setTotalCount(0);
+    } finally {
+      setLoading(false);
     }
-
-    if (debouncedSearch.trim()) {
-      // SEC-03: Escape SQL wildcards to prevent PostgREST filter injection
-      const escapedSearch = debouncedSearch.trim().replace(/[%_]/g, '\\$&');
-      query = query.or(`customer_email.ilike.%${escapedSearch}%,customer_name.ilike.%${escapedSearch}%`);
-    }
-
-    const { data, count } = await query;
-    setOrders((data || []) as Order[]);
-    setTotalCount(count || 0);
-    setLoading(false);
   }, [page, statusFilter, debouncedSearch]);
 
   useEffect(() => {
@@ -69,13 +69,12 @@ export default function OrdersPage() {
   }, [fetchOrders]);
 
   const handleStatusChange = async (orderId: string, newStatus: OrderStatus) => {
-    const supabase = createClient();
-    const { error } = await supabase
-      .from('orders')
-      .update({ status: newStatus })
-      .eq('id', orderId);
-
-    if (!error) {
+    const res = await fetch('/api/admin/orders', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: orderId, status: newStatus }),
+    });
+    if (res.ok) {
       setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
     }
   };

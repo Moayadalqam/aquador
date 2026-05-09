@@ -4,8 +4,132 @@ import { z } from 'zod';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { checkRateLimit } from '@/lib/rate-limit';
+import { formatApiError } from '@/lib/api-utils';
 
 export const maxDuration = 10;
+
+const ORDER_STATUSES = [
+  'pending', 'confirmed', 'processing', 'shipped',
+  'delivered', 'cancelled', 'refunded',
+] as const;
+
+const listQuerySchema = z.object({
+  page: z.coerce.number().int().min(0).default(0),
+  pageSize: z.coerce.number().int().min(1).max(100).default(20),
+  status: z.union([z.enum(ORDER_STATUSES), z.literal('all')]).default('all'),
+  q: z.string().max(200).optional(),
+});
+
+// GET: list orders with filtering, search, pagination.
+// Middleware (matcher /api/admin/:path*) already enforces admin auth.
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const parsed = listQuerySchema.safeParse({
+      page: searchParams.get('page') ?? undefined,
+      pageSize: searchParams.get('pageSize') ?? undefined,
+      status: searchParams.get('status') ?? undefined,
+      q: searchParams.get('q') ?? undefined,
+    });
+
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: parsed.error.issues[0]?.message || 'Invalid query parameters' },
+        { status: 400 }
+      );
+    }
+
+    const { page, pageSize, status, q } = parsed.data;
+    const supabase = createAdminClient();
+
+    let query = supabase
+      .from('orders')
+      .select(
+        'id, stripe_session_id, status, total, currency, customer_email, customer_name, customer_phone, items, shipping_address, tags, order_source, created_at',
+        { count: 'exact' }
+      )
+      .order('created_at', { ascending: false })
+      .range(page * pageSize, (page + 1) * pageSize - 1);
+
+    if (status !== 'all') {
+      query = query.eq('status', status);
+    }
+
+    if (q && q.trim()) {
+      const escaped = q.trim().replace(/[%_]/g, '\\$&');
+      query = query.or(
+        `customer_email.ilike.%${escaped}%,customer_name.ilike.%${escaped}%`
+      );
+    }
+
+    const { data, count, error } = await query;
+
+    if (error) {
+      Sentry.captureException(error, { tags: { route: 'admin_orders_list' } });
+      return NextResponse.json(
+        formatApiError(error, 'Failed to fetch orders'),
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      orders: data || [],
+      total: count || 0,
+      page,
+      pageSize,
+    });
+  } catch (error) {
+    Sentry.captureException(error);
+    return NextResponse.json(
+      formatApiError(error, 'Failed to fetch orders'),
+      { status: 500 }
+    );
+  }
+}
+
+const patchSchema = z.object({
+  id: z.string().uuid(),
+  status: z.enum(ORDER_STATUSES),
+});
+
+// PATCH: update order status.
+export async function PATCH(request: NextRequest) {
+  const rateLimitResponse = await checkRateLimit(request, 'admin');
+  if (rateLimitResponse) return rateLimitResponse;
+
+  try {
+    const body = await request.json();
+    const parsed = patchSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: parsed.error.issues[0]?.message || 'Invalid request' },
+        { status: 400 }
+      );
+    }
+
+    const supabase = createAdminClient();
+    const { error } = await supabase
+      .from('orders')
+      .update({ status: parsed.data.status })
+      .eq('id', parsed.data.id);
+
+    if (error) {
+      Sentry.captureException(error, { tags: { route: 'admin_orders_patch' } });
+      return NextResponse.json(
+        formatApiError(error, 'Failed to update order'),
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    Sentry.captureException(error);
+    return NextResponse.json(
+      formatApiError(error, 'Failed to update order'),
+      { status: 500 }
+    );
+  }
+}
 
 const manualOrderSchema = z.object({
   customerEmail: z.string().email('Valid email required'),
