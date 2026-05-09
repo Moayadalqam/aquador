@@ -129,8 +129,8 @@ function EditorialHero() {
             </span>
           </div>
           <p className="mt-8 max-w-[560px] text-base leading-[1.8] text-[#fff9eb]/72 md:text-lg">
-            Premium &amp; Niche Fragrances in Cyprus. Discover our curated collection of high-end
-            and niche perfumes, or create your own signature fragrance at Aquad&apos;or Cyprus.
+            From Dubai to Cyprus. Premium &amp; niche fragrances, sourced direct and curated in
+            Nicosia, or design your own signature scent at Aquad&apos;or.
           </p>
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
             <Link href="/shop">
@@ -202,7 +202,7 @@ function EditorialHero() {
               <Gem className="h-4 w-4" strokeWidth={1.5} />
               <span className="text-[10px] uppercase tracking-[0.22em]">Since 2018</span>
             </div>
-            <p className="mt-3 font-playfair text-2xl leading-none text-[#fff9eb]">Curated in Cyprus</p>
+            <p className="mt-3 font-playfair text-2xl leading-none text-[#fff9eb]">From Dubai to Cyprus</p>
           </div>
         </motion.div>
       </div>
