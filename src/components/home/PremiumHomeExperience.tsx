@@ -197,12 +197,13 @@ function EditorialHero() {
             </div>
           </div>
 
-          <div className="absolute right-[10%] top-[1%] hidden w-[170px] border border-[#d7b45d]/25 bg-[#17130d]/82 px-5 py-4 backdrop-blur md:block">
+          <div className="absolute right-[10%] top-[1%] hidden w-[200px] border border-[#d7b45d]/25 bg-[#17130d]/82 px-5 py-5 backdrop-blur md:block">
             <div className="flex items-center gap-2 text-[#d7b45d]">
               <Gem className="h-4 w-4" strokeWidth={1.5} />
-              <span className="text-[10px] uppercase tracking-[0.22em]">Since 2018</span>
+              <span className="text-[10px] uppercase tracking-[0.22em]">Heritage</span>
             </div>
-            <p className="mt-3 font-playfair text-2xl leading-none text-[#fff9eb]">From Dubai to Cyprus</p>
+            <p className="mt-3 font-playfair text-4xl leading-none text-[#fff9eb]">Established</p>
+            <p className="mt-2 text-[11px] uppercase tracking-[0.28em] text-[#d7b45d]">Since 2018</p>
           </div>
         </motion.div>
       </div>
