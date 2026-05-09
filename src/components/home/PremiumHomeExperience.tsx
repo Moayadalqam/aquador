@@ -245,11 +245,11 @@ function StoryGallery() {
                 className="object-cover opacity-80 transition duration-700 group-hover:scale-[1.04] group-hover:opacity-95"
                 sizes="(max-width: 768px) 100vw, 33vw"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#17130d] via-[#17130d]/38 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#17130d] via-[#17130d]/65 to-[#17130d]/15" />
               <div className="absolute inset-x-0 bottom-0 p-7 md:p-8">
-                <p className="mb-4 text-[10px] uppercase tracking-[0.28em] text-[#d7b45d]">{story.eyebrow}</p>
-                <h3 className="font-playfair text-3xl leading-tight tracking-normal text-[#fff9eb]">{story.title}</h3>
-                <p className="mt-4 text-sm leading-[1.75] text-[#fff9eb]/72">{story.description}</p>
+                <p className="mb-4 text-[10px] uppercase tracking-[0.28em] text-[#d7b45d] drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]">{story.eyebrow}</p>
+                <h3 className="font-playfair text-3xl leading-tight tracking-normal text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)]">{story.title}</h3>
+                <p className="mt-4 text-sm leading-[1.75] text-white/95 drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)]">{story.description}</p>
                 <Link
                   href={story.href}
                   className="mt-7 inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.22em] text-[#d7b45d] transition group-hover:gap-4"

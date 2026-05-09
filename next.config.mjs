@@ -84,7 +84,7 @@ const nextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; img-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' https://vercel.live https://*.vercel.live https://js.stripe.com https://*.sentry.io; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; frame-src https://www.google.com https://js.stripe.com https://vercel.live; media-src 'self' https://*.supabase.co; connect-src 'self' https://api.stripe.com https://openrouter.ai https://vercel.live https://*.vercel.app wss://ws-us3.pusher.com https://*.sentry.io https://*.supabase.co wss://*.supabase.co https://raw.githack.com https://raw.githubusercontent.com;",
+            value: "default-src 'self'; img-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' https://vercel.live https://*.vercel.live https://js.stripe.com https://*.sentry.io https://elfsightcdn.com https://static.elfsight.com https://*.elfsight.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.elfsight.com; font-src 'self' https://fonts.gstatic.com https://*.elfsight.com; frame-src https://www.google.com https://js.stripe.com https://vercel.live https://*.elfsight.com; media-src 'self' https://*.supabase.co; connect-src 'self' https://api.stripe.com https://openrouter.ai https://vercel.live https://*.vercel.app wss://ws-us3.pusher.com https://*.sentry.io https://*.supabase.co wss://*.supabase.co https://raw.githack.com https://raw.githubusercontent.com https://*.elfsight.com https://elfsightcdn.com;",
           },
         ],
       },
