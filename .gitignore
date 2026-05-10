@@ -45,3 +45,6 @@ next-env.d.ts
 
 # Supabase CLI temp files
 supabase/.temp/
+
+# Codex CLI local config
+.codex/

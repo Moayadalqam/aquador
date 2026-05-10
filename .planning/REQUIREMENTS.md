@@ -1,189 +1,200 @@
-# Requirements: Aquad'or v2.0 Immersive Luxury Experience
+# Requirements: Aquad'or
 
-**Defined:** 2026-03-09
+Single source of truth for what's been delivered and what's planned. Grouped by milestone. Status reflects current reality (verified 2026-05-10).
+
 **Core Value:** A customer completes a purchase and knows it worked — they see their order details on screen, receive a confirmation email, and the store is notified. No silent failures, no misleading messages, no security holes.
 
-## v1.2 Requirements (Completed)
+---
 
-Previously shipped in v1.2 Design Overhaul & Premium UX milestone.
+## Milestone 1 · Order/Payment System Fix · ✅ Complete (2026-03-02)
 
-### Visual Foundation
-- ✓ **VISUAL-01**: Site uses premium typography system with luxury brand hierarchy — v1.2
-- ✓ **VISUAL-02**: Site implements sophisticated color palette with gold accents and refined gradients — v1.2
-- ✓ **VISUAL-03**: Site has perfect spacing system with consistent margins, padding, and gaps — v1.2
-- ✓ **VISUAL-04**: Site uses optimized image pipeline for high-quality product photos with fast loading — v1.2
-
-### Product Experience
-- ✓ **PRODUCT-01**: Product pages display enhanced photography with multi-angle views — v1.2
-- ✓ **PRODUCT-02**: Product images include zoom functionality for detailed viewing — v1.2
-- ✓ **PRODUCT-03**: Product presentation follows luxury e-commerce standards — v1.2
-
-### Interactive Design
-- ✓ **INTERACT-01**: Site features scroll-triggered animations that are mobile-safe — v1.2
-- ✓ **INTERACT-02**: Site includes smooth page transitions between navigation — v1.2
-- ✓ **INTERACT-03**: Animations maintain 60fps performance on all devices — v1.2
-
-## v2.0 Requirements
-
-Requirements for immersive luxury experience transformation. Each maps to roadmap phases.
-
-### Visual Effects & Animation
-
-- [ ] **VFX-01**: User experiences smooth parallax scrolling throughout entire site
-- [ ] **VFX-02**: User sees cinematic page transitions between sections
-- [ ] **VFX-03**: User encounters scroll-triggered animations that reveal content progressively
-- [ ] **VFX-04**: User experiences 60fps performance during all animations and effects
-- [ ] **VFX-05**: User sees sophisticated micro-interactions on hover and touch
-- [ ] **VFX-06**: User experiences seamless mobile parallax effects (performance optimized)
-
-### 3D Product Experience
-
-- [ ] **3D-01**: User can rotate product bottles in 3D space with mouse/touch
-- [ ] **3D-02**: User can zoom into product details with smooth 3D transitions
-- [ ] **3D-03**: User sees realistic lighting and shadows on 3D product models
-- [ ] **3D-04**: User experiences 3D product showcase in custom perfume builder
-- [ ] **3D-05**: User can view multiple product angles with smooth interpolation
-- [ ] **3D-06**: User experiences optimized 3D performance on mobile devices
-
-### Immersive Navigation
-
-- [ ] **NAV-01**: User experiences smooth product filtering with animated transitions
-- [ ] **NAV-02**: User discovers products through immersive browsing patterns
-- [ ] **NAV-03**: User encounters progressive disclosure of product information
-- [ ] **NAV-04**: User experiences contextual hover states that enhance discovery
-- [ ] **NAV-05**: User navigates with touch-optimized gestures on mobile
-- [ ] **NAV-06**: User experiences seamless category transitions with visual continuity
-
-### Performance & Optimization
-
-- [ ] **PERF-01**: User experiences all animations at consistent 60fps performance
-- [ ] **PERF-02**: User sees fast initial page loads despite rich visual content
-- [ ] **PERF-03**: User experiences optimized mobile performance with reduced effects
-- [ ] **PERF-04**: User benefits from progressive loading of heavy 3D assets
-- [ ] **PERF-05**: User experiences minimal layout shifts during content loading
-- [ ] **PERF-06**: User sees smooth performance across all device capabilities
-
-### Analytics & Tracking
-
-- [ ] **TRACK-01**: User interactions with 3D elements are tracked for engagement analysis
-- [ ] **TRACK-02**: User scroll depth and parallax engagement is measured
-- [ ] **TRACK-03**: User time spent in immersive product views is captured
-- [ ] **TRACK-04**: User navigation patterns through new discovery flows are tracked
-- [ ] **TRACK-05**: User engagement with cinematic elements is analyzed
-- [ ] **TRACK-06**: User device performance impact is monitored and optimized
-
-### Advanced Loading States
-
-- [ ] **LOAD-01**: User sees elegant skeleton screens during content loading
-- [ ] **LOAD-02**: User experiences progressive image loading with luxury placeholders
-- [ ] **LOAD-03**: User sees sophisticated preloaders for 3D asset initialization
-- [ ] **LOAD-04**: User experiences smooth transitions from loading to interactive states
-- [ ] **LOAD-05**: User sees contextual loading indicators that match luxury aesthetic
-- [ ] **LOAD-06**: User experiences intelligent preloading of likely next content
-
-### Accessibility Enhancements
-
-- [ ] **A11Y-01**: User can disable motion effects through accessibility preferences
-- [ ] **A11Y-02**: User can navigate 3D elements using keyboard controls
-- [ ] **A11Y-03**: User with vestibular disorders experiences safe motion alternatives
-- [ ] **A11Y-04**: User using screen readers receives appropriate 3D element descriptions
-- [ ] **A11Y-05**: User can access all functionality without relying on motion
-- [ ] **A11Y-06**: User experiences high contrast mode compatibility with new effects
-
-## v2.1 Requirements
-
-Deferred to future release. Tracked but not in current roadmap.
-
-### Advanced Features
-
-- **ADV-01**: Real-time personalization based on browsing behavior
-- **ADV-02**: AI-powered product recommendations with visual integration
-- **ADV-03**: Social sharing of 3D product views
-- **ADV-04**: Virtual try-on experience integration
-
-### Extended Interactions
-
-- **EXT-01**: Voice navigation for hands-free browsing
-- **EXT-02**: Gesture-based product interaction
-- **EXT-03**: Augmented reality product placement
-- **EXT-04**: Multi-user collaborative shopping experience
-
-## Out of Scope
-
-Explicitly excluded. Documented to prevent scope creep.
-
-| Feature | Reason |
-|---------|--------|
-| VR headset support | Hardware adoption too limited, focus on web experience |
-| Real-time chat integration | Not core to visual transformation, future enhancement |
-| Video backgrounds | Performance impact outweighs benefit, focus on 3D |
-| Complex physics simulation | Over-engineering for product showcase needs |
-| Multi-language interface changes | Content management scope, not visual transformation |
-| Payment flow modifications | Current flow works well, focus on discovery |
-| Checkout flow redesign | Working flow should not be touched - revenue critical |
-| Auto-playing content | Never build - degrades user experience |
-
-## Traceability
-
-Which phases cover which requirements. Updated during roadmap creation.
-
-| Requirement | Phase | Status |
-|-------------|-------|--------|
-| VFX-01 | Phase 13 | Pending |
-| VFX-02 | Phase 13 | Pending |
-| VFX-03 | Phase 13 | Pending |
-| VFX-04 | Phase 13 | Pending |
-| VFX-05 | Phase 13 | Pending |
-| VFX-06 | Phase 15 | Pending |
-| 3D-01 | Phase 14 | Pending |
-| 3D-02 | Phase 14 | Pending |
-| 3D-03 | Phase 14 | Pending |
-| 3D-04 | Phase 14 | Pending |
-| 3D-05 | Phase 14 | Pending |
-| 3D-06 | Phase 14 | Pending |
-| NAV-01 | Phase 15 | Pending |
-| NAV-02 | Phase 15 | Pending |
-| NAV-03 | Phase 15 | Pending |
-| NAV-04 | Phase 15 | Pending |
-| NAV-05 | Phase 15 | Pending |
-| NAV-06 | Phase 15 | Pending |
-| PERF-01 | Phase 13 | Pending |
-| PERF-02 | Phase 13 | Pending |
-| PERF-03 | Phase 17 | Pending |
-| PERF-04 | Phase 14 | Pending |
-| PERF-05 | Phase 13 | Pending |
-| PERF-06 | Phase 17 | Pending |
-| TRACK-01 | Phase 16 | Pending |
-| TRACK-02 | Phase 16 | Pending |
-| TRACK-03 | Phase 16 | Pending |
-| TRACK-04 | Phase 16 | Pending |
-| TRACK-05 | Phase 16 | Pending |
-| TRACK-06 | Phase 16 | Pending |
-| LOAD-01 | Phase 15 | Pending |
-| LOAD-02 | Phase 15 | Pending |
-| LOAD-03 | Phase 14 | Pending |
-| LOAD-04 | Phase 17 | Pending |
-| LOAD-05 | Phase 17 | Pending |
-| LOAD-06 | Phase 17 | Pending |
-| A11Y-01 | Phase 17 | Pending |
-| A11Y-02 | Phase 17 | Pending |
-| A11Y-03 | Phase 17 | Pending |
-| A11Y-04 | Phase 17 | Pending |
-| A11Y-05 | Phase 17 | Pending |
-| A11Y-06 | Phase 17 | Pending |
-
-**Coverage:**
-- v2.0 requirements: 36 total
-- Mapped to phases: 36/36 ✓
-- Unmapped: 0 ✓
-
-**Phase Distribution:**
-- Phase 13 (Parallax & Visual): 8 requirements
-- Phase 14 (3D Showcase): 8 requirements
-- Phase 15 (Navigation & Discovery): 9 requirements
-- Phase 16 (Analytics): 6 requirements
-- Phase 17 (Accessibility & Polish): 11 requirements
+| ID | Requirement | Status |
+|---|---|---|
+| ORDER-01 | Server-side cart validation with Zod schema and price verification against product catalog | Complete |
+| ORDER-02 | Stripe metadata under 500-char limit (shortened keys pid/vid/qty) | Complete |
+| ORDER-03 | Both success pages display order details from Stripe session | Complete |
+| ORDER-04 | Idempotent email sending via database-based dedup | Complete |
+| ORDER-05 | Webhook reconstructs full item data from shortened metadata | Complete |
+| ORDER-06 | Admin search secured against SQL filter injection | Complete |
+| ORDER-07 | Unconditional free shipping messaging + 3-7 business day delivery | Complete |
+| ORDER-08 | Centralized escapeHtml + SHIPPING_COUNTRIES utilities | Complete |
+| ORDER-09 | Custom perfume success page detects payment correctly | Complete |
+| ORDER-10 | Duplicate checkout session prevention (isProcessing + AbortController) | Complete |
 
 ---
-*Requirements defined: 2026-03-09*
-*Last updated: 2026-03-09 after v2.0 roadmap creation*
+
+## Milestone 2 · Security Audit Remediation · ✅ Complete (2026-03-03)
+
+| ID | Requirement | Status |
+|---|---|---|
+| SEC-01 | RLS enabled on all 9 Supabase tables with 24 policies | Complete |
+| SEC-02 | Sentry GDPR compliant (sendDefaultPii: false, 10% prod sampling) | Complete |
+| SEC-03 | SQL injection protection in admin product search | Complete |
+| SEC-04 | Open redirect protection in admin login | Complete |
+| SEC-05 | Permissions-Policy header (camera/mic/geolocation/FLoC disabled) | Complete |
+| SEC-06 | CSP hardened (unsafe-eval removed, media-src restricted) | Complete |
+| SEC-07 | Stripe webhook test suite (21 tests) | Complete |
+| SEC-08 | API test coverage 6/14 routes (74 tests total) | Complete |
+| SEC-09 | Real React error boundary with Sentry integration | Complete |
+| SEC-10 | Zod cart validation on localStorage hydration | Complete |
+| SEC-11 | Cart hydration race condition fixed (useReducer initializer) | Complete |
+| SEC-12 | Consistent API error handling across all routes | Complete |
+| SEC-13 | Database performance indexes (8 indexes) | Complete |
+| SEC-14 | Blog ISR with 60s revalidation using public client | Complete |
+| SEC-15 | N+1 query eliminated in getRelatedProducts | Complete |
+| SEC-16 | Three.js removed (~600KB bundle reduction) | Complete |
+| SEC-17 | Form accessibility (htmlFor/id, aria-labels, fieldset/legend) | Complete |
+
+---
+
+## Milestone 3 · Design Overhaul & Premium UX · ✅ Complete (2026-03-04)
+
+| ID | Requirement | Status |
+|---|---|---|
+| VISUAL-01 | Premium typography hierarchy (Playfair + Poppins) site-wide | Complete |
+| VISUAL-02 | Sophisticated color palette with gold accents and refined gradients | Complete |
+| VISUAL-03 | Perfect spacing system (consistent margins, padding, gaps) | Complete |
+| VISUAL-04 | Optimized image pipeline with blur placeholders | Complete |
+| PRODUCT-01 | Multi-angle product gallery | Complete |
+| PRODUCT-02 | Product image zoom for detailed viewing | Complete |
+| PRODUCT-03 | Product presentation matches luxury e-commerce standards | Complete |
+| INTERACT-01 | Mobile-safe scroll-triggered animations | Complete |
+| INTERACT-02 | Smooth page transitions between navigation | Complete |
+| INTERACT-03 | 60fps animation performance | Complete |
+
+---
+
+## Milestone 4 · Immersive Luxury Experience · ✅ Complete (2026-03-09)
+
+| ID | Requirement | Status |
+|---|---|---|
+| VFX-01..06 | Parallax + cinematic transitions + scroll-triggered reveals + 60fps + micro-interactions + mobile parallax | Complete |
+| 3D-01..06 | 3D rotation/zoom/lighting/builder/multi-angle/mobile perf | Complete |
+| NAV-01..06 | Animated filtering + immersive browsing + progressive disclosure + hover states + touch + category transitions | Complete |
+| PERF-01..06 | 60fps + fast loads + mobile perf + progressive 3D loading + minimal CLS + smooth across devices | Complete |
+| TRACK-01..06 | 3D + scroll + product views + navigation patterns + cinematic + device perf tracking | Complete |
+| LOAD-01..06 | Skeletons + progressive images + 3D preloaders + smooth transitions + contextual indicators + intelligent preloading | Complete |
+| A11Y-01..06 | Reduced-motion + keyboard + vestibular-safe + screen reader + non-motion access + high contrast | Complete |
+
+---
+
+## Milestone 5 · Client Feedback Round · ✅ Complete (2026-04-11)
+
+| ID | Requirement | Status |
+|---|---|---|
+| BRAND-01 | Logo, tagline, year, cart icon corrected | Complete |
+| NAV-CLIENT-01 | Men/Women/Unisex categories restructured, Dubai Shop dropdown fixed | Complete |
+| HOME-CLIENT-01 | Homepage fragrance education + featured collections | Complete |
+| SEARCH-01 | Search bar + filtering repaired | Complete |
+| DATA-01 | Product fragrance notes restored, compositions corrected, spelling fixed | Complete |
+| POLISH-01 | Typography, gold contrast, TrustBar, footer polished | Complete |
+
+---
+
+## Milestone 6 · Quality & SEO Polish · ✅ Complete (2026-04-17)
+
+| ID | Requirement | Status |
+|---|---|---|
+| QUAL-01 | Blog SSG with image responsive sizes | Complete |
+| QUAL-02 | Focus rings + a11y landmarks across site | Complete |
+| QUAL-03 | Dubai Shop Arabian rebrand + €199 variant price fix | Complete |
+| QUAL-04 | Motion polish (scroll reveals, willChange, loading states) | Complete |
+| SEO-01 | Merchant schema (Product/Offer JSON-LD) | Complete |
+| SEO-02 | Dynamic OG images per route | Complete |
+| SEO-03 | hreflang for international targeting | Complete |
+
+---
+
+## Milestone 7 · Optimize All · ✅ Complete (2026-04-17)
+
+| ID | Requirement | Status |
+|---|---|---|
+| OPT1-01 | is_active visibility block + draft leak fix + RLS extension + upsert RPC + Sentry unify | Complete |
+| OPT1-02 | Suspense streaming + /shop static + dead code + 3D gate | Complete |
+| OPT1-03 | loading.tsx/error.tsx routes + JsonLd + CDN migration + responsive parity 27/27 | Complete |
+
+---
+
+## Milestone 8 · Optimize Pass 2 · ✅ Complete (2026-04-17)
+
+| ID | Requirement | Status |
+|---|---|---|
+| OPT2-01 | 33/33 optimization findings closed | Complete |
+| OPT2-02 | 3 Supabase migrations applied to production | Complete |
+
+---
+
+## Milestone 9 · Cinematic Scroll + v3.9 Optimization Fixes · ✅ Complete (2026-05-08)
+
+| ID | Requirement | Status |
+|---|---|---|
+| CIN-01 | WelcomeSplash entrance + ScrollProgress indicator + Hero3DScroll on homepage | Complete |
+| OPT3-01 | Live chat anon SELECT blocked without session_secret (C1, C2, C3) | Complete |
+| OPT3-02 | framer-motion → motion/react migration across 82 files (C4) | Complete |
+| OPT3-03 | Admin dashboard <300ms with 1000+ orders (C5) | Complete |
+| OPT3-04 | Homepage LCP <2.5s mobile, hero video <3MB WebM (C6, H10) | Complete |
+| OPT3-05 | CartItem remove button + focus rings + single h1 + DOMPurify dynamic (C7, H1-H5, H8) | Complete |
+| OPT3-06 | PageTransition removed + 3D Environment self-hosted HDRI + blog parallel fetches (H6, H9, H11) | Complete |
+| OPT3-07 | All admin + blog mutation routes rate-limited (H12, H13) | Complete |
+| OPT3-08 | Zod validation on /api/live-chat/notify, /api/blog GET, /api/checkout/session-details (H14, M19) | Complete |
+
+---
+
+## Milestone 10 · Premium Polish & Signature Experience · 🔧 Current
+
+**Hard constraints:** No copy changes. No catalog changes. No checkout flow changes. Visual + motion delivery only.
+
+### Phase 33 · Create-Your-Own Perfume Reinvention
+
+| ID | Requirement | Status |
+|---|---|---|
+| PREM-01 | `/create-perfume` collects same data as today (top/heart/base notes, name, size, summary) | Pending |
+| PREM-02 | Zero emoji icons, zero scent pictograms, zero perfume bottle illustrations on the page | Pending |
+| PREM-03 | At least one signature interaction that's distinctive on first encounter | Pending |
+| PREM-04 | Mobile experience matches desktop in clarity and delight (375px through 1920px) | Pending |
+
+### Phase 34 · Premium Scroll Motion (Catalog & Category)
+
+| ID | Requirement | Status |
+|---|---|---|
+| PREM-05 | Each category page has ≥ 3 distinct scroll-triggered motion patterns | Pending |
+| PREM-06 | `prefers-reduced-motion` honored on all new motion (no motion if opted out) | Pending |
+| PREM-07 | All product copy/names/prices/descriptions byte-identical to M9 (diff confirms zero copy changes) | Pending |
+
+### Phase 35 · Homepage & Global Motion Language
+
+| ID | Requirement | Status |
+|---|---|---|
+| PREM-08 | Homepage + product detail + blog share the same motion language | Pending |
+| PREM-09 | Header transitions on scroll feel premium (no abrupt color flips, no jank) | Pending |
+| PREM-10 | Performance budget held: LCP ≤ 2.5s mobile, INP ≤ 200ms, no CLS regression | Pending |
+
+---
+
+## Milestone 11 · Handoff · 📋 Planned
+
+| ID | Requirement | Status |
+|---|---|---|
+| HAND-01 | All design rubric dimensions ≥ 3 across rendered pages | Pending |
+| HAND-02 | Final SEO audit (titles, descriptions, OG, schema, sitemap, Search Console) | Pending |
+| HAND-03 | Cross-browser + mobile + axe a11y QA pass | Pending |
+| HAND-04 | Credentials walkthrough doc + domain transfer doc + support runbook | Pending |
+
+---
+
+## Out of Scope (post-handoff v2)
+
+| Feature | Reason |
+|---|---|
+| Order tracking page for customers | Stripe receipt + email sufficient |
+| Loyalty program / customer accounts | Out of current contract scope |
+| Multi-language UI (Arabic, French) | EN-only confirmed; Arabic in product names is acceptable |
+| VR / AR product try-on | Hardware adoption too limited |
+| Subscription perfume box | Different business model |
+| Native mobile app | Web-only confirmed |
+| Auto-playing content | Never build — degrades UX |
+| Conditional shipping pricing | Decided to keep all shipping free |
+
+---
+
+*Requirements defined retroactively: 2026-05-10. Source: tracking.json::lifetime.milestones, OPTIMIZE.md, MILESTONES.md, shipped phase folders. Last updated when M10 opened.*

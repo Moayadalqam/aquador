@@ -98,23 +98,35 @@ A customer completes a purchase and knows it worked — they see their order det
 - Framer Motion replacement — 53 files, too broad for current scope
 - Admin dashboard redesign — functional, not UX overhaul
 
-## Current Milestone: v3.0 Client Feedback Round
+## Current Milestone: M10 — Premium Polish & Signature Experience
 
-**Goal:** Address all client-reported issues across branding, navigation, content, search, product data, and design polish. Ensure Aquad'or brand identity is consistent and prominent throughout the site.
+**Goal:** Same content, same products, same text — elevated visual delivery. The flagship is `/create-perfume`: it becomes a distinctive, memorable interaction without emoji scent icons or decorative bottle illustrations. Other pages get premium scroll motion that doesn't change information architecture or copy.
 
-**Source:** Issue list from client Moayad Alqam (2026-04-11) — 10 categories, ~40+ individual items.
+**Source:** Owner direction 2026-05-10 — site is feature-complete and shipped; remaining gap is delivery quality, not feature scope.
 
-**Target fixes:**
-- Brand identity corrections (logo, tagline, year, cart icon)
-- Navigation restructure (Men/Women/Unisex categories, remove Blog, fix Dubai Shop)
-- Homepage content overhaul (fragrance education, featured collections, remove boutique section)
-- Search functionality repair (non-functional search bar, broken filtering)
-- Product data restoration (missing fragrance notes, incorrect compositions, misspellings)
-- Design polish (typography, contrast, CTAs, spacing, trust elements, footer)
+**Phases (33-35):**
+- **Phase 33** — Create-Your-Own Perfume Reinvention (flagship)
+- **Phase 34** — Premium Scroll Motion (Catalog & Category)
+- **Phase 35** — Homepage & Global Motion Language
 
-## Previous Milestone: v2.0 Immersive Luxury Experience (COMPLETE)
+**Hard constraints:**
+- No copy changes (all product names, descriptions, body text byte-identical)
+- No catalog changes (every product, variant, price preserved)
+- No checkout flow changes (Stripe + webhook + email pipeline untouched)
 
-**Goal:** Transform Aquador into an exceptional luxury perfume destination with cutting-edge visual effects, 3D showcases, and immersive interactions that create customer amazement and engagement.
+See `.planning/JOURNEY.md` for full milestone arc and `.planning/ROADMAP.md` for current-milestone phase detail.
+
+## Shipped Milestones
+
+- ✅ M1 Order/Payment System Fix — Phases 1-4 (2026-03-02)
+- ✅ M2 Security Audit Remediation — Phases 8-9 (2026-03-03)
+- ✅ M3 Design Overhaul & Premium UX — Phases 10-12 (2026-03-04)
+- ✅ M4 Immersive Luxury Experience — Phases 13-17 (2026-03-09)
+- ✅ M5 Client Feedback Round — Phases 18-22 (2026-04-11)
+- ✅ M6 Quality & SEO Polish — Phases 23-26 (2026-04-17)
+- ✅ M7 Optimize All — Phases 27-29 (2026-04-17)
+- ✅ M8 Optimize Pass 2 — Phase 30 (2026-04-17)
+- ✅ M9 Cinematic Scroll + v3.9 Optimization Fixes — Phases 31-32 (2026-05-08)
 
 ## Context
 
@@ -177,4 +189,4 @@ Both converge at `/api/webhooks/stripe` which persists orders and sends emails.
 - **CSP limitation**: unsafe-inline required by Next.js/Tailwind
 
 ---
-*Last updated: 2026-03-09 after v2.0 milestone start*
+*Last updated: 2026-05-10 — M10 opened (Premium Polish & Signature Experience). Site live at https://www.aquadorcy.com.*

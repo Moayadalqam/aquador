@@ -2,28 +2,38 @@
   "project": "aquador",
   "client": "Moayad Alqam",
   "type": "e-commerce",
-  "assigned_to": "",
-  "milestone": 5,
-  "phase": 31,
-  "phase_name": "v3.4 Cinematic Scroll",
-  "total_phases": 31,
-  "status": "shipped",
+  "assigned_to": "OWNER (Fawzi Goussous)",
+  "team_id": "",
+  "project_id": "",
+  "git_remote": "",
+  "milestone": 10,
+  "milestone_name": "Premium Polish & Signature Experience",
+  "milestones": [],
+  "phase": 1,
+  "phase_name": "Create-Your-Own Perfume Reinvention",
+  "total_phases": 3,
+  "status": "setup",
   "wave": 0,
-  "tasks_done": 3,
-  "tasks_total": 3,
-  "verification": "pass",
+  "tasks_done": 0,
+  "tasks_total": 0,
+  "verification": "pending",
   "gap_cycles": {},
   "blockers": [],
-  "last_updated": "2026-05-09T14:38:57Z",
-  "last_commit": "e73f6c8",
+  "session_started_at": "2026-05-10T04:42:08.475Z",
+  "last_updated": "2026-05-10T04:42:08.475Z",
+  "last_pushed_at": "2026-05-09T14:38:57Z",
+  "last_commit": "24c96c7",
+  "build_count": 0,
+  "deploy_count": 0,
   "deployed_url": "https://www.aquadorcy.com",
-  "notes": "Session report QS-REPORT-01 generated",
+  "notes": "",
+  "submitted_by": "",
   "lifetime": {
     "tasks_completed": 88,
-    "phases_completed": 31,
-    "milestones_completed": 8,
-    "total_phases": 31,
-    "last_closed_milestone": 4,
+    "phases_completed": 32,
+    "milestones_completed": 9,
+    "total_phases": 32,
+    "last_closed_milestone": 9,
     "milestones": [
       {
         "id": "v1.0",
@@ -115,11 +125,15 @@
         "phases": [
           31
         ]
+      },
+      {
+        "id": "v3.9",
+        "name": "Optimization Fixes",
+        "shipped": "2026-05-08",
+        "phases": [
+          32
+        ]
       }
     ]
-  },
-  "last_pushed_at": "2026-05-09T14:38:57Z",
-  "milestone_name": "",
-  "milestones": [],
-  "report_seq": 1
+  }
 }

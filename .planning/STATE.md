@@ -2,55 +2,53 @@
 
 ## Project
 See: .planning/PROJECT.md
+Journey: .planning/JOURNEY.md
+Current milestone roadmap: .planning/ROADMAP.md
 
 ## Current Position
-Phase: 32 of 32 — v3.9 Optimization Fixes
-Status: shipped
+Milestone: 10 of 11 — Premium Polish & Signature Experience
+Phase: 1 of 3 in M10 (globally phase 33 of 35) — Create-Your-Own Perfume Reinvention
+Status: setup
 Assigned to: OWNER (Fawzi Goussous)
-Last activity: 2026-05-08 — Session report QS-REPORT-01 generated
+Last activity: 2026-05-10 — M10 opened, planning reconciliation complete
 
-Progress: [██████████] 97%
+Progress: 32/35 phases shipped across 9/11 milestones
 
-## Roadmap
-| # | Phase | Goal | Status |
-|---|-------|------|--------|
-| 1 | Cart & Validation System | Secure cart validation, server-side price check | shipped |
-| 2 | Success Pages Enhancement | Order details on success pages | shipped |
-| 3 | Email & Admin Improvements | Idempotent emails, secure admin search | shipped |
-| 4 | Webhook Optimization | Stripe metadata reconstruction | shipped |
-| 5 | — | reserved | — |
-| 6 | — | reserved | — |
-| 7 | — | reserved | — |
-| 8 | Security Hardening | RLS, GDPR, SQL injection fixes | shipped |
-| 9 | Performance & Quality | Indexes, bundle, ISR, error boundary | shipped |
-| 10 | Visual Foundation | Typography, palette, spacing | shipped |
-| 11 | Product Experience Enhancement | Gallery zoom, product card polish | shipped |
-| 12 | Interactive Design Polish | Scroll animations, page transitions | shipped |
-| 13 | Parallax & Visual Foundation | Parallax + micro-interactions | shipped |
-| 14 | 3D Product Showcase | R3F 3D bottles + lighting | shipped |
-| 15 | Immersive Navigation & Discovery | Filters + skeletons + touch | shipped |
-| 16 | Analytics & Engagement Tracking | 3D + scroll + engagement events | shipped |
-| 17 | Accessibility & Polish | Reduced-motion, keyboard, ARIA | shipped |
-| 18 | Brand Identity & Header | Logo, tagline, year, cart icon | shipped |
-| 19 | Navigation & Menu Structure | Men/Women/Unisex, Dubai Shop dropdown | shipped |
-| 20 | Homepage Content Sections | Fragrance education, featured split | shipped |
-| 21 | Search & Product Data | Search API, SQL migration, product notes | shipped |
-| 22 | Design Polish & Trust | Typography, gold contrast, TrustBar, footer | shipped |
-| 23 | Performance & A11y Quick Wins | Blog SSG, image sizes, focus rings, a11y landmarks | shipped |
-| 24 | Dubai Shop Rebrand + Variant Selector | Arabian hero + €199 variant price fix | shipped |
-| 25 | Motion & UX Polish | Scroll reveals, willChange hints, loading states | shipped |
-| 26 | SEO Hardening | Merchant schema + dynamic OG + hreflang | shipped |
-| 27 | Security + Reliability | is_active block, draft leak fix, RLS, upsert RPC, Sentry unify | shipped |
-| 28 | Performance + Bundle + Architecture | Suspense stream, /shop static, dead code, 3D gate | shipped |
-| 29 | Conventions + A11y + Responsive | loading/error routes, JsonLd, CDN migration, 27/27 responsive | shipped |
-| 30 | Optimize Pass 2 | 33/33 findings, 3 migrations applied | shipped |
-| 31 | Cinematic Scroll | WelcomeSplash + ScrollProgress + Hero3DScroll | shipped |
-| 32 | v3.9 Optimization Fixes | 7 critical + 14 high from OPTIMIZE v3.9 — 45/58 closed | shipped |
+## Lifetime Roadmap (shipped)
+
+| # | Milestone | Phases | Shipped |
+|---|---|---|---|
+| 1 | Order/Payment System Fix | 1-4 | 2026-03-02 |
+| 2 | Security Audit Remediation | 8-9 | 2026-03-03 |
+| 3 | Design Overhaul & Premium UX | 10-12 | 2026-03-04 |
+| 4 | Immersive Luxury Experience | 13-17 | 2026-03-09 |
+| 5 | Client Feedback Round | 18-22 | 2026-04-11 |
+| 6 | Quality & SEO Polish | 23-26 | 2026-04-17 |
+| 7 | Optimize All | 27-29 | 2026-04-17 |
+| 8 | Optimize Pass 2 | 30 | 2026-04-17 |
+| 9 | Cinematic Scroll + v3.9 Optimization Fixes | 31-32 | 2026-05-08 |
+
+## Current Milestone (M10) — Phase Plan
+
+| # in M10 | Global # | Phase | Status |
+|---|---|---|---|
+| 1 | 33 | Create-Your-Own Perfume Reinvention | ready (current) |
+| 2 | 34 | Premium Scroll Motion (Catalog & Category) | pending |
+| 3 | 35 | Homepage & Global Motion Language | pending |
+
+## Planned Beyond M10
+
+| # | Milestone | Phases | Status |
+|---|---|---|---|
+| 11 | Handoff | 36-39 | planned |
 
 ## Blockers
 None.
 
 ## Session
-Last session: 2026-05-08
+Last session: 2026-05-10 — planning reconciliation
 Last worked by: OWNER (Fawzi Goussous)
-Resume: —
+Resume: `/qualia-plan 1` to break Create-Your-Own Perfume Reinvention into executable plans
+
+---
+*Note: state.js operates on milestone-local phase numbering (1-3 within M10). This file shows both local and global context for human readability.*
