@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { formatApiError } from '@/lib/api-utils';
 import { checkRateLimit } from '@/lib/rate-limit';
+import { htmlToPlainDescription, isDisallowedSampleSize } from '@/lib/product-description';
 
 export const maxDuration = 10;
 
@@ -38,6 +39,14 @@ const productSchema = z.object({
   brand: z.string().max(200).nullable().optional(),
   gender: productGenderEnum.nullable().optional(),
   tags: z.array(z.string()).nullable().optional(),
+}).superRefine((product, ctx) => {
+  if (isDisallowedSampleSize(product.size)) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['size'],
+      message: '2ml sample sizes are no longer available',
+    });
+  }
 });
 
 // Product IDs are slugs (kebab-case text), not UUIDs — the `products.id` column is text-typed.
@@ -114,10 +123,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const productData = {
+      ...result.data,
+      description: htmlToPlainDescription(result.data.description),
+    };
+
     const supabase = createAdminClient();
     const { data: product, error: insertError } = await supabase
       .from('products')
-      .insert(result.data)
+      .insert(productData)
       .select('id')
       .single();
 
@@ -163,7 +177,10 @@ export async function PUT(request: NextRequest) {
 
     const { error: updateError } = await supabase
       .from('products')
-      .update(updateData)
+      .update({
+        ...updateData,
+        description: htmlToPlainDescription(updateData.description),
+      })
       .eq('id', id);
 
     if (updateError) {

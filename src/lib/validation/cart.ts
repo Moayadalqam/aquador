@@ -2,6 +2,7 @@ import { z } from 'zod';
 import type { CartItem } from '@/types/cart';
 import { getProductsByIds } from '@/lib/supabase/product-service';
 import { MIN_QUANTITY, MAX_QUANTITY } from '@/lib/constants';
+import { isDisallowedSampleSize } from '@/lib/product-description';
 
 // Aquador's own categories sell the same fragrance in multiple formats
 // with fixed pricing that's not stored per-variant in the DB.
@@ -86,6 +87,14 @@ export async function validateCartPrices(items: CartItem[]): Promise<{
   const correctedItems: CartItem[] = [];
 
   for (const item of items) {
+    if (isDisallowedSampleSize(item.size)) {
+      errors.push({
+        productId: item.productId,
+        reason: '2ml samples are no longer available',
+      });
+      continue;
+    }
+
     // Custom perfumes: virtual product with fixed volume-based pricing
     if (item.productId === CUSTOM_PERFUME_PRODUCT_ID) {
       if (!item.customPerfume) {

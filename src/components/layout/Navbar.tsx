@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
@@ -21,9 +21,6 @@ const navLinks: NavItem[] = [
   { label: 'Re-Order', href: '/reorder' },
   { label: 'Contact', href: '/contact' },
 ];
-
-const leftLinks = navLinks.slice(0, 5);
-const rightLinks = navLinks.slice(5);
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -86,6 +83,13 @@ export default function Navbar() {
 
   const isHome = pathname === '/';
   const useLightText = isHome && !isScrolled;
+  const isProductPage = pathname?.startsWith('/products/');
+  const visibleNavLinks = useMemo(
+    () => isProductPage ? navLinks.filter((link) => link.href !== '/create-perfume') : navLinks,
+    [isProductPage]
+  );
+  const leftLinks = visibleNavLinks.slice(0, 5);
+  const rightLinks = visibleNavLinks.slice(5);
 
   const checkActive = (href: string) => {
     // Gender-specific routes
@@ -256,7 +260,7 @@ export default function Navbar() {
 
               <nav className="flex-1">
                 <ul className="space-y-0">
-                  {navLinks.map((link, i) => (
+                  {visibleNavLinks.map((link, i) => (
                     <motion.li
                       key={link.label}
                       initial={{ opacity: 0, x: -16 }}

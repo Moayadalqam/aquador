@@ -103,7 +103,7 @@ function AquadorBottleIcon({ className }: { className?: string }) {
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [mode, setMode] = useState<ChatMode>('ai');
-  const [messages, setMessages] = useState<Message[]>([{ role: 'assistant', content: "Welcome to Aquad'or! How can I help you find your perfect scent?", timestamp: new Date() }]);
+  const [messages, setMessages] = useState<Message[]>([{ role: 'assistant', content: "Tell me a note, mood, or occasion and I’ll suggest a few scents.", timestamp: new Date() }]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [liveMessages, setLiveMessages] = useState<LiveMessage[]>([]);
@@ -257,6 +257,14 @@ export default function ChatWidget() {
                 </div>
                 {messages.length <= 2 && (<div className="px-2.5 pb-1.5"><div className="flex flex-wrap gap-1">{suggestions.map((s, i) => (<button key={i} onClick={() => { setInput(s); inputRef.current?.focus(); }} className="text-xs px-2 py-1 bg-gray-100 border border-gold/20 text-gray-700 rounded-full hover:border-gold hover:text-gold transition-all cursor-pointer">{s}</button>))}</div></div>)}
                 <div className="border-t border-gold/20 p-2.5 bg-gray-50">
+                  <button
+                    type="button"
+                    onClick={startLiveChat}
+                    className="mb-2 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-gold/25 bg-white px-3 py-2 text-xs font-medium text-black transition-colors hover:border-gold hover:bg-gold/5"
+                  >
+                    <User className="h-3.5 w-3.5 text-gold" />
+                    Speak with a live agent
+                  </button>
                   <div className="flex items-center gap-2">
                     <input ref={inputRef} type="text" value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKeyPress} placeholder="Ask about fragrances..." aria-label="Ask about fragrances" disabled={isLoading} className="flex-1 bg-white border border-gold/20 text-black placeholder-gray-500 px-3 py-2 text-sm rounded-xl focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-1 focus-visible:outline-none transition-colors disabled:opacity-50" />
                     <button onClick={handleSend} disabled={!input.trim() || isLoading} aria-label="Send message" className="bg-gold text-dark p-2 rounded-xl hover:bg-gold-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"><Send className="w-4 h-4" /></button>

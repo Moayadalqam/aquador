@@ -19,6 +19,14 @@ interface OrderItem {
   quantity?: number;
   price?: number;
   productType?: string;
+  size?: string;
+  customPerfume?: {
+    name?: string;
+    topNote?: string;
+    heartNote?: string;
+    baseNote?: string;
+    specialRequests?: string;
+  };
 }
 
 interface ShippingAddress {
@@ -89,7 +97,8 @@ export default function OrdersTable({ orders, onStatusChange }: OrdersTableProps
             const tags = (order.tags && typeof order.tags === 'object' && !Array.isArray(order.tags))
               ? (order.tags as unknown as OrderTags)
               : {} as OrderTags;
-            const isCustomPerfume = tags['custom-perfume'] === 'true';
+            const customItems = items.filter((item) => item.productType === 'custom-perfume' || item.customPerfume);
+            const isCustomPerfume = tags['custom-perfume'] === 'true' || tags['has-custom-perfume'] === 'true' || customItems.length > 0;
             const isExpanded = expandedId === order.id;
             const shipping = order.shipping_address as unknown as ShippingAddress | null;
 
@@ -183,11 +192,18 @@ export default function OrdersTable({ orders, onStatusChange }: OrdersTableProps
                           {items.length > 0 ? (
                             <ul className="space-y-2">
                               {items.map((item, i) => (
-                                <li key={i} className="flex items-start justify-between gap-2">
-                                  <span className="text-gray-300 text-sm">{item.name || 'Unknown item'}</span>
-                                  <span className="text-gray-400 text-xs whitespace-nowrap">
-                                    x{item.quantity || 1} &middot; &euro;{(item.price || 0).toFixed(2)}
-                                  </span>
+                                <li key={i} className="space-y-1">
+                                  <div className="flex items-start justify-between gap-2">
+                                    <span className="text-gray-300 text-sm">{item.name || 'Unknown item'}</span>
+                                    <span className="text-gray-400 text-xs whitespace-nowrap">
+                                      x{item.quantity || 1} &middot; &euro;{(item.price || 0).toFixed(2)}
+                                    </span>
+                                  </div>
+                                  {(item.productType || item.size) && (
+                                    <p className="text-[11px] uppercase tracking-wider text-gray-500">
+                                      {[item.productType, item.size].filter(Boolean).join(' · ')}
+                                    </p>
+                                  )}
                                 </li>
                               ))}
                             </ul>
@@ -203,7 +219,41 @@ export default function OrdersTable({ orders, onStatusChange }: OrdersTableProps
                               <Palette className="h-4 w-4 text-gold" />
                               <h4 className="text-sm font-medium text-gold">Custom Perfume Details</h4>
                             </div>
-                            {tags.composition && (() => {
+                            {customItems.length > 0 ? (
+                              <div className="space-y-4">
+                                {customItems.map((item, index) => (
+                                  <div key={`${item.name}-${index}`} className="space-y-2 border-b border-gray-700/50 pb-4 last:border-b-0 last:pb-0">
+                                    <div className="flex items-center justify-between gap-3">
+                                      <p className="text-sm font-medium text-white">{item.customPerfume?.name || item.name || 'Custom Perfume'}</p>
+                                      {item.size && <span className="text-xs text-gold">{item.size}</span>}
+                                    </div>
+                                    <div className="space-y-1.5">
+                                      <div className="flex items-center gap-2">
+                                        <span className="text-xs uppercase tracking-wider text-gray-500 w-12">Top</span>
+                                        <span className="text-gray-200 text-sm">{item.customPerfume?.topNote || 'Not captured'}</span>
+                                      </div>
+                                      <div className="flex items-center gap-2">
+                                        <span className="text-xs uppercase tracking-wider text-gray-500 w-12">Heart</span>
+                                        <span className="text-gray-200 text-sm">{item.customPerfume?.heartNote || 'Not captured'}</span>
+                                      </div>
+                                      <div className="flex items-center gap-2">
+                                        <span className="text-xs uppercase tracking-wider text-gray-500 w-12">Base</span>
+                                        <span className="text-gray-200 text-sm">{item.customPerfume?.baseNote || 'Not captured'}</span>
+                                      </div>
+                                    </div>
+                                    {item.customPerfume?.specialRequests && (
+                                      <div className="pt-2">
+                                        <div className="flex items-center gap-1.5 mb-1">
+                                          <MessageSquare className="h-3 w-3 text-gray-500" />
+                                          <span className="text-gray-500 text-xs">Special Requests</span>
+                                        </div>
+                                        <p className="text-gray-300 text-sm italic">&ldquo;{item.customPerfume.specialRequests}&rdquo;</p>
+                                      </div>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            ) : tags.composition && (() => {
                               const comp = parseComposition(tags.composition);
                               if (!comp) return <p className="text-gray-300 text-sm">{tags.composition}</p>;
                               return (

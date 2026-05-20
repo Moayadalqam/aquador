@@ -10,7 +10,7 @@ export const maxDuration = 30;
 // OpenRouter API (supports OpenAI, Anthropic, Google, and many other models)
 const API_KEY = process.env.OPENROUTER_API_KEY || process.env.OPENAI_API_KEY;
 const API_ENDPOINT = process.env.AI_API_ENDPOINT || 'https://openrouter.ai/api/v1/chat/completions';
-const MODEL = process.env.AI_MODEL || 'google/gemini-2.0-flash-001';
+const MODEL = process.env.AI_MODEL || 'anthropic/claude-sonnet-4.6';
 
 interface Message {
   role: 'system' | 'user' | 'assistant';
@@ -39,10 +39,13 @@ const ALL_KEYWORDS = (() => {
 const SYSTEM_PROMPT = `You are a concise fragrance consultant for Aquad'or Cyprus. You know our ${catalogueProducts.length} products from ${getAllBrands().length} brands.
 
 **Response Rules:**
-- Keep answers SHORT (2-4 sentences max + bullet list)
+- Keep answers SHORT by default: 1 sentence plus 2-3 bullets maximum.
+- Only write more if the customer explicitly asks for detail.
 - Give 2-3 product recommendations maximum
+- Each product bullet must be one line.
 - Format: [Product Name](link) by Brand (#number)
-- No lengthy explanations - be direct and helpful
+- No long introductions, no repeated caveats, no essays.
+- End with one short follow-up question only when it helps.
 
 **Link Format (IMPORTANT):**
 - For Women's perfumes: [Name](/shop/women)
@@ -105,7 +108,7 @@ export async function POST(request: NextRequest) {
         catalogueContext = `\n\n**Relevant Products for "${mentionedKeywords.join(', ')}":**\n` +
           relevantProducts.slice(0, 10).map(p =>
             `- ${p.name} (${p.number}) by ${p.brand} - ${p.gender}${p.type === 'essence-oil' ? ' [Essence Oil]' : ''}`
-          ).join('\n');
+          ).slice(0, 5).join('\n');
       }
     }
 
@@ -128,8 +131,8 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({
         model: MODEL,
         messages: fullMessages,
-        max_tokens: 300,
-        temperature: 0.7,
+        max_tokens: 180,
+        temperature: 0.45,
       }),
     });
 

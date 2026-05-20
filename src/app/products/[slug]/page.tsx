@@ -12,6 +12,7 @@ import ParallaxWrapper from './ParallaxWrapper';
 import { ProductViewTracker } from '@/components/products/ProductViewTracker';
 import { buildProductSchema, buildProductBreadcrumb } from '@/lib/seo/product-schema';
 import JsonLd from '@/components/seo/JsonLd';
+import { stripProductDescription } from '@/lib/product-description';
 
 export const revalidate = 3600;
 
@@ -35,12 +36,14 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
     };
   }
 
+  const metaDescription = stripProductDescription(product.description, 155);
+
   return {
     title: `${product.name}`,
-    description: product.description,
+    description: metaDescription,
     openGraph: {
       title: `${product.name} | Aquad'or`,
-      description: product.description,
+      description: metaDescription,
       url: `https://aquadorcy.com/products/${slug}`,
       images: [
         {
@@ -67,7 +70,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
     twitter: {
       card: 'summary_large_image',
       title: `${product.name} | Aquad'or`,
-      description: product.description,
+      description: metaDescription,
       images: [`/api/og/product/${slug}`, product.image],
     },
     alternates: {

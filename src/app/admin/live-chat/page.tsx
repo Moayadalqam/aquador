@@ -233,6 +233,9 @@ export default function AdminLiveChat() {
             Live Chat
           </h1>
           <p className="text-sm text-gray-400 mt-1">
+            Live-agent requests appear here and also send an email alert to info@aquadorcy.com.
+          </p>
+          <p className="text-sm text-gray-400 mt-1">
             {waitingSessions.length > 0 && (
               <span className="text-amber-400 font-medium">
                 {waitingSessions.length} waiting

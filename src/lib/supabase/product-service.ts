@@ -3,6 +3,7 @@ import * as Sentry from '@sentry/nextjs';
 import { createPublicClient } from './public';
 import type { Product, ProductCategory, ProductGender } from './types';
 import { categories } from '../categories';
+import { isDisallowedSampleSize } from '@/lib/product-description';
 
 // Re-export categories since they're static
 export { categories };
@@ -40,6 +41,10 @@ export function sortAquadorFirst<T extends Pick<Product, 'brand'>>(products: T[]
   return [...aquador, ...rest];
 }
 
+function filterAvailableProducts<T extends Pick<Product, 'size'>>(products: T[]): T[] {
+  return products.filter((product) => !isDisallowedSampleSize(product.size));
+}
+
 // Get all products from Supabase (public-facing, filters inactive)
 export async function getAllProducts(): Promise<Product[]> {
   const supabase = createPublicClient();
@@ -58,7 +63,7 @@ export async function getAllProducts(): Promise<Product[]> {
     return [];
   }
 
-  return sortAquadorFirst(data || []);
+  return sortAquadorFirst(filterAvailableProducts(data || []));
 }
 
 // Get product by ID (returns null if inactive)
@@ -76,6 +81,7 @@ export async function getProductById(id: string): Promise<Product | null> {
     return null;
   }
 
+  if (data && isDisallowedSampleSize(data.size)) return null;
   return data;
 }
 
@@ -94,7 +100,7 @@ export async function getProductsByIds(ids: string[]): Promise<Product[]> {
     return [];
   }
 
-  return data || [];
+  return filterAvailableProducts(data || []);
 }
 
 // Get product by slug — cached per request to dedup generateMetadata + page component calls
@@ -118,7 +124,7 @@ export async function getProductsByCategory(category: string): Promise<Product[]
     return [];
   }
 
-  return sortAquadorFirst(data || []);
+  return sortAquadorFirst(filterAvailableProducts(data || []));
 }
 
 // Get featured products (active + in stock only)
@@ -137,7 +143,7 @@ export async function getFeaturedProducts(count: number = 6): Promise<Product[]>
     return [];
   }
 
-  return data || [];
+  return filterAvailableProducts(data || []);
 }
 
 // Get featured Aquad'or house products (brand is null or matches "Aquad'or", active + in stock)
@@ -157,7 +163,7 @@ export async function getFeaturedAquadorProducts(count: number = 6): Promise<Pro
     return [];
   }
 
-  return data || [];
+  return filterAvailableProducts(data || []);
 }
 
 // Get featured Lattafa original products (category = lattafa-original, active + in stock)
@@ -177,7 +183,7 @@ export async function getFeaturedLattafaProducts(count: number = 6): Promise<Pro
     return [];
   }
 
-  return data || [];
+  return filterAvailableProducts(data || []);
 }
 
 // Get all product slugs for static generation
@@ -185,14 +191,14 @@ export async function getAllProductSlugs(): Promise<string[]> {
   const supabase = createPublicClient();
   const { data, error } = await supabase
     .from('products')
-    .select('id');
+    .select('id, size');
 
   if (error) {
     Sentry.addBreadcrumb({ category: 'product-service', message: 'Error fetching product slugs', level: 'error', data: { error } });
     return [];
   }
 
-  return (data || []).map(p => p.id);
+  return filterAvailableProducts(data || []).map(p => p.id);
 }
 
 // Get related products (same category, excluding current, active only)
@@ -216,7 +222,7 @@ export async function getRelatedProducts(
     return [];
   }
 
-  return data || [];
+  return filterAvailableProducts(data || []);
 }
 
 // Search products (active only, sanitized against PostgREST injection)
@@ -236,7 +242,7 @@ export async function searchProducts(query: string): Promise<Product[]> {
     return [];
   }
 
-  return data || [];
+  return filterAvailableProducts(data || []);
 }
 
 // Get products by gender (filters inactive)
@@ -263,7 +269,7 @@ export async function getProductsByGender(gender: ProductGender): Promise<Produc
     return [];
   }
 
-  return sortAquadorFirst(data || []);
+  return sortAquadorFirst(filterAvailableProducts(data || []));
 }
 
 // Get human-readable label for a gender value

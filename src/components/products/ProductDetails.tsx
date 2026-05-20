@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { motion } from 'motion/react';
+import { Clock, Package, ShieldCheck } from 'lucide-react';
 import { formatPrice } from '@/lib/currency';
 import ProductVariantSelector, {
   getDefaultVariant,
@@ -8,6 +10,7 @@ import ProductVariantSelector, {
 } from './ProductVariantSelector';
 import AddToCartButton from './AddToCartButton';
 import RichDescription from './RichDescription';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 import type { LegacyProduct } from '@/types';
 
 // Aquador's own fragrances support perfume / essence oil / body lotion variants
@@ -24,6 +27,7 @@ interface ProductDetailsProps {
 }
 
 export default function ProductDetails({ product }: ProductDetailsProps) {
+  const reducedMotion = useReducedMotion();
   const isAquador = AQUADOR_CATEGORIES.includes(product.category);
   const [variant, setVariant] = useState<SelectedVariant>(getDefaultVariant);
 
@@ -38,7 +42,12 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
     : (product.salePrice && product.salePrice < product.price ? product.salePrice : product.price);
 
   return (
-    <div className="flex flex-col gap-6">
+    <motion.div
+      initial={reducedMotion ? false : { opacity: 0, y: 18 }}
+      animate={reducedMotion ? undefined : { opacity: 1, y: 0 }}
+      transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+      className="flex flex-col gap-6"
+    >
       {/* Brand */}
       {product.brand && (
         <p className="text-[11px] text-gold-500 uppercase tracking-[0.2em]">
@@ -92,34 +101,34 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
       <AddToCartButton product={displayProduct} />
 
       {/* Compact info row */}
-      <div className="flex flex-wrap gap-3 pt-2">
-        <div className="flex items-center gap-2 text-xs text-gray-500">
-          <svg className="w-4 h-4 text-gold-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
-          </svg>
+      <div className="grid gap-2 pt-2 sm:grid-cols-3">
+        <div className="flex items-center gap-2 rounded-full border border-black/10 bg-white/70 px-3 py-2 text-xs text-gray-600">
+          <Package className="h-4 w-4 flex-none text-gold-500" />
           Free shipping over €50
         </div>
-        <div className="flex items-center gap-2 text-xs text-gray-500">
-          <svg className="w-4 h-4 text-gold-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-          </svg>
+        <div className="flex items-center gap-2 rounded-full border border-black/10 bg-white/70 px-3 py-2 text-xs text-gray-600">
+          <ShieldCheck className="h-4 w-4 flex-none text-gold-500" />
           Secure checkout
         </div>
-        <div className="flex items-center gap-2 text-xs text-gray-500">
-          <svg className="w-4 h-4 text-gold-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
+        <div className="flex items-center gap-2 rounded-full border border-black/10 bg-white/70 px-3 py-2 text-xs text-gray-600">
+          <Clock className="h-4 w-4 flex-none text-gold-500" />
           1-2 day delivery
         </div>
       </div>
 
       {/* Description — below the fold */}
-      <div className="pt-6 border-t border-gray-300">
-        <h3 className="text-[11px] text-gray-400 uppercase tracking-[0.12em] mb-3">
+      <motion.div
+        initial={reducedMotion ? false : { opacity: 0, y: 16 }}
+        whileInView={reducedMotion ? undefined : { opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-80px' }}
+        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+        className="pt-6"
+      >
+        <h3 className="mb-4 text-[11px] uppercase tracking-[0.16em] text-gray-500">
           About this fragrance
         </h3>
         <RichDescription description={product.description} />
-      </div>
+      </motion.div>
 
       {/* Tags */}
       {product.tags && product.tags.length > 0 && (
@@ -136,6 +145,6 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
           </div>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }

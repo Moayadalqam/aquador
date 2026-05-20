@@ -4,12 +4,10 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { createClient } from '@/lib/supabase/client';
-import { Upload, X, Loader2, Plus } from 'lucide-react';
-import dynamic from 'next/dynamic';
+import { ArrowDown, ArrowUp, ImagePlus, Upload, X, Loader2, Plus, Star } from 'lucide-react';
 import type { Product, ProductInsert, ProductUpdate, ProductCategory, ProductType, ProductGender } from '@/lib/supabase/types';
 import { focusRingInput } from '@/lib/ui/focus';
-
-const RichTextEditor = dynamic(() => import('./RichTextEditor'), { ssr: false });
+import { htmlToPlainDescription, isDisallowedSampleSize } from '@/lib/product-description';
 
 interface ProductFormProps {
   product?: Product;
@@ -39,6 +37,7 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
   const [uploading, setUploading] = useState(false);
   const [uploadingAdditional, setUploadingAdditional] = useState(false);
   const [error, setError] = useState('');
+  const [additionalImageUrl, setAdditionalImageUrl] = useState('');
   const [additionalImages, setAdditionalImages] = useState<string[]>(
     product?.images ?? []
   );
@@ -69,7 +68,7 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
 
   const [formData, setFormData] = useState({
     name: product?.name || '',
-    description: product?.description || '',
+    description: product?.description ? htmlToPlainDescription(product.description) : '',
     price: product?.price?.toString() || '',
     sale_price: product?.sale_price?.toString() || '',
     category: product?.category || 'men' as ProductCategory,
@@ -175,15 +174,61 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
     setAdditionalImages(prev => prev.filter((_, i) => i !== index));
   }, []);
 
+  const moveAdditionalImage = useCallback((index: number, direction: -1 | 1) => {
+    setAdditionalImages((prev) => {
+      const nextIndex = index + direction;
+      if (nextIndex < 0 || nextIndex >= prev.length) return prev;
+      const next = [...prev];
+      [next[index], next[nextIndex]] = [next[nextIndex], next[index]];
+      return next;
+    });
+  }, []);
+
+  const setAdditionalAsMain = useCallback((index: number) => {
+    setAdditionalImages((prev) => {
+      const selected = prev[index];
+      if (!selected) return prev;
+      const remaining = prev.filter((_, i) => i !== index);
+      setFormData((current) => ({
+        ...current,
+        image: selected,
+      }));
+      return formData.image ? [formData.image, ...remaining].slice(0, 5) : remaining;
+    });
+  }, [formData.image]);
+
+  const addAdditionalImageUrl = useCallback(() => {
+    const url = additionalImageUrl.trim();
+    if (!url) return;
+    try {
+      new URL(url);
+    } catch {
+      setError('Additional image URL must be a valid URL');
+      return;
+    }
+    if (additionalImages.length >= 5) {
+      setError('Maximum 5 additional images');
+      return;
+    }
+    setAdditionalImages((prev) => [...prev, url]);
+    setAdditionalImageUrl('');
+    setError('');
+  }, [additionalImageUrl, additionalImages.length]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
     try {
+      if (isDisallowedSampleSize(formData.size)) {
+        setError('2ml sample sizes are no longer available. Choose a standard product size.');
+        return;
+      }
+
       const productData: ProductInsert | ProductUpdate = {
         name: formData.name,
-        description: formData.description,
+        description: htmlToPlainDescription(formData.description),
         price: parseFloat(formData.price),
         sale_price: formData.sale_price ? parseFloat(formData.sale_price) : null,
         category: formData.category,
@@ -255,10 +300,33 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 Description *
               </label>
-              <RichTextEditor
-                content={formData.description}
-                onChange={(html) => setFormData(prev => ({ ...prev, description: html }))}
+              <textarea
+                value={formData.description}
+                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                required
+                rows={12}
+                className={`w-full resize-y px-4 py-3 bg-black/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 ${focusRingInput} transition-colors leading-relaxed`}
+                placeholder={[
+                  'Unisex · Eau de Parfum · 100 ml',
+                  '',
+                  'A refined aromatic fragrance with a polished trail.',
+                  '',
+                  'The Scent Experience',
+                  'Opening',
+                  'Fresh citrus and soft spices.',
+                  '',
+                  'Why you’ll love it:',
+                  '• Elegant daily wear',
+                  '• Long-lasting presence',
+                  '',
+                  'Top Notes: Bergamot · Saffron',
+                  'Heart Notes: Rose · Jasmine',
+                  'Base Notes: Amber · Musk',
+                ].join('\n')}
               />
+              <p className="mt-2 text-xs leading-relaxed text-gray-500">
+                Write natural product copy. Use plain headings, bullet lines, and note lines; the storefront formats it into premium sections automatically.
+              </p>
             </div>
 
             <div>
@@ -399,7 +467,8 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
             {additionalImages.length > 0 && (
               <div className="grid grid-cols-2 gap-3">
                 {additionalImages.map((img, i) => (
-                  <div key={i} className="relative group aspect-square">
+                  <div key={`${img}-${i}`} className="group space-y-2 rounded-lg border border-gray-800 bg-black/20 p-2">
+                    <div className="relative aspect-square overflow-hidden rounded-lg">
                     <Image
                       src={img}
                       alt={`Additional ${i + 1}`}
@@ -412,9 +481,39 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
                       type="button"
                       onClick={() => removeAdditionalImage(i)}
                       className="absolute top-1.5 right-1.5 p-1 bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                      aria-label={`Remove additional image ${i + 1}`}
                     >
                       <X className="h-3.5 w-3.5" />
                     </button>
+                    </div>
+                    <div className="flex items-center justify-between gap-1">
+                      <button
+                        type="button"
+                        onClick={() => setAdditionalAsMain(i)}
+                        className="inline-flex h-8 flex-1 items-center justify-center gap-1 rounded-md bg-gold/10 px-2 text-[11px] font-medium text-gold hover:bg-gold/20 transition-colors"
+                      >
+                        <Star className="h-3 w-3" />
+                        Main
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => moveAdditionalImage(i, -1)}
+                        disabled={i === 0}
+                        aria-label={`Move image ${i + 1} earlier`}
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-gray-800 text-gray-300 transition-colors hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-35"
+                      >
+                        <ArrowUp className="h-3.5 w-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => moveAdditionalImage(i, 1)}
+                        disabled={i === additionalImages.length - 1}
+                        aria-label={`Move image ${i + 1} later`}
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-gray-800 text-gray-300 transition-colors hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-35"
+                      >
+                        <ArrowDown className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -443,6 +542,30 @@ export default function ProductForm({ product, mode }: ProductFormProps) {
               onChange={handleAdditionalImageUpload}
               className="hidden"
             />
+
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-300">
+                Add image URL
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="url"
+                  value={additionalImageUrl}
+                  onChange={(e) => setAdditionalImageUrl(e.target.value)}
+                  className={`min-w-0 flex-1 px-3 py-2.5 bg-black/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 ${focusRingInput} transition-colors text-sm`}
+                  placeholder="https://..."
+                />
+                <button
+                  type="button"
+                  onClick={addAdditionalImageUrl}
+                  disabled={!additionalImageUrl.trim() || additionalImages.length >= 5}
+                  className="inline-flex items-center justify-center rounded-lg bg-gray-800 px-3 text-gray-200 transition-colors hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-40"
+                  aria-label="Add image URL"
+                >
+                  <ImagePlus className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
           </div>
 
           {/* Product Details */}

@@ -15,6 +15,24 @@ interface OrderItem {
   quantity: number;
   price: number;
   productType?: string;
+  size?: string;
+  customPerfume?: {
+    name: string;
+    topNote: string;
+    heartNote: string;
+    baseNote: string;
+    specialRequests?: string;
+  };
+}
+
+interface CompactCustomPerfume {
+  vid: string;
+  n: string;
+  t: string;
+  h: string;
+  b: string;
+  s?: string;
+  v: string;
 }
 
 interface ShippingAddress {
@@ -377,6 +395,19 @@ export async function POST(request: NextRequest) {
       const orderTags: Record<string, string> = {};
 
       const metadata = session.metadata || {};
+      const customPerfumesByVariant = new Map<string, CompactCustomPerfume>();
+      for (const [key, value] of Object.entries(metadata)) {
+        if (!key.startsWith('custom_') || !value) continue;
+        try {
+          const custom = JSON.parse(value) as CompactCustomPerfume;
+          if (custom.vid) customPerfumesByVariant.set(custom.vid, custom);
+        } catch (error) {
+          Sentry.captureException(error, {
+            tags: { action: 'parse_custom_perfume_metadata' },
+            extra: { sessionId: session.id, key },
+          });
+        }
+      }
 
       if (metadata.items) {
         // Standard cart checkout — parse shortened metadata (pid, vid, qty)
@@ -403,13 +434,30 @@ export async function POST(request: NextRequest) {
               // Match by variant id encoded in the line item description
               const vidSize = (shortItem.vid.split('-').pop() || '50ml') as PerfumeVolume;
               const price = calculatePrice(vidSize);
+              const custom = customPerfumesByVariant.get(shortItem.vid);
               const line = lineItems.find(li => (li.price?.unit_amount ?? 0) === Math.round(price * 100));
               items.push({
-                name: line?.description || `Custom Perfume (${vidSize})`,
+                name: custom?.n ? `${custom.n} — Custom Perfume` : line?.description || `Custom Perfume (${vidSize})`,
                 quantity: shortItem.qty,
                 price,
                 productType: 'custom-perfume',
+                size: vidSize,
+                customPerfume: custom ? {
+                  name: custom.n,
+                  topNote: custom.t,
+                  heartNote: custom.h,
+                  baseNote: custom.b,
+                  specialRequests: custom.s || undefined,
+                } : undefined,
               });
+              if (custom) {
+                orderTags['custom-perfume'] = 'true';
+                orderTags['composition'] = `Top: ${custom.t || '?'}, Heart: ${custom.h || '?'}, Base: ${custom.b || '?'}`;
+                orderTags['volume'] = custom.v || vidSize;
+                if (custom.s) {
+                  orderTags['special-requests'] = custom.s;
+                }
+              }
               orderTags['has-custom-perfume'] = 'true';
               continue;
             }
@@ -420,6 +468,7 @@ export async function POST(request: NextRequest) {
                 quantity: shortItem.qty,
                 price: product.sale_price || product.price,
                 productType: product.product_type,
+                size: product.size,
               });
             }
           }
@@ -437,6 +486,14 @@ export async function POST(request: NextRequest) {
           quantity: 1,
           price: calculatePrice(volume),
           productType: 'custom-perfume',
+          size: volume,
+          customPerfume: {
+            name: metadata.perfumeName || 'Unnamed',
+            topNote: metadata.topNote || 'Unknown',
+            heartNote: metadata.heartNote || 'Unknown',
+            baseNote: metadata.baseNote || 'Unknown',
+            specialRequests: metadata.specialRequests || undefined,
+          },
         }];
         orderTags['custom-perfume'] = 'true';
         orderTags['composition'] = `Top: ${metadata.topNote || '?'}, Heart: ${metadata.heartNote || '?'}, Base: ${metadata.baseNote || '?'}`;
