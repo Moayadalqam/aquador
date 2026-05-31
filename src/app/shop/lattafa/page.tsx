@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { getProductsByCategory } from '@/lib/supabase/product-service';
+import { getProductsByCategory, collapseToFragranceCards } from '@/lib/supabase/product-service';
 import { buildCollectionPage, buildBreadcrumbList } from '@/lib/seo/listing-schema';
 import JsonLd from '@/components/seo/JsonLd';
 import LattafaContent from './LattafaContent';
@@ -28,7 +28,8 @@ export const metadata: Metadata = {
 };
 
 export default async function LattafaPage() {
-  const supabaseProducts = await getProductsByCategory('lattafa-original');
+  // One card per fragrance — size variants live on the product page, not the grid.
+  const supabaseProducts = collapseToFragranceCards(await getProductsByCategory('lattafa-original'));
 
   // Transform Supabase products to match the LegacyProduct interface
   const products = supabaseProducts.map(p => ({

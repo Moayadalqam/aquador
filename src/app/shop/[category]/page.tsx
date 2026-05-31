@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getProductsByCategory, categories, getCategoryBySlug } from '@/lib/supabase/product-service';
+import { getProductsByCategory, categories, getCategoryBySlug, collapseToFragranceCards } from '@/lib/supabase/product-service';
 import { buildCollectionPage } from '@/lib/seo/listing-schema';
 import JsonLd from '@/components/seo/JsonLd';
 import CategoryContent from './CategoryContent';
@@ -66,8 +66,9 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   }
 
   const allProducts = await getProductsByCategory(categorySlug);
-  // Only show perfumes — oils/lotions are variants on the product page, not separate listings
-  const products = allProducts.filter(p => p.product_type === 'perfume');
+  // Only show perfumes, one card per fragrance — oils/lotions and per-size rows
+  // are variants on the product page, not separate listings
+  const products = collapseToFragranceCards(allProducts.filter(p => p.product_type === 'perfume'));
 
   // BreadcrumbList structured data
   const breadcrumbSchema = {

@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getProductsByGender, getGenderLabel } from '@/lib/supabase/product-service';
+import { getProductsByGender, getGenderLabel, collapseToFragranceCards } from '@/lib/supabase/product-service';
 import type { ProductGender } from '@/lib/supabase/types';
 import { buildCollectionPage } from '@/lib/seo/listing-schema';
 import JsonLd from '@/components/seo/JsonLd';
@@ -60,8 +60,9 @@ export default async function GenderPage({ params }: GenderPageProps) {
   }
 
   const allProducts = await getProductsByGender(gender as ProductGender);
-  // Only show perfumes — oils/lotions are variants on the product page, not separate listings
-  const products = allProducts.filter(p => p.product_type === 'perfume');
+  // Only show perfumes, one card per fragrance — oils/lotions and per-size rows
+  // are variants on the product page, not separate listings
+  const products = collapseToFragranceCards(allProducts.filter(p => p.product_type === 'perfume'));
 
   const genderLabel = getGenderLabel(gender);
 
