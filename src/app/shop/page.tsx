@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { Suspense } from 'react';
-import { getAllProducts, categories } from '@/lib/supabase/product-service';
+import { getAllProducts, categories, collapseToFragranceCards } from '@/lib/supabase/product-service';
 import { buildCollectionPage, buildBreadcrumbList } from '@/lib/seo/listing-schema';
 import JsonLd from '@/components/seo/JsonLd';
 import ShopContent from './ShopContent';
@@ -28,7 +28,9 @@ export const metadata: Metadata = {
 };
 
 export default async function ShopPage() {
-  const products = await getAllProducts();
+  // One card per fragrance — fold branded products' per-size rows into a single
+  // card so size is chosen on the product page, not the grid.
+  const products = collapseToFragranceCards(await getAllProducts());
 
   const breadcrumbSchema = buildBreadcrumbList([
     { name: 'Home', url: 'https://aquadorcy.com' },

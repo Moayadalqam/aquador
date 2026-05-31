@@ -7,6 +7,11 @@ import { categories } from '../categories';
 // Re-export categories since they're static
 export { categories };
 
+// Re-export the pure variant-collapsing helper so listing pages can import it
+// alongside the data fetchers. The implementation lives in ./variants (no React
+// / Supabase imports) so it stays unit-testable without a server runtime.
+export { collapseToFragranceCards } from './variants';
+
 /** Escape PostgREST special characters in search queries */
 function escapePostgrestQuery(query: string): string {
   return query.replace(/[%_\\*()[\]!,]/g, '\\$&');
