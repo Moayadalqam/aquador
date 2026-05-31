@@ -44,6 +44,35 @@ function getVariantSortKey(product: Pick<Product, 'product_type' | 'size'>): num
   return VARIANT_ORDER[`${product.product_type}:${product.size}`] ?? 99;
 }
 
+/**
+ * Collapse size/type variant rows into one card per fragrance for listing
+ * grids. The products table stores 50ml / 100ml perfume, 10ml oil, and 150ml
+ * lotion as separate rows sharing a base slug (see getProductVariantGroup), so
+ * a raw listing renders the same fragrance two to four times. A shop grid must
+ * show each fragrance once and defer size selection to the product page. Picks
+ * the canonical representative per base id by lowest variant sort key (50ml
+ * perfume preferred, then 100ml, then oil, then lotion). First-seen order is
+ * preserved so the caller's ordering (in_stock / created_at) still drives the
+ * grid.
+ */
+export function collapseToFragranceCards(products: Product[]): Product[] {
+  const representatives = new Map<string, Product>();
+  const order: string[] = [];
+
+  for (const product of products) {
+    const baseId = getVariantBaseId(product.id);
+    const current = representatives.get(baseId);
+    if (!current) {
+      representatives.set(baseId, product);
+      order.push(baseId);
+    } else if (getVariantSortKey(product) < getVariantSortKey(current)) {
+      representatives.set(baseId, product);
+    }
+  }
+
+  return order.map((baseId) => representatives.get(baseId)!);
+}
+
 // Get all products from Supabase (public-facing, filters inactive)
 export async function getAllProducts(): Promise<Product[]> {
   if (!hasPublicSupabaseEnv()) return [];

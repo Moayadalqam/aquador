@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { Suspense } from 'react';
-import { getAllProducts, getAllProductBrands } from '@/lib/supabase/product-service';
+import { getAllProducts, getAllProductBrands, collapseToFragranceCards } from '@/lib/supabase/product-service';
 import { CATEGORY_OPTIONS } from '@/lib/constants';
 import { buildPageMetadata } from '@/lib/seo/metadata';
 import ProductGrid from '@/components/storefront/ProductGrid';
@@ -24,9 +24,13 @@ export default async function ShopPage() {
 
   // Dubai Shop excludes Lattafa (own /shop/lattafa page) and non-perfume
   // product types (oils and lotions appear as variants on a perfume page,
-  // not standalone listings).
-  const products = allProducts.filter(
-    (p) => p.category !== 'lattafa-original' && p.product_type === 'perfume',
+  // not standalone listings). collapseToFragranceCards then folds each
+  // fragrance's 50ml/100ml rows into a single card so size is chosen on the
+  // product page, not the grid.
+  const products = collapseToFragranceCards(
+    allProducts.filter(
+      (p) => p.category !== 'lattafa-original' && p.product_type === 'perfume',
+    ),
   );
 
   // Category options must mirror the product set above — drop Lattafa so the

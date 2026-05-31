@@ -6,6 +6,7 @@ import {
   categories,
   getCategoryBySlug,
   getAllProductBrands,
+  collapseToFragranceCards,
 } from '@/lib/supabase/product-service';
 import { CATEGORY_OPTIONS } from '@/lib/constants';
 import { buildPageMetadata } from '@/lib/seo/metadata';
@@ -59,8 +60,11 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
     getProductsByCategory(categorySlug),
     getAllProductBrands(),
   ]);
-  // Only show perfumes. Oils and lotions are variants on the product page, not separate listings.
-  const products = allProducts.filter((p) => p.product_type === 'perfume');
+  // Only show perfumes, one card per fragrance. Oils, lotions, and the 100ml
+  // size are variants on the product page, not separate listings.
+  const products = collapseToFragranceCards(
+    allProducts.filter((p) => p.product_type === 'perfume'),
+  );
 
   // BreadcrumbList structured data
   const breadcrumbSchema = {
